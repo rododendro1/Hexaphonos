@@ -12,7 +12,8 @@ import PackageDescription
 //     ArmoniaTrastes           Encordado, Mastil, Digitacion (instrumentos de cuerda con trastes)
 //
 // La geometría de las rejillas hexagonales (el Tonnetz, la tabla armónica, los teclados isomórficos) viene
-// del paquete `Hexagonos`, que no depende de nada. `ArmoniaRepresentaciones` lo usa y `Armonia` lo reexporta.
+// del paquete `Hexagonos`, que no depende de nada. `ArmoniaRepresentaciones` lo usa; `Armonia` no lo reexporta,
+// para no meter sus nombres en el código de quien importa el motor: quien use la rejilla, `import Hexagonos`.
 //
 // `Scripts/comprobar_modulos.py` vigila que las dependencias sean estas y no otras.
 
@@ -50,14 +51,14 @@ let package = Package(
             dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", .product(name: "Hexagonos", package: "Hexagonos")]),
         .target(name: "ArmoniaPartitura", dependencies: ["ArmoniaNucleo", "ArmoniaTeoria"]),
         .target(name: "ArmoniaTrastes", dependencies: ["ArmoniaNucleo", "ArmoniaTeoria"]),
-        // El módulo paraguas: reexporta los cinco y Hexagonos, y guarda la documentación (DocC).
+        // El módulo paraguas: reexporta los cinco y guarda la documentación (DocC).
         .target(
             name: "Armonia",
-            dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", "ArmoniaRepresentaciones", "ArmoniaPartitura", "ArmoniaTrastes",
-                           .product(name: "Hexagonos", package: "Hexagonos")]),
+            dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", "ArmoniaRepresentaciones", "ArmoniaPartitura", "ArmoniaTrastes"]),
         // Las pruebas ven lo `internal` de cada módulo con `@testable import`, y por eso dependen de todos.
         .testTarget(name: "ArmoniaTests", dependencies: modulos),
         .testTarget(name: "ArmoniaExhaustivasTests", dependencies: modulos),
-        .testTarget(name: "ArmoniaDocumentacionTests", dependencies: ["Armonia"]),
+        // Los ejemplos de la documentación usan también la rejilla (`CoordenadaAxial`, `FormasDeMapa`…).
+        .testTarget(name: "ArmoniaDocumentacionTests", dependencies: ["Armonia", hexagonos]),
     ]
 )
