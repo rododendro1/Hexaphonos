@@ -1,8 +1,8 @@
 # Cambios
 
-## 0.1.0 (23 de octubre de 2026)
+## Sin publicar
 
-Primera versión. Rejillas hexagonales sin dependencias, solo con la biblioteca estándar y Foundation:
+Rejillas hexagonales sin dependencias, solo con la biblioteca estándar y Foundation:
 
 - Coordenadas axiales, cúbicas, desplazadas (cuatro variantes), dobladas (dos) y fraccionarias, y las conversiones
   entre ellas.
@@ -14,5 +14,5 @@ Primera versión. Rejillas hexagonales sin dependencias, solo con la biblioteca 
 - `MapaHexagonal<Valor>`: un valor por casilla, con vecinas, simetrías, caminos y visibilidad, y `Codable`.
 - Dibujo: `Disposicion` (puntiaguda o plana), `centro(de:)`, `casilla(en:)`, `vertices(de:)` y `svg(_:)`.
 
-Se usa desde otro proyecto con `.package(url: "https://github.com/rododendro1/Hexaphonos.git", from: "0.1.0")` y el
+Se usa desde otro proyecto con `.package(url: "https://github.com/rododendro1/Hexaphonos.git", branch: "main")` y el
 producto `Hexagonos`.
