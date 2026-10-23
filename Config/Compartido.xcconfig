@@ -1,0 +1,9 @@
+// Ajustes comunes de las apps: project.yml los enlaza en Debug y en Release.
+// Lo que depende de tu equipo va en Local.xcconfig, que no se guarda en git
+// (copia Local.xcconfig.ejemplo).
+
+// Prefijo de los identificadores de las apps (com.sepiriz.hexaphonos.armonia, …).
+BUNDLE_ID_PREFIX = com.sepiriz.hexaphonos
+
+// Si existe, sus valores sustituyen a los de arriba.
+#include? "Local.xcconfig"

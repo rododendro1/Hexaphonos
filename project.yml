@@ -1,0 +1,103 @@
+# Proyecto de Xcode de las apps del ecosistema, generado con XcodeGen:
+#
+#     brew install xcodegen
+#     ./Scripts/generar_proyecto.sh        # crea SepirizHexaphonos.xcodeproj
+#
+# El .xcodeproj no se guarda en git: este fichero es la fuente. Los paquetes locales se enlazan por
+# ruta, así que un cambio en `Packages/` se ve en las apps sin publicar nada.
+#
+# Lo que depende de tu equipo (el equipo de firma, el prefijo de los identificadores) no va aquí sino en
+# Config/Local.xcconfig, que no se guarda en git: copia Config/Local.xcconfig.ejemplo.
+name: SepirizHexaphonos
+
+configFiles:
+  Debug: Config/Compartido.xcconfig
+  Release: Config/Compartido.xcconfig
+
+options:
+  # Solo para los valores por defecto de XcodeGen: los identificadores salen de BUNDLE_ID_PREFIX.
+  bundleIdPrefix: com.sepiriz.hexaphonos
+  deploymentTarget:
+    iOS: "16.0"
+    macOS: "13.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    CODE_SIGN_STYLE: Automatic
+    # Las apps no cifran nada por su cuenta: sin esto App Store Connect pregunta en cada subida.
+    INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+    # macOS: con sandbox y entorno protegido, como exige la Mac App Store y la notarización.
+    "ENABLE_APP_SANDBOX[sdk=macosx*]": YES
+    "ENABLE_HARDENED_RUNTIME[sdk=macosx*]": YES
+    # iOS: el mástil se ve mejor en horizontal, así que se permite girar.
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+
+packages:
+  Armonia:
+    path: Packages/Armonia
+  SepirizUI:
+    path: Packages/SepirizUI
+
+targets:
+  ArmoniaApp:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - path: Apps/ArmoniaApp
+    settings:
+      base:
+        # El nombre del producto se queda en ASCII (ArmoniaApp.app): el que se ve es CFBundleDisplayName.
+        # El módulo se fija para que no dependa del nombre de la app (y no choque con tipos del motor).
+        PRODUCT_MODULE_NAME: ArmoniaApp
+        PRODUCT_BUNDLE_IDENTIFIER: $(BUNDLE_ID_PREFIX).armonia
+        INFOPLIST_KEY_CFBundleDisplayName: Armonía
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.music
+    dependencies:
+      - package: Armonia
+        product: Armonia
+      - package: SepirizUI
+
+  TonnetzApp:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - path: Apps/TonnetzApp
+    settings:
+      base:
+        # El módulo no puede llamarse `Tonnetz`: es el nombre de un tipo del motor.
+        PRODUCT_MODULE_NAME: TonnetzApp
+        PRODUCT_BUNDLE_IDENTIFIER: $(BUNDLE_ID_PREFIX).tonnetz
+        # Dibuja con un WKWebView (SVGView): en macOS, con sandbox, WebKit no pinta sin esta conexión.
+        "ENABLE_OUTGOING_NETWORK_CONNECTIONS[sdk=macosx*]": YES
+        INFOPLIST_KEY_CFBundleDisplayName: Tonnetz
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.music
+    dependencies:
+      - package: Armonia
+        product: Armonia
+      - package: SepirizUI
+
+schemes:
+  ArmoniaApp:
+    build:
+      targets:
+        ArmoniaApp: all
+    run:
+      config: Debug
+  TonnetzApp:
+    build:
+      targets:
+        TonnetzApp: all
+    run:
+      config: Debug

@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+.swiftpm/
+*.xcodeproj
+xcuserdata/
+DerivedData/
+Package.resolved
+# Ajustes de tu equipo (copia de Config/Local.xcconfig.ejemplo)
+Config/Local.xcconfig
+.logs-compilacion/

@@ -1,0 +1,198 @@
+name: CI
+
+# `push` solo en la rama principal: en una rama con pull request ya corre el de `pull_request`, y con los
+# dos se ejecutaba todo dos veces. Si tu rama principal no se llama main ni master, cámbialo aquí.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Un push nuevo cancela la ejecución anterior de la misma rama.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Xcode de los jobs de macOS: `latest-stable`, o una versión concreta («16.4») para fijarla.
+  XCODE: latest-stable
+
+# No se guarda `.build` en caché a propósito: el repositorio no tiene dependencias externas, así que la
+# caché solo guardaría el código propio, que se recompila igual en cada commit.
+
+jobs:
+  comprobaciones:
+    name: Comprobaciones del repositorio
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Higiene (invisibles, tabuladores, permisos, scripts que compilan)
+        run: python3 Scripts/comprobar_higiene.py
+      - name: Dependencias entre paquetes y apps
+        run: python3 Scripts/comprobar_dependencias.py
+      - name: Rutas sin colisiones de mayúsculas
+        run: |
+          duplicadas=$(git ls-files | tr 'A-Z' 'a-z' | sort | uniq -d)
+          if [ -n "$duplicadas" ]; then echo "Rutas que solo difieren en mayúsculas:"; echo "$duplicadas"; exit 1; fi
+          carpetas=$(git ls-files | xargs -n1 dirname | sort -u | tr 'A-Z' 'a-z' | sort | uniq -d)
+          if [ -n "$carpetas" ]; then echo "Carpetas que solo difieren en mayúsculas:"; echo "$carpetas"; exit 1; fi
+      - name: Módulos del motor
+        run: python3 Scripts/comprobar_modulos.py
+        working-directory: Packages/Armonia
+      - name: Catálogo de escalas
+        run: python3 Scripts/comprobar_catalogo.py
+        working-directory: Packages/Armonia
+      - name: Enlaces de la documentación (DocC)
+        run: python3 Scripts/comprobar_enlaces_docc.py
+        working-directory: Packages/Armonia
+      - name: Ejemplos de la documentación al día
+        run: python3 Scripts/generar_pruebas_de_documentacion.py --comprobar
+        working-directory: Packages/Armonia
+
+  motor:
+    name: Armonia · Linux · Swift ${{ matrix.swift }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    container: swift:${{ matrix.swift }}
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: ["5.9", "5.10", "6.0", "6.1", "6.2"]
+    defaults:
+      run:
+        working-directory: Packages/Armonia
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilar
+        run: swift build
+      - name: Pruebas rápidas
+        run: swift test --parallel --filter "^ArmoniaTests\\."
+      - name: Pruebas exhaustivas
+        run: swift test --parallel --filter "^ArmoniaPruebasExhaustivas\\."
+      - name: Ejemplos de la documentación
+        run: swift test --parallel --filter "^ArmoniaDocumentacionTests\\."
+      - name: Concurrencia estricta (módulos)
+        if: startsWith(matrix.swift, '6')
+        run: |
+          for objetivo in ArmoniaNucleo ArmoniaTeoria ArmoniaRepresentaciones ArmoniaPartitura ArmoniaTrastes Armonia; do
+            swift build --target "$objetivo" -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+          done
+
+  herramientas:
+    name: ${{ matrix.carpeta }} · Linux · Swift ${{ matrix.swift }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container: swift:${{ matrix.swift }}
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: ["5.9", "6.2"]
+        carpeta: [ArmoniaCLI, ArmoniaEjemplo]
+    defaults:
+      run:
+        working-directory: Apps/${{ matrix.carpeta }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilar
+        run: swift build
+      - name: Pruebas (solo la línea de comandos tiene)
+        if: matrix.carpeta == 'ArmoniaCLI'
+        run: swift test --parallel
+      - name: Ejemplo
+        if: matrix.carpeta == 'ArmoniaEjemplo'
+        run: swift run ArmoniaEjemplo
+      - name: Concurrencia estricta
+        if: matrix.carpeta == 'ArmoniaCLI' && startsWith(matrix.swift, '6')
+        run: swift build --target ArmoniaCLI -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+
+  paquetes:
+    name: ${{ matrix.paquete }} · Linux · Swift ${{ matrix.swift }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container: swift:${{ matrix.swift }}
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: ["5.9", "6.2"]
+        paquete: [SepirizUI]
+    defaults:
+      run:
+        working-directory: Packages/${{ matrix.paquete }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compilar
+        run: swift build
+      - name: Pruebas
+        run: swift test --parallel
+
+  macos:
+    name: macOS · paquetes y apps
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE }}
+      - name: Versión de Swift y de Xcode
+        run: swift --version && xcodebuild -version
+      - name: Motor
+        run: swift build && swift test --parallel --filter "^ArmoniaTests\\."
+        working-directory: Packages/Armonia
+      - name: SepirizUI
+        run: swift test --parallel
+        working-directory: Packages/SepirizUI
+      - name: Línea de comandos y ejemplo
+        run: |
+          (cd Apps/ArmoniaCLI && swift test --parallel)
+          (cd Apps/ArmoniaEjemplo && swift run ArmoniaEjemplo > /dev/null)
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+      - name: Generar el proyecto
+        run: ./Scripts/generar_proyecto.sh
+      - name: Armonía (macOS)
+        run: >
+          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme ArmoniaApp
+          -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
+      - name: Tonnetz (macOS)
+        run: >
+          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme TonnetzApp
+          -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
+      - name: Armonía (iOS, simulador)
+        run: >
+          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme ArmoniaApp
+          -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
+      - name: Tonnetz (iOS, simulador)
+        run: >
+          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme TonnetzApp
+          -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
+
+  documentacion:
+    name: DocC · macOS (no bloquea todavía)
+    runs-on: macos-15
+    timeout-minutes: 45
+    # El catálogo cuelga del módulo paraguas `Armonia`, que solo reexporta los demás: puede que DocC no
+    # resuelva los símbolos reexportados. Este job lo averigua sin romper el CI; cuando salga limpio,
+    # quita `continue-on-error`. Si no resuelve, pasa a documentación combinada o un catálogo por módulo.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE }}
+      - name: Construir la documentación
+        working-directory: Packages/Armonia
+        run: |
+          set -o pipefail
+          xcodebuild docbuild -scheme Armonia-Package -destination 'generic/platform=macOS' \
+            -derivedDataPath "$RUNNER_TEMP/docc" CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/docbuild.log"
+      - name: Enlaces sin resolver
+        run: |
+          if grep -E "warning: .*(doesn.t exist|couldn.t be resolved|unresolved|not found)" "$RUNNER_TEMP/docbuild.log"; then
+            echo "::warning::Hay enlaces de DocC sin resolver (¿símbolos reexportados por el módulo Armonia?)"
+            exit 1
+          fi

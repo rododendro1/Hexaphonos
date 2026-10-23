@@ -1,0 +1,7 @@
+// Copia este fichero como Config/Local.xcconfig (no se guarda en git) y rellénalo.
+
+// El identificador de tu equipo de desarrollo, para firmar (developer.apple.com → Membership).
+DEVELOPMENT_TEAM = ABCDE12345
+
+// El prefijo de los identificadores de las apps, si no quieres el de por defecto.
+// BUNDLE_ID_PREFIX = com.tuempresa.hexaphonos
