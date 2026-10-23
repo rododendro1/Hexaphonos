@@ -67,16 +67,9 @@ construyen en macOS.
 
 ## Estado
 
-Todo lo que se puede comprobar sin compilador está comprobado: `Scripts/` (dependencias, módulos, catálogo de
-escalas, enlaces de DocC, ejemplos de la documentación, higiene del código) y un port a Python de la búsqueda de
-digitaciones. Pero el código de Swift **no se ha compilado todavía**, ni se han ejecutado las pruebas. El primer paso
-es `./Scripts/compilar_todo.sh` en una máquina con Swift (o subirlo y mirar el CI): compila y prueba por capas, en el
-orden en que conviene arreglar los errores, guarda un log por paso y resume los `error:`. Es probable que salgan
-algunos errores de compilación, sobre todo en SwiftUI.
-
-El job `documentacion` del CI no bloquea todavía: el catálogo de DocC cuelga del módulo paraguas `Armonia`, que solo
-reexporta los demás, y puede que DocC no resuelva sus símbolos. Cuando el job salga limpio, se le quita
-`continue-on-error`.
+Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `SepirizUI`, la línea de
+comandos, el ejemplo, las dos apps en macOS y en el simulador de iOS, y la documentación de DocC, sin enlaces sin
+resolver. `./Scripts/compilar_todo.sh` hace lo mismo en una máquina con Swift, por capas y con un log por paso.
 
 El código se publica con licencia MIT (`LICENSE`). Las dos apps llevan un icono provisional en
 `Apps/<App>/Assets.xcassets/AppIcon.appiconset`, que conviene sustituir por uno definitivo antes de publicarlas.
