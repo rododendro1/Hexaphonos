@@ -69,14 +69,14 @@ final class CaminosConCosteTests: XCTestCase {
         let costes = costesALoBruto(desde: origen)
         for destino in mapa {
             for costeMinimo in [0.0, 1] {
-                let camino = origen.caminoMasBarato(hasta: destino, costeMinimo: costeMinimo) { _, hacia in
+                let encontrado = origen.caminoMasBarato(hasta: destino, costeMinimo: costeMinimo) { _, hacia in
                     self.terreno(hacia)
                 }
                 guard let esperado = costes[destino] else {
-                    XCTAssertNil(camino, "\(destino)")
+                    XCTAssertNil(encontrado, "\(destino)")
                     continue
                 }
-                guard let camino else { return XCTFail("Sin camino a \(destino)") }
+                guard let camino = encontrado else { return XCTFail("Sin camino a \(destino)") }
                 XCTAssertEqual(camino.coste, esperado, "\(destino)")
                 // El coste es el de sus pasos, y cada paso va a una vecina.
                 XCTAssertEqual(camino.casillas.dropFirst().reduce(0) { $0 + terreno($1)! }, camino.coste)
