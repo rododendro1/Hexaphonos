@@ -1,7 +1,7 @@
 # ``Hexagonos``
 
 Rejillas hexagonales en Swift, con la API en español: coordenadas, vecinos, distancias, líneas,
-regiones, simetrías y el paso a píxeles.
+regiones, simetrías, mapas, caminos y el paso a píxeles.
 
 ## Overview
 
@@ -32,6 +32,7 @@ Los algoritmos y las convenciones siguen la guía de Red Blob Games sobre rejill
 
 - <doc:SistemasDeCoordenadas>
 - <doc:AlgoritmosEnLaRejilla>
+- <doc:MapasYCaminos>
 - <doc:DeCasillasAPixeles>
 
 ### Coordenadas
@@ -48,6 +49,11 @@ Los algoritmos y las convenciones siguen la guía de Red Blob Games sobre rejill
 
 - ``DireccionHexagonal``
 - ``PuntoCardinal``
+
+### Mapas y caminos
+
+- ``MapaHexagonal``
+- ``CaminoHexagonal``
 
 ### Regiones y simetrías
 

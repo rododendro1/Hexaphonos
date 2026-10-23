@@ -45,4 +45,30 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
         XCTAssertEqual(centro.y, 167.3205, accuracy: 1e-4)
         XCTAssertEqual(plana.casilla(en: Punto(x: 231, y: 160)), CoordenadaAxial(q: 1, r: 0))
     }
+
+    func testMapasYCaminos() {
+        var mapa = MapaHexagonal(repitiendo: "hierba", en: FormasDeMapa.hexagono(radio: 2))
+        mapa[CoordenadaAxial(q: 1, r: 0)] = "agua"
+        XCTAssertEqual(mapa.count, 19)
+        XCTAssertNil(mapa[CoordenadaAxial(q: 5, r: 0)])
+        XCTAssertEqual(mapa.vecinas(de: .origen).count, 6)
+
+        let pantano: Set = [CoordenadaAxial(q: 1, r: 0)]
+        let camino = CoordenadaAxial.origen.caminoMasBarato(hasta: CoordenadaAxial(q: 2, r: 0)) { _, hacia in
+            hacia.longitud > 4 ? nil : (pantano.contains(hacia) ? 5 : 1)
+        }
+        XCTAssertEqual(camino?.coste, 3.0)
+        XCTAssertEqual(camino?.pasos, 3)
+
+        let costes = CoordenadaAxial.origen.alcanzables(presupuesto: 2) { _, hacia in
+            hacia.q > 0 ? 2 : 1
+        }
+        XCTAssertEqual(costes[CoordenadaAxial(q: -2, r: 0)], 2.0)
+        XCTAssertNil(costes[CoordenadaAxial(q: 2, r: 0)])
+
+        var terreno = MapaHexagonal(repitiendo: 1.0, en: FormasDeMapa.hexagono(radio: 3))
+        terreno[CoordenadaAxial(q: 1, r: 0)] = 10
+        XCTAssertEqual(terreno.caminoMasBarato(desde: .origen, hasta: CoordenadaAxial(q: 2, r: 0)) { $0 }?.coste, 3.0)
+        XCTAssertEqual(terreno.alcanzables(desde: .origen, presupuesto: 2) { $0 }.count, 17)
+    }
 }

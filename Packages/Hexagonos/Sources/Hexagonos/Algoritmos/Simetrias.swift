@@ -25,11 +25,18 @@ extension CoordenadaAxial {
     /// La casilla girada `sextos` veces 60° alrededor de `centro`: los positivos, en sentido antihorario
     /// (como las direcciones); los negativos, en sentido horario. Seis sextos dan la vuelta entera.
     public func rotada(sextos: Int, alrededorDe centro: CoordenadaAxial = .origen) -> CoordenadaAxial {
-        var casilla = self
-        for _ in 0..<modulo(sextos, 6) {
-            casilla = casilla.rotadaEnSentidoAntihorario(alrededorDe: centro)
+        // Cada giro es una permutación de las cúbicas con el signo cambiado o no.
+        let v = self - centro
+        let girada: CoordenadaAxial
+        switch modulo(sextos, 6) {
+        case 0: girada = v
+        case 1: girada = CoordenadaAxial(q: -v.s, r: -v.q)
+        case 2: girada = CoordenadaAxial(q: v.r, r: v.s)
+        case 3: girada = CoordenadaAxial(q: -v.q, r: -v.r)
+        case 4: girada = CoordenadaAxial(q: v.s, r: v.q)
+        default: girada = CoordenadaAxial(q: -v.r, r: -v.s)
         }
-        return casilla
+        return centro + girada
     }
 
     /// La casilla reflejada sobre la recta del `eje` que pasa por `centro`: esa componente se queda y
