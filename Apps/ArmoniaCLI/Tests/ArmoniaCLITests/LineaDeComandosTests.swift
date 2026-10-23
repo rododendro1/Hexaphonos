@@ -328,8 +328,8 @@ final class LineaDeComandosTests: XCTestCase {
     }
 
     func testLaQuintaPuedeFaltarPorDefectoYConCompletoNo() {
-        XCTAssertTrue(salida("digitaciones Do7 --limite 300").contains("  x32310"))
-        XCTAssertFalse(salida("digitaciones Do7 --limite 300 --completo").contains("  x32310"))
+        XCTAssertTrue(salida("digitaciones Do7 --limite 200").contains("  x32310"))
+        XCTAssertFalse(salida("digitaciones Do7 --limite 200 --completo").contains("  x32310"))
     }
 
     func testElLimiteDeDedos() {
