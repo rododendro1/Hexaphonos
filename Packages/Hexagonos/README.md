@@ -26,12 +26,13 @@ disposicion.casilla(en: Punto(x: 40, y: 10))   // qué casilla se ha tocado
 | Vecindad     | `DireccionHexagonal` (con su punto cardinal en cada orientación), `vecinos`, `vecinosDiagonales`, `direccion(hacia:)`, `distancia(a:)` |
 | Líneas       | `linea(hasta:)`, `ve(_:tapada:)`, `visibles(en:tapada:)`                             |
 | Regiones     | `alcance(radio:)`, `interseccion(de:)`, `anillo(radio:)`, `espiral(radio:)`, `FormasDeMapa` |
-| Movimiento   | `alcanzables(movimientos:bloqueada:)`, `camino(hasta:por:)`                          |
+| Movimiento   | `alcanzables(movimientos:bloqueada:)`, `camino(hasta:por:)`; con coste, `caminoMasBarato(hasta:)` (A*) y `alcanzables(presupuesto:)` (Dijkstra) |
+| Mapas        | `MapaHexagonal<Valor>`: un valor por casilla, vecinas, simetrías, caminos y visibilidad sobre el mapa, Codable |
 | Simetrías    | `rotadaEnSentidoHorario`, `rotadaEnSentidoAntihorario`, `rotada(sextos:)`, `reflejada(sobre:)` |
 | Dibujo       | `Disposicion` (orientación puntiaguda o plana), `centro(de:)`, `casilla(en:)`, `vertices(de:)`, `svg(_:)` |
 
-La documentación de DocC (`Sources/Hexagonos/Hexagonos.docc`) explica cada sistema de coordenadas y
-los algoritmos. Siguen la guía de Red Blob Games (https://www.redblobgames.com/grids/hexagons/).
+La documentación de DocC (`Sources/Hexagonos/Hexagonos.docc`) explica cada sistema de coordenadas,
+los algoritmos, los mapas y los caminos. Siguen la guía de Red Blob Games (https://www.redblobgames.com/grids/hexagons/).
 
 ```sh
 cd Packages/Hexagonos && swift test

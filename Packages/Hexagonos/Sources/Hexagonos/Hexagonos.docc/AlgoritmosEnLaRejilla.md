@@ -24,6 +24,9 @@ a.distancia(a: CoordenadaAxial(q: 3, r: -7))   // 7
 anterior. ``CoordenadaAxial/ve(_:tapada:)`` dice si la línea entre dos casillas está libre, y
 ``CoordenadaAxial/visibles(en:tapada:)``, qué casillas de una región se ven desde una.
 
+Si la recta pasa justo por una arista, basta con que uno de los dos lados esté libre: así `a` ve a
+`b` si y solo si `b` ve a `a`, y girar o reflejar el mapa no cambia lo que se ve.
+
 ### Regiones
 
 - ``CoordenadaAxial/alcance(radio:)``: todas las casillas a `radio` pasos o menos.
@@ -42,6 +45,7 @@ CoordenadaAxial.origen.anillo(radio: 2).count    // 12
 ``CoordenadaAxial/alcanzables(movimientos:bloqueada:)`` busca en anchura las casillas a las que se
 llega en unos pasos sin pisar las bloqueadas, y cuántos pasos cuesta cada una.
 ``CoordenadaAxial/camino(hasta:por:)`` da el camino más corto por un conjunto de casillas transitables.
+Cuando cada paso cuesta algo distinto, los caminos más baratos están en <doc:MapasYCaminos>.
 
 ```swift
 let muro: Set = [CoordenadaAxial(q: 1, r: 0)]

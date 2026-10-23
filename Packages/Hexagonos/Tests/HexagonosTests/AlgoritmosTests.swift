@@ -43,6 +43,45 @@ final class LineasTests: XCTestCase {
         XCTAssertTrue(visibles.contains(CoordenadaAxial(q: 0, r: 1)))
         XCTAssertTrue(visibles.contains(.origen))
     }
+
+    func testLaLineaDeVueltaEsLaDeIdaAlReves() {
+        let a = CoordenadaAxial(q: 1, r: -2)
+        for b in a.alcance(radio: 6) {
+            XCTAssertEqual(b.linea(hasta: a), a.linea(hasta: b).reversed(), "\(a) ↔ \(b)")
+        }
+    }
+
+    func testPorUnaAristaBastaUnLado() {
+        // La recta a (2, −1) pasa justo entre (1, −1) y (1, 0).
+        let destino = CoordenadaAxial(q: 2, r: -1)
+        let lados = [CoordenadaAxial(q: 1, r: -1), CoordenadaAxial(q: 1, r: 0)]
+        XCTAssertTrue(lados.contains(CoordenadaAxial.origen.linea(hasta: destino)[1]))
+        XCTAssertTrue(CoordenadaAxial.origen.ve(destino) { $0 == lados[0] })
+        XCTAssertTrue(CoordenadaAxial.origen.ve(destino) { $0 == lados[1] })
+        XCTAssertFalse(CoordenadaAxial.origen.ve(destino) { lados.contains($0) })
+    }
+
+    func testLaVisibilidadEsSimetrica() {
+        // Unos muros sin azar, y las doce simetrías de la rejilla alrededor de una casilla cualquiera.
+        let region = FormasDeMapa.hexagono(radio: 6)
+        let muros = Set(region.filter { modulo($0.q * 7 + $0.r * 13, 6) == 0 && $0 != .origen })
+        let centro = CoordenadaAxial(q: 1, r: -1)
+        var simetrias: [(CoordenadaAxial) -> CoordenadaAxial] = []
+        for sextos in 0..<6 {
+            simetrias.append { $0.rotada(sextos: sextos, alrededorDe: centro) }
+            simetrias.append { $0.reflejada(sobre: .q, alrededorDe: centro).rotada(sextos: sextos, alrededorDe: centro) }
+        }
+        for a in [CoordenadaAxial.origen, CoordenadaAxial(q: -2, r: 3)] {
+            for b in region {
+                let ve = a.ve(b) { muros.contains($0) }
+                XCTAssertEqual(b.ve(a) { muros.contains($0) }, ve, "\(a) ↔ \(b)")
+                for simetria in simetrias {
+                    let movidos = Set(muros.map(simetria))
+                    XCTAssertEqual(simetria(a).ve(simetria(b)) { movidos.contains($0) }, ve, "\(a) → \(b)")
+                }
+            }
+        }
+    }
 }
 
 final class RegionesTests: XCTestCase {
@@ -176,6 +215,18 @@ final class SimetriasTests: XCTestCase {
             XCTAssertEqual(a.rotada(sextos: k, alrededorDe: centro).distancia(a: centro), a.distancia(a: centro))
         }
         XCTAssertEqual(a.rotadaEnSentidoHorario(alrededorDe: centro).rotadaEnSentidoAntihorario(alrededorDe: centro), a)
+    }
+
+    func testRotadaEsGirarVariasVeces() {
+        let centro = CoordenadaAxial(q: -1, r: 3)
+        for a in centro.alcance(radio: 3) {
+            var girada = a
+            for sextos in 0...7 {
+                XCTAssertEqual(a.rotada(sextos: sextos, alrededorDe: centro), girada, "\(a), \(sextos)")
+                XCTAssertEqual(girada.rotada(sextos: -sextos, alrededorDe: centro), a)
+                girada = girada.rotadaEnSentidoAntihorario(alrededorDe: centro)
+            }
+        }
     }
 
     func testReflexiones() {

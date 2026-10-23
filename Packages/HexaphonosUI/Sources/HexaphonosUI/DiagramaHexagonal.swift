@@ -7,6 +7,7 @@ import Hexagonos
 ///     DiagramaHexagonal(FormasDeMapa.hexagono(radio: 3), seleccionada: elegida) { elegida = $0 }
 ///     DiagramaHexagonal(mapa, orientacion: .plana,
 ///                       relleno: { terreno[$0]?.color }, rotulo: { "\($0.q),\($0.r)" })
+///     DiagramaHexagonal(terreno, relleno: { $0.color })   // un MapaHexagonal<Terreno>
 ///
 /// Los hexágonos se encajan lo más grandes posible en el espacio que se le dé, con la proporción del
 /// mapa. Un toque fuera del mapa (en el margen o entre casillas que faltan) no avisa.
@@ -34,6 +35,16 @@ public struct DiagramaHexagonal: View {
         self.relleno = relleno
         self.rotulo = rotulo
         self.alTocar = alTocar
+    }
+
+    /// Las casillas de un mapa, con el relleno y el rótulo que da el valor de cada una.
+    public init<Valor>(_ mapa: MapaHexagonal<Valor>, orientacion: Orientacion = .puntiaguda,
+                       seleccionada: CoordenadaAxial? = nil,
+                       relleno: @escaping (Valor) -> Color? = { _ in nil },
+                       rotulo: @escaping (Valor) -> String? = { _ in nil },
+                       alTocar: ((CoordenadaAxial) -> Void)? = nil) {
+        self.init(Array(mapa.casillas), orientacion: orientacion, seleccionada: seleccionada,
+                  relleno: { mapa[$0].flatMap(relleno) }, rotulo: { mapa[$0].flatMap(rotulo) }, alTocar: alTocar)
     }
 
     /// El margen alrededor del mapa, para que no se corte el trazo de los bordes.
