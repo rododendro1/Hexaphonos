@@ -92,6 +92,82 @@ public enum LineaDeComandos {
     usa la notación inglesa.
     """
 
+    /// La ayuda en inglés (`armonia help --ingles`).
+    public static let help = """
+    armonia: music theory from the command line.
+
+    Usage: armonia <command> <arguments> [--ingles]
+
+    Commands:
+      chord <symbol>…              notes, type and role of each note     armonia chord G7/B
+      identify <notes>             chords formed by some notes           armonia identify C E G Bb
+      interval <note> <note>       interval between two notes or pitches armonia interval C4 E5
+      scale <scale>                notes and chords of a scale           armonia scale D dorian
+      key <key>                    key signature, relatives and degrees  armonia key A minor
+      analyze <chords> [--in <key>]
+                                   roman numerals and functions          armonia analyze C Am D7 G7 C
+      voices <chords>              voice leading; chords from low to
+                                   high, separated by commas             armonia voices C3 E4 G4 C5, G2 D4 G4 B4
+      musicxml melody <events> [options]
+                                   MusicXML score of a melody            armonia musicxml melody C4:4 D4:8 E4:8 F4:2 --compas 3/4 > melody.musicxml
+      musicxml chorale <chords> [options]
+                                   four-part chorale in MusicXML         armonia musicxml chorale C3 E4 G4 C5, G2 D4 G4 B4 > chorale.musicxml
+      musicxml chords <symbols> [options]
+                                   progression with symbols and analysis armonia musicxml chords C Am D7 G7 C > progression.musicxml
+                                   options: --compas 6/8 (time signature), --anacrusa 8 (pickup),
+                                   --tonalidad G major (key), --clave fa (clef), --tempo 90 (or
+                                   --tempo 60 4.), --titulo My chorale (title), --duracion 2 (how
+                                   long each chord lasts; a quarter note in the chorale and a half
+                                   note in the chords by default), --cifrados and --analisis (in
+                                   the chorale: chord symbols above, roman numerals and function below)
+      midi melody|chorale|chords <…> [options]
+                                   the same as a MIDI file, to listen to
+                                   (without --clave or --cifrados; with
+                                   --instrumento 0…127, General MIDI)    armonia midi chords C Am D7 G7 C > progression.mid
+      tonnetz <notes>              SVG Tonnetz of some notes             armonia tonnetz C E G B > tonnetz.svg
+      tonnetz --chord <symbol> | --scale <scale> | --pcs <numbers>
+                                   of a chord, a scale or a
+                                   pitch-class set                       armonia tonnetz --scale D dorian > dorian.svg
+      tonnetz --path <triads> | --shortest <triad> <triad>
+                                   a path of triads, with arrows, or
+                                   the shortest path through P, L and R  armonia tonnetz --path C Am F Dm > path.svg
+      tonnetz --cycle <cycle> <triad>
+                                   a hexatonic, octatonic or LR cycle    armonia tonnetz --cycle hexatonic C > cycle.svg
+                                   (--margen 2: more grid around it)
+      tabla <notes or pitches>     SVG harmonic table (hexagons)         armonia tabla C3 G3 E4 > table.svg
+      tabla --chord <symbol> | --scale <scale> | --pcs <numbers>
+      tabla --path <triads> | --shortest <triad> <triad>
+      tabla --cycle <cycle> <triad>
+                                   (--margen 2: more table around it)    armonia tabla --chord Cmaj7 > cmaj7.svg
+      neighbors <chord> [--voices 2]
+                                   chords a semitone away (sevenths: dominant, minor, half-diminished
+                                   and diminished; triads: major, minor and augmented; a maj7, among
+                                   the sevenths and the maj7s; --extended: with the maj7s too)
+                                                                         armonia neighbors G7
+      path <chord> <chord> [--voices 2] [--extended]
+                                   the shortest path moving voices       armonia path G7 Dm7
+      voice-leading <chord> <chord>
+                                   the voice leading with fewest semitones
+                                                                         armonia voice-leading G7 C
+      plr <triad> <P, L, R…>       neo-Riemannian transformations        armonia plr C PLR
+      plr <triad> <triad>          the shortest path through P, L and R  armonia plr C Ebm
+      plr <triad> <cycle>          a cycle: hexatonic (P, L),
+                                   octatonic (P, R) or "LR cycle"        armonia plr C hexatonic
+      fingerings <symbol>… [options]
+                                   ways to play a chord, from the most comfortable to the least, on a
+                                   fretted string instrument (strings from low to high)
+                                   options: --instrument guitar|bass|ukulele|mandolin|…
+                                   (also "seven-string guitar", "five-string bass",
+                                   "drop D"), --limit 5, --fret 12 (the highest one used),
+                                   --fingers 4 (how many can be used), --complete (with every note:
+                                   by default the fifth may be left out), --tab (with a tablature)
+                                                                         armonia fingerings G7/B --instrument ukulele
+      help                         this help
+
+    Note names are accepted in Spanish or English (Do, C, Sib, Bb). With --ingles, the answer
+    uses English notation, and so do messages and this help.
+    """
+
     /// Ejecuta una orden con sus argumentos (sin el nombre del programa).
     public static func ejecutar(_ argumentos: [String]) -> ResultadoDeOrden {
         var argumentos = argumentos
@@ -99,31 +175,31 @@ public enum LineaDeComandos {
         argumentos.removeAll { $0 == "--ingles" || $0 == "--english" }
         let notacion: Nomenclatura = ingles ? .ingles : .espanol
 
-        guard let orden = argumentos.first?.lowercased() else { return bien(ayuda) }
+        guard let orden = argumentos.first?.lowercased() else { return bien(ayuda(en: notacion)) }
         let resto = Array(argumentos.dropFirst())
         do {
             switch orden {
             case "ayuda", "help", "-h", "--help", "--ayuda":
-                return bien(ayuda)
+                return bien(ayuda(en: notacion))
             case "acorde", "chord":
-                guard !resto.isEmpty else { return uso("falta el cifrado: armonia acorde Sol7") }
+                guard !resto.isEmpty else { return uso(.faltaCifrado, notacion) }
                 return bien(try resto.map { try describir(acorde: Acorde(leyendo: $0), notacion) }.joined(separator: "\n\n"))
             case "identificar", "identify":
-                guard !resto.isEmpty else { return uso("faltan las notas: armonia identificar Do Mi Sol") }
+                guard !resto.isEmpty else { return uso(.faltanNotas, notacion) }
                 return bien(try identificar(resto, notacion))
             case "intervalo", "interval":
-                guard resto.count == 2 else { return uso("hacen falta dos notas: armonia intervalo Do Mi") }
+                guard resto.count == 2 else { return uso(.dosNotas, notacion) }
                 return bien(try intervalo(resto[0], resto[1], notacion))
             case "escala", "scale":
-                guard !resto.isEmpty else { return uso("falta la escala: armonia escala Re dórico") }
+                guard !resto.isEmpty else { return uso(.faltaEscala, notacion) }
                 return bien(describir(escala: try Escala(leyendo: resto.joined(separator: " ")), notacion))
             case "tonalidad", "key":
-                guard !resto.isEmpty else { return uso("falta la tonalidad: armonia tonalidad La menor") }
+                guard !resto.isEmpty else { return uso(.faltaTonalidad, notacion) }
                 return bien(describir(tonalidad: try Tonalidad(leyendo: resto.joined(separator: " ")), notacion))
             case "analizar", "analyze", "analyse":
                 return try analizar(resto, notacion)
             case "voces", "voices":
-                guard !resto.isEmpty else { return uso("faltan los acordes: armonia voces Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4") }
+                guard !resto.isEmpty else { return uso(.faltanAcordesDeLasVoces, notacion) }
                 return bien(describir(conduccion: try ConduccionDeVoces(leyendo: resto.joined(separator: " ")), notacion))
             case "tonnetz":
                 return try tonnetz(resto, notacion)
@@ -134,7 +210,7 @@ public enum LineaDeComandos {
             case "camino", "path":
                 return try caminoParsimonioso(resto, notacion)
             case "conduccion", "conducción", "voice-leading":
-                guard resto.count == 2 else { return uso("hacen falta dos acordes: armonia conduccion Sol7 Do") }
+                guard resto.count == 2 else { return uso(.dosAcordesDeConduccion, notacion) }
                 let conduccion = try Acorde(leyendo: resto[0]).conduccionMinima(hasta: try Acorde(leyendo: resto[1]))
                 return bien(conduccion.texto(notacion))
             case "digitaciones", "digitacion", "digitación", "fingerings":
@@ -146,7 +222,7 @@ public enum LineaDeComandos {
             case "midi":
                 return try partitura(resto, notacion, formato: .midi)
             default:
-                return uso("orden desconocida: «\(orden)»")
+                return uso(.ordenDesconocida(orden), notacion)
             }
         } catch let error as ErrorDeLectura {
             return ResultadoDeOrden(salida: "", error: error.descripcion(en: notacion) + "\n", codigo: 1)
@@ -165,7 +241,12 @@ public enum LineaDeComandos {
         ResultadoDeOrden(salida: texto + "\n", error: "", codigo: 0)
     }
 
-    static func uso(_ mensaje: String) -> ResultadoDeOrden {
-        ResultadoDeOrden(salida: "", error: "armonia: \(mensaje)\nPrueba «armonia ayuda».\n", codigo: 2)
+    static func uso(_ error: ErrorDeUso, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+        ResultadoDeOrden(salida: "", error: error.texto(en: notacion), codigo: 2)
+    }
+
+    /// La ayuda en el idioma de la notación.
+    public static func ayuda(en notacion: Nomenclatura) -> String {
+        elegir((ayuda, help), notacion)
     }
 }

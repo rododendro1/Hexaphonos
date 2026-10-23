@@ -70,7 +70,7 @@ public struct Encordado: Hashable, Sendable {
 
 extension Encordado {
     /// Busca un instrumento por su nombre, sin distinguir mayúsculas ni tildes: «guitarra», «bajo de cinco
-    /// cuerdas», «ukulele», «drop D»… (también «bass», «mandolin»). `nil` si no se conoce.
+    /// cuerdas», «ukulele», «drop D»… (también en inglés: «bass», «seven-string guitar», «mandolin»). `nil` si no se conoce.
     public init?(nombre texto: String) {
         let clave = texto.claveDeBusqueda
         guard let encontrado = Encordado.alias[clave]
@@ -80,7 +80,8 @@ extension Encordado {
 
     /// Otras formas de nombrar los instrumentos de `todos` (los nombres de `todos` ya se aceptan).
     private static let alias: [String: Encordado] = [
-        "guitar": .guitarra,
+        "guitar": .guitarra, "seven string guitar": .guitarraDeSieteCuerdas, "drop d guitar": .guitarraEnReGrave,
+        "five string bass": .bajoDeCincoCuerdas,
         "guitarra 7": .guitarraDeSieteCuerdas, "guitarra7": .guitarraDeSieteCuerdas,
         "guitarra de 7 cuerdas": .guitarraDeSieteCuerdas, "guitarra de siete": .guitarraDeSieteCuerdas,
         "guitarra en re": .guitarraEnReGrave, "re grave": .guitarraEnReGrave, "drop d": .guitarraEnReGrave,

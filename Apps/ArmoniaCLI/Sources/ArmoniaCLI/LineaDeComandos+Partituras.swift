@@ -10,8 +10,7 @@ extension LineaDeComandos {
     /// y el instrumento (solo MIDI).
     static func partitura(_ argumentos: [String], _ notacion: Nomenclatura, formato: Formato) throws -> ResultadoDeOrden {
         let orden = formato == .midi ? "midi" : "musicxml"
-        let ejemplo = "armonia \(orden) melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4"
-        guard let tipo = argumentos.first?.lowercased() else { return uso("falta «melodia», «coral» o «acordes»: \(ejemplo)") }
+        guard let tipo = argumentos.first?.lowercased() else { return uso(.faltaTipoDePartitura(orden: orden), notacion) }
         // Los argumentos hasta la primera opción son la música; cada opción toma lo que la sigue.
         var musica: [String] = []
         var opciones: [String: String] = [:]
@@ -38,18 +37,18 @@ extension LineaDeComandos {
             ? ["compas", "anacrusa", "tonalidad", "tempo", "titulo", "duracion", "instrumento"]
             : ["compas", "anacrusa", "tonalidad", "clave", "tempo", "titulo", "duracion"]
         if let desconocida = opciones.keys.sorted().first(where: { !conocidas.contains($0) }) {
-            return uso("opción desconocida: --\(desconocida)")
+            return uso(.opcionDesconocida("--" + desconocida), notacion)
         }
         var instrumento: Int?
         if let texto = opciones["instrumento"] {
             guard let n = Int(texto), (0...127).contains(n) else {
-                return uso("el instrumento es un programa General MIDI de 0 a 127: --instrumento 52")
+                return uso(.instrumentoMIDI, notacion)
             }
             instrumento = n
         }
-        if formato == .midi && !marcas.isEmpty { return uso("--cifrados y --analisis son para MusicXML") }
+        if formato == .midi && !marcas.isEmpty { return uso(.marcasSoloMusicXML, notacion) }
         if let vacia = opciones.keys.sorted().first(where: { opciones[$0]!.isEmpty }) {
-            return uso("falta el valor de --\(vacia)")
+            return uso(.faltaValor(vacia), notacion)
         }
         let compas = try opciones["compas"].map { try Compas(leyendo: $0) } ?? .compasillo
         let tonalidad = try opciones["tonalidad"].map { try Tonalidad(leyendo: $0) }
@@ -57,7 +56,7 @@ extension LineaDeComandos {
         if let texto = opciones["tempo"] {
             let partes = texto.split(separator: " ").map(String.init)
             guard let bpm = Double(partes[0].replacingComa()), bpm > 0, partes.count <= 2 else {
-                return uso("el tempo se escribe «--tempo 90» o «--tempo 60 4.»")
+                return uso(.tempoMalEscrito, notacion)
             }
             tempo = Tempo(bpm, unidad: try partes.dropFirst().first.map { try Duracion(leyendo: $0) } ?? .negra)
         }
@@ -65,13 +64,13 @@ extension LineaDeComandos {
 
         switch tipo {
         case "melodia", "melodía", "melody":
-            guard !musica.isEmpty else { return uso("faltan las notas: \(ejemplo)") }
-            if !marcas.isEmpty { return uso("--cifrados y --analisis son para «coral»") }
-            if opciones["duracion"] != nil { return uso("--duracion es solo para «coral»") }
+            guard !musica.isEmpty else { return uso(.faltanNotasDeLaMelodia(orden: orden), notacion) }
+            if !marcas.isEmpty { return uso(.marcasSoloCoral, notacion) }
+            if opciones["duracion"] != nil { return uso(.duracionSoloCoral, notacion) }
             var clave: Clave?
             if let texto = opciones["clave"] {
                 guard let leida = leerClave(texto) else {
-                    return uso("clave desconocida: «\(texto)» (sol, fa, do1, do2, do3, do4, sol8b, sol8a, fa3)")
+                    return uso(.claveDesconocida(texto), notacion)
                 }
                 clave = leida
             }
@@ -84,10 +83,10 @@ extension LineaDeComandos {
                 .trimmingCharacters(in: "\n"))
         case "coral", "chorale":
             guard !musica.isEmpty else {
-                return uso("faltan los acordes: armonia \(orden) coral Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4")
+                return uso(.faltanAcordesDelCoral(orden: orden), notacion)
             }
             for opcion in ["clave", "anacrusa"] where opciones[opcion] != nil {
-                return uso("--\(opcion) es solo para «melodia»")
+                return uso(.soloParaMelodia(opcion), notacion)
             }
             let duracion = try opciones["duracion"].map { try Duracion(leyendo: $0) } ?? .negra
             let coral = try ConduccionDeVoces(leyendo: musica.joined(separator: " "))
@@ -100,11 +99,11 @@ extension LineaDeComandos {
                                        analisis: marcas.contains("analisis"), notacion: notacion)
                 .trimmingCharacters(in: "\n"))
         case "acordes", "progresion", "progresión", "chords":
-            guard !musica.isEmpty else { return uso("faltan los acordes: armonia \(orden) acordes Do Lam Re7 Sol7 Do") }
+            guard !musica.isEmpty else { return uso(.faltanAcordesDeLaProgresion(orden: orden), notacion) }
             for opcion in ["clave", "anacrusa"] where opciones[opcion] != nil {
-                return uso("--\(opcion) es solo para «melodia»")
+                return uso(.soloParaMelodia(opcion), notacion)
             }
-            if !marcas.isEmpty { return uso("los acordes llevan siempre cifrados y análisis") }
+            if !marcas.isEmpty { return uso(.acordesConCifradosYAnalisis, notacion) }
             let duracion = try opciones["duracion"].map { try Duracion(leyendo: $0) } ?? .blanca
             let analisis = try AnalisisArmonico.analizar(leyendo: musica.joined(separator: " "), en: tonalidad)
             if formato == .midi {
@@ -114,7 +113,7 @@ extension LineaDeComandos {
             return bien(analisis.musicXML(duracion: duracion, compas: compas, tempo: tempo, titulo: titulo,
                                           notacion: notacion).trimmingCharacters(in: "\n"))
         default:
-            return uso("«\(tipo)»: se exporta una «melodia», un «coral» o unos «acordes»")
+            return uso(.tipoDePartituraDesconocido(tipo), notacion)
         }
     }
 

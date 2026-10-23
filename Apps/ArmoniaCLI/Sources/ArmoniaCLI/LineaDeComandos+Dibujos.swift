@@ -23,69 +23,69 @@ extension LineaDeComandos {
 
     /// Lee los argumentos comunes de `tonnetz` y `tabla`: `--margen N` y lo que se dibuja
     /// (notas, `--acorde`, `--escala`, `--clases`, `--recorrido`, `--camino` o `--ciclo`).
-    static func leerDibujo(_ argumentos: [String], orden: String) throws -> Lectura {
+    static func leerDibujo(_ argumentos: [String], orden: String, _ notacion: Nomenclatura) throws -> Lectura {
         var argumentos = argumentos
         var margen: Int?
         if let i = argumentos.firstIndex(of: "--margen") {
             guard i + 1 < argumentos.count, let n = Int(argumentos[i + 1]), (0...6).contains(n) else {
-                return .error(uso("el margen es un número de 0 a 6: --margen 2"))
+                return .error(uso(.margenFueraDeRango, notacion))
             }
             margen = n
             argumentos.removeSubrange(i...(i + 1))
         }
-        guard let primero = argumentos.first else { return .error(uso("faltan las notas: armonia \(orden) Do Mi Sol")) }
+        guard let primero = argumentos.first else { return .error(uso(.faltanNotasDelDibujo(orden: orden), notacion)) }
         let resto = argumentos.dropFirst().joined(separator: " ")
         let dibujo: Dibujo
         switch primero {
         case "--acorde", "--chord":
-            guard !resto.isEmpty else { return .error(uso("falta el acorde: armonia \(orden) --acorde Sol7")) }
+            guard !resto.isEmpty else { return .error(uso(.faltaAcordeDelDibujo(orden: orden), notacion)) }
             dibujo = .acorde(try Acorde(leyendo: resto))
         case "--escala", "--scale":
-            guard !resto.isEmpty else { return .error(uso("falta la escala: armonia \(orden) --escala Re dórico")) }
+            guard !resto.isEmpty else { return .error(uso(.faltaEscalaDelDibujo(orden: orden), notacion)) }
             dibujo = .escala(try Escala(leyendo: resto))
         case "--clases", "--conjunto", "--pcs":
             let numeros = resto.split(whereSeparator: { $0 == " " || $0 == "," }).map { Int($0) }
             guard !numeros.isEmpty, numeros.allSatisfy({ $0.map { (0...11).contains($0) } ?? false }) else {
-                return .error(uso("las clases de altura son números de 0 a 11: armonia \(orden) --clases 0 4 7"))
+                return .error(uso(.clasesFueraDeRango(orden: orden), notacion))
             }
             dibujo = .clases(ConjuntoDeClases(numeros.map { $0! }))
         case "--recorrido", "--progresion", "--path":
             let acordes = try argumentos.dropFirst().map { try Acorde(leyendo: $0) }
-            guard !acordes.isEmpty else { return .error(uso("faltan las tríadas: armonia \(orden) --recorrido Do Lam Fa Rem")) }
+            guard !acordes.isEmpty else { return .error(uso(.faltanTriadasDelRecorrido(orden: orden), notacion)) }
             dibujo = .recorrido(acordes)
         case "--camino", "--shortest":
             let acordes = try argumentos.dropFirst().map { try Acorde(leyendo: $0) }
-            guard acordes.count == 2 else { return .error(errorDeCamino(orden)) }
+            guard acordes.count == 2 else { return .error(errorDeCamino(orden, notacion)) }
             dibujo = .camino(acordes[0], acordes[1])
         case "--ciclo", "--cycle":
             let partes = Array(argumentos.dropFirst())
             guard partes.count >= 2, let ciclo = CicloNeorriemanniano(leyendo: partes.dropLast().joined(separator: " ")) else {
-                return .error(uso("el ciclo es hexatónico, octatónico o LR, desde una tríada: armonia \(orden) --ciclo hexatonico Do"))
+                return .error(uso(.cicloMalEscrito(orden: orden), notacion))
             }
             dibujo = .ciclo(ciclo, try Acorde(leyendo: partes.last!))
         default:
-            if primero.hasPrefix("--") { return .error(uso("opción desconocida: \(primero)")) }
+            if primero.hasPrefix("--") { return .error(uso(.opcionDesconocida(primero), notacion)) }
             dibujo = .notas(argumentos)
         }
         return .dibujo(dibujo, margen: margen)
     }
 
-    static func errorDeRecorrido(_ orden: String) -> ResultadoDeOrden {
-        uso("el recorrido es de tríadas mayores y menores: armonia \(orden) --recorrido Do Lam Fa Rem")
+    static func errorDeRecorrido(_ orden: String, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+        uso(.recorridoSoloTriadas(orden: orden), notacion)
     }
 
-    static func errorDeCamino(_ orden: String) -> ResultadoDeOrden {
-        uso("el camino va de una tríada mayor o menor a otra: armonia \(orden) --camino Do Mibm")
+    static func errorDeCamino(_ orden: String, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+        uso(.caminoSoloTriadas(orden: orden), notacion)
     }
 
-    static func errorDeCiclo(_ orden: String) -> ResultadoDeOrden {
-        uso("el ciclo empieza en una tríada mayor o menor: armonia \(orden) --ciclo hexatonico Do")
+    static func errorDeCiclo(_ orden: String, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+        uso(.cicloSoloTriadas(orden: orden), notacion)
     }
 
     /// `tonnetz Do Mi Sol`, `tonnetz --acorde Domaj7`, `tonnetz --ciclo hexatonico Do`…
     static func tonnetz(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
         let (dibujo, margen): (Dibujo, Int?)
-        switch try leerDibujo(argumentos, orden: "tonnetz") {
+        switch try leerDibujo(argumentos, orden: "tonnetz", notacion) {
         case .error(let error): return error
         case .dibujo(let leido, let n): (dibujo, margen) = (leido, n)
         }
@@ -96,13 +96,13 @@ extension LineaDeComandos {
         case .escala(let escala): tonnetz = Tonnetz(escala)
         case .clases(let conjunto): tonnetz = Tonnetz(conjunto)
         case .recorrido(let acordes):
-            guard let recorrido = Tonnetz(recorrido: acordes) else { return errorDeRecorrido("tonnetz") }
+            guard let recorrido = Tonnetz(recorrido: acordes) else { return errorDeRecorrido("tonnetz", notacion) }
             tonnetz = recorrido
         case .camino(let origen, let destino):
-            guard let camino = Tonnetz(caminoDesde: origen, hasta: destino) else { return errorDeCamino("tonnetz") }
+            guard let camino = Tonnetz(caminoDesde: origen, hasta: destino) else { return errorDeCamino("tonnetz", notacion) }
             tonnetz = camino
         case .ciclo(let ciclo, let acorde):
-            guard let dibujo = Tonnetz(ciclo: ciclo, desde: acorde) else { return errorDeCiclo("tonnetz") }
+            guard let dibujo = Tonnetz(ciclo: ciclo, desde: acorde) else { return errorDeCiclo("tonnetz", notacion) }
             tonnetz = dibujo
         }
         return bien(tonnetz.svg(notacion: notacion, margen: margen).trimmingCharacters(in: "\n"))
@@ -112,7 +112,7 @@ extension LineaDeComandos {
     /// `tabla --ciclo octatonico Do`…
     static func tablaArmonica(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
         let (dibujo, margen): (Dibujo, Int?)
-        switch try leerDibujo(argumentos, orden: "tabla") {
+        switch try leerDibujo(argumentos, orden: "tabla", notacion) {
         case .error(let error): return error
         case .dibujo(let leido, let n): (dibujo, margen) = (leido, n)
         }
@@ -129,13 +129,13 @@ extension LineaDeComandos {
         case .escala(let escala): tabla = TablaArmonica(escala)
         case .clases(let conjunto): tabla = TablaArmonica(conjunto)
         case .recorrido(let acordes):
-            guard let recorrido = TablaArmonica(recorrido: acordes) else { return errorDeRecorrido("tabla") }
+            guard let recorrido = TablaArmonica(recorrido: acordes) else { return errorDeRecorrido("tabla", notacion) }
             tabla = recorrido
         case .camino(let origen, let destino):
-            guard let camino = TablaArmonica(caminoDesde: origen, hasta: destino) else { return errorDeCamino("tabla") }
+            guard let camino = TablaArmonica(caminoDesde: origen, hasta: destino) else { return errorDeCamino("tabla", notacion) }
             tabla = camino
         case .ciclo(let ciclo, let acorde):
-            guard let dibujo = TablaArmonica(ciclo: ciclo, desde: acorde) else { return errorDeCiclo("tabla") }
+            guard let dibujo = TablaArmonica(ciclo: ciclo, desde: acorde) else { return errorDeCiclo("tabla", notacion) }
             tabla = dibujo
         }
         return bien(tabla.svg(notacion: notacion, margen: margen).trimmingCharacters(in: "\n"))
