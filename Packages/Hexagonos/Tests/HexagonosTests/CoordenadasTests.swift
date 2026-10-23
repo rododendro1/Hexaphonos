@@ -35,7 +35,7 @@ final class CoordenadaAxialTests: XCTestCase {
         XCTAssertEqual(a.vecinos.count, 6)
         XCTAssertEqual(Set(a.vecinos).count, 6)
         for (i, vecina) in a.vecinos.enumerated() {
-            XCTAssertEqual(a.distancia(a: vecina), 1)
+            XCTAssertEqual(a.distancia(hasta: vecina), 1)
             XCTAssertTrue(a.esVecina(de: vecina))
             XCTAssertEqual(a.direccion(hacia: vecina)?.numero, i)
         }
@@ -57,15 +57,15 @@ final class CoordenadaAxialTests: XCTestCase {
             // Cada diagonal queda entre dos direcciones seguidas, a distancia 2.
             XCTAssertEqual(CoordenadaAxial.diagonales[i],
                            CoordenadaAxial.direcciones[i] + CoordenadaAxial.direcciones[(i + 1) % 6])
-            XCTAssertEqual(a.distancia(a: a.vecinoDiagonal(i)), 2)
+            XCTAssertEqual(a.distancia(hasta: a.vecinoDiagonal(i)), 2)
         }
         XCTAssertEqual(Set(a.vecinosDiagonales).count, 6)
     }
 
     func testDistancia() {
-        XCTAssertEqual(CoordenadaAxial(q: 3, r: -7).distancia(a: .origen), 7)
+        XCTAssertEqual(CoordenadaAxial(q: 3, r: -7).distancia(hasta: .origen), 7)
         XCTAssertEqual(CoordenadaAxial(q: 3, r: -7).longitud, 7)
-        XCTAssertEqual(CoordenadaAxial(q: -2, r: 5).distancia(a: CoordenadaAxial(q: 1, r: 1)), 4)
+        XCTAssertEqual(CoordenadaAxial(q: -2, r: 5).distancia(hasta: CoordenadaAxial(q: 1, r: 1)), 4)
         XCTAssertEqual(CoordenadaAxial.origen.longitud, 0)
     }
 }
@@ -91,8 +91,8 @@ final class CoordenadaCubicaTests: XCTestCase {
         XCTAssertEqual(a + b, CoordenadaCubica(q: 4, r: -10, s: 6))
         XCTAssertEqual(a - b, CoordenadaCubica(q: -2, r: 4, s: -2))
         XCTAssertEqual(a * 3, CoordenadaCubica(q: 3, r: -9, s: 6))
-        XCTAssertEqual(b.distancia(a: .origen), 7)
-        XCTAssertEqual(a.distancia(a: b), a.axial.distancia(a: b.axial))
+        XCTAssertEqual(b.distancia(hasta: .origen), 7)
+        XCTAssertEqual(a.distancia(hasta: b), a.axial.distancia(hasta: b.axial))
         XCTAssertEqual(a.vecinos.map(\.axial), a.axial.vecinos)
     }
 
@@ -180,7 +180,7 @@ final class CoordenadaDesplazadaTests: XCTestCase {
             let vecinas = d.vecinos(desplazamiento)
             XCTAssertEqual(Set(vecinas).count, 6)
             for vecina in vecinas {
-                XCTAssertEqual(d.distancia(a: vecina, desplazamiento), 1)
+                XCTAssertEqual(d.distancia(hasta: vecina, desplazamiento), 1)
             }
         }
         // En una fila impar con filas impares desplazadas, la vecina de arriba a la derecha está en la columna siguiente.
@@ -218,8 +218,8 @@ final class CoordenadaDobladaTests: XCTestCase {
             }
             let centro = CoordenadaAxial(q: 1, r: -2)
             for casilla in region {
-                XCTAssertEqual(casilla.doblada(doblado).distancia(a: centro.doblada(doblado), doblado),
-                               casilla.distancia(a: centro), "\(doblado) \(casilla)")
+                XCTAssertEqual(casilla.doblada(doblado).distancia(hasta: centro.doblada(doblado), doblado),
+                               casilla.distancia(hasta: centro), "\(doblado) \(casilla)")
             }
         }
     }

@@ -61,18 +61,21 @@ public enum DireccionHexagonal: Int, CaseIterable, Hashable, Sendable, Codable {
     public var paso: CoordenadaAxial { CoordenadaAxial.direcciones[rawValue] }
 
     /// La dirección contraria.
-    public var opuesta: DireccionHexagonal { girada(sextos: 3) }
+    public var opuesta: DireccionHexagonal { rotada(sextos: 3) }
 
     /// La siguiente en sentido antihorario.
-    public var siguiente: DireccionHexagonal { girada(sextos: 1) }
+    public var siguiente: DireccionHexagonal { rotada(sextos: 1) }
 
     /// La anterior (la siguiente en sentido horario).
-    public var anterior: DireccionHexagonal { girada(sextos: -1) }
+    public var anterior: DireccionHexagonal { rotada(sextos: -1) }
 
     /// La dirección girada `sextos` veces 60°: los positivos, en sentido antihorario.
-    public func girada(sextos: Int) -> DireccionHexagonal {
+    public func rotada(sextos: Int) -> DireccionHexagonal {
         DireccionHexagonal(numero: rawValue + sextos)
     }
+
+    @available(*, deprecated, renamed: "rotada(sextos:)")
+    public func girada(sextos: Int) -> DireccionHexagonal { rotada(sextos: sextos) }
 
     /// Hacia dónde apunta en pantalla con esa orientación.
     public func puntoCardinal(_ orientacion: Orientacion) -> PuntoCardinal {

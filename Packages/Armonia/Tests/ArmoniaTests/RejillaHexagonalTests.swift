@@ -39,9 +39,9 @@ final class RejillaHexagonalTests: XCTestCase {
         }
     }
 
-    func testLaDisposicionDelTonnetzEsLaDelDibujo() {
+    func testElTrazadoDelTonnetzEsElDelDibujo() {
         for paso in [64.0, 88, 50] {
-            let d = Tonnetz.disposicion(paso: paso)
+            let d = Tonnetz.trazado(paso: paso)
             for casilla in region {
                 let p = PuntoDelTonnetz(casilla)
                 let centro = d.centro(de: p.coordenada)
@@ -54,7 +54,7 @@ final class RejillaHexagonalTests: XCTestCase {
             }
         }
         // La quinta, a la derecha; la tercera mayor, arriba a la derecha (y hacia abajo en SVG).
-        let d = Tonnetz.disposicion(paso: 64)
+        let d = Tonnetz.trazado(paso: 64)
         XCTAssertGreaterThan(d.centro(de: punto(1, 0).coordenada).x, 0)
         XCTAssertLessThan(d.centro(de: punto(0, 1).coordenada).y, 0)
     }
@@ -72,9 +72,9 @@ final class RejillaHexagonalTests: XCTestCase {
         }
     }
 
-    func testLaDisposicionDeLaTablaEsLaDelDibujo() {
+    func testElTrazadoDeLaTablaEsElDelDibujo() {
         for paso in [56.0, 72] {
-            let d = TablaArmonica.disposicion(paso: paso)
+            let d = TablaArmonica.trazado(paso: paso)
             XCTAssertEqual(d.orientacion, .plana)
             XCTAssertEqual(d.tamano.x, paso / (2 * 0.8660254037844386), accuracy: 1e-9)
             for casilla in region {

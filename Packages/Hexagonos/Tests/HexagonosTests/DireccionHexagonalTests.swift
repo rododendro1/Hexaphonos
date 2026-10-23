@@ -26,7 +26,7 @@ final class DireccionHexagonalTests: XCTestCase {
             XCTAssertEqual(d.opuesta.opuesta, d)
             XCTAssertEqual(d.paso + d.opuesta.paso, .origen)
             XCTAssertEqual(d.siguiente.anterior, d)
-            XCTAssertEqual(d.girada(sextos: 6), d)
+            XCTAssertEqual(d.rotada(sextos: 6), d)
             // Girar la dirección es girar su paso.
             XCTAssertEqual(d.siguiente.paso, d.paso.rotadaEnSentidoAntihorario())
             XCTAssertEqual(d.anterior.paso, d.paso.rotadaEnSentidoHorario())
@@ -53,11 +53,11 @@ final class DireccionHexagonalTests: XCTestCase {
     func testElAnguloCoincideConElDibujo() {
         // Con el eje y hacia abajo, el ángulo antihorario desde el este es atan2(−dy, dx).
         for orientacion in Orientacion.allCases {
-            let disposicion = Disposicion(orientacion: orientacion, tamano: 10)
+            let trazado = Trazado(orientacion: orientacion, tamano: 10)
             XCTAssertEqual(DireccionHexagonal.allCases.map { $0.angulo(orientacion) },
                            orientacion == .puntiaguda ? [0, 60, 120, 180, 240, 300] : [330, 30, 90, 150, 210, 270])
             for d in DireccionHexagonal.allCases {
-                let centro = disposicion.centro(de: d.paso)
+                let centro = trazado.centro(de: d.paso)
                 var grados = atan2(-centro.y, centro.x) * 180 / .pi
                 if grados < -1e-9 { grados += 360 }
                 XCTAssertEqual(grados, d.angulo(orientacion), accuracy: 1e-9, "\(orientacion) \(d)")
@@ -70,7 +70,7 @@ final class DireccionHexagonalTests: XCTestCase {
         for d in DireccionHexagonal.allCases {
             XCTAssertEqual(a.vecino(d), a.vecino(d.numero))
             XCTAssertEqual(a.direccion(hacia: a.vecino(d)), d)
-            XCTAssertEqual(a.avanzando(3, hacia: d).distancia(a: a), 3)
+            XCTAssertEqual(a.avanzando(3, hacia: d).distancia(hasta: a), 3)
             XCTAssertEqual(a.avanzando(-2, hacia: d), a.avanzando(2, hacia: d.opuesta))
         }
         XCTAssertEqual(CoordenadaAxial.origen.vecino(DireccionHexagonal(.este, .puntiaguda)!), CoordenadaAxial(q: 1, r: 0))

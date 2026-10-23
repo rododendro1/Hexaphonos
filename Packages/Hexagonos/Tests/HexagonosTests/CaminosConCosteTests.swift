@@ -81,7 +81,7 @@ final class CaminosConCosteTests: XCTestCase {
                 // El coste es el de sus pasos, y cada paso va a una vecina.
                 XCTAssertEqual(camino.casillas.dropFirst().reduce(0) { $0 + terreno($1)! }, camino.coste)
                 for (a, b) in zip(camino.casillas, camino.casillas.dropFirst()) {
-                    XCTAssertEqual(a.distancia(a: b), 1)
+                    XCTAssertEqual(a.distancia(hasta: b), 1)
                 }
             }
         }

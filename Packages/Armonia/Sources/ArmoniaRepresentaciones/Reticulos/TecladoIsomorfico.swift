@@ -81,7 +81,7 @@ public struct TecladoIsomorfico: Hashable, Sendable {
     public func svg(_ casillas: [CoordenadaAxial], marcadas: Set<Int> = [], tamano: Double = 24,
                     notacion: Nomenclatura = .espanol, preferirBemoles: Bool = false) -> String {
         let negras: Set<Int> = [1, 3, 6, 8, 10]
-        return Disposicion(orientacion: orientacion, tamano: tamano).svg(casillas, relleno: { casilla in
+        return Trazado(orientacion: orientacion, tamano: tamano).svg(casillas, relleno: { casilla in
             let midi = self.midi(en: casilla)
             if marcadas.contains(midi) { return DibujoSVG.Color.nota }
             return negras.contains(modulo(midi, 12)) ? "#bbbbbb" : "#f4f4f4"

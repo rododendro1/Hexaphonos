@@ -100,12 +100,12 @@ final class DigitacionTests: XCTestCase {
 
     func testDoMayorAbierto() throws {
         let formas = guitarra.digitaciones(de: try Acorde(leyendo: "Do"), limite: 100)
-        XCTAssertTrue(formas.map(\.cifra).contains("x32010"), formas.map(\.cifra).joined(separator: " "))
+        XCTAssertTrue(formas.map(\.tablatura).contains("x32010"), formas.map(\.tablatura).joined(separator: " "))
     }
 
     func testMiMenorAbierto() throws {
         let formas = guitarra.digitaciones(de: try Acorde(leyendo: "Mim"), limite: 100)
-        XCTAssertTrue(formas.map(\.cifra).contains("022000"))
+        XCTAssertTrue(formas.map(\.tablatura).contains("022000"))
     }
 
     func testElBajoEsLaNotaMasGrave() throws {
@@ -115,7 +115,7 @@ final class DigitacionTests: XCTestCase {
         XCTAssertFalse(formas.isEmpty)
         for forma in formas {
             let grave = try XCTUnwrap(forma.alturas.map(\.midi).min())
-            XCTAssertEqual(Mastil.clase(grave), Nota.mi.claseDeAltura, forma.cifra)
+            XCTAssertEqual(Mastil.clase(grave), Nota.mi.claseDeAltura, forma.tablatura)
         }
     }
 
@@ -124,9 +124,9 @@ final class DigitacionTests: XCTestCase {
         let clases = Set(acorde.notas.map(\.claseDeAltura))
         for forma in guitarra.digitaciones(de: acorde) {
             let tocadas = Set(forma.alturas.map { $0.nota.claseDeAltura })
-            XCTAssertEqual(tocadas, clases, forma.cifra)
-            XCTAssertLessThanOrEqual(forma.abertura, 4, forma.cifra)
-            XCTAssertGreaterThanOrEqual(forma.cuerdasQueSuenan, 4, forma.cifra)
+            XCTAssertEqual(tocadas, clases, forma.tablatura)
+            XCTAssertLessThanOrEqual(forma.abertura, 4, forma.tablatura)
+            XCTAssertGreaterThanOrEqual(forma.cuerdasQueSuenan, 4, forma.tablatura)
         }
     }
 
@@ -135,7 +135,7 @@ final class DigitacionTests: XCTestCase {
             let suenan = forma.trastes.map { $0 != nil }
             let primera = try XCTUnwrap(suenan.firstIndex(of: true))
             let ultima = try XCTUnwrap(suenan.lastIndex(of: true))
-            XCTAssertTrue(suenan[primera...ultima].allSatisfy { $0 }, forma.cifra)
+            XCTAssertTrue(suenan[primera...ultima].allSatisfy { $0 }, forma.tablatura)
         }
     }
 
@@ -145,7 +145,7 @@ final class DigitacionTests: XCTestCase {
 
     func testCifraConTrastesAltos() {
         let forma = Digitacion(mastil: guitarra, trastes: [nil, 10, 12, 12, 11, 10])
-        XCTAssertEqual(forma.cifra, "x-10-12-12-11-10")
+        XCTAssertEqual(forma.tablatura, "x-10-12-12-11-10")
         XCTAssertEqual(forma.abertura, 3)
         XCTAssertEqual(forma.posicion, 10)
     }
@@ -154,7 +154,7 @@ final class DigitacionTests: XCTestCase {
         // Do mayor en el ukelele soprano: 0003.
         let ukelele = Mastil(.ukelele, trastes: 12)
         let formas = ukelele.digitaciones(de: try Acorde(leyendo: "Do"), limite: 100)
-        XCTAssertTrue(formas.map(\.cifra).contains("0003"), formas.map(\.cifra).joined(separator: " "))
+        XCTAssertTrue(formas.map(\.tablatura).contains("0003"), formas.map(\.tablatura).joined(separator: " "))
     }
 }
 
@@ -169,9 +169,9 @@ extension DigitacionTests {
 
     func testLeyendoLaCifra() {
         let guitarra = Mastil(.guitarra)
-        XCTAssertEqual(Digitacion(leyendo: "x32010", en: guitarra)?.cifra, "x32010")
-        XCTAssertEqual(Digitacion(leyendo: "X32010", en: guitarra)?.cifra, "x32010")
-        XCTAssertEqual(Digitacion(leyendo: "x-10-12-12-11-10", en: guitarra)?.cifra, "x-10-12-12-11-10")
+        XCTAssertEqual(Digitacion(leyendo: "x32010", en: guitarra)?.tablatura, "x32010")
+        XCTAssertEqual(Digitacion(leyendo: "X32010", en: guitarra)?.tablatura, "x32010")
+        XCTAssertEqual(Digitacion(leyendo: "x-10-12-12-11-10", en: guitarra)?.tablatura, "x-10-12-12-11-10")
         XCTAssertNil(Digitacion(leyendo: "x3201", en: guitarra))                 // faltan cuerdas
         XCTAssertNil(Digitacion(leyendo: "x32a10", en: guitarra))                // «a» no es un traste
         XCTAssertNil(Digitacion(leyendo: "x-10--12-12-11-10", en: guitarra))     // hueco vacío
@@ -182,7 +182,7 @@ extension DigitacionTests {
         let guitarra = Mastil(.guitarra)
         for cifrado in ["Do", "Sol7/Si", "Rem7", "Fa"] {
             for forma in guitarra.digitaciones(de: try Acorde(leyendo: cifrado), limite: 20) {
-                XCTAssertEqual(Digitacion(leyendo: forma.cifra, en: guitarra), forma, forma.cifra)
+                XCTAssertEqual(Digitacion(leyendo: forma.tablatura, en: guitarra), forma, forma.tablatura)
             }
         }
     }
@@ -267,7 +267,7 @@ final class DedosYOrdenTests: XCTestCase {
             XCTAssertTrue(formas.allSatisfy { $0.dedos <= tope }, "tope \(tope)")
         }
         // Con menos dedos hay menos formas, y el Mi menor abierto cabe en uno.
-        let con1 = guitarra.digitaciones(de: acorde, maximoDeDedos: 1, limite: 200).map(\.cifra)
+        let con1 = guitarra.digitaciones(de: acorde, maximoDeDedos: 1, limite: 200).map(\.tablatura)
         XCTAssertTrue(con1.contains("022000"))
         XCTAssertLessThan(con1.count, guitarra.digitaciones(de: acorde, limite: 200).count)
         XCTAssertTrue(guitarra.digitaciones(de: acorde, maximoDeDedos: 0, limite: 200).isEmpty)
@@ -276,7 +276,7 @@ final class DedosYOrdenTests: XCTestCase {
     func testNingunaFormaPorDefectoNecesitaMasDeCuatroDedos() throws {
         for cifrado in ["Do", "Sol7", "Fa", "Sib", "Rem7", "Fa#m7b5", "Do9"] {
             for forma in guitarra.digitaciones(de: try Acorde(leyendo: cifrado), limite: 200) {
-                XCTAssertLessThanOrEqual(forma.dedos, 4, "\(cifrado) \(forma.cifra)")
+                XCTAssertLessThanOrEqual(forma.dedos, 4, "\(cifrado) \(forma.tablatura)")
             }
         }
     }
@@ -296,7 +296,7 @@ final class DedosYOrdenTests: XCTestCase {
         for (cifrado, esperadas) in manual {
             let primera = try XCTUnwrap(
                 guitarra.digitaciones(de: try Acorde(leyendo: cifrado), exigirQuinta: false, limite: 1).first, cifrado)
-            XCTAssertTrue(esperadas.contains(primera.cifra), "\(cifrado): sale \(primera.cifra), se esperaba \(esperadas)")
+            XCTAssertTrue(esperadas.contains(primera.tablatura), "\(cifrado): sale \(primera.tablatura), se esperaba \(esperadas)")
         }
     }
 
@@ -307,28 +307,28 @@ final class DedosYOrdenTests: XCTestCase {
             ("Doadd9", "x32030"), ("Sim", "x24432"), ("Fa#m", "244222"), ("Solm", "355333"), ("Dom", "x35543"),
         ]
         for (cifrado, esperada) in manual {
-            let primeras = guitarra.digitaciones(de: try Acorde(leyendo: cifrado), exigirQuinta: false, limite: 6).map(\.cifra)
+            let primeras = guitarra.digitaciones(de: try Acorde(leyendo: cifrado), exigirQuinta: false, limite: 6).map(\.tablatura)
             XCTAssertTrue(primeras.contains(esperada), "\(cifrado): \(primeras), se esperaba \(esperada)")
         }
     }
 
     func testLaCercaniaALaCejillaPesaMasQueTenerTodasLasCuerdas() throws {
         // Antes, `8-10-10-0-8-0` (seis cuerdas, en el traste 8) iba por delante de `x32010`.
-        let formas = guitarra.digitaciones(de: try Acorde(leyendo: "Do"), limite: 3).map(\.cifra)
+        let formas = guitarra.digitaciones(de: try Acorde(leyendo: "Do"), limite: 3).map(\.tablatura)
         XCTAssertEqual(formas.first, "x32010", formas.joined(separator: " "))
     }
 
     func testLaQuintaPuedeFaltarSoloSiSePermite() throws {
         let acorde = try Acorde(leyendo: "Do7")
         // El Do7 de manual no tiene la quinta (Sol).
-        XCTAssertFalse(guitarra.digitaciones(de: acorde, limite: 300).map(\.cifra).contains("x32310"))
-        XCTAssertTrue(guitarra.digitaciones(de: acorde, exigirQuinta: false, limite: 300).map(\.cifra).contains("x32310"))
+        XCTAssertFalse(guitarra.digitaciones(de: acorde, limite: 300).map(\.tablatura).contains("x32310"))
+        XCTAssertTrue(guitarra.digitaciones(de: acorde, exigirQuinta: false, limite: 300).map(\.tablatura).contains("x32310"))
     }
 
     func testElMi7AbiertoEsLaPrimeraConLaQuintaOpcional() throws {
         let acorde = try Acorde(leyendo: "Mi7")
         let formas = guitarra.digitaciones(de: acorde, exigirQuinta: false, limite: 5)
-        XCTAssertEqual(formas.first?.cifra, "020100")
+        XCTAssertEqual(formas.first?.tablatura, "020100")
     }
 
     // MARK: Ukelele y otros instrumentos reentrantes
@@ -347,9 +347,9 @@ final class DedosYOrdenTests: XCTestCase {
         ]
         for (cifrado, esperada) in manual {
             let primera = try XCTUnwrap(ukelele.digitaciones(de: try Acorde(leyendo: cifrado), exigirQuinta: false, limite: 1).first, cifrado)
-            XCTAssertEqual(primera.cifra, esperada, cifrado)
+            XCTAssertEqual(primera.tablatura, esperada, cifrado)
         }
-        let mim = ukelele.digitaciones(de: try Acorde(leyendo: "Mim"), exigirQuinta: false, limite: 3).map(\.cifra)
+        let mim = ukelele.digitaciones(de: try Acorde(leyendo: "Mim"), exigirQuinta: false, limite: 3).map(\.tablatura)
         XCTAssertTrue(mim.contains("0432"), mim.joined(separator: " "))
     }
 
@@ -358,8 +358,8 @@ final class DedosYOrdenTests: XCTestCase {
         XCTAssertFalse(formas.isEmpty)
         for forma in formas {
             let grave = try XCTUnwrap(forma.alturas.map(\.midi).min())
-            XCTAssertEqual(Mastil.clase(grave), Nota.mi.claseDeAltura, forma.cifra)
+            XCTAssertEqual(Mastil.clase(grave), Nota.mi.claseDeAltura, forma.tablatura)
         }
-        XCTAssertFalse(formas.map(\.cifra).contains("0003"))   // ahí el Do es lo más grave
+        XCTAssertFalse(formas.map(\.tablatura).contains("0003"))   // ahí el Do es lo más grave
     }
 }

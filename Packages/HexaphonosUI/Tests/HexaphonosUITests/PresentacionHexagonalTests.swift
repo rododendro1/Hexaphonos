@@ -20,7 +20,7 @@ final class PresentacionHexagonalTests: XCTestCase {
     func testElMapaCabeCentradoYConMargen() throws {
         for orientacion in Orientacion.allCases {
             for (ancho, alto) in [(300.0, 200.0), (120.0, 400.0)] {
-                let d = try XCTUnwrap(PresentacionHexagonal.disposicion(para: mapa, orientacion: orientacion,
+                let d = try XCTUnwrap(PresentacionHexagonal.trazado(para: mapa, orientacion: orientacion,
                                                                        ancho: ancho, alto: alto, margen: 5))
                 let caja = try XCTUnwrap(d.limites(de: mapa))
                 XCTAssertGreaterThanOrEqual(caja.minimo.x, 5 - 1e-9)
@@ -37,23 +37,23 @@ final class PresentacionHexagonalTests: XCTestCase {
         }
     }
 
-    func testSinCasillasOSinSitioNoHayDisposicion() {
-        XCTAssertNil(PresentacionHexagonal.disposicion(para: [], orientacion: .plana, ancho: 100, alto: 100))
-        XCTAssertNil(PresentacionHexagonal.disposicion(para: mapa, orientacion: .plana, ancho: 10, alto: 10, margen: 5))
-        XCTAssertNil(PresentacionHexagonal.disposicion(para: mapa, orientacion: .plana, ancho: 0, alto: 0))
+    func testSinCasillasOSinSitioNoHayTrazado() {
+        XCTAssertNil(PresentacionHexagonal.trazado(para: [], orientacion: .plana, ancho: 100, alto: 100))
+        XCTAssertNil(PresentacionHexagonal.trazado(para: mapa, orientacion: .plana, ancho: 10, alto: 10, margen: 5))
+        XCTAssertNil(PresentacionHexagonal.trazado(para: mapa, orientacion: .plana, ancho: 0, alto: 0))
     }
 
     func testElToqueDaLaCasillaDelMapa() throws {
-        let d = try XCTUnwrap(PresentacionHexagonal.disposicion(para: mapa, orientacion: .puntiaguda,
+        let d = try XCTUnwrap(PresentacionHexagonal.trazado(para: mapa, orientacion: .puntiaguda,
                                                                ancho: 300, alto: 300, margen: 3))
         let conjunto = Set(mapa)
         for casilla in mapa {
-            XCTAssertEqual(PresentacionHexagonal.casilla(en: d.centro(de: casilla), disposicion: d, mapa: conjunto), casilla)
+            XCTAssertEqual(PresentacionHexagonal.casilla(en: d.centro(de: casilla), trazado: d, mapa: conjunto), casilla)
         }
         // Fuera del mapa: la esquina del rectángulo y una casilla que no está.
-        XCTAssertNil(PresentacionHexagonal.casilla(en: Punto(x: 1, y: 1), disposicion: d, mapa: conjunto))
+        XCTAssertNil(PresentacionHexagonal.casilla(en: Punto(x: 1, y: 1), trazado: d, mapa: conjunto))
         let fuera = CoordenadaAxial(q: 3, r: 0)
-        XCTAssertNil(PresentacionHexagonal.casilla(en: d.centro(de: fuera), disposicion: d, mapa: conjunto))
+        XCTAssertNil(PresentacionHexagonal.casilla(en: d.centro(de: fuera), trazado: d, mapa: conjunto))
     }
 
     func testDescripcion() {

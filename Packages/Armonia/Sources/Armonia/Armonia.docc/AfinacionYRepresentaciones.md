@@ -122,7 +122,7 @@ el triángulo gira sobre uno de sus lados:
 
 | | Lado | Do mayor → | La menor → |
 |---|---|---|---|
-| **P** (paralela) | la quinta | Do menor | La mayor |
+| **P** (homónima) | la quinta | Do menor | La mayor |
 | **L** (cambio de sensible) | la tercera menor | Mi menor | Fa mayor |
 | **R** (relativa) | la tercera mayor | La menor | Do mayor |
 
@@ -258,7 +258,7 @@ importa aparte (`import Hexagonos`) para nombrar sus tipos. Un punto del Tonnetz
 seis pasos del Tonnetz son las seis direcciones de la rejilla, y la distancia es la suya. En la
 tabla armónica, la misma rejilla está girada 120° y dibujada con hexágonos planos.
 
-`Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)` dicen dónde cae cada nota en sus
+`Tonnetz.trazado(paso:)` y `TablaArmonica.trazado(paso:)` dicen dónde cae cada nota en sus
 dibujos, y `punto(en:paso:)` hace el camino de vuelta: de un punto del SVG (donde se ha tocado) a la
 nota.
 

@@ -1,6 +1,6 @@
 // MARK: - Dibujo en SVG
 
-extension Disposicion {
+extension Trazado {
     /// Un SVG con los hexágonos de `casillas`, ajustado a su tamaño con un `margen` alrededor.
     ///
     /// Cada hexágono es un `<polygon>` con la clase `casilla`; `relleno` elige su color (cualquier

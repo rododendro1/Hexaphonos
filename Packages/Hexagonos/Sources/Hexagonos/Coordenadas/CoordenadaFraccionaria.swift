@@ -2,7 +2,7 @@
 
 /// Un punto cualquiera del plano en coordenadas axiales con decimales.
 ///
-/// Sale de convertir un píxel (``Disposicion/coordenada(en:)``) o de interpolar entre dos casillas,
+/// Sale de convertir un píxel (``Trazado/coordenada(en:)``) o de interpolar entre dos casillas,
 /// y vuelve a una casilla con ``redondeada()``. La tercera componente es `s = −q − r`, como en las
 /// enteras.
 public struct CoordenadaFraccionaria: Hashable, Sendable, Codable {

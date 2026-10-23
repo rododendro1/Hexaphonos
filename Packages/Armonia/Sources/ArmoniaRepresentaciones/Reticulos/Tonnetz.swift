@@ -47,7 +47,7 @@ public struct PuntoDelTonnetz: Hashable, Sendable, CustomStringConvertible {
     /// Pasos mínimos por la red hasta otro punto.
     public func distancia(hasta otro: PuntoDelTonnetz) -> Int {
         // La de la rejilla hexagonal: un paso de tercera menor, (1, −1), avanza en los dos ejes a la vez.
-        coordenada.distancia(a: otro.coordenada)
+        coordenada.distancia(hasta: otro.coordenada)
     }
 
     public var description: String { "(\(quintas), \(terceras))" }
@@ -342,9 +342,9 @@ public struct Tonnetz: Hashable, Sendable {
         let paso = paso ?? (recorrido.isEmpty ? 64 : 88)
         let margen = margen ?? (conOrtografia ? 1 : 2)
         let altura = paso * 0.8660254037844386   // √3/2, entre dos filas
-        let disposicion = Tonnetz.disposicion(paso: paso)
-        func x(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: p.coordenada).x }
-        func y(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: p.coordenada).y }
+        let trazado = Tonnetz.trazado(paso: paso)
+        func x(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: p.coordenada).x }
+        func y(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: p.coordenada).y }
 
         // La ventana: un rectángulo alrededor de las notas.
         let base = puntos.isEmpty ? [PuntoDelTonnetz(quintas: 0, terceras: 0)] : puntos

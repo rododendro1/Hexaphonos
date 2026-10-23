@@ -4,7 +4,7 @@ import ArmoniaTeoria
 /// Una forma de tocar un acorde: el traste de cada cuerda, o `nil` si no suena.
 ///
 ///     // Do mayor en la guitarra
-///     digitacion.cifra     // "x32010"
+///     digitacion.tablatura     // "x32010"
 public struct Digitacion: Hashable, Sendable, CustomStringConvertible {
     public let mastil: Mastil
     /// Un elemento por cuerda, de la primera a la última: el traste, o `nil` si la cuerda se apaga.
@@ -26,12 +26,12 @@ public struct Digitacion: Hashable, Sendable, CustomStringConvertible {
         self.init(mastil: mastil, trastes: trastes)
     }
 
-    /// Lee la cifra que escribe `cifra`: «x32010», o con guiones si algún traste pasa de 9 («x-10-12-12-11-10»).
+    /// Lee la tablatura que escribe `tablatura`: «x32010», o con guiones si algún traste pasa de 9 («x-10-12-12-11-10»).
     /// `nil` si no se entiende o no encaja en el mástil.
-    public init?(leyendo cifra: String, en mastil: Mastil) {
-        let partes = cifra.contains("-")
-            ? cifra.split(separator: "-", omittingEmptySubsequences: false).map(String.init)
-            : cifra.map { String($0) }
+    public init?(leyendo tablatura: String, en mastil: Mastil) {
+        let partes = tablatura.contains("-")
+            ? tablatura.split(separator: "-", omittingEmptySubsequences: false).map(String.init)
+            : tablatura.map { String($0) }
         var trastes: [Int?] = []
         for parte in partes {
             if parte == "x" || parte == "X" {
@@ -67,7 +67,7 @@ public struct Digitacion: Hashable, Sendable, CustomStringConvertible {
 
     public var cuerdasQueSuenan: Int { posiciones.count }
 
-    /// Traste más grave y más agudo entre los que se pisan (los de la cuerda al aire no cuentan).
+    /// Los trastes que se pisan, de la cuerda más grave a la más aguda (sin las cuerdas al aire ni las apagadas).
     public var trastesPisados: [Int] { trastes.compactMap { $0 }.filter { $0 > 0 } }
 
     /// Cuántos trastes abarca la mano: de 1 al pisar un solo traste a 4 con el meñique extendido.
@@ -124,12 +124,15 @@ public struct Digitacion: Hashable, Sendable, CustomStringConvertible {
 
     /// La forma habitual de escribirla: "x32010", o con guiones si algún traste pasa de 9:
     /// "x-10-12-12-11-10".
-    public var cifra: String {
+    public var tablatura: String {
         let partes = trastes.map { $0.map(String.init) ?? "x" }
         return partes.contains { $0.count > 1 } ? partes.joined(separator: "-") : partes.joined()
     }
 
-    public var description: String { cifra }
+    public var description: String { tablatura }
+
+    @available(*, deprecated, renamed: "tablatura")
+    public var cifra: String { tablatura }
 }
 
 extension Mastil {
@@ -226,7 +229,7 @@ extension Mastil {
             return (forma, [forma.coste(sinQuinta: sinQuinta), -forma.cuerdasQueSuenan])
         }
         let ordenadas = conClave.sorted { a, b in
-            a.clave != b.clave ? a.clave.lexicographicallyPrecedes(b.clave) : a.forma.cifra < b.forma.cifra
+            a.clave != b.clave ? a.clave.lexicographicallyPrecedes(b.clave) : a.forma.tablatura < b.forma.tablatura
         }
         return ordenadas.prefix(limite).map { $0.forma }
     }

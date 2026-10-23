@@ -6,7 +6,7 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
     func testPortada() {
         let a = CoordenadaAxial(q: 1, r: -2)
         XCTAssertEqual(a.vecinos.count, 6)
-        XCTAssertEqual(a.distancia(a: .origen), 2)
+        XCTAssertEqual(a.distancia(hasta: .origen), 2)
         XCTAssertEqual(a.linea(hasta: CoordenadaAxial(q: 4, r: -2)).count, 4)
         XCTAssertEqual(a.desplazada(.filasImpares), CoordenadaDesplazada(columna: 0, fila: -2))
         XCTAssertEqual(a.s, 1)
@@ -27,7 +27,7 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
 
     func testAlgoritmos() {
         XCTAssertEqual(CoordenadaAxial.origen.vecino(0), CoordenadaAxial(q: 1, r: 0))
-        XCTAssertEqual(CoordenadaAxial.origen.distancia(a: CoordenadaAxial(q: 3, r: -7)), 7)
+        XCTAssertEqual(CoordenadaAxial.origen.distancia(hasta: CoordenadaAxial(q: 3, r: -7)), 7)
         XCTAssertEqual(CoordenadaAxial.origen.alcance(radio: 2).count, 19)
         XCTAssertEqual(CoordenadaAxial.origen.anillo(radio: 2).count, 12)
         XCTAssertEqual(CoordenadaAxial.origen.linea(hasta: CoordenadaAxial(q: 3, r: 0)),
@@ -36,10 +36,10 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
     }
 
     func testPixeles() {
-        let puntiaguda = Disposicion(orientacion: .puntiaguda, tamano: 10)
+        let puntiaguda = Trazado(orientacion: .puntiaguda, tamano: 10)
         XCTAssertEqual(puntiaguda.centro(de: CoordenadaAxial(q: 1, r: 0)).x, 17.3205, accuracy: 1e-4)
         XCTAssertEqual(puntiaguda.casilla(en: Punto(x: 17, y: 1)), CoordenadaAxial(q: 1, r: 0))
-        let plana = Disposicion(orientacion: .plana, tamano: 20, origen: Punto(x: 200, y: 150))
+        let plana = Trazado(orientacion: .plana, tamano: 20, origen: Punto(x: 200, y: 150))
         let centro = plana.centro(de: CoordenadaAxial(q: 1, r: 0))
         XCTAssertEqual(centro.x, 230, accuracy: 1e-9)
         XCTAssertEqual(centro.y, 167.3205, accuracy: 1e-4)

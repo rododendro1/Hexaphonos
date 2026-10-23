@@ -4,7 +4,7 @@ import ArmoniaTeoria
 // comparte con ella dos notas, moviendo la tercera solo un semitono o un tono. En el Tonnetz
 // son giros del triángulo sobre uno de sus lados:
 //
-//   P (paralela): sobre la quinta. Do ↔ Do menor.
+//   P (homónima): sobre la quinta. Do ↔ Do menor.
 //   L (cambio de sensible, Leittonwechsel): sobre la tercera menor. Do ↔ Mi menor.
 //   R (relativa): sobre la tercera mayor. Do ↔ La menor.
 //
@@ -30,10 +30,10 @@ public enum TransformacionNeorriemanniana: String, CaseIterable, Hashable, Senda
 
     public var description: String { rawValue }
 
-    /// "paralela", "cambio de sensible" o "relativa".
+    /// "homónima", "cambio de sensible" o "relativa".
     public var nombre: String {
         switch self {
-        case .p: return "paralela"
+        case .p: return "homónima"
         case .l: return "cambio de sensible"
         case .r: return "relativa"
         }

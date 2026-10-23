@@ -57,22 +57,22 @@ public enum Orientacion: String, CaseIterable, Hashable, Sendable, Codable {
     }
 }
 
-// MARK: - Disposicion
+// MARK: - Trazado
 
 /// Cómo se dibuja la rejilla: la orientación de los hexágonos, su tamaño y dónde cae el origen.
 ///
 /// Pasa de casillas a píxeles y de vuelta:
 ///
 /// ```swift
-/// let disposicion = Disposicion(orientacion: .puntiaguda, tamano: 10)
-/// disposicion.centro(de: CoordenadaAxial(q: 1, r: 0))   // (x: 17.32…, y: 0)
-/// disposicion.casilla(en: Punto(x: 17, y: 1))            // (q: 1, r: 0)
-/// disposicion.vertices(de: .origen)                      // los seis vértices
+/// let trazado = Trazado(orientacion: .puntiaguda, tamano: 10)
+/// trazado.centro(de: CoordenadaAxial(q: 1, r: 0))   // (x: 17.32…, y: 0)
+/// trazado.casilla(en: Punto(x: 17, y: 1))            // (q: 1, r: 0)
+/// trazado.vertices(de: .origen)                      // los seis vértices
 /// ```
 ///
 /// El tamaño es el radio del hexágono (del centro a un vértice). Con un tamaño distinto en `x` y
 /// en `y` los hexágonos se estiran.
-public struct Disposicion: Hashable, Sendable, Codable {
+public struct Trazado: Hashable, Sendable, Codable {
     public var orientacion: Orientacion
     /// El radio de los hexágonos en cada eje.
     public var tamano: Punto
@@ -151,3 +151,6 @@ public struct Disposicion: Hashable, Sendable, Codable {
         return (minimo: minimo, maximo: maximo)
     }
 }
+
+@available(*, deprecated, renamed: "Trazado")
+public typealias Disposicion = Trazado

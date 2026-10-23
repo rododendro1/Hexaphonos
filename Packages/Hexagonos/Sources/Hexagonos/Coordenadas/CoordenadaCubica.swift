@@ -80,7 +80,10 @@ extension CoordenadaCubica {
     public var longitud: Int { max(abs(q), abs(r), abs(s)) }
 
     /// Los pasos entre las dos casillas.
-    public func distancia(a otra: CoordenadaCubica) -> Int { (self - otra).longitud }
+    public func distancia(hasta otra: CoordenadaCubica) -> Int { (self - otra).longitud }
+
+    @available(*, deprecated, renamed: "distancia(hasta:)")
+    public func distancia(a otra: CoordenadaCubica) -> Int { distancia(hasta: otra) }
 
     /// Las seis vecinas, en el orden de ``CoordenadaAxial/direcciones``.
     public var vecinos: [CoordenadaCubica] { axial.vecinos.map { CoordenadaCubica($0) } }

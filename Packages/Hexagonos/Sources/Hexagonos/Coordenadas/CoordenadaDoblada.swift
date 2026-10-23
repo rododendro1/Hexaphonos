@@ -49,7 +49,7 @@ public struct CoordenadaDoblada: Hashable, Sendable, Codable {
     }
 
     /// Los pasos hasta `otra`, sin pasar por las axiales.
-    public func distancia(a otra: CoordenadaDoblada, _ doblado: Doblado) -> Int {
+    public func distancia(hasta otra: CoordenadaDoblada, _ doblado: Doblado) -> Int {
         let dc = abs(columna - otra.columna)
         let df = abs(fila - otra.fila)
         switch doblado {
@@ -57,6 +57,9 @@ public struct CoordenadaDoblada: Hashable, Sendable, Codable {
         case .altoDoble: return dc + max(0, (df - dc) / 2)
         }
     }
+
+    @available(*, deprecated, renamed: "distancia(hasta:_:)")
+    public func distancia(a otra: CoordenadaDoblada, _ doblado: Doblado) -> Int { distancia(hasta: otra, doblado) }
 }
 
 extension CoordenadaDoblada: CustomStringConvertible {

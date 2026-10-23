@@ -14,13 +14,13 @@ import Hexagonos
 
 let a = CoordenadaAxial(q: 1, r: -2)
 a.vecinos                                   // las seis vecinas
-a.distancia(a: .origen)                     // 2
+a.distancia(hasta: .origen)                     // 2
 a.linea(hasta: CoordenadaAxial(q: 4, r: -2))   // las casillas de la recta
 a.desplazada(.filasImpares)                 // (columna: 0, fila: -2)
 
-let disposicion = Disposicion(orientacion: .puntiaguda, tamano: 24)
-disposicion.centro(de: a)                   // dónde se dibuja
-disposicion.casilla(en: Punto(x: 40, y: 10))   // qué casilla se ha tocado
+let trazado = Trazado(orientacion: .puntiaguda, tamano: 24)
+trazado.centro(de: a)                   // dónde se dibuja
+trazado.casilla(en: Punto(x: 40, y: 10))   // qué casilla se ha tocado
 ```
 
 Los algoritmos y las convenciones siguen la guía de Red Blob Games sobre rejillas hexagonales
@@ -62,6 +62,6 @@ Los algoritmos y las convenciones siguen la guía de Red Blob Games sobre rejill
 
 ### Dibujo
 
-- ``Disposicion``
+- ``Trazado``
 - ``Orientacion``
 - ``Punto``
