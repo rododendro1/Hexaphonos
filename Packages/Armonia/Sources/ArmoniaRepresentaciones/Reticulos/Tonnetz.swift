@@ -1,5 +1,6 @@
 import ArmoniaNucleo
 import ArmoniaTeoria
+import Hexagonos
 // El Tonnetz: la red de notas unidas por quintas justas y terceras mayores y menores, en la
 // que cada triángulo es una tríada (hacia arriba, mayor; hacia abajo, menor).
 //
@@ -12,6 +13,9 @@ import ArmoniaTeoria
 //
 // Para un conjunto de clases de altura, sin ortografía, el Tonnetz es el de doce notas: el
 // punto (a, b) es la clase 7a + 4b (mod 12), y la red se repite como un toro.
+//
+// La red es una rejilla hexagonal (cada nota, el centro de un hexágono): las distancias y las
+// posiciones del dibujo salen del paquete `Hexagonos` (Tonnetz+Hexagonos.swift).
 
 import Foundation
 
@@ -42,9 +46,8 @@ public struct PuntoDelTonnetz: Hashable, Sendable, CustomStringConvertible {
 
     /// Pasos mínimos por la red hasta otro punto.
     public func distancia(hasta otro: PuntoDelTonnetz) -> Int {
-        let x = otro.quintas - quintas, y = otro.terceras - terceras
-        // Un paso de tercera menor, (1, −1), avanza en los dos ejes a la vez cuando van en sentidos contrarios.
-        return (x >= 0) == (y >= 0) ? abs(x) + abs(y) : max(abs(x), abs(y))
+        // La de la rejilla hexagonal: un paso de tercera menor, (1, −1), avanza en los dos ejes a la vez.
+        coordenada.distancia(a: otro.coordenada)
     }
 
     public var description: String { "(\(quintas), \(terceras))" }
@@ -338,15 +341,19 @@ public struct Tonnetz: Hashable, Sendable {
                     titulo: String? = nil, leyenda: Bool = true) -> String {
         let paso = paso ?? (recorrido.isEmpty ? 64 : 88)
         let margen = margen ?? (conOrtografia ? 1 : 2)
-        let altura = paso * 0.8660254037844386   // √3/2
-        func x(_ p: PuntoDelTonnetz) -> Double { (Double(p.quintas) + Double(p.terceras) / 2) * paso }
-        func y(_ p: PuntoDelTonnetz) -> Double { -Double(p.terceras) * altura }
+        let altura = paso * 0.8660254037844386   // √3/2, entre dos filas
+        let disposicion = Tonnetz.disposicion(paso: paso)
+        func x(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: p.coordenada).x }
+        func y(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: p.coordenada).y }
 
         // La ventana: un rectángulo alrededor de las notas.
         let base = puntos.isEmpty ? [PuntoDelTonnetz(quintas: 0, terceras: 0)] : puntos
         let filas = (base.map(\.terceras).min()! - margen)...(base.map(\.terceras).max()! + margen)
-        let minX = base.map(x).min()! - Double(margen) * paso - paso / 2
-        let maxX = base.map(x).max()! + Double(margen) * paso + paso / 2
+        // En unidades de `paso` y con la fórmula exacta (a + b/2), no con `x`: los bordes caen en
+        // medios enteros y un error de redondeo cambiaría las columnas que se dibujan.
+        func columna(_ p: PuntoDelTonnetz) -> Double { Double(p.quintas) + Double(p.terceras) / 2 }
+        let minX = (base.map(columna).min()! - Double(margen) - 0.5) * paso
+        let maxX = (base.map(columna).max()! + Double(margen) + 0.5) * paso
         var red: [PuntoDelTonnetz] = []
         for b in filas {
             let desde = Int((minX / paso - Double(b) / 2).rounded(.up))

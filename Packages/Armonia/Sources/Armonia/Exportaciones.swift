@@ -7,3 +7,7 @@
 @_exported import ArmoniaRepresentaciones
 @_exported import ArmoniaPartitura
 @_exported import ArmoniaTrastes
+
+// La geometría de las rejillas hexagonales, que usan el Tonnetz, la tabla armónica y los teclados
+// isomórficos (`CoordenadaAxial`, `Disposicion`…): con `import Armonia` no hace falta importarla aparte.
+@_exported import Hexagonos
