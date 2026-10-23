@@ -1,6 +1,7 @@
 # Tonalidad
 
-Tonalidades, ortografía de alturas MIDI, detección de la tonalidad, análisis de progresiones y conducción de voces.
+Tonalidades, ortografía de alturas MIDI, detección de la tonalidad, análisis de progresiones (con cadencias y
+modulaciones), conducción de voces y armonización a cuatro voces.
 
 ## Tonalidad
 
@@ -110,6 +111,64 @@ partituraAnalizada.contains("<text>V7/V</text>")               // true
 analisis.musicXML(notacion: .ingles).contains("C major:")      // true
 ```
 
+## Cadencias
+
+`cadencias` busca en un análisis las parejas de acordes con forma de cadencia (`Cadencia.Tipo`):
+
+- **Auténtica**: de la dominante (V, V7 o un acorde de sensible) a la tónica. Es **perfecta**
+  (`esPerfecta`) con V y I en estado fundamental.
+- **Plagal**: de IV (o iv) a la tónica.
+- **Rota**: de V a vi (VI en menor, o el ♭VI prestado en mayor).
+- **Semicadencia**: termina en V en estado fundamental.
+
+```swift
+let cadencia = try AnalisisArmonico.analizar(leyendo: "Do Fa Sol7 Do").cadencias[0]
+cadencia.tipo                         // .autentica
+cadencia.esPerfecta                   // true
+cadencia.description                  // "Cadencia auténtica V7–I (acordes 3 → 4)"
+cadencia.descripcion(en: .ingles)     // "Authentic cadence V7–I (chords 3 → 4)"
+
+Tonalidad(.do).analizar(["Do", "Fa", "Do"]).cadencias.first?.tipo          // .plagal
+Tonalidad(.do).analizar(["Do", "Sol7", "Lam"]).cadencias.first?.tipo       // .rota
+Tonalidad(.do).analizar(["Do", "Lam", "Fa", "Sol"]).cadencias.first?.tipo  // .semicadencia
+```
+
+Sin la partitura no se sabe dónde acaban las frases, así que cada V–I cuenta como cadencia
+auténtica, también en mitad de la progresión; la semicadencia solo se reconoce al final. El I64
+cadencial no cierra: la cadencia es la del V que lo sigue.
+
+## Modulaciones
+
+`RecorridoTonal` parte una progresión en tramos (`TramoTonal`), cada uno en su tonalidad, y
+señala cada modulación (`Modulacion`) con su acorde pivote (`AcordePivote`): el último acorde
+que pertenece a las dos tonalidades antes del primero que solo es de la nueva.
+
+```swift
+let recorrido = try RecorridoTonal(leyendo: "Do Fa Sol7 Do Lam Re7 Sol")
+recorrido.tramos.map(\.tonalidad)    // [Do mayor, Sol mayor]
+recorrido.cifrados                   // ["I", "IV", "V7", "I", "ii", "V7", "I"]
+recorrido.description                // "I–IV–V7–I en Do mayor → ii–V7–I en Sol mayor"
+recorrido.modulaciones[0].acorde     // 4
+recorrido.modulaciones[0].pivote?.description   // "Lam = vi en Do mayor = ii en Sol mayor"
+recorrido.cadencias.map(\.tonalidad)  // [Do mayor, Sol mayor]
+
+try RecorridoTonal(leyendo: "Do Sol Do Fa Rem Mi7 Lam").modulaciones[0].description
+// "De Do mayor a La menor en el acorde 5 (pivote: Rem = ii en Do mayor = iv en La menor)"
+```
+
+Una tonalidad nueva tiene que confirmarse con una cadencia auténtica a su tónica; si no, los
+acordes ajenos son dominantes secundarias o préstamos de la tonalidad en la que se está (una
+tonicalización):
+
+```swift
+try RecorridoTonal(leyendo: "Do Lam Re7 Sol7 Do").modulaciones.isEmpty   // true
+```
+
+Entre las particiones posibles se elige la de menor coste, con el mismo coste por acorde que usa
+`AnalisisArmonico` para elegir la tonalidad, una rebaja por cada cadencia auténtica en la
+tonalidad del tramo y un coste fijo por cada modulación. Si la progresión no modula, el único
+tramo es el mismo análisis que da `AnalisisArmonico.analizar`.
+
 ## Conducción de voces
 
 `ConduccionDeVoces` comprueba las reglas de la armonía escrita voz por voz. Cada acorde lleva
@@ -160,4 +219,51 @@ se quedan sin cifrar:
 ```swift
 let cadencia = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
 cadencia.musicXML(cifrados: true, analisis: true).contains("<text>V</text>")   // true
+```
+
+## Realización a cuatro voces
+
+`ConduccionDeVoces.realizar(_:soprano:en:)` escribe unos acordes a cuatro voces sin ninguna de
+las faltas anteriores, con el bajo del cifrado y moviendo las voces lo menos posible (en
+semitonos, como `conduccionMinima(hasta:)`, pero con alturas). Duplica antes la fundamental que
+la quinta y esta antes que la tercera, nunca la sensible ni la séptima; puede omitir la quinta
+justa; hace subir la sensible a la tónica y bajar la séptima por grado conjunto. Con `soprano`,
+la melodía del soprano queda fijada:
+
+```swift
+let coral = ConduccionDeVoces.realizar(["Do", "Fa", "Sol7", "Do"])!
+coral.esCorrecta                      // true
+coral.voz(0).map(\.nota)              // [Do, Fa, Sol, Do]
+
+let conSoprano = ConduccionDeVoces.realizar(["Do", "Fa", "Sol", "Do"], soprano: ["Mi4", "Fa4", "Re4", "Do4"])!
+conSoprano.voz(3)                     // [Mi4, Fa4, Re4, Do4]
+ConduccionDeVoces.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"])   // nil: quintas paralelas con el bajo
+```
+
+## Armonización de melodías
+
+`acordes(para:)` da los acordes de la tonalidad que tienen una nota, de más a menos habitual, y
+`armonizar(melodia:propuestas:)`, las mejores sucesiones de acordes para una melodía, cada una
+con su coste (`Candidato`). La sucesión se puntúa con la armonía funcional: tónica,
+subdominante, dominante y tónica es lo natural; de la dominante a la subdominante cuesta mucho;
+una dominante secundaria tiene que ir a su destino; se prefiere empezar en la tónica y terminar
+con una cadencia auténtica (o con una semicadencia si la última nota no es del I).
+
+```swift
+Tonalidad(.do).acordes(para: .sol).prefix(3).map(\.valor)   // [Sol, Do, Sol7]
+
+let propuestas = Tonalidad(.do).armonizar(melodia: ["Mi", "Fa", "Re", "Do"], propuestas: 3)
+propuestas.map(\.valor.cifrados)     // [["I", "IV", "V", "I"], ["I", "IV", "V7", "I"], ["I", "ii", "V", "I"]]
+propuestas[0].valor.description      // "Do Fa Sol Do (I–IV–V–I)"
+Tonalidad(.do).armonizar(melodia: ["Mi", "Fa#", "Sol", "Do"])[0].valor.cifrados   // ["I", "V/V", "V", "I"]
+```
+
+`armonizarACuatroVoces(_:)` elige a la vez los acordes y las disposiciones, con la melodía en el
+soprano: de las armonizaciones que se pueden realizar sin faltas, la de menos coste.
+
+```swift
+let armonizada = Tonalidad(.do).armonizarACuatroVoces(["Mi4", "Fa4", "Re4", "Do4"])!
+armonizada.armonizacion.cifrados      // ["I", "IV", "V", "I"]
+armonizada.voces.voz(3)               // [Mi4, Fa4, Re4, Do4]
+armonizada.voces.esCorrecta           // true
 ```

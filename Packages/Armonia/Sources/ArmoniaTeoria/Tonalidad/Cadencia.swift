@@ -122,6 +122,6 @@ extension Cadencia.Tipo: Nombrable, CustomStringConvertible {
 extension AnalisisArmonico {
     /// Las cadencias de la progresión en su tonalidad, en orden.
     ///
-    ///     try AnalisisArmonico.analizar(leyendo: "Do Lam Fa Sol").cadencias.map(\.tipo)   // [.semicadencia]
+    ///     Tonalidad(.do).analizar(["Do", "Lam", "Fa", "Sol"]).cadencias.map(\.tipo)   // [.semicadencia]
     public var cadencias: [Cadencia] { Cadencia.buscar(en: acordes, tonalidad: tonalidad) }
 }

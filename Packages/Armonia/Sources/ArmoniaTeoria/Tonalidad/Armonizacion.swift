@@ -60,7 +60,7 @@ extension Tonalidad {
     /// Las mejores armonizaciones de una melodía, de menor a mayor coste.
     ///
     ///     let mejor = Tonalidad(.do).armonizar(melodia: ["Do", "Re", "Mi", "Fa", "Re", "Si", "Do"]).first!
-    ///     mejor.valor.cifrados   // ["I", "V", "I", "IV", "V", "V", "I"]
+    ///     mejor.valor.cifrados   // ["I", "V", "I", "IV", "ii", "V", "I"]
     ///
     /// Cada nota recibe uno de sus ``acordes(para:)``, y la sucesión se puntúa como en la armonía
     /// funcional: tónica, subdominante, dominante y vuelta a la tónica es lo natural; de la
