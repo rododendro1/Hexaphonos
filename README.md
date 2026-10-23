@@ -18,7 +18,8 @@ Packages/
 ├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
 │                   el selector de notación y su ajuste
 └── Hexagonos/      Rejillas hexagonales: coordenadas axiales, cúbicas, desplazadas y dobladas, vecinos, distancias,
-                    líneas, regiones, rotaciones y el paso a píxeles (independiente del motor)
+                    líneas, regiones, rotaciones y el paso a píxeles; el motor la usa para el Tonnetz,
+                    la tabla armónica y los teclados isomórficos
 Scripts/            Comprobaciones del repositorio (también las del motor) y generación del proyecto de Xcode
 Config/             Ajustes de compilación de las apps (Local.xcconfig, el de tu equipo, no se guarda en git)
 project.yml         Definición del proyecto de Xcode (XcodeGen)
@@ -27,7 +28,7 @@ project.yml         Definición del proyecto de Xcode (XcodeGen)
 ## Dependencias
 
 ```
-ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia
+ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia ──► Hexagonos
 TonnetzApp ──┘                  └──► Hexagonos
 ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo ──► Armonia
 ```

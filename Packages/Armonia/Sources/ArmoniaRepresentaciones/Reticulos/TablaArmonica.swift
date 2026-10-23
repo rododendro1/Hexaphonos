@@ -1,5 +1,6 @@
 import ArmoniaNucleo
 import ArmoniaTeoria
+import Hexagonos
 // La tabla armónica (Harmonic Table): la disposición de notas en hexágonos de teclados
 // isomórficos como el C-Thru AXiS. Hacia arriba, una quinta justa; en diagonal hacia arriba a la
 // derecha, una tercera mayor; en diagonal hacia arriba a la izquierda, una tercera menor.
@@ -9,6 +10,9 @@ import ArmoniaTeoria
 // coordenadas, (a, b) = a quintas y b terceras mayores, y su misma colocación. Además puede
 // colocar alturas, como en el instrumento: el hexágono (a, b) suena 7a + 4b semitonos por encima
 // de Do4, y cada altura está en un sitio concreto (afinación igual, sin ortografía).
+//
+// Los hexágonos se colocan y se dibujan con el paquete `Hexagonos` (Tonnetz+Hexagonos.swift): son
+// hexágonos planos, en la rejilla del Tonnetz girada 120°.
 
 import Foundation
 
@@ -159,9 +163,14 @@ public struct TablaArmonica: Hashable, Sendable {
         let paso = paso ?? (recorrido.isEmpty ? 56 : 72)
         let margen = margen ?? (colocacion == .notas ? 1 : 2)
         let coseno = 0.8660254037844386   // cos 30°
-        let radio = paso / (2 * coseno)    // del centro a un vértice
-        func x(_ p: PuntoDelTonnetz) -> Double { Double(p.terceras) * coseno * paso }
-        func y(_ p: PuntoDelTonnetz) -> Double { -(Double(p.quintas) + Double(p.terceras) / 2) * paso }
+        let disposicion = TablaArmonica.disposicion(paso: paso)
+        let radio = disposicion.tamano.x   // del centro a un vértice
+        func x(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: TablaArmonica.coordenada(de: p)).x }
+        func y(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: TablaArmonica.coordenada(de: p)).y }
+        /// Los seis vértices, empezando por el de la derecha (0°) y en sentido horario en pantalla.
+        func vertices(_ p: PuntoDelTonnetz) -> [(Double, Double)] {
+            disposicion.vertices(de: TablaArmonica.coordenada(de: p)).map { ($0.x, $0.y) }
+        }
 
         // La ventana: un rectángulo alrededor de las notas.
         let base = puntos.isEmpty ? [PuntoDelTonnetz(quintas: 0, terceras: 0)] : puntos
@@ -209,15 +218,16 @@ public struct TablaArmonica: Hashable, Sendable {
         let origenX = minX - radio - borde, origenY = minY - paso / 2 - borde
         let ancho = maxX - minX + 2 * (radio + borde), alto = maxY - minY + paso + 2 * borde
         let f = DibujoSVG.f
+        /// El vértice a `angulo` grados (un múltiplo de 60°).
         func vertice(_ p: PuntoDelTonnetz, _ angulo: Double) -> (Double, Double) {
-            (x(p) + radio * cos(angulo * .pi / 180), y(p) + radio * sin(angulo * .pi / 180))
+            vertices(p)[modulo(Int(angulo) / 60, 6)]
         }
 
         var svg = ""
         // Hexágonos (de lados horizontales arriba y abajo).
         for punto in red {
             let marcado = marcados.contains(punto)
-            let esquinas = stride(from: 0.0, to: 360, by: 60).map { vertice(punto, $0) }
+            let esquinas = vertices(punto)
             svg += "  <polygon points=\"\(esquinas.map { "\(f($0.0)),\(f($0.1))" }.joined(separator: " "))\" "
             svg += marcado ? "fill=\"\(DibujoSVG.Color.nota)\" stroke=\"#ffffff\" stroke-width=\"1.5\"/>\n" : "fill=\"#f4f4f4\" stroke=\"#bbbbbb\" stroke-width=\"1\"/>\n"
         }
@@ -235,7 +245,7 @@ public struct TablaArmonica: Hashable, Sendable {
         }
         // La primera nota, con borde naranja.
         for punto in red where principales.contains(punto) {
-            let esquinas = stride(from: 0.0, to: 360, by: 60).map { vertice(punto, $0) }
+            let esquinas = vertices(punto)
             svg += "  <polygon points=\"\(esquinas.map { "\(f($0.0)),\(f($0.1))" }.joined(separator: " "))\" "
             svg += "fill=\"none\" stroke=\"\(DibujoSVG.Color.primera)\" stroke-width=\"3.5\" transform=\"translate(\(f(x(punto))) \(f(y(punto)))) scale(0.86) translate(\(f(-x(punto))) \(f(-y(punto))))\"/>\n"
         }

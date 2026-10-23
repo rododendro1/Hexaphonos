@@ -8,7 +8,10 @@ La biblioteca se reparte en cinco módulos, más `Armonia`, que los reexporta:
     ArmoniaRepresentaciones  Afinacion, Color, Dibujo, Reticulos (con Neorriemann)
     ArmoniaPartitura         Modelo, Formatos
     ArmoniaTrastes           Encordado, Mastil, Digitacion (instrumentos de cuerda con trastes)
-    Armonia                  solo reexporta los cinco
+    Armonia                  solo reexporta los cinco (y Hexagonos)
+
+Fuera del paquete, Representaciones usa `Hexagonos` (la geometría de las rejillas hexagonales), que no depende
+de nada, y `Armonia` lo reexporta junto a los cinco.
 
 Un módulo solo puede usar los de su izquierda: Teoria usa Nucleo; Representaciones, Partitura y Trastes
 usan Teoria y Nucleo, y no se usan entre sí. SwiftPM no impide por sí solo importar un módulo que no está
@@ -31,11 +34,13 @@ FUENTES = RAIZ / "Sources"
 PERMITIDO = {
     "ArmoniaNucleo": set(),
     "ArmoniaTeoria": {"ArmoniaNucleo"},
-    "ArmoniaRepresentaciones": {"ArmoniaNucleo", "ArmoniaTeoria"},
+    "ArmoniaRepresentaciones": {"ArmoniaNucleo", "ArmoniaTeoria", "Hexagonos"},
     "ArmoniaPartitura": {"ArmoniaNucleo", "ArmoniaTeoria"},
     "ArmoniaTrastes": {"ArmoniaNucleo", "ArmoniaTeoria"},
 }
 PARAGUAS = "Armonia"
+# Paquetes de fuera que se pueden declarar como dependencia (y que el paraguas reexporta).
+EXTERNOS = {"Hexagonos"}
 # Ficheros permitidos en el módulo paraguas.
 EN_PARAGUAS = {"Exportaciones.swift"}
 
@@ -70,8 +75,8 @@ def main() -> int:
             errores.append(f"Package.swift no declara el módulo {modulo}")
         elif objetivos[modulo] != permitidas:
             errores.append(f"{modulo}: dependencias declaradas {sorted(objetivos[modulo])}, deben ser {sorted(permitidas)}")
-    if objetivos.get(PARAGUAS) != set(PERMITIDO):
-        errores.append(f"{PARAGUAS}: debe depender de {sorted(PERMITIDO)}, y declara {sorted(objetivos.get(PARAGUAS, []))}")
+    if objetivos.get(PARAGUAS) != set(PERMITIDO) | EXTERNOS:
+        errores.append(f"{PARAGUAS}: debe depender de {sorted(set(PERMITIDO) | EXTERNOS)}, y declara {sorted(objetivos.get(PARAGUAS, []))}")
 
     # Ficheros por módulo y tipos declarados.
     ficheros = {}
@@ -114,8 +119,8 @@ def main() -> int:
         if p.name not in EN_PARAGUAS:
             errores.append(f"Sources/{PARAGUAS}/{p.name}: el módulo paraguas solo tiene {sorted(EN_PARAGUAS)}")
         reexportados |= set(re.findall(r"@_exported\s+import\s+(\w+)", p.read_text(encoding="utf-8")))
-    if reexportados != set(PERMITIDO):
-        errores.append(f"{PARAGUAS} reexporta {sorted(reexportados)}, debe reexportar {sorted(PERMITIDO)}")
+    if reexportados != set(PERMITIDO) | EXTERNOS:
+        errores.append(f"{PARAGUAS} reexporta {sorted(reexportados)}, debe reexportar {sorted(set(PERMITIDO) | EXTERNOS)}")
     extra = [p.relative_to(paraguas).as_posix() for p in paraguas.rglob("*.swift") if p.parent != paraguas]
     if extra:
         errores.append(f"Código en subcarpetas de Sources/{PARAGUAS}: {extra}")

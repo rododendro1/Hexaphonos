@@ -250,3 +250,35 @@ paso de P, L o R es aquí una flecha entre dos vértices vecinos del mismo lado.
 TablaArmonica(recorrido: ["Do", "Lam", "Fa"])?.recorrido.count == 3   // true
 TablaArmonica(caminoDesde: "Do", hasta: "Sol7") == nil               // true
 ```
+
+## La rejilla hexagonal y los teclados isomórficos
+
+El Tonnetz y la tabla armónica son la misma rejilla hexagonal, la del paquete `Hexagonos`, que
+`import Armonia` reexporta. Un punto del Tonnetz es la casilla `(q, r)` = (quintas, terceras): los
+seis pasos del Tonnetz son las seis direcciones de la rejilla, y la distancia es la suya. En la
+tabla armónica, la misma rejilla está girada 120° y dibujada con hexágonos planos.
+
+`Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)` dicen dónde cae cada nota en sus
+dibujos, y `punto(en:paso:)` hace el camino de vuelta: de un punto del SVG (donde se ha tocado) a la
+nota.
+
+```swift
+let mi = PuntoDelTonnetz(quintas: 0, terceras: 1)
+mi.coordenada == CoordenadaAxial(q: 0, r: 1)                           // true
+PuntoDelTonnetz(CoordenadaAxial(q: 1, r: 0)).nota == .sol               // true
+Tonnetz.punto(en: Punto(x: 60, y: 3), paso: 64) == PuntoDelTonnetz(quintas: 1, terceras: 0)   // true
+TablaArmonica.coordenada(de: mi) == CoordenadaAxial(q: 1, r: -1)        // true
+```
+
+``TecladoIsomorfico`` generaliza la tabla armónica: cada paso por la rejilla sube siempre los mismos
+semitonos, así que un acorde tiene la misma forma en todas las tonalidades. Trae la tabla armónica,
+Wicki-Hayden y Jankó, y admite cualquier otro con los semitonos de cada eje.
+
+```swift
+let teclado = TecladoIsomorfico.wickiHayden
+teclado.midi(en: CoordenadaAxial(q: 1, r: -1)) == 67                       // true
+teclado.semitonos(hacia: DireccionHexagonal(.noreste, .puntiaguda)!) == 7   // true
+TecladoIsomorfico.tablaArmonica.semitonos(hacia: .sMasRMenos) == 7         // true
+let mapa = FormasDeMapa.rectangulo(columnas: 12, filas: 4, .filasImpares)
+let dibujo = TecladoIsomorfico.janko.svg(mapa, marcadas: [60, 64, 67])
+```

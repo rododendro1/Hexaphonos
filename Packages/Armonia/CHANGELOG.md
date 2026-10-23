@@ -2,6 +2,20 @@
 
 ## Sin publicar
 
+### La rejilla hexagonal
+
+El motor depende ahora del paquete `Hexagonos` (rejillas hexagonales), y `import Armonia` lo reexporta.
+
+- `PuntoDelTonnetz.coordenada` y `PuntoDelTonnetz(_:)` pasan de un punto del Tonnetz a una `CoordenadaAxial` y
+  de vuelta; `distancia(hasta:)` es la de la rejilla (el resultado no cambia).
+- `Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)` dicen dónde dibuja `svg()` cada nota, y
+  `punto(en:paso:)`, qué nota hay bajo un punto del dibujo. Los dos dibujos colocan ya las notas con ellas (el SVG
+  es el mismo, salvo algún `-0.0` que pasa a `0.0`). `TablaArmonica.coordenada(de:)` y `punto(de:)` traducen entre
+  el Tonnetz y la rejilla de la tabla, que es la misma girada 120°.
+- `TecladoIsomorfico`: teclados de botones hexagonales en los que cada dirección sube siempre el mismo intervalo
+  (`.tablaArmonica`, `.wickiHayden`, `.janko` o cualquier otro), con la altura de cada casilla, las casillas de una
+  altura y su dibujo en SVG.
+
 ### Hexaphonos
 
 - El ecosistema pasa a llamarse Hexaphonos: el proyecto de Xcode es `Hexaphonos.xcodeproj`, y el paquete de la

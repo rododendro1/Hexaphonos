@@ -11,11 +11,17 @@ import PackageDescription
 //     ArmoniaPartitura         Modelo, Formatos
 //     ArmoniaTrastes           Encordado, Mastil, Digitacion (instrumentos de cuerda con trastes)
 //
+// La geometría de las rejillas hexagonales (el Tonnetz, la tabla armónica, los teclados isomórficos) viene
+// del paquete `Hexagonos`, que no depende de nada. `ArmoniaRepresentaciones` lo usa y `Armonia` lo reexporta.
+//
 // `Scripts/comprobar_modulos.py` vigila que las dependencias sean estas y no otras.
+
+let hexagonos: Target.Dependency = .product(name: "Hexagonos", package: "Hexagonos")
 
 /// Todos los módulos de la biblioteca, para las pruebas que usan lo interno.
 let modulos: [Target.Dependency] = [
     "Armonia", "ArmoniaNucleo", "ArmoniaTeoria", "ArmoniaRepresentaciones", "ArmoniaPartitura", "ArmoniaTrastes",
+    hexagonos,
 ]
 
 let package = Package(
@@ -33,16 +39,22 @@ let package = Package(
         .library(name: "ArmoniaPartitura", targets: ["ArmoniaPartitura"]),
         .library(name: "ArmoniaTrastes", targets: ["ArmoniaTrastes"]),
     ],
+    dependencies: [
+        .package(path: "../Hexagonos"),
+    ],
     targets: [
         .target(name: "ArmoniaNucleo"),
         .target(name: "ArmoniaTeoria", dependencies: ["ArmoniaNucleo"]),
-        .target(name: "ArmoniaRepresentaciones", dependencies: ["ArmoniaNucleo", "ArmoniaTeoria"]),
+        .target(
+            name: "ArmoniaRepresentaciones",
+            dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", .product(name: "Hexagonos", package: "Hexagonos")]),
         .target(name: "ArmoniaPartitura", dependencies: ["ArmoniaNucleo", "ArmoniaTeoria"]),
         .target(name: "ArmoniaTrastes", dependencies: ["ArmoniaNucleo", "ArmoniaTeoria"]),
-        // El módulo paraguas: reexporta los cinco y guarda la documentación (DocC).
+        // El módulo paraguas: reexporta los cinco y Hexagonos, y guarda la documentación (DocC).
         .target(
             name: "Armonia",
-            dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", "ArmoniaRepresentaciones", "ArmoniaPartitura", "ArmoniaTrastes"]),
+            dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", "ArmoniaRepresentaciones", "ArmoniaPartitura", "ArmoniaTrastes",
+                           .product(name: "Hexagonos", package: "Hexagonos")]),
         // Las pruebas ven lo `internal` de cada módulo con `@testable import`, y por eso dependen de todos.
         .testTarget(name: "ArmoniaTests", dependencies: modulos),
         .testTarget(name: "ArmoniaExhaustivasTests", dependencies: modulos),

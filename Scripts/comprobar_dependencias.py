@@ -21,9 +21,10 @@ PAQUETES = RAIZ / "Packages"
 
 # De más básico a más alto: cada paquete solo puede depender de los anteriores que se listan.
 PERMITIDO = {
-    "Armonia": set(),
-    # Rejillas hexagonales: independiente del motor de armonía.
+    # Rejillas hexagonales: no depende de nada.
     "Hexagonos": set(),
+    # El motor usa su geometría para el Tonnetz, la tabla armónica y los teclados isomórficos.
+    "Armonia": {"Hexagonos"},
     "HexaphonosUI": {"Armonia", "Hexagonos"},
 }
 
