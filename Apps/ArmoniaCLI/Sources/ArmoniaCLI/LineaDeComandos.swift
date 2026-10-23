@@ -33,7 +33,16 @@ public enum LineaDeComandos {
       escala <escala>              notas y acordes de una escala         armonia escala Re dórico
       tonalidad <tonalidad>        armadura, relativas y grados          armonia tonalidad La menor
       analizar <acordes> [--en <tonalidad>]
-                                   cifrado romano y funciones            armonia analizar Do Lam Re7 Sol7 Do
+                                   cifrado romano, funciones, cadencias
+                                   y modulaciones (con su acorde
+                                   pivote; sin --en)                     armonia analizar Do Fa Sol7 Do Lam Re7 Sol
+      armonizar <melodía> [--en <tonalidad>] [--propuestas 3]
+                                   acordes para una melodía, de mejor a
+                                   peor; con octavas (Mi4), también el
+                                   coral a cuatro voces                  armonia armonizar Mi4 Fa4 Re4 Do4
+      realizar <acordes> [--en <tonalidad>]
+                                   los acordes a cuatro voces, sin
+                                   faltas de conducción                  armonia realizar Do Fa Sol7 Do
       revisar <acordes>            faltas de conducción (quintas
                                    paralelas…); acordes de grave a
                                    agudo, separados por comas            armonia revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4
@@ -107,7 +116,16 @@ public enum LineaDeComandos {
       scale <scale>                notes and chords of a scale           armonia scale D dorian
       key <key>                    key signature, relatives and degrees  armonia key A minor
       analyze <chords> [--in <key>]
-                                   roman numerals and functions          armonia analyze C Am D7 G7 C
+                                   roman numerals, functions, cadences
+                                   and modulations (with their pivot
+                                   chord; without --in)                  armonia analyze C F G7 C Am D7 G
+      harmonize <melody> [--in <key>] [--proposals 3]
+                                   chords for a melody, best first; with
+                                   octaves (E4), also the four-part
+                                   chorale                               armonia harmonize E4 F4 D4 C4
+      realize <chords> [--in <key>]
+                                   the chords in four parts, without
+                                   voice-leading errors                  armonia realize C F G7 C
       check <chords>               voice-leading errors (parallel
                                    fifths…); chords from low to high,
                                    separated by commas                   armonia check C3 E4 G4 C5, G2 D4 G4 B4
@@ -202,6 +220,10 @@ public enum LineaDeComandos {
                 return bien(describir(tonalidad: try Tonalidad(leyendo: resto.joined(separator: " ")), notacion))
             case "analizar", "analyze", "analyse":
                 return try analizar(resto, notacion)
+            case "armonizar", "harmonize", "harmonise":
+                return try armonizar(resto, notacion)
+            case "realizar", "realize", "realise":
+                return try realizar(resto, notacion)
             case "revisar", "check", "voces", "voices":
                 guard !resto.isEmpty else { return uso(.faltanAcordesDeLasVoces, notacion) }
                 return bien(describir(conduccion: try ConduccionDeVoces(leyendo: resto.joined(separator: " ")), notacion))

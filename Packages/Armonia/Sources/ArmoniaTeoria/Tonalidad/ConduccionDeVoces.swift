@@ -166,69 +166,79 @@ public struct ConduccionDeVoces: Hashable, Sendable {
     /// Todas las faltas, en orden de aparición.
     public var problemas: [ProblemaDeConduccion] {
         var problemas: [ProblemaDeConduccion] = []
-        func anotar(_ tipo: ProblemaDeConduccion.Tipo, _ acorde: Int, _ voces: [Int]) {
-            problemas.append(ProblemaDeConduccion(tipo: tipo, acorde: acorde, voces: voces, numeroDeVoces: numeroDeVoces))
-        }
         let n = numeroDeVoces
-        let soprano = n - 1
-
         for (i, acorde) in acordes.enumerated() {
-            // En el acorde: cruces, separación y tesituras.
-            for v in 0..<(n - 1) where acorde[v].midi > acorde[v + 1].midi {
-                anotar(.cruceDeVoces, i, [v, v + 1])
-            }
-            for v in 1..<(n - 1) where acorde[v + 1].midi - acorde[v].midi > 12 {
-                anotar(.separacionExcesiva, i, [v, v + 1])
-            }
-            if n == 4 {
-                for v in 0..<4 where !ConduccionDeVoces.tesituras[v].contains(acorde[v].midi) {
-                    anotar(.fueraDeTesitura, i, [v])
-                }
+            ConduccionDeVoces.faltas(en: acorde) { tipo, voces in
+                problemas.append(ProblemaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
             }
             guard i + 1 < acordes.count else { continue }
-            let siguiente = acordes[i + 1]
-
-            // Cada voz: saltos.
-            for v in 0..<n {
-                let salto = siguiente[v] - acorde[v]
-                if case .aumentada = salto.calidad, salto.numero != 1 {
-                    anotar(.saltoNoMelodico, i, [v])
-                } else if salto.semitonos > 12 {
-                    anotar(.saltoNoMelodico, i, [v])
-                }
-            }
-
-            // Voces vecinas: superposición.
-            for v in 0..<(n - 1) {
-                if siguiente[v].midi > acorde[v + 1].midi || siguiente[v + 1].midi < acorde[v].midi {
-                    anotar(.superposicion, i, [v, v + 1])
-                }
-            }
-
-            // Cada pareja de voces: paralelas.
-            for grave in 0..<(n - 1) {
-                for aguda in (grave + 1)..<n {
-                    let antes = ConduccionDeVoces.consonanciaPerfecta(acorde[grave], acorde[aguda])
-                    let despues = ConduccionDeVoces.consonanciaPerfecta(siguiente[grave], siguiente[aguda])
-                    let semueven = acorde[grave] != siguiente[grave] && acorde[aguda] != siguiente[aguda]
-                    if let antes, antes == despues, semueven {
-                        anotar(antes == 5 ? .quintasParalelas : .octavasParalelas, i, [grave, aguda])
-                    }
-                }
-            }
-
-            // Voces extremas: quintas y octavas directas (movimiento directo y salto en el soprano).
-            let movimientoBajo = siguiente[0].midi - acorde[0].midi
-            let movimientoSoprano = siguiente[soprano].midi - acorde[soprano].midi
-            if let despues = ConduccionDeVoces.consonanciaPerfecta(siguiente[0], siguiente[soprano]),
-               ConduccionDeVoces.consonanciaPerfecta(acorde[0], acorde[soprano]) != despues,
-               movimientoBajo != 0, movimientoSoprano != 0,
-               (movimientoBajo > 0) == (movimientoSoprano > 0),
-               abs(movimientoSoprano) > 2 {
-                anotar(despues == 5 ? .quintasDirectas : .octavasDirectas, i, [0, soprano])
+            ConduccionDeVoces.faltas(de: acorde, a: acordes[i + 1]) { tipo, voces in
+                problemas.append(ProblemaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
             }
         }
         return problemas
+    }
+
+    /// Las faltas dentro de un acorde: cruces, separación y tesituras (estas, solo a cuatro voces).
+    package static func faltas(en acorde: [Altura], _ anotar: (ProblemaDeConduccion.Tipo, [Int]) -> Void) {
+        let n = acorde.count
+        for v in 0..<(n - 1) where acorde[v].midi > acorde[v + 1].midi {
+            anotar(.cruceDeVoces, [v, v + 1])
+        }
+        for v in 1..<(n - 1) where acorde[v + 1].midi - acorde[v].midi > 12 {
+            anotar(.separacionExcesiva, [v, v + 1])
+        }
+        if n == 4 {
+            for v in 0..<4 where !tesituras[v].contains(acorde[v].midi) {
+                anotar(.fueraDeTesitura, [v])
+            }
+        }
+    }
+
+    /// Las faltas al pasar de un acorde al siguiente: saltos, superposiciones, paralelas y directas.
+    package static func faltas(de acorde: [Altura], a siguiente: [Altura], _ anotar: (ProblemaDeConduccion.Tipo, [Int]) -> Void) {
+        let n = acorde.count
+        let soprano = n - 1
+
+        // Cada voz: saltos.
+        for v in 0..<n {
+            let salto = siguiente[v] - acorde[v]
+            if case .aumentada = salto.calidad, salto.numero != 1 {
+                anotar(.saltoNoMelodico, [v])
+            } else if salto.semitonos > 12 {
+                anotar(.saltoNoMelodico, [v])
+            }
+        }
+
+        // Voces vecinas: superposición.
+        for v in 0..<(n - 1) {
+            if siguiente[v].midi > acorde[v + 1].midi || siguiente[v + 1].midi < acorde[v].midi {
+                anotar(.superposicion, [v, v + 1])
+            }
+        }
+
+        // Cada pareja de voces: paralelas.
+        for grave in 0..<(n - 1) {
+            for aguda in (grave + 1)..<n {
+                let antes = consonanciaPerfecta(acorde[grave], acorde[aguda])
+                let despues = consonanciaPerfecta(siguiente[grave], siguiente[aguda])
+                let semueven = acorde[grave] != siguiente[grave] && acorde[aguda] != siguiente[aguda]
+                if let antes, antes == despues, semueven {
+                    anotar(antes == 5 ? .quintasParalelas : .octavasParalelas, [grave, aguda])
+                }
+            }
+        }
+
+        // Voces extremas: quintas y octavas directas (movimiento directo y salto en el soprano).
+        let movimientoBajo = siguiente[0].midi - acorde[0].midi
+        let movimientoSoprano = siguiente[soprano].midi - acorde[soprano].midi
+        if let despues = consonanciaPerfecta(siguiente[0], siguiente[soprano]),
+           consonanciaPerfecta(acorde[0], acorde[soprano]) != despues,
+           movimientoBajo != 0, movimientoSoprano != 0,
+           (movimientoBajo > 0) == (movimientoSoprano > 0),
+           abs(movimientoSoprano) > 2 {
+            anotar(despues == 5 ? .quintasDirectas : .octavasDirectas, [0, soprano])
+        }
     }
 
     /// `true` si no hay ninguna falta.

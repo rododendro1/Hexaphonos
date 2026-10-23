@@ -45,6 +45,24 @@ I–vi–V7/V–V7–I en Do mayor
   Re7       V7/V      dominante
   Sol7      V7        dominante
   Do        I         tónica
+Cadencia auténtica V7–I (acordes 4 → 5)
+
+$ swift run armonia analizar Do Fa Sol7 Do Lam Re7 Sol
+I–IV–V7–I en Do mayor → ii–V7–I en Sol mayor
+  …
+De Do mayor a Sol mayor en el acorde 5 (pivote: Lam = vi en Do mayor = ii en Sol mayor)
+  …
+
+$ swift run armonia armonizar Mi4 Fa4 Re4 Do4
+Do mayor
+  1. Do Fa Sol Do (I–IV–V–I)
+  2. Do Fa Sol7 Do (I–IV–V7–I)
+  3. Do Rem Sol Do (I–ii–V–I)
+A cuatro voces (bajo, tenor, contralto, soprano):
+  Do        I         Do3 Sol3 Do4 Mi4
+  Fa        IV        Fa2 La3 Do4 Fa4
+  Sol       V         Sol2 Sol3 Si3 Re4
+  Do        I         Do3 Mi3 Do4 Do4
 
 $ swift run armonia revisar Do3 Sol3 Mi4 Do5, Re3 La3 Fa4 Re5
 Quintas paralelas entre bajo y tenor (acordes 1 → 2)
@@ -65,6 +83,12 @@ $ swift run armonia plr Do PLR
 Do –P→ Dom –L→ La♭ –R→ Fam
 PLR, 3 pasos
 ```
+
+`analizar` señala las cadencias (auténtica, plagal, rota y semicadencia) y, sin `--en`, parte la progresión en
+tramos por tonalidad, con el acorde pivote de cada modulación. `armonizar` propone acordes para una melodía, de
+mejor a peor, y si las notas llevan octava la escribe a cuatro voces con la melodía en el soprano; `realizar`
+escribe unos acordes a cuatro voces. Las dos dan corales sin faltas de conducción, que se pueden pasar a
+`revisar` o a `musicxml coral`.
 
 `midi` escribe lo mismo como fichero MIDI para oírlo (con `--programa` de General MIDI).
 `musicxml` escribe una partitura que se abre en MuseScore, Finale, Sibelius o Dorico: una

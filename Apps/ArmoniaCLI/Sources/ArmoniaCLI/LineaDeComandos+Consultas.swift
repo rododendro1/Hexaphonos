@@ -93,16 +93,37 @@ extension LineaDeComandos {
             acordes = Array(acordes[..<i])
         }
         guard !acordes.isEmpty else { return uso(.faltanAcordesDelAnalisis, notacion) }
-        let analisis = try AnalisisArmonico.analizar(leyendo: acordes.joined(separator: " "), en: tonalidad)
-        var lineas = [analisis.nombre(en: notacion)]
-        // Columnas de al menos 10 caracteres, más anchas si un cifrado no cabe.
-        let ancho1 = max(10, (analisis.acordes.map { $0.acorde.cifrado(en: notacion).count }.max() ?? 0) + 2)
-        let ancho2 = max(10, (analisis.acordes.map(\.cifrado.count).max() ?? 0) + 2)
-        for analizado in analisis.acordes {
-            let funcion = analizado.funcion?.nombre(en: notacion) ?? "–"
-            let cifrado = analizado.acorde.cifrado(en: notacion)
-            lineas.append("  " + cifrado.padding(hasta: ancho1) + analizado.cifrado.padding(hasta: ancho2) + funcion)
+        let texto = acordes.joined(separator: " ")
+        // Con la tonalidad dada, sin modulaciones; si no, en tramos.
+        let tramos: [(cabecera: String?, analisis: AnalisisArmonico)]
+        let titulo: String
+        let cadencias: [Cadencia]
+        if let tonalidad {
+            let analisis = try AnalisisArmonico.analizar(leyendo: texto, en: tonalidad)
+            tramos = [(nil, analisis)]
+            titulo = analisis.nombre(en: notacion)
+            cadencias = analisis.cadencias
+        } else {
+            let recorrido = try RecorridoTonal(leyendo: texto)
+            let cabeceras = [nil] + recorrido.modulaciones.map { Optional($0.descripcion(en: notacion)) }
+            tramos = zip(cabeceras, recorrido.tramos.map(\.analisis)).map { ($0, $1) }
+            titulo = recorrido.nombre(en: notacion)
+            cadencias = recorrido.cadencias
         }
+        var lineas = [titulo]
+        let todos = tramos.flatMap(\.analisis.acordes)
+        // Columnas de al menos 10 caracteres, más anchas si un cifrado no cabe.
+        let ancho1 = max(10, (todos.map { $0.acorde.cifrado(en: notacion).count }.max() ?? 0) + 2)
+        let ancho2 = max(10, (todos.map(\.cifrado.count).max() ?? 0) + 2)
+        for tramo in tramos {
+            if let cabecera = tramo.cabecera { lineas.append(cabecera) }
+            for analizado in tramo.analisis.acordes {
+                let funcion = analizado.funcion?.nombre(en: notacion) ?? "–"
+                let cifrado = analizado.acorde.cifrado(en: notacion)
+                lineas.append("  " + cifrado.padding(hasta: ancho1) + analizado.cifrado.padding(hasta: ancho2) + funcion)
+            }
+        }
+        lineas += cadencias.map { $0.descripcion(en: notacion) }
         return bien(lineas.joined(separator: "\n"))
     }
 

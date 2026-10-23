@@ -2,6 +2,23 @@
 
 ## Sin publicar
 
+### Cadencias, modulaciones y armonización
+
+- `AnalisisArmonico.cadencias`: las cadencias de la progresión (`Cadencia`, con su `Tipo`: auténtica, plagal, rota
+  y semicadencia), dónde están y si la auténtica es perfecta (`esPerfecta`).
+- `RecorridoTonal`: parte una progresión en tramos (`TramoTonal`), cada uno en su tonalidad, con sus modulaciones
+  (`Modulacion`) y el acorde pivote de cada una (`AcordePivote`: «Lam = vi en Do mayor = ii en Sol mayor»). Una
+  tonalidad nueva se confirma con una cadencia auténtica; si no, es una tonicalización y no se parte.
+- `Tonalidad.acordes(para:)`: los acordes de la tonalidad que tienen una nota, ordenados por coste.
+  `Tonalidad.armonizar(melodia:propuestas:)`: las mejores armonizaciones de una melodía (`Armonizacion`), de menor a
+  mayor coste, según la armonía funcional y terminando en cadencia.
+- `ConduccionDeVoces.realizar(_:soprano:en:)`: escribe unos acordes a cuatro voces sin ninguna falta de las que
+  comprueba `problemas`, moviendo las voces lo menos posible, con el soprano fijado si se da.
+  `Tonalidad.armonizarACuatroVoces(_:)` armoniza una melodía y la escribe como coral con la melodía en el soprano.
+- En la línea de comandos, `analizar` escribe las cadencias y, sin `--en`, las modulaciones con su pivote;
+  `armonizar` (`harmonize`) propone acordes para una melodía y, con octavas, escribe el coral; `realizar`
+  (`realize`) escribe unos acordes a cuatro voces.
+
 ### Paquetes
 
 - El repositorio tiene un `Package.swift` en la raíz, para usar el motor desde otro proyecto:
