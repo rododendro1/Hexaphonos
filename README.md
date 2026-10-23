@@ -15,7 +15,7 @@ Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
-├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, VistaSVG, tema) y lo que comparten las apps:
+├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
 │                   el selector de notación y su ajuste
 └── Hexagonos/      Rejillas hexagonales: coordenadas axiales, cúbicas, desplazadas y dobladas, vecinos, distancias,
                     líneas, regiones, rotaciones y el paso a píxeles (independiente del motor)
@@ -27,10 +27,9 @@ project.yml         Definición del proyecto de Xcode (XcodeGen)
 ## Dependencias
 
 ```
-ArmoniaApp ──┬──► HexaphonosUI ──► Armonia
-TonnetzApp ──┘
+ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia
+TonnetzApp ──┘                  └──► Hexagonos
 ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo ──► Armonia
-Hexagonos (sin dependencias)
 ```
 
 Un paquete solo depende de los que tiene debajo, y nunca de una app. La línea de comandos (`ArmoniaCLI`) y

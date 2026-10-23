@@ -22,9 +22,9 @@ PAQUETES = RAIZ / "Packages"
 # De más básico a más alto: cada paquete solo puede depender de los anteriores que se listan.
 PERMITIDO = {
     "Armonia": set(),
-    "HexaphonosUI": {"Armonia"},
     # Rejillas hexagonales: independiente del motor de armonía.
     "Hexagonos": set(),
+    "HexaphonosUI": {"Armonia", "Hexagonos"},
 }
 
 errores = []

@@ -23,7 +23,7 @@ disposicion.casilla(en: Punto(x: 40, y: 10))   // qué casilla se ha tocado
 | Tema         | Tipos y funciones                                                                    |
 |--------------|--------------------------------------------------------------------------------------|
 | Coordenadas  | `CoordenadaAxial`, `CoordenadaCubica`, `CoordenadaDesplazada` (cuatro variantes), `CoordenadaDoblada` (dos), `CoordenadaFraccionaria` y las conversiones entre ellas |
-| Vecindad     | `vecinos`, `vecinosDiagonales`, `direccion(hacia:)`, `distancia(a:)`                 |
+| Vecindad     | `DireccionHexagonal` (con su punto cardinal en cada orientación), `vecinos`, `vecinosDiagonales`, `direccion(hacia:)`, `distancia(a:)` |
 | Líneas       | `linea(hasta:)`, `ve(_:tapada:)`, `visibles(en:tapada:)`                             |
 | Regiones     | `alcance(radio:)`, `interseccion(de:)`, `anillo(radio:)`, `espiral(radio:)`, `FormasDeMapa` |
 | Movimiento   | `alcanzables(movimientos:bloqueada:)`, `camino(hasta:por:)`                          |

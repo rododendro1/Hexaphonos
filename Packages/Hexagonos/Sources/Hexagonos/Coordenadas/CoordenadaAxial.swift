@@ -96,7 +96,8 @@ extension CoordenadaAxial {
         CoordenadaAxial(q: -2, r: 1), CoordenadaAxial(q: -1, r: 2), CoordenadaAxial(q: 1, r: 1),
     ]
 
-    /// La vecina en la dirección `direccion` (de ``direcciones``; cualquier entero vale, se toma módulo 6).
+    /// La vecina en la dirección número `direccion` (de ``direcciones``; cualquier entero vale, se toma
+    /// módulo 6). Con nombre, `vecino(_: DireccionHexagonal)`.
     public func vecino(_ direccion: Int) -> CoordenadaAxial {
         self + Self.direcciones[modulo(direccion, 6)]
     }
@@ -116,9 +117,9 @@ extension CoordenadaAxial {
         Self.diagonales.map { self + $0 }
     }
 
-    /// El número de la dirección que lleva a `otra`, si es vecina; `nil` si no lo es.
-    public func direccion(hacia otra: CoordenadaAxial) -> Int? {
-        Self.direcciones.firstIndex(of: otra - self)
+    /// La dirección que lleva a `otra`, si es vecina; `nil` si no lo es.
+    public func direccion(hacia otra: CoordenadaAxial) -> DireccionHexagonal? {
+        Self.direcciones.firstIndex(of: otra - self).map(DireccionHexagonal.init(numero:))
     }
 
     /// Si `otra` es una de las seis vecinas.

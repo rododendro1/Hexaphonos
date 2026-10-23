@@ -44,6 +44,11 @@ Los algoritmos y las convenciones siguen la guía de Red Blob Games sobre rejill
 - ``CoordenadaDoblada``
 - ``Doblado``
 
+### Direcciones
+
+- ``DireccionHexagonal``
+- ``PuntoCardinal``
+
 ### Regiones y simetrías
 
 - ``FormasDeMapa``
