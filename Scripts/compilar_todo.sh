@@ -43,11 +43,10 @@ omitir() { printf '==> %s\n    omitido: %s\n' "$1" "$2"; }
 paso "Comprobaciones (higiene, dependencias, DocC)" . sh -c '
     python3 Scripts/comprobar_higiene.py &&
     python3 Scripts/comprobar_dependencias.py &&
-    (cd Packages/Armonia &&
-     python3 Scripts/comprobar_modulos.py &&
-     python3 Scripts/comprobar_catalogo.py &&
-     python3 Scripts/comprobar_enlaces_docc.py &&
-     python3 Scripts/generar_pruebas_de_documentacion.py --comprobar)'
+    python3 Scripts/comprobar_modulos.py &&
+    python3 Scripts/comprobar_catalogo.py &&
+    python3 Scripts/comprobar_enlaces_docc.py &&
+    python3 Scripts/generar_pruebas_de_documentacion.py --comprobar'
 
 if ! command -v swift >/dev/null 2>&1; then
     printf '\nNo hay Swift en esta máquina: instala Xcode (macOS) o la cadena de herramientas de swift.org.\n'
@@ -72,7 +71,7 @@ if [ "$MOTOR_COMPILA" = 1 ]; then
         paso "Motor: pruebas rápidas" Packages/Armonia swift test --skip-build --parallel --filter '^ArmoniaTests\.'
         paso "Motor: ejemplos de la documentación" Packages/Armonia swift test --skip-build --parallel --filter '^ArmoniaDocumentacionTests\.'
         if [ "$RAPIDO" = 0 ]; then
-            paso "Motor: pruebas exhaustivas" Packages/Armonia swift test --skip-build --parallel --filter '^ArmoniaPruebasExhaustivas\.'
+            paso "Motor: pruebas exhaustivas" Packages/Armonia swift test --skip-build --parallel --filter '^ArmoniaExhaustivasTests\.'
         fi
     fi
 else
@@ -83,7 +82,7 @@ fi
 if [ "$MOTOR_COMPILA" = 1 ]; then
     paso "Línea de comandos: compilar" Apps/ArmoniaCLI swift build &&
         paso "Línea de comandos: pruebas" Apps/ArmoniaCLI swift test --parallel
-    paso "Ejemplo: ejecutar" Apps/ArmoniaEjemplo swift run ArmoniaEjemplo
+    paso "Ejemplo: ejecutar" Ejemplos/ArmoniaEjemplo swift run ArmoniaEjemplo
     paso "SepirizUI: compilar" Packages/SepirizUI swift build &&
         paso "SepirizUI: pruebas" Packages/SepirizUI swift test --parallel
 else

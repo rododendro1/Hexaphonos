@@ -103,13 +103,13 @@ con *Product › Build Documentation*. También se puede leer directamente:
 swift build
 swift test                                    # todas las pruebas
 swift test --filter "^ArmoniaTests\."          # sólo las rápidas (segundos)
-swift test --filter "^ArmoniaPruebasExhaustivas\."  # sólo las exhaustivas
+swift test --filter "^ArmoniaExhaustivasTests\."  # sólo las exhaustivas
 swift test --filter "^ArmoniaDocumentacionTests\."  # los ejemplos del README y de DocC
-python3 Scripts/generar_pruebas_de_documentacion.py # regenera esas pruebas tras cambiar un ejemplo
+python3 ../../Scripts/generar_pruebas_de_documentacion.py # regenera esas pruebas tras cambiar un ejemplo
 ```
 
 La herramienta `armonia` y el ejemplo (`swift run ArmoniaEjemplo`) son paquetes aparte, en
-`Apps/ArmoniaCLI` y `Apps/ArmoniaEjemplo`, y se construyen y prueban desde allí.
+`Apps/ArmoniaCLI` y `Ejemplos/ArmoniaEjemplo`, y se construyen y prueban desde allí.
 
 Requiere Swift 5.9 o posterior (macOS 13 / iOS 16 en las plataformas de Apple); sin dependencias (sólo Foundation
 para `pow`).
@@ -121,7 +121,7 @@ Los cambios de cada versión, con la guía para actualizar, están en [CHANGELOG
 La biblioteca son cinco módulos por capas, y `Armonia` los reexporta: `import Armonia` da toda la API, e
 `import ArmoniaTeoria` (con `ArmoniaNucleo`, de que depende) solo los acordes, las escalas y las tonalidades.
 Lo interno que se usa entre capas es `package`, no público. Un módulo solo usa los de su izquierda, y
-`Scripts/comprobar_modulos.py` lo vigila:
+`Scripts/comprobar_modulos.py`, en la raíz del repositorio, lo vigila:
 
     ArmoniaNucleo ◄── ArmoniaTeoria ◄──┬── ArmoniaRepresentaciones
                                        ├── ArmoniaPartitura
@@ -185,7 +185,7 @@ de acorde y de escala, instrumentos) siguen junto a su catálogo.
 Las pruebas rápidas están en `Tests/ArmoniaTests/`, un fichero por carpeta de fuentes
 (`FundamentosTests.swift`, `TonalidadTests.swift`, `PartituraTests.swift`…) más `GeneralTests.swift`, solo con lo que atraviesa todo el motor
 (literales, Codable y convenciones de nombres). Las exhaustivas
-están en un objetivo aparte, `Tests/ArmoniaPruebasExhaustivas/PruebasExhaustivas.swift`. Las de la
+están en un objetivo aparte, `Tests/ArmoniaExhaustivasTests/ExhaustivasTests.swift`. Las de la
 línea de comandos están con ella, en `Apps/ArmoniaCLI/Tests/`.
 
 ### Capas
@@ -208,7 +208,7 @@ pruebas rápidas y después las exhaustivas, así un fallo corriente se ve antes
 
 ### Pruebas exhaustivas
 
-El objetivo `ArmoniaPruebasExhaustivas` reúne las pruebas que recorren espacios completos:
+El objetivo `ArmoniaExhaustivasTests` reúne las pruebas que recorren espacios completos:
 `ConjuntoDeClasesExhaustivoTests` (los 4.096 subconjuntos de las doce clases y sus 223
 nombres de Forte), `IdentificacionPorAlturaExhaustivaTests` (cada tipo predefinido sobre las
 12 fundamentales, identificado desde MIDI) e `IdaYVueltaTests`, que recorre espacios completos en lugar de ejemplos sueltos: los 2¹⁵

@@ -20,7 +20,7 @@ import re
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parent.parent / "Sources" / "ArmoniaTeoria" / "Escalas"
+RAIZ = Path(__file__).resolve().parent.parent / "Packages" / "Armonia" / "Sources" / "ArmoniaTeoria" / "Escalas"
 FICHEROS = sorted(RAIZ.rglob("*.swift"))
 TEXTO = {f: re.sub(r"//.*", "", f.read_text(encoding="utf-8")) for f in FICHEROS}
 

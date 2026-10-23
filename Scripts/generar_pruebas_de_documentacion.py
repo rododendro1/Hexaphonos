@@ -22,7 +22,7 @@ import pathlib
 import re
 import sys
 
-RAIZ = pathlib.Path(__file__).resolve().parent.parent
+RAIZ = pathlib.Path(__file__).resolve().parent.parent / "Packages" / "Armonia"
 FUENTES = [RAIZ / "README.md"] + sorted((RAIZ / "Sources/Armonia/Armonia.docc").glob("*.md"))
 DESTINO = RAIZ / "Tests/ArmoniaDocumentacionTests/EjemplosDeDocumentacionTests.swift"
 
