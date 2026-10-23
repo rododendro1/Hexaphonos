@@ -89,7 +89,11 @@ else
     omitir "Línea de comandos, ejemplo y HexaphonosUI" "el motor no compila"
 fi
 
-# 4. Las apps de SwiftUI, solo en macOS y con XcodeGen.
+# 4. Las rejillas hexagonales: no dependen del motor.
+paso "Hexagonos: compilar" Packages/Hexagonos swift build &&
+    paso "Hexagonos: pruebas" Packages/Hexagonos swift test --parallel
+
+# 5. Las apps de SwiftUI, solo en macOS y con XcodeGen.
 if [ "$RAPIDO" = 1 ]; then
     omitir "Apps de Xcode" "--rapido"
 elif [ "$(uname)" != "Darwin" ]; then

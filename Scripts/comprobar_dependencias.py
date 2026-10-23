@@ -23,6 +23,8 @@ PAQUETES = RAIZ / "Packages"
 PERMITIDO = {
     "Armonia": set(),
     "HexaphonosUI": {"Armonia"},
+    # Rejillas hexagonales: independiente del motor de armonía.
+    "Hexagonos": set(),
 }
 
 errores = []
