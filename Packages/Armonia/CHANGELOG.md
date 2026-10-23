@@ -2,6 +2,16 @@
 
 ## Sin publicar
 
+### Nombres de tipos
+
+Los nombres anteriores se siguen aceptando, marcados como obsoletos.
+
+- `Tonnetz.Arista.Intervalo` pasa a `Tonnetz.Arista.Eje`, y la propiedad `intervalo` a `eje`: son los tres ejes de la
+  red (quinta justa, tercera mayor y tercera menor), y el nombre tapaba a `Intervalo` dentro de `Tonnetz`.
+- `TablaArmonica.Modo` pasa a `TablaArmonica.Colocacion`, y la propiedad `modo` a `colocacion`: dice cómo se colocaron
+  las notas, y «modo» ya es `Tonalidad.Modo`.
+- `Razon` pasa a `RazonDeFrecuencias`.
+
 ### Carpetas
 
 - El objetivo de pruebas `ArmoniaPruebasExhaustivas` pasa a `ArmoniaExhaustivasTests`, como los demás

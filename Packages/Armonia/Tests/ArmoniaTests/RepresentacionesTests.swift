@@ -41,8 +41,8 @@ final class AfinacionTests: XCTestCase {
         }
         XCTAssertEqual((-Intervalo.terceraMayor).razonJusta.description, "4/5")
         XCTAssertEqual(Intervalo.terceraMayor.razonJusta.cents, 386.313_7, accuracy: 1e-3)
-        XCTAssertEqual(Razon.comaSintonica.cents, 21.506, accuracy: 1e-3)
-        XCTAssertEqual(Razon.comaPitagorica.cents, 23.460, accuracy: 1e-3)
+        XCTAssertEqual(RazonDeFrecuencias.comaSintonica.cents, 21.506, accuracy: 1e-3)
+        XCTAssertEqual(RazonDeFrecuencias.comaPitagorica.cents, 23.460, accuracy: 1e-3)
     }
 
     func testEntonacionJusta() {

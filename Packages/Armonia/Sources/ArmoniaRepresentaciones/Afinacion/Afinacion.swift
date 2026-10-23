@@ -131,8 +131,11 @@ public struct EntonacionJusta: Afinacion, Hashable {
     }
 }
 
+@available(*, deprecated, renamed: "RazonDeFrecuencias")
+public typealias Razon = RazonDeFrecuencias
+
 /// Razón de frecuencias como fracción (5/4, 3/2, 45/32…).
-public struct Razon: Hashable, Sendable, CustomStringConvertible {
+public struct RazonDeFrecuencias: Hashable, Sendable, CustomStringConvertible {
     public let numerador: Double
     public let denominador: Double
 
@@ -152,16 +155,16 @@ public struct Razon: Hashable, Sendable, CustomStringConvertible {
     }
 
     /// Coma sintónica (81/80): la diferencia entre cuatro quintas puras y una tercera pura.
-    public static let comaSintonica = Razon(81, 80)
+    public static let comaSintonica = RazonDeFrecuencias(81, 80)
     /// Coma pitagórica (531441/524288): doce quintas puras frente a siete octavas.
-    public static let comaPitagorica = Razon(531_441, 524_288)
+    public static let comaPitagorica = RazonDeFrecuencias(531_441, 524_288)
 }
 
 extension Intervalo {
     /// Razón justa de 5 límites del intervalo, con el mismo criterio que `EntonacionJusta`
     /// (como si la nota grave fuera la tónica): 3ª mayor → 5/4, 3ª menor → 6/5,
     /// 7ª mayor → 15/8, 4ª aumentada → 45/32. Si el intervalo desciende, la razón es menor que 1.
-    public var razonJusta: Razon {
+    public var razonJusta: RazonDeFrecuencias {
         let q = pasosDeQuintaConSigno
         let o = pasosDeOctavaConSigno
         let terceras = divisionEntera(q + 1, 4)
@@ -171,7 +174,7 @@ extension Intervalo {
             if exponente >= 0 { numerador *= pow(base, Double(exponente)) }
             else { denominador *= pow(base, Double(-exponente)) }
         }
-        return Razon(numerador, denominador)
+        return RazonDeFrecuencias(numerador, denominador)
     }
 
     /// Tamaño en cents en un temperamento (temperamento igual por defecto).

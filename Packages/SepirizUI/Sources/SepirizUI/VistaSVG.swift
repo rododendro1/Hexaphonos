@@ -4,7 +4,7 @@ import WebKit
 
 /// Muestra un dibujo SVG (el de `Tonnetz.svg()` o `TablaArmonica.svg()`), que se ajusta al tamaño
 /// disponible. Usa un `WKWebView`, así que el texto y las flechas son los mismos que en un fichero `.svg`.
-public struct SVGView {
+public struct VistaSVG {
     public let svg: String
 
     public init(svg: String) {
@@ -40,15 +40,15 @@ public struct SVGView {
     func cargar(en vista: WKWebView, _ coordinador: Coordinador) {
         guard coordinador.ultimo != svg else { return }
         coordinador.ultimo = svg
-        vista.loadHTMLString(SVGView.pagina(svg), baseURL: nil)
+        vista.loadHTMLString(VistaSVG.pagina(svg), baseURL: nil)
     }
 }
 
 #if os(macOS)
-extension SVGView: NSViewRepresentable {
+extension VistaSVG: NSViewRepresentable {
     public func makeNSView(context: Context) -> WKWebView {
         // La página trae su propio fondo blanco: no hace falta un fondo transparente.
-        SVGView.crearVista()
+        VistaSVG.crearVista()
     }
 
     public func updateNSView(_ vista: WKWebView, context: Context) {
@@ -56,9 +56,9 @@ extension SVGView: NSViewRepresentable {
     }
 }
 #else
-extension SVGView: UIViewRepresentable {
+extension VistaSVG: UIViewRepresentable {
     public func makeUIView(context: Context) -> WKWebView {
-        let vista = SVGView.crearVista()
+        let vista = VistaSVG.crearVista()
         vista.isOpaque = false
         vista.backgroundColor = .clear
         vista.scrollView.isScrollEnabled = false
@@ -70,4 +70,7 @@ extension SVGView: UIViewRepresentable {
     }
 }
 #endif
+
+@available(*, deprecated, renamed: "VistaSVG")
+public typealias SVGView = VistaSVG
 #endif

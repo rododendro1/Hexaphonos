@@ -10,12 +10,12 @@ final class TablaArmonicaTests: XCTestCase {
 
     func testNotas() {
         let tabla = TablaArmonica(Acorde("Do"))
-        XCTAssertEqual(tabla.modo, .notas)
+        XCTAssertEqual(tabla.colocacion, .notas)
         XCTAssertEqual(tabla.puntos, Tonnetz(Acorde("Do")).puntos)
         XCTAssertEqual(tabla.triadas.map(\.acorde), [Acorde("Do")])
         XCTAssertEqual("\(tabla)", "Do (0, 0) · Mi (0, 1) · Sol (1, 0)")
         XCTAssertTrue(TablaArmonica(Escala(.re, .dorico)).esConexo)
-        XCTAssertEqual(TablaArmonica(ConjuntoDeClases([0, 3, 7])).modo, .clasesDeAltura)
+        XCTAssertEqual(TablaArmonica(ConjuntoDeClases([0, 3, 7])).colocacion, .clasesDeAltura)
         // La forma es la misma en todas las tonalidades: transportar es desplazar los hexágonos.
         let forma = { (tabla: TablaArmonica) -> [PuntoDelTonnetz] in
             tabla.puntos.map { self.punto($0.quintas - tabla.puntos[0].quintas, $0.terceras - tabla.puntos[0].terceras) }
@@ -31,7 +31,7 @@ final class TablaArmonicaTests: XCTestCase {
         XCTAssertEqual(TablaArmonica.midi(de: punto(0, 1)), 64)    // una tercera mayor arriba
         XCTAssertEqual(TablaArmonica.midi(de: punto(1, -1)), 63)   // una tercera menor arriba
         let abierta = TablaArmonica([Altura("Do3"), Altura("Sol3"), Altura("Mi4"), Altura("Si4")])
-        XCTAssertEqual(abierta.modo, .alturas)
+        XCTAssertEqual(abierta.colocacion, .alturas)
         XCTAssertEqual(abierta.puntos.map(TablaArmonica.midi), [48, 55, 64, 71])
         // Do4, Mi4 y Sol4 son una tríada; Do3, Mi4 y Sol4 no: en la tabla suenan las alturas.
         XCTAssertEqual(TablaArmonica([Altura("Do4"), Altura("Mi4"), Altura("Sol4")]).triadas.count, 1)

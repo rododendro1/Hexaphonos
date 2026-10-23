@@ -66,7 +66,7 @@ struct VistaAcordes: View {
                             Text(forma.cifra).font(.system(.body, design: .monospaced))
                             Text(descripcionDeDedos(de: forma)).font(.caption).foregroundColor(.secondary)
                         }
-                        MastilView(digitacion: forma, acorde: acorde, notacion: notacion)
+                        DiagramaDeMastil(digitacion: forma, acorde: acorde, notacion: notacion)
                             .frame(maxHeight: 120)
                     }
                 }

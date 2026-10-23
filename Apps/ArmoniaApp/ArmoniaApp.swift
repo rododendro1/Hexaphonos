@@ -5,14 +5,14 @@ import Armonia
 struct ArmoniaApp: App {
     var body: some Scene {
         WindowGroup {
-            RaizView()
+            VistaRaiz()
         }
     }
 }
 
 /// Las tres vistas de la app. Cada una tiene en su barra el selector de notación, que comparten
 /// con el ajuste `notacion`.
-struct RaizView: View {
+struct VistaRaiz: View {
     var body: some View {
         TabView {
             NavigationStack { VistaAcordes() }

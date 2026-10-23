@@ -92,10 +92,16 @@ public struct Tonnetz: Hashable, Sendable {
 
     /// Dos puntos vecinos de la red.
     public struct Arista: Hashable, Sendable {
-        public enum Intervalo: Hashable, Sendable { case quintaJusta, terceraMayor, terceraMenor }
+        /// El eje de la red que sigue la arista: quinta justa, tercera mayor o tercera menor.
+        public enum Eje: Hashable, Sendable { case quintaJusta, terceraMayor, terceraMenor }
         public let desde: PuntoDelTonnetz
         public let hasta: PuntoDelTonnetz
-        public let intervalo: Intervalo
+        public let eje: Eje
+
+        @available(*, deprecated, renamed: "Eje")
+        public typealias Intervalo = Eje
+        @available(*, deprecated, renamed: "eje")
+        public var intervalo: Eje { eje }
     }
 
     /// Los puntos de las notas, en el orden en que se dieron (sin repetir).
@@ -182,9 +188,9 @@ public struct Tonnetz: Hashable, Sendable {
         let conjunto = Set(puntos)
         var aristas: [Arista] = []
         for punto in puntos {
-            for (paso, intervalo) in [((1, 0), Arista.Intervalo.quintaJusta), ((0, 1), .terceraMayor), ((1, -1), .terceraMenor)] {
+            for (paso, eje) in [((1, 0), Arista.Eje.quintaJusta), ((0, 1), .terceraMayor), ((1, -1), .terceraMenor)] {
                 let otro = PuntoDelTonnetz(quintas: punto.quintas + paso.0, terceras: punto.terceras + paso.1)
-                if conjunto.contains(otro) { aristas.append(Arista(desde: punto, hasta: otro, intervalo: intervalo)) }
+                if conjunto.contains(otro) { aristas.append(Arista(desde: punto, hasta: otro, eje: eje)) }
             }
         }
         return aristas

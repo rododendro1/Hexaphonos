@@ -55,7 +55,7 @@ struct VistaEscalas: View {
                 }
             }
             Section("Mástil de guitarra") {
-                MastilView(mastil: Mastil(.guitarra, trastes: 12), escala: escala, notacion: notacion)
+                DiagramaDeMastil(mastil: Mastil(.guitarra, trastes: 12), escala: escala, notacion: notacion)
             }
         }
         .navigationTitle("Escalas")
