@@ -89,9 +89,74 @@ final class LineaDeComandosTests: XCTestCase {
               Re7       V7/V      dominante
               Sol7      V7        dominante
               Do        I         tónica
+            Cadencia auténtica V7–I (acordes 4 → 5)
 
             """)
         XCTAssertTrue(salida("analizar Lam Rem Mi7 La --en La menor").hasPrefix("i–iv–V7–I en La menor\n"))
+        XCTAssertTrue(salida("analizar Do Lam Fa Sol").hasSuffix("Semicadencia IV–V (acordes 3 → 4)\n"))
+    }
+
+    func testAnalizarModulaciones() {
+        XCTAssertEqual(salida("analizar Do Fa Sol7 Do Lam Re7 Sol"), """
+            I–IV–V7–I en Do mayor → ii–V7–I en Sol mayor
+              Do        I         tónica
+              Fa        IV        subdominante
+              Sol7      V7        dominante
+              Do        I         tónica
+            De Do mayor a Sol mayor en el acorde 5 (pivote: Lam = vi en Do mayor = ii en Sol mayor)
+              Lam       ii        subdominante
+              Re7       V7        dominante
+              Sol       I         tónica
+            Cadencia auténtica V7–I (acordes 3 → 4)
+            Cadencia auténtica V7–I (acordes 6 → 7)
+
+            """)
+        XCTAssertTrue(salida("analyze C G C F Dm E7 Am --ingles")
+            .contains("From C major to A minor at chord 5 (pivot: Dm = ii in C major = iv in A minor)"))
+        // Con la tonalidad dada no se buscan modulaciones.
+        XCTAssertFalse(salida("analizar Do Fa Sol7 Do Lam Re7 Sol --en Do mayor").contains("De Do mayor a"))
+    }
+
+    func testArmonizar() {
+        XCTAssertEqual(salida("armonizar Mi4 Fa4 Re4 Do4"), """
+            Do mayor
+              1. Do Fa Sol Do (I–IV–V–I)
+              2. Do Fa Sol7 Do (I–IV–V7–I)
+              3. Do Rem Sol Do (I–ii–V–I)
+            A cuatro voces (bajo, tenor, contralto, soprano):
+              Do        I         Do3 Sol3 Do4 Mi4
+              Fa        IV        Fa2 La3 Do4 Fa4
+              Sol       V         Sol2 Sol3 Si3 Re4
+              Do        I         Do3 Mi3 Do4 Do4
+
+            """)
+        // Sin octavas, solo los acordes; con --propuestas, cuántos.
+        XCTAssertEqual(salida("armonizar Mi Re Do --propuestas 1"), "Do mayor\n  1. Do Sol Do (I–V–I)\n")
+        XCTAssertTrue(salida("armonizar Do Si La Sol# La --en La menor").hasPrefix("La menor\n  1. Lam Mi Lam Mi Lam (i–V–i–V–i)"))
+        XCTAssertTrue(salida("harmonize E D C --ingles").hasPrefix("C major\n  1. C G C (I–V–I)"))
+        // El coral lleva la melodía en el soprano y pasa la revisión.
+        let lineas = salida("armonizar Do5 Si4 La4 Sol4 Fa4 Mi4 Re4 Do4").split(separator: "\n")
+        let voces = lineas.drop { !$0.hasPrefix("A cuatro voces") }.dropFirst()
+            .map { $0.split(separator: " ").suffix(4).joined(separator: " ") }
+        XCTAssertEqual(voces.count, 8)
+        XCTAssertEqual(voces.map { $0.split(separator: " ").last! }, ["Do5", "Si4", "La4", "Sol4", "Fa4", "Mi4", "Re4", "Do4"])
+        XCTAssertEqual(salida("revisar " + voces.joined(separator: ", ")), "Sin faltas de conducción.\n")
+        // Fuera de la tesitura del soprano no hay coral.
+        XCTAssertTrue(salida("armonizar Do6 Si5 Do6").hasSuffix("No hay ninguna realización sin faltas de conducción.\n"))
+    }
+
+    func testRealizar() {
+        XCTAssertEqual(salida("realizar Do Fa Sol7 Do"), """
+            Do mayor
+              Do        I         Do3 Mi4 Sol4 Do5
+              Fa        IV        Fa3 Fa4 La4 Do5
+              Sol7      V7        Sol3 Fa4 Sol4 Si4
+              Do        I         Do4 Mi4 Sol4 Do5
+
+            """)
+        XCTAssertTrue(salida("realize C F G7 C --ingles").hasPrefix("C major\n  C         I         C3 E4 G4 C5"))
+        XCTAssertTrue(salida("realizar Lam Rem Mi7 Lam --en La menor").contains("V7"))
+        XCTAssertEqual(salida("realizar Do7(9,13)"), "No hay ninguna realización sin faltas de conducción.\n")
     }
 
     func testVoces() {
@@ -121,6 +186,8 @@ final class LineaDeComandosTests: XCTestCase {
         }
         for orden in ["help", "acorde C/E", "acorde G7/B", "identificar C E Bb", "intervalo C4 E5", "escala Re dórico",
                       "tonalidad Re mayor", "tonalidad Mib mayor", "tonalidad Do mayor", "analizar C Am D7 G7 C",
+                      "analizar C F G7 C Am D7 G", "armonizar E4 F4 D4 C4", "armonizar C6 B5 C6", "realizar C F G7 C",
+                      "realizar C7(9,13)",
                       "voces C3 E4 G4 C5, G2 D4 G4 B4", "plr C PLR", "plr C C", "plr C hexatonico",
                       "camino G7 Dm7", "vecinos G7", "digitaciones F --tab", "digitaciones C --instrumento ukelele",
                       "digitaciones C --instrumento bajo --dedos 1 --traste 0"] {
@@ -129,6 +196,7 @@ final class LineaDeComandosTests: XCTestCase {
             comprobar(resultado.salida, orden)
         }
         for orden in ["foo", "acorde", "identificar", "intervalo C", "escala", "tonalidad", "analizar", "analizar C --en",
+                      "armonizar", "armonizar C --en", "armonizar C --propuestas 0", "realizar", "realizar C --en",
                       "voces", "conduccion G7", "digitaciones", "digitaciones C --instrumento arpa", "digitaciones C --limite 0",
                       "digitaciones C --dedos 9", "digitaciones C --traste 99", "digitaciones C --capo", "vecinos",
                       "vecinos C7 --voces 3", "camino G7", "plr", "plr G7 P", "musicxml", "musicxml coral",

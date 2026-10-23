@@ -134,6 +134,13 @@ public struct AnalisisArmonico: Hashable, Sendable, CustomStringConvertible {
     /// "Do7(♭9,♯11)") y la analiza, en la tonalidad dada o en la que
     /// mejor la explique.
     public static func analizar(leyendo texto: String, en tonalidad: Tonalidad? = nil) throws -> AnalisisArmonico {
+        let acordes = try leerAcordes(texto)
+        return tonalidad.map { $0.analizar(acordes) } ?? analizar(acordes)!
+    }
+
+    /// Los acordes de una progresión escrita como cifrados separados por espacios, comas o barras.
+    /// Lanza un error si alguno no se puede leer o si no hay ninguno.
+    package static func leerAcordes(_ texto: String) throws -> [Acorde] {
         var acordes: [Acorde] = []
         var posicion = 0
         var actual = ""
@@ -160,7 +167,7 @@ public struct AnalisisArmonico: Hashable, Sendable, CustomStringConvertible {
         }
         try cerrar()
         guard !acordes.isEmpty else { throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .textoVacio) }
-        return tonalidad.map { $0.analizar(acordes) } ?? analizar(acordes)!
+        return acordes
     }
 
     /// Cuánto le cuesta a la tonalidad explicar la progresión: nada por los acordes diatónicos,
@@ -169,25 +176,32 @@ public struct AnalisisArmonico: Hashable, Sendable, CustomStringConvertible {
     package var coste: Double {
         var total = 0.0
         for (i, analizado) in acordes.enumerated() {
-            switch analizado.categoria {
-            case .diatonico: total += 0
-            case .dominanteSecundaria(let destino), .sensibleSecundaria(let destino):
-                let resuelve = i + 1 < acordes.count && acordes[i + 1].grado == destino
-                total += resuelve ? 0.25 : 0.75
-            case .napolitana, .sextaAumentada, .prestamo: total += 0.5
-            case .cromatico: total += 1.5
-            }
+            total += AnalisisArmonico.coste(de: analizado, siguiente: i + 1 < acordes.count ? acordes[i + 1] : nil)
         }
-        // La tónica cuenta entera si es la de la tonalidad, y poco si es prestada (Do mayor en Do menor).
-        func rebaja(_ analizado: AcordeAnalizado?, _ entera: Double) -> Double {
-            guard let analizado, analizado.grado == 1 else { return 0 }
-            switch analizado.categoria {
-            case .diatonico: return entera
-            case .prestamo: return entera / 4
-            default: return 0
-            }
+        return total - AnalisisArmonico.rebaja(acordes.last, 1) - AnalisisArmonico.rebaja(acordes.first, 0.5)
+    }
+
+    /// Lo que cuesta un acorde: nada si es diatónico, algo si es secundario (menos si resuelve en
+    /// su destino) o prestado, y mucho si es cromático.
+    package static func coste(de analizado: AcordeAnalizado, siguiente: AcordeAnalizado?) -> Double {
+        switch analizado.categoria {
+        case .diatonico: return 0
+        case .dominanteSecundaria(let destino), .sensibleSecundaria(let destino):
+            return siguiente?.grado == destino ? 0.25 : 0.75
+        case .napolitana, .sextaAumentada, .prestamo: return 0.5
+        case .cromatico: return 1.5
         }
-        return total - rebaja(acordes.last, 1) - rebaja(acordes.first, 0.5)
+    }
+
+    /// Lo que rebaja el coste empezar o terminar en la tónica: entera si es la de la tonalidad, y
+    /// poco si es prestada (Do mayor en Do menor).
+    package static func rebaja(_ analizado: AcordeAnalizado?, _ entera: Double) -> Double {
+        guard let analizado, analizado.grado == 1 else { return 0 }
+        switch analizado.categoria {
+        case .diatonico: return entera
+        case .prestamo: return entera / 4
+        default: return 0
+        }
     }
 }
 

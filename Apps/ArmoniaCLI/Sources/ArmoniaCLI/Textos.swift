@@ -31,6 +31,9 @@ enum Mensaje {
     case sinAlteraciones
     case alteraciones(Int, sostenidos: Bool)
     case sinFaltasDeConduccion
+    case aCuatroVoces
+    case sinArmonizacion
+    case sinRealizacion
     case sinDigitaciones
     case dedos(Int)
     case cejilla(Int)
@@ -65,6 +68,11 @@ enum Mensaje {
             if sostenidos { return (n == 1 ? "1 sostenido" : "\(n) sostenidos", n == 1 ? "1 sharp" : "\(n) sharps") }
             return (n == 1 ? "1 bemol" : "\(n) bemoles", n == 1 ? "1 flat" : "\(n) flats")
         case .sinFaltasDeConduccion: return ("Sin faltas de conducción.", "No voice-leading errors.")
+        case .aCuatroVoces: return ("A cuatro voces (bajo, tenor, contralto, soprano):", "In four parts (bass, tenor, alto, soprano):")
+        case .sinArmonizacion:
+            return ("Alguna nota no está en ningún acorde de la tonalidad.", "Some note is not in any chord of the key.")
+        case .sinRealizacion:
+            return ("No hay ninguna realización sin faltas de conducción.", "There is no realization without voice-leading errors.")
         case .sinDigitaciones: return ("no hay digitaciones cómodas", "no comfortable fingerings found")
         case .dedos(let n): return (n == 1 ? "1 dedo" : "\(n) dedos", n == 1 ? "1 finger" : "\(n) fingers")
         case .cejilla(let traste): return ("cejilla en el traste \(traste)", "barre at fret \(traste)")
@@ -108,6 +116,9 @@ enum ErrorDeUso {
     case dosAcordesDeConduccion
     case faltaTonalidadTrasEn
     case faltanAcordesDelAnalisis
+    case faltanNotasDeLaArmonizacion
+    case propuestasFueraDeRango
+    case faltanAcordesDeLaRealizacion
 
     // Digitaciones
     case faltaInstrumento
@@ -189,6 +200,13 @@ enum ErrorDeUso {
             return ("falta la tonalidad tras --en", "missing the key after --in")
         case .faltanAcordesDelAnalisis:
             return ("faltan los acordes: armonia analizar Do Fa Sol7 Do", "missing the chords: armonia analyze C F G7 C")
+        case .faltanNotasDeLaArmonizacion:
+            return ("faltan las notas de la melodía: armonia armonizar Mi4 Re4 Do4",
+                    "missing the notes of the melody: armonia harmonize E4 D4 C4")
+        case .propuestasFueraDeRango:
+            return ("--propuestas va de 1 a 20", "--proposals goes from 1 to 20")
+        case .faltanAcordesDeLaRealizacion:
+            return ("faltan los acordes: armonia realizar Do Fa Sol7 Do", "missing the chords: armonia realize C F G7 C")
 
         case .faltaInstrumento:
             return ("falta el instrumento: \(digitaciones.0)", "missing the instrument: \(digitaciones.1)")
