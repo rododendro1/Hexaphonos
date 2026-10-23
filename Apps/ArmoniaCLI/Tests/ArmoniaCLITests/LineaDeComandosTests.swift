@@ -96,7 +96,7 @@ final class LineaDeComandosTests: XCTestCase {
         }
         for orden in ["foo", "acorde", "identificar", "intervalo C", "escala", "tonalidad", "analizar", "analizar C --en",
                       "voces", "conduccion G7", "digitaciones", "digitaciones C --instrumento arpa", "digitaciones C --limite 0",
-                      "digitaciones C --dedos 9", "digitaciones C --traste 99", "digitaciones C --cejilla", "vecinos",
+                      "digitaciones C --dedos 9", "digitaciones C --traste 99", "digitaciones C --capo", "vecinos",
                       "vecinos C7 --voces 3", "camino G7", "plr", "plr G7 P", "musicxml", "musicxml coral",
                       "musicxml melodia C4:4 --foo 1", "midi acordes C --cifrados", "tonnetz", "tonnetz --clases 13",
                       "tonnetz --camino C", "tabla --ciclo C", "tabla --margen 9 C"] {
