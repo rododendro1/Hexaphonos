@@ -19,12 +19,46 @@ final class LineaDeComandosTests: XCTestCase {
     func testAcorde() {
         XCTAssertEqual(salida("acorde Sol7/Si"), """
             Sol7/Si: séptima de dominante
-              notas: Sol Si Re Fa  (bajo Si, inversión 1)
+              notas: Sol Si Re Fa  (bajo Si, primera inversión)
               Sol fundamental · Si tercera · Re quinta · Fa séptima
 
             """)
         XCTAssertEqual(salida("acorde Do Lam").components(separatedBy: "\n\n").count, 2)
         XCTAssertTrue(salida("acorde Do/Re").contains("bajo ajeno al acorde"))
+        XCTAssertTrue(salida("acorde Do/Sol").contains("(bajo Sol, segunda inversión)"))
+        XCTAssertTrue(salida("acorde Sol7/Fa").contains("(bajo Fa, tercera inversión)"))
+        XCTAssertTrue(salida("acorde C/G --ingles").contains("(bass G, second inversion)"))
+    }
+
+    /// Los nombres nuevos de órdenes y opciones, y los de antes, que se siguen aceptando.
+    func testNombresNuevosYAlias() {
+        let coral = "Do3 Sol3 Mi4 Do5, Re3 La3 Fa4 Re5"
+        XCTAssertEqual(salida("revisar " + coral), salida("voces " + coral))
+        XCTAssertEqual(salida("check " + coral + " --ingles"), salida("voices " + coral + " --ingles"))
+        XCTAssertEqual(salida("conduccion-parsimoniosa Sol7 Rem7"), salida("camino Sol7 Rem7"))
+        XCTAssertEqual(salida("smooth-path G7 Dm7 --ingles"), salida("path G7 Dm7 --ingles"))
+        for orden in ["tonnetz", "tabla"] {
+            XCTAssertEqual(salida(orden + " --sequence Do Lam Fa Rem"), salida(orden + " --recorrido Do Lam Fa Rem"))
+            XCTAssertEqual(salida(orden + " --path Do Lam Fa Rem"), salida(orden + " --recorrido Do Lam Fa Rem"))
+        }
+        let programa = LineaDeComandos.ejecutar(["midi", "melodia", "Do4:4", "--programa", "40"])
+        XCTAssertEqual(programa.codigo, 0, programa.error)
+        XCTAssertNotNil(programa.datos)
+        XCTAssertEqual(programa.datos, LineaDeComandos.ejecutar(["midi", "melodia", "Do4:4", "--instrumento", "40"]).datos)
+        XCTAssertEqual(programa.datos, LineaDeComandos.ejecutar(["midi", "melodia", "Do4:4", "--program", "40"]).datos)
+        XCTAssertEqual(LineaDeComandos.ejecutar(["musicxml", "melodia", "Do4:4", "--programa", "40"]).codigo, 2)
+        XCTAssertEqual(LineaDeComandos.ejecutar(["midi", "melodia", "Do4:4", "--programa", "200"]).codigo, 2)
+
+        let ayuda = salida("ayuda"), help = salida("help --ingles")
+        for nombre in ["revisar <acordes>", "conduccion-parsimoniosa <acorde>", "--programa 0…127"] {
+            XCTAssertTrue(ayuda.contains(nombre), nombre)
+        }
+        for nombre in ["check <chords>", "smooth-path <chord>", "--sequence <triads>", "--program 0…127"] {
+            XCTAssertTrue(help.contains(nombre), nombre)
+        }
+        for antiguo in ["voces <acordes>", "camino <acorde>", "--instrumento 0…127"] {
+            XCTAssertFalse(ayuda.contains(antiguo), antiguo)
+        }
     }
 
     func testIdentificar() {
@@ -70,7 +104,7 @@ final class LineaDeComandosTests: XCTestCase {
     }
 
     func testIngles() {
-        XCTAssertTrue(salida("acorde G7/B --ingles").hasPrefix("G7/B: dominant seventh\n  notes: G B D F  (bass B, inversion 1)"))
+        XCTAssertTrue(salida("acorde G7/B --ingles").hasPrefix("G7/B: dominant seventh\n  notes: G B D F  (bass B, first inversion)"))
         XCTAssertTrue(salida("analizar C Am D7 G7 C --ingles").hasPrefix("I–vi–V7/V–V7–I in C major\n  C         I         tonic"))
         XCTAssertEqual(salida("voces C3 E4 G4 C5, G2 D4 G4 B4 --ingles"), "No voice-leading errors.\n")
         XCTAssertTrue(salida("tonalidad D major --ingles").contains("key signature: F# C# (2 sharps)"))

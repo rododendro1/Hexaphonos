@@ -9,6 +9,13 @@
   `Apps/ArmoniaCLI/Sources/ArmoniaCLI/Textos.swift`, cada uno en los dos idiomas, y `LineaDeComandos.ayuda(en:)`
   devuelve la ayuda en el idioma de la notación.
 - `Encordado(nombre:)` acepta también «seven-string guitar», «drop D guitar» y «five-string bass».
+- Nombres más claros en `armonia` (los de antes se siguen aceptando):
+  - `voces` pasa a `revisar` (*check*): busca faltas de conducción, y se confundía con `conduccion`.
+  - `camino` pasa a `conduccion-parsimoniosa` (*smooth-path*): «camino» y *path* también nombraban la opción
+    `--camino` y el alias inglés de `--recorrido` de `tonnetz` y `tabla`.
+  - En `tonnetz` y `tabla`, `--recorrido` es *--sequence* en inglés (antes *--path*).
+  - En `midi`, `--instrumento` pasa a `--programa` (*--program*): el instrumento es el de cuerda de `digitaciones`.
+  - La inversión de un acorde se escribe con ordinal: «primera inversión» (*first inversion*), no «inversión 1».
 - «opción desconocida» lleva siempre comillas: antes, según la orden, salía `--foo`, `«--foo»` o `foo`.
 
 ### Digitaciones: dedos, orden y ukelele

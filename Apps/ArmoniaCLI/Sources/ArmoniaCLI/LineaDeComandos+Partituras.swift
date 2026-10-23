@@ -33,6 +33,12 @@ extension LineaDeComandos {
                 musica.append(argumento)
             }
         }
+        // `--programa` es el nombre de siempre de `--instrumento` en MIDI, que se sigue aceptando.
+        if formato == .midi {
+            for alias in ["programa", "program"] {
+                if let valor = opciones.removeValue(forKey: alias) { opciones["instrumento"] = valor }
+            }
+        }
         let conocidas: Set = formato == .midi
             ? ["compas", "anacrusa", "tonalidad", "tempo", "titulo", "duracion", "instrumento"]
             : ["compas", "anacrusa", "tonalidad", "clave", "tempo", "titulo", "duracion"]

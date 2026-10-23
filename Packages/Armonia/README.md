@@ -46,7 +46,7 @@ I–vi–V7/V–V7–I en Do mayor
   Sol7      V7        dominante
   Do        I         tónica
 
-$ swift run armonia voces Do3 Sol3 Mi4 Do5, Re3 La3 Fa4 Re5
+$ swift run armonia revisar Do3 Sol3 Mi4 Do5, Re3 La3 Fa4 Re5
 Quintas paralelas entre bajo y tenor (acordes 1 → 2)
 Octavas paralelas entre bajo y soprano (acordes 1 → 2)
 
@@ -66,7 +66,7 @@ Do –P→ Dom –L→ La♭ –R→ Fam
 PLR, 3 pasos
 ```
 
-`midi` escribe lo mismo como fichero MIDI para oírlo (con `--instrumento` de General MIDI).
+`midi` escribe lo mismo como fichero MIDI para oírlo (con `--programa` de General MIDI).
 `musicxml` escribe una partitura que se abre en MuseScore, Finale, Sibelius o Dorico: una
 melodía (con `--compas`, `--anacrusa`, `--tonalidad`, `--clave`, `--tempo` y `--titulo`) o un
 coral a cuatro voces en dos pentagramas (con `--duracion` de cada acorde, y `--cifrados` y

@@ -49,7 +49,7 @@ extension LineaDeComandos {
                 return .error(uso(.clasesFueraDeRango(orden: orden), notacion))
             }
             dibujo = .clases(ConjuntoDeClases(numeros.map { $0! }))
-        case "--recorrido", "--progresion", "--path":
+        case "--recorrido", "--sequence", "--progresion", "--path":
             let acordes = try argumentos.dropFirst().map { try Acorde(leyendo: $0) }
             guard !acordes.isEmpty else { return .error(uso(.faltanTriadasDelRecorrido(orden: orden), notacion)) }
             dibujo = .recorrido(acordes)
