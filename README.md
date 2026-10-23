@@ -78,6 +78,7 @@ El job `documentacion` del CI no bloquea todavía: el catálogo de DocC cuelga d
 reexporta los demás, y puede que DocC no resuelva sus símbolos. Cuando el job salga limpio, se le quita
 `continue-on-error`.
 
-Pendiente de decidir o de hacer antes de publicar: la licencia (no hay `LICENSE`), el icono de las apps
-(un `Assets.xcassets` con `AppIcon`) y el equipo de firma y el prefijo de los identificadores, que van en
-`Config/Local.xcconfig`.
+El código se publica con licencia MIT (`LICENSE`). Las dos apps llevan un icono provisional en
+`Apps/<App>/Assets.xcassets/AppIcon.appiconset`, que conviene sustituir por uno definitivo antes de publicarlas.
+El equipo de firma y el prefijo de los identificadores no se guardan en el repositorio: cada cual los pone en
+su `Config/Local.xcconfig`.

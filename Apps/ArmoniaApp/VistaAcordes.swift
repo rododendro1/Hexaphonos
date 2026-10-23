@@ -6,6 +6,8 @@ import SepirizUI
 struct VistaAcordes: View {
     @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
     @State private var texto = "Sol7/Si"
+    /// El acorde leído de `texto`. Se lee una vez por cambio del texto, no en cada redibujado.
+    @State private var lectura = VistaAcordes.leer("Sol7/Si")
     @State private var encordado = Encordado.guitarra
     /// Las digitaciones calculadas y para qué texto e instrumento. Mientras no coincida con lo que hay
     /// escrito, se muestra «Calculando…» y no las de otro acorde.
@@ -20,7 +22,7 @@ struct VistaAcordes: View {
                 TextField("Cifrado, por ejemplo Sol7/Si", text: $texto)
                     .campoDeCifrado()
             }
-            switch Result(catching: { try Acorde(leyendo: texto) }) {
+            switch lectura {
             case .success(let acorde):
                 informacion(de: acorde)
                 digitaciones(de: acorde)
@@ -32,6 +34,7 @@ struct VistaAcordes: View {
         }
         .navigationTitle("Acordes")
         .toolbarNotacion(clave: $claveDeNotacion)
+        .onChange(of: texto) { lectura = Self.leer($0) }
         // La búsqueda de digitaciones puede tardar: se espera a que se deje de escribir y se hace
         // fuera del hilo principal. `.task(id:)` cancela la anterior cuando cambia el texto.
         .task(id: claveActual) { await calcularDigitaciones() }
@@ -83,16 +86,21 @@ struct VistaAcordes: View {
         return texto
     }
 
+    private static func leer(_ texto: String) -> Result<Acorde, Error> {
+        Result { try Acorde(leyendo: texto) }
+    }
+
     private func calcularDigitaciones() async {
         let clave = claveActual
         let encordado = self.encordado
-        guard let acorde = try? Acorde(leyendo: texto) else {
-            resultado = nil
-            return
-        }
         // Espera a que se deje de escribir; si cambia el texto, la tarea se cancela aquí.
         try? await Task.sleep(nanoseconds: 250_000_000)
         guard !Task.isCancelled else { return }
+        // Tras la espera, `lectura` ya corresponde al texto de `clave` (`onChange` va antes que la tarea).
+        guard case .success(let acorde) = lectura else {
+            resultado = nil
+            return
+        }
         let formas = await Task.detached(priority: .userInitiated) {
             // La quinta puede faltar en los acordes de cuatro notas o más (el Do7 `x32310`), como se toca.
             Mastil(encordado, trastes: 15).digitaciones(de: acorde, exigirQuinta: false, limite: 6)
