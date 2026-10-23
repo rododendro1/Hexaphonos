@@ -61,7 +61,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: ["5.9", "5.10", "6.0", "6.1", "6.2"]
+        # La más antigua que admite el paquete y la más reciente: las intermedias no han dado nada distinto.
+        swift: ["5.9", "6.2"]
     defaults:
       run:
         working-directory: Packages/Armonia
