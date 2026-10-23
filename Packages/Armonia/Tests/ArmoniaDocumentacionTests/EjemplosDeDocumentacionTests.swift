@@ -4,6 +4,7 @@
 import Foundation
 import XCTest
 @testable import Armonia
+import Hexagonos
 
 final class EjemplosDeDocumentacionTests: XCTestCase {
     func testREADME1() throws {
@@ -195,18 +196,18 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
     func testAfinacionYRepresentaciones11() throws {
         // Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md, línea 266
         let mi = PuntoDelTonnetz(quintas: 0, terceras: 1)
-        comprobar(mi.coordenada == CoordenadaAxial(q: 0, r: 1), #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 267)
-        comprobar(PuntoDelTonnetz(CoordenadaAxial(q: 1, r: 0)).nota == .sol, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 268)
-        comprobar(Tonnetz.punto(en: Punto(x: 60, y: 3), paso: 64) == PuntoDelTonnetz(quintas: 1, terceras: 0), #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 269)
-        comprobar(TablaArmonica.coordenada(de: mi) == CoordenadaAxial(q: 1, r: -1), #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 270)
+        comprobar(mi.coordenada == CoordenadaAxial(q: 0, r: 1), #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 269)
+        comprobar(PuntoDelTonnetz(CoordenadaAxial(q: 1, r: 0)).nota == .sol, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 270)
+        comprobar(Tonnetz.punto(en: Punto(x: 60, y: 3), paso: 64) == PuntoDelTonnetz(quintas: 1, terceras: 0), #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 271)
+        comprobar(TablaArmonica.coordenada(de: mi) == CoordenadaAxial(q: 1, r: -1), #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 272)
     }
 
     func testAfinacionYRepresentaciones12() throws {
-        // Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md, línea 278
+        // Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md, línea 280
         let teclado = TecladoIsomorfico.wickiHayden
-        comprobar(teclado.midi(en: CoordenadaAxial(q: 1, r: -1)) == 67, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 279)
-        comprobar(teclado.semitonos(hacia: DireccionHexagonal(.noreste, .puntiaguda)!) == 7, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 280)
-        comprobar(TecladoIsomorfico.tablaArmonica.semitonos(hacia: .sMasRMenos) == 7, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 281)
+        comprobar(teclado.midi(en: CoordenadaAxial(q: 1, r: -1)) == 67, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 283)
+        comprobar(teclado.semitonos(hacia: DireccionHexagonal(.noreste, .puntiaguda)!) == 7, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 284)
+        comprobar(TecladoIsomorfico.tablaArmonica.semitonos(hacia: .sMasRMenos) == 7, #"true"#, #"Sources/Armonia/Armonia.docc/AfinacionYRepresentaciones.md"#, 285)
         let mapa = FormasDeMapa.rectangulo(columnas: 12, filas: 4, .filasImpares)
         let dibujo = TecladoIsomorfico.janko.svg(mapa, marcadas: [60, 64, 67])
         _ = dibujo

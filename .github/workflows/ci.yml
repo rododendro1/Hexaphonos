@@ -131,6 +131,21 @@ jobs:
         if: matrix.paquete == 'Hexagonos' && startsWith(matrix.swift, '6')
         run: swift build --target Hexagonos -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
 
+  # El Package.swift de la raíz, el que usa quien añade el repositorio por URL: debe compilar igual.
+  raiz:
+    name: Paquete de la raíz · Linux · Swift ${{ matrix.swift }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container: swift:${{ matrix.swift }}
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: ["5.9", "6.2"]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Compilar
+        run: swift build
+
   macos:
     name: macOS · paquetes y apps
     runs-on: macos-15

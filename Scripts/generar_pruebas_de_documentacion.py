@@ -186,6 +186,7 @@ CABECERA = '''// Generado por Scripts/generar_pruebas_de_documentacion.py a part
 import Foundation
 import XCTest
 @testable import Armonia
+import Hexagonos
 
 final class EjemplosDeDocumentacionTests: XCTestCase {
 '''

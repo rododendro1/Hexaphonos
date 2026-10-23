@@ -253,8 +253,8 @@ TablaArmonica(caminoDesde: "Do", hasta: "Sol7") == nil               // true
 
 ## La rejilla hexagonal y los teclados isomórficos
 
-El Tonnetz y la tabla armónica son la misma rejilla hexagonal, la del paquete `Hexagonos`, que
-`import Armonia` reexporta. Un punto del Tonnetz es la casilla `(q, r)` = (quintas, terceras): los
+El Tonnetz y la tabla armónica son la misma rejilla hexagonal, la del paquete `Hexagonos`, que se
+importa aparte (`import Hexagonos`) para nombrar sus tipos. Un punto del Tonnetz es la casilla `(q, r)` = (quintas, terceras): los
 seis pasos del Tonnetz son las seis direcciones de la rejilla, y la distancia es la suya. En la
 tabla armónica, la misma rejilla está girada 120° y dibujada con hexágonos planos.
 
@@ -263,6 +263,8 @@ dibujos, y `punto(en:paso:)` hace el camino de vuelta: de un punto del SVG (dond
 nota.
 
 ```swift
+import Hexagonos
+
 let mi = PuntoDelTonnetz(quintas: 0, terceras: 1)
 mi.coordenada == CoordenadaAxial(q: 0, r: 1)                           // true
 PuntoDelTonnetz(CoordenadaAxial(q: 1, r: 0)).nota == .sol               // true
@@ -275,6 +277,8 @@ semitonos, así que un acorde tiene la misma forma en todas las tonalidades. Tra
 Wicki-Hayden y Jankó, y admite cualquier otro con los semitonos de cada eje.
 
 ```swift
+import Hexagonos
+
 let teclado = TecladoIsomorfico.wickiHayden
 teclado.midi(en: CoordenadaAxial(q: 1, r: -1)) == 67                       // true
 teclado.semitonos(hacia: DireccionHexagonal(.noreste, .puntiaguda)!) == 7   // true

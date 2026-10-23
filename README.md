@@ -23,6 +23,7 @@ Packages/
 Scripts/            Comprobaciones del repositorio (también las del motor) y generación del proyecto de Xcode
 Config/             Ajustes de compilación de las apps (Local.xcconfig, el de tu equipo, no se guarda en git)
 project.yml         Definición del proyecto de Xcode (XcodeGen)
+Package.swift       Los tres paquetes juntos, para usarlos desde otro proyecto por URL
 ```
 
 ## Dependencias
@@ -40,6 +41,23 @@ el ejemplo (`ArmoniaEjemplo`) se construyen con SwiftPM; las apps de SwiftUI, co
 El paquete, su producto principal y su módulo paraguas se llaman `Armonia`: en el código es
 `import Armonia`, y en un `Package.swift` es `.product(name: "Armonia", package: "Armonia")`.
 Cada módulo del motor es también un producto (`ArmoniaNucleo`, `ArmoniaTeoria`, `ArmoniaTrastes`…), por si un paquete necesita solo uno.
+
+## Usar los paquetes en otro proyecto
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/rododendro1/Hexaphonos.git", from: "0.1.0"),
+],
+targets: [
+    .target(name: "MiApp", dependencies: [
+        .product(name: "Armonia", package: "Hexaphonos"),     // o ArmoniaTeoria, Hexagonos, HexaphonosUI…
+    ]),
+]
+```
+
+Las versiones siguen el versionado semántico y tienen su etiqueta en git; los cambios de cada paquete están en su
+`CHANGELOG.md`. Mientras la versión empiece por 0, una versión menor (0.2.0) puede quitar lo que la anterior marcó
+como obsoleto.
 
 ## Empezar
 
@@ -65,7 +83,8 @@ construyen en macOS.
 ## Añadir un paquete o una app
 
 1. Crea la carpeta en `Packages/` (con el mismo nombre que el paquete) o en `Apps/`.
-2. Un paquete se añade a `PERMITIDO` en `Scripts/comprobar_dependencias.py`, con los paquetes de los que puede depender.
+2. Un paquete se añade a `PERMITIDO` en `Scripts/comprobar_dependencias.py`, con los paquetes de los que puede depender,
+   y sus módulos y bibliotecas al `Package.swift` de la raíz (el script avisa si no coinciden).
 3. Una app de SwiftUI, además, en `project.yml` (un `target` y su `scheme`); un paquete, en `packages:`. Una app de
    SwiftPM solo necesita su `Package.swift`, con dependencias por ruta a `Packages/`.
 4. Añade su job a `.github/workflows/ci.yml`.
