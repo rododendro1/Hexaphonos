@@ -117,7 +117,7 @@ jobs:
       fail-fast: false
       matrix:
         swift: ["5.9", "6.2"]
-        paquete: [HexaphonosUI]
+        paquete: [HexaphonosUI, Hexagonos]
     defaults:
       run:
         working-directory: Packages/${{ matrix.paquete }}
@@ -127,6 +127,9 @@ jobs:
         run: swift build
       - name: Pruebas
         run: swift test --parallel
+      - name: Concurrencia estricta
+        if: matrix.paquete == 'Hexagonos' && startsWith(matrix.swift, '6')
+        run: swift build --target Hexagonos -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
 
   macos:
     name: macOS · paquetes y apps
@@ -145,6 +148,9 @@ jobs:
       - name: HexaphonosUI
         run: swift test --parallel
         working-directory: Packages/HexaphonosUI
+      - name: Hexagonos
+        run: swift test --parallel
+        working-directory: Packages/Hexagonos
       - name: Línea de comandos y ejemplo
         run: |
           (cd Apps/ArmoniaCLI && swift test --parallel)
@@ -185,9 +191,16 @@ jobs:
           set -o pipefail
           xcodebuild docbuild -scheme Armonia-Package -destination 'generic/platform=macOS' \
             -derivedDataPath "$RUNNER_TEMP/docc" CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/docbuild.log"
+      - name: Construir la documentación de Hexagonos
+        working-directory: Packages/Hexagonos
+        run: |
+          set -o pipefail
+          # Con un solo producto, el esquema se llama como él (sin «-Package»).
+          xcodebuild docbuild -scheme Hexagonos -destination 'generic/platform=macOS' \
+            -derivedDataPath "$RUNNER_TEMP/docc-hexagonos" CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$RUNNER_TEMP/docbuild-hexagonos.log"
       - name: Enlaces sin resolver
         run: |
-          if grep -E "warning: .*(doesn.t exist|couldn.t be resolved|unresolved|not found)" "$RUNNER_TEMP/docbuild.log"; then
+          if grep -E "warning: .*(doesn.t exist|couldn.t be resolved|unresolved|not found)" "$RUNNER_TEMP"/docbuild*.log; then
             echo "::warning::Hay enlaces de DocC sin resolver (¿símbolos reexportados por el módulo Armonia?)"
             exit 1
           fi

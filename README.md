@@ -15,8 +15,10 @@ Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
-└── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, VistaSVG, tema) y lo que comparten las apps:
-                    el selector de notación y su ajuste
+├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, VistaSVG, tema) y lo que comparten las apps:
+│                   el selector de notación y su ajuste
+└── Hexagonos/      Rejillas hexagonales: coordenadas axiales, cúbicas, desplazadas y dobladas, vecinos, distancias,
+                    líneas, regiones, rotaciones y el paso a píxeles (independiente del motor)
 Scripts/            Comprobaciones del repositorio (también las del motor) y generación del proyecto de Xcode
 Config/             Ajustes de compilación de las apps (Local.xcconfig, el de tu equipo, no se guarda en git)
 project.yml         Definición del proyecto de Xcode (XcodeGen)
@@ -28,6 +30,7 @@ project.yml         Definición del proyecto de Xcode (XcodeGen)
 ArmoniaApp ──┬──► HexaphonosUI ──► Armonia
 TonnetzApp ──┘
 ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo ──► Armonia
+Hexagonos (sin dependencias)
 ```
 
 Un paquete solo depende de los que tiene debajo, y nunca de una app. La línea de comandos (`ArmoniaCLI`) y
@@ -43,6 +46,7 @@ Cada módulo del motor es también un producto (`ArmoniaNucleo`, `ArmoniaTeoria`
 ```sh
 # Los paquetes, desde su carpeta
 cd Packages/Armonia && swift test
+cd Packages/Hexagonos && swift test      # las rejillas hexagonales
 swift run --package-path Apps/ArmoniaCLI armonia acorde Sol7/Si  # la herramienta de línea de comandos
 swift run --package-path Apps/ArmoniaCLI armonia digitaciones Sol7/Si --instrumento ukelele --tab
 swift run --package-path Ejemplos/ArmoniaEjemplo ArmoniaEjemplo      # el ejemplo
@@ -68,7 +72,7 @@ construyen en macOS.
 
 ## Estado
 
-Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `HexaphonosUI`, la línea de
+Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `HexaphonosUI`, `Hexagonos`, la línea de
 comandos, el ejemplo, las dos apps en macOS y en el simulador de iOS, y la documentación de DocC, sin enlaces sin
 resolver. `./Scripts/compilar_todo.sh` hace lo mismo en una máquina con Swift, por capas y con un log por paso.
 
