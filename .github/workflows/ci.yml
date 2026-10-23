@@ -42,16 +42,12 @@ jobs:
           if [ -n "$carpetas" ]; then echo "Carpetas que solo difieren en mayúsculas:"; echo "$carpetas"; exit 1; fi
       - name: Módulos del motor
         run: python3 Scripts/comprobar_modulos.py
-        working-directory: Packages/Armonia
       - name: Catálogo de escalas
         run: python3 Scripts/comprobar_catalogo.py
-        working-directory: Packages/Armonia
       - name: Enlaces de la documentación (DocC)
         run: python3 Scripts/comprobar_enlaces_docc.py
-        working-directory: Packages/Armonia
       - name: Ejemplos de la documentación al día
         run: python3 Scripts/generar_pruebas_de_documentacion.py --comprobar
-        working-directory: Packages/Armonia
 
   motor:
     name: Armonia · Linux · Swift ${{ matrix.swift }}
@@ -73,7 +69,7 @@ jobs:
       - name: Pruebas rápidas
         run: swift test --parallel --filter "^ArmoniaTests\\."
       - name: Pruebas exhaustivas
-        run: swift test --parallel --filter "^ArmoniaPruebasExhaustivas\\."
+        run: swift test --parallel --filter "^ArmoniaExhaustivasTests\\."
       - name: Ejemplos de la documentación
         run: swift test --parallel --filter "^ArmoniaDocumentacionTests\\."
       - name: Concurrencia estricta (módulos)
@@ -84,7 +80,7 @@ jobs:
           done
 
   herramientas:
-    name: ${{ matrix.carpeta }} · Linux · Swift ${{ matrix.swift }}
+    name: ${{ matrix.paquete.nombre }} · Linux · Swift ${{ matrix.swift }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container: swift:${{ matrix.swift }}
@@ -92,22 +88,24 @@ jobs:
       fail-fast: false
       matrix:
         swift: ["5.9", "6.2"]
-        carpeta: [ArmoniaCLI, ArmoniaEjemplo]
+        paquete:
+          - { nombre: ArmoniaCLI, ruta: Apps/ArmoniaCLI }
+          - { nombre: ArmoniaEjemplo, ruta: Ejemplos/ArmoniaEjemplo }
     defaults:
       run:
-        working-directory: Apps/${{ matrix.carpeta }}
+        working-directory: ${{ matrix.paquete.ruta }}
     steps:
       - uses: actions/checkout@v5
       - name: Compilar
         run: swift build
       - name: Pruebas (solo la línea de comandos tiene)
-        if: matrix.carpeta == 'ArmoniaCLI'
+        if: matrix.paquete.nombre == 'ArmoniaCLI'
         run: swift test --parallel
       - name: Ejemplo
-        if: matrix.carpeta == 'ArmoniaEjemplo'
+        if: matrix.paquete.nombre == 'ArmoniaEjemplo'
         run: swift run ArmoniaEjemplo
       - name: Concurrencia estricta
-        if: matrix.carpeta == 'ArmoniaCLI' && startsWith(matrix.swift, '6')
+        if: matrix.paquete.nombre == 'ArmoniaCLI' && startsWith(matrix.swift, '6')
         run: swift build --target ArmoniaCLI -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
 
   paquetes:
@@ -150,7 +148,7 @@ jobs:
       - name: Línea de comandos y ejemplo
         run: |
           (cd Apps/ArmoniaCLI && swift test --parallel)
-          (cd Apps/ArmoniaEjemplo && swift run ArmoniaEjemplo > /dev/null)
+          (cd Ejemplos/ArmoniaEjemplo && swift run ArmoniaEjemplo > /dev/null)
       - name: Instalar XcodeGen
         run: brew install xcodegen
       - name: Generar el proyecto

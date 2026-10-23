@@ -2,6 +2,15 @@
 
 ## Sin publicar
 
+### Carpetas
+
+- El objetivo de pruebas `ArmoniaPruebasExhaustivas` pasa a `ArmoniaExhaustivasTests`, como los demás
+  (`swift test --filter "^ArmoniaExhaustivasTests\."`).
+- El ejemplo pasa de `Apps/ArmoniaEjemplo` a `Ejemplos/ArmoniaEjemplo`: no es una app.
+- Los scripts del motor (`comprobar_modulos.py`, `comprobar_catalogo.py`, `comprobar_enlaces_docc.py` y
+  `generar_pruebas_de_documentacion.py`) pasan de `Packages/Armonia/Scripts/` al `Scripts/` de la raíz, junto a los
+  demás, y se ejecutan desde la raíz del repositorio.
+
 ### La línea de comandos, en inglés de verdad
 
 - Con `--ingles`, `armonia` ya no mezcla idiomas: la ayuda, los mensajes de uso («falta el cifrado…») y las

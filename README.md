@@ -8,7 +8,8 @@ SwiftUI para iOS y macOS.
 Apps/
 ├── ArmoniaApp/       Acordes (con digitaciones), escalas (con el mástil) y análisis armónico
 ├── TonnetzApp/       El Tonnetz de un acorde o una escala, y recorridos con P, L y R
-├── ArmoniaCLI/       La herramienta `armonia`, con sus pruebas (SwiftPM)
+└── ArmoniaCLI/       La herramienta `armonia`, con sus pruebas (SwiftPM)
+Ejemplos/
 └── ArmoniaEjemplo/   Un recorrido por la API del motor, ejecutable (SwiftPM)
 Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
@@ -16,7 +17,7 @@ Packages/
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
 └── SepirizUI/      Componentes SwiftUI (MastilView, TonnetzView, SVGView, tema) y lo que comparten las apps:
                     el selector de notación y su ajuste
-Scripts/            Comprobaciones del repositorio y generación del proyecto de Xcode
+Scripts/            Comprobaciones del repositorio (también las del motor) y generación del proyecto de Xcode
 Config/             Ajustes de compilación de las apps (Local.xcconfig, el de tu equipo, no se guarda en git)
 project.yml         Definición del proyecto de Xcode (XcodeGen)
 ```
@@ -29,8 +30,8 @@ TonnetzApp ──┘
 ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo ──► Armonia
 ```
 
-Un paquete solo depende de los que tiene debajo, y nunca de una app. Las apps con `Package.swift`
-(`ArmoniaCLI`, `ArmoniaEjemplo`) se construyen con SwiftPM; las de SwiftUI, con Xcode (`project.yml`).
+Un paquete solo depende de los que tiene debajo, y nunca de una app. La línea de comandos (`ArmoniaCLI`) y
+el ejemplo (`ArmoniaEjemplo`) se construyen con SwiftPM; las apps de SwiftUI, con Xcode (`project.yml`).
 `Scripts/comprobar_dependencias.py` lo comprueba (también en el CI).
 
 El paquete, su producto principal y su módulo paraguas se llaman `Armonia`: en el código es
@@ -44,7 +45,7 @@ Cada módulo del motor es también un producto (`ArmoniaNucleo`, `ArmoniaTeoria`
 cd Packages/Armonia && swift test
 swift run --package-path Apps/ArmoniaCLI armonia acorde Sol7/Si  # la herramienta de línea de comandos
 swift run --package-path Apps/ArmoniaCLI armonia digitaciones Sol7/Si --instrumento ukelele --tab
-swift run --package-path Apps/ArmoniaEjemplo ArmoniaEjemplo      # el ejemplo
+swift run --package-path Ejemplos/ArmoniaEjemplo ArmoniaEjemplo      # el ejemplo
 
 # Las apps (macOS, con XcodeGen)
 brew install xcodegen

@@ -45,7 +45,7 @@ let package = Package(
             dependencies: ["ArmoniaNucleo", "ArmoniaTeoria", "ArmoniaRepresentaciones", "ArmoniaPartitura", "ArmoniaTrastes"]),
         // Las pruebas ven lo `internal` de cada módulo con `@testable import`, y por eso dependen de todos.
         .testTarget(name: "ArmoniaTests", dependencies: modulos),
-        .testTarget(name: "ArmoniaPruebasExhaustivas", dependencies: modulos),
+        .testTarget(name: "ArmoniaExhaustivasTests", dependencies: modulos),
         .testTarget(name: "ArmoniaDocumentacionTests", dependencies: ["Armonia"]),
     ]
 )
