@@ -21,11 +21,11 @@ final class LineasTests: XCTestCase {
         let origen = CoordenadaAxial(q: -2, r: 1)
         for destino in origen.alcance(radio: 6) {
             let linea = origen.linea(hasta: destino)
-            XCTAssertEqual(linea.count, origen.distancia(a: destino) + 1)
+            XCTAssertEqual(linea.count, origen.distancia(hasta: destino) + 1)
             XCTAssertEqual(linea.first, origen)
             XCTAssertEqual(linea.last, destino)
             for (anterior, siguiente) in zip(linea, linea.dropFirst()) {
-                XCTAssertEqual(anterior.distancia(a: siguiente), 1, "\(origen) → \(destino)")
+                XCTAssertEqual(anterior.distancia(hasta: siguiente), 1, "\(origen) → \(destino)")
             }
         }
     }
@@ -33,10 +33,10 @@ final class LineasTests: XCTestCase {
     func testVisibilidad() {
         let muro: Set = [CoordenadaAxial(q: 1, r: 0)]
         let tapada = { muro.contains($0) }
-        XCTAssertFalse(CoordenadaAxial.origen.ve(CoordenadaAxial(q: 3, r: 0), tapada: tapada))
-        XCTAssertTrue(CoordenadaAxial.origen.ve(CoordenadaAxial(q: 0, r: 3), tapada: tapada))
+        XCTAssertFalse(CoordenadaAxial.origen.esVisible(CoordenadaAxial(q: 3, r: 0), tapada: tapada))
+        XCTAssertTrue(CoordenadaAxial.origen.esVisible(CoordenadaAxial(q: 0, r: 3), tapada: tapada))
         // Una casilla tapada no se tapa a sí misma, ni tapa a una vecina.
-        XCTAssertTrue(CoordenadaAxial.origen.ve(CoordenadaAxial(q: 1, r: 0), tapada: tapada))
+        XCTAssertTrue(CoordenadaAxial.origen.esVisible(CoordenadaAxial(q: 1, r: 0), tapada: tapada))
         let visibles = CoordenadaAxial.origen.visibles(en: CoordenadaAxial.origen.alcance(radio: 3), tapada: tapada)
         XCTAssertFalse(visibles.contains(CoordenadaAxial(q: 1, r: 0)))
         XCTAssertFalse(visibles.contains(CoordenadaAxial(q: 2, r: 0)))
@@ -56,9 +56,9 @@ final class LineasTests: XCTestCase {
         let destino = CoordenadaAxial(q: 2, r: -1)
         let lados = [CoordenadaAxial(q: 1, r: -1), CoordenadaAxial(q: 1, r: 0)]
         XCTAssertTrue(lados.contains(CoordenadaAxial.origen.linea(hasta: destino)[1]))
-        XCTAssertTrue(CoordenadaAxial.origen.ve(destino) { $0 == lados[0] })
-        XCTAssertTrue(CoordenadaAxial.origen.ve(destino) { $0 == lados[1] })
-        XCTAssertFalse(CoordenadaAxial.origen.ve(destino) { lados.contains($0) })
+        XCTAssertTrue(CoordenadaAxial.origen.esVisible(destino) { $0 == lados[0] })
+        XCTAssertTrue(CoordenadaAxial.origen.esVisible(destino) { $0 == lados[1] })
+        XCTAssertFalse(CoordenadaAxial.origen.esVisible(destino) { lados.contains($0) })
     }
 
     func testLaVisibilidadEsSimetrica() {
@@ -73,11 +73,11 @@ final class LineasTests: XCTestCase {
         }
         for a in [CoordenadaAxial.origen, CoordenadaAxial(q: -2, r: 3)] {
             for b in region {
-                let ve = a.ve(b) { muros.contains($0) }
-                XCTAssertEqual(b.ve(a) { muros.contains($0) }, ve, "\(a) ↔ \(b)")
+                let ve = a.esVisible(b) { muros.contains($0) }
+                XCTAssertEqual(b.esVisible(a) { muros.contains($0) }, ve, "\(a) ↔ \(b)")
                 for simetria in simetrias {
                     let movidos = Set(muros.map(simetria))
-                    XCTAssertEqual(simetria(a).ve(simetria(b)) { movidos.contains($0) }, ve, "\(a) → \(b)")
+                    XCTAssertEqual(simetria(a).esVisible(simetria(b)) { movidos.contains($0) }, ve, "\(a) → \(b)")
                 }
             }
         }
@@ -91,7 +91,7 @@ final class RegionesTests: XCTestCase {
             let alcance = centro.alcance(radio: radio)
             XCTAssertEqual(alcance.count, 3 * radio * (radio + 1) + 1)
             XCTAssertEqual(Set(alcance).count, alcance.count)
-            XCTAssertTrue(alcance.allSatisfy { $0.distancia(a: centro) <= radio })
+            XCTAssertTrue(alcance.allSatisfy { $0.distancia(hasta: centro) <= radio })
         }
         XCTAssertEqual(centro.alcance(radio: 0), [centro])
     }
@@ -101,7 +101,7 @@ final class RegionesTests: XCTestCase {
         let b = (centro: CoordenadaAxial(q: 3, r: -1), radio: 2)
         let c = (centro: CoordenadaAxial(q: 1, r: 1), radio: 2)
         let esperada = a.centro.alcance(radio: a.radio).filter {
-            $0.distancia(a: b.centro) <= b.radio && $0.distancia(a: c.centro) <= c.radio
+            $0.distancia(hasta: b.centro) <= b.radio && $0.distancia(hasta: c.centro) <= c.radio
         }
         XCTAssertFalse(esperada.isEmpty)
         XCTAssertEqual(Set(CoordenadaAxial.interseccion(de: [a, b, c])), Set(esperada))
@@ -117,11 +117,11 @@ final class RegionesTests: XCTestCase {
             let anillo = centro.anillo(radio: radio)
             XCTAssertEqual(anillo.count, 6 * radio)
             XCTAssertEqual(Set(anillo).count, anillo.count)
-            XCTAssertTrue(anillo.allSatisfy { $0.distancia(a: centro) == radio })
+            XCTAssertTrue(anillo.allSatisfy { $0.distancia(hasta: centro) == radio })
             XCTAssertEqual(anillo.first, centro + CoordenadaAxial.direcciones[4] * radio)
             // Se recorre de vecina en vecina, y la última vuelve a tocar la primera.
             for (anterior, siguiente) in zip(anillo, anillo.dropFirst() + [anillo[0]]) {
-                XCTAssertEqual(anterior.distancia(a: siguiente), 1)
+                XCTAssertEqual(anterior.distancia(hasta: siguiente), 1)
             }
         }
         XCTAssertEqual(CoordenadaAxial.origen.anillo(radio: 1).count, 6)
@@ -133,7 +133,7 @@ final class RegionesTests: XCTestCase {
         XCTAssertEqual(Set(espiral), Set(centro.alcance(radio: 3)))
         XCTAssertEqual(espiral.count, 37)
         XCTAssertEqual(espiral.first, centro)
-        XCTAssertEqual(espiral.map { $0.distancia(a: centro) }, espiral.map { $0.distancia(a: centro) }.sorted())
+        XCTAssertEqual(espiral.map { $0.distancia(hasta: centro) }, espiral.map { $0.distancia(hasta: centro) }.sorted())
         XCTAssertEqual(centro.espiral(radio: 0), [centro])
     }
 
@@ -175,7 +175,7 @@ final class RegionesTests: XCTestCase {
             XCTAssertEqual(camino.last, destino)
             XCTAssertTrue(camino.dropFirst().allSatisfy { mapa.contains($0) })
             for (anterior, siguiente) in zip(camino, camino.dropFirst()) {
-                XCTAssertEqual(anterior.distancia(a: siguiente), 1)
+                XCTAssertEqual(anterior.distancia(hasta: siguiente), 1)
             }
             let pasos = CoordenadaAxial.origen.alcanzables(movimientos: 20) { !mapa.contains($0) }
             XCTAssertEqual(camino.count - 1, pasos[destino])
@@ -212,7 +212,7 @@ final class SimetriasTests: XCTestCase {
         XCTAssertEqual(a.rotada(sextos: 3, alrededorDe: centro), centro - (a - centro))
         XCTAssertEqual(centro.rotada(sextos: 1, alrededorDe: centro), centro)
         for k in 0..<6 {
-            XCTAssertEqual(a.rotada(sextos: k, alrededorDe: centro).distancia(a: centro), a.distancia(a: centro))
+            XCTAssertEqual(a.rotada(sextos: k, alrededorDe: centro).distancia(hasta: centro), a.distancia(hasta: centro))
         }
         XCTAssertEqual(a.rotadaEnSentidoHorario(alrededorDe: centro).rotadaEnSentidoAntihorario(alrededorDe: centro), a)
     }
@@ -238,7 +238,7 @@ final class SimetriasTests: XCTestCase {
         for eje in Eje.allCases {
             let b = a.reflejada(sobre: eje, alrededorDe: centro)
             XCTAssertEqual(b.reflejada(sobre: eje, alrededorDe: centro), a)
-            XCTAssertEqual(b.distancia(a: centro), a.distancia(a: centro))
+            XCTAssertEqual(b.distancia(hasta: centro), a.distancia(hasta: centro))
         }
     }
 }

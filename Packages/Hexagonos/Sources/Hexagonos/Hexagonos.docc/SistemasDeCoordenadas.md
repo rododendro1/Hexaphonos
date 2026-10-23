@@ -52,7 +52,7 @@ ejes de dos en dos: con ``Doblado/anchoDoble`` (puntiagudos) la columna avanza d
 ``Doblado/altoDoble`` (planos), la fila. Solo valen las parejas con `columna + fila` par
 (``CoordenadaDoblada/esValida``). A cambio de esas casillas vacías, los pasos a las vecinas son
 siempre los mismos y la distancia tiene una fórmula directa
-(``CoordenadaDoblada/distancia(a:_:)``).
+(``CoordenadaDoblada/distancia(hasta:_:)``).
 
 ```swift
 CoordenadaAxial(q: 1, r: 2).doblada(.anchoDoble)   // (columna: 4, fila: 2)

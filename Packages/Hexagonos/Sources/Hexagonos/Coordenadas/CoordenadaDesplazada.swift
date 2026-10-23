@@ -60,8 +60,13 @@ public struct CoordenadaDesplazada: Hashable, Sendable, Codable {
     }
 
     /// Los pasos hasta `otra`.
+    public func distancia(hasta otra: CoordenadaDesplazada, _ desplazamiento: Desplazamiento) -> Int {
+        axial(desplazamiento).distancia(hasta: otra.axial(desplazamiento))
+    }
+
+    @available(*, deprecated, renamed: "distancia(hasta:_:)")
     public func distancia(a otra: CoordenadaDesplazada, _ desplazamiento: Desplazamiento) -> Int {
-        axial(desplazamiento).distancia(a: otra.axial(desplazamiento))
+        distancia(hasta: otra, desplazamiento)
     }
 }
 

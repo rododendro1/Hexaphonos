@@ -16,7 +16,7 @@ El motor depende ahora del paquete `Hexagonos` (rejillas hexagonales).
 
 - `PuntoDelTonnetz.coordenada` y `PuntoDelTonnetz(_:)` pasan de un punto del Tonnetz a una `CoordenadaAxial` y
   de vuelta; `distancia(hasta:)` es la de la rejilla (el resultado no cambia).
-- `Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)` dicen dónde dibuja `svg()` cada nota, y
+- `Tonnetz.trazado(paso:)` y `TablaArmonica.trazado(paso:)` dicen dónde dibuja `svg()` cada nota, y
   `punto(en:paso:)`, qué nota hay bajo un punto del dibujo. Los dos dibujos colocan ya las notas con ellas (el SVG
   es el mismo, salvo algún `-0.0` que pasa a `0.0`). `TablaArmonica.coordenada(de:)` y `punto(de:)` traducen entre
   el Tonnetz y la rejilla de la tabla, que es la misma girada 120°.
@@ -38,6 +38,18 @@ Los nombres anteriores se siguen aceptando, marcados como obsoletos.
 - `TablaArmonica.Modo` pasa a `TablaArmonica.Colocacion`, y la propiedad `modo` a `colocacion`: dice cómo se colocaron
   las notas, y «modo» ya es `Tonalidad.Modo`.
 - `Razon` pasa a `RazonDeFrecuencias`.
+
+### Terminología
+
+- `Digitacion.cifra` pasa a `tablatura` (el nombre anterior sigue aceptándose, marcado como obsoleto): «cifra» se
+  confundía con el cifrado de los acordes.
+- La transformación neorriemanniana P se llama «homónima» en `nombre`, no «paralela»: en español, Do mayor y Do menor
+  son tonalidades homónimas, y «paralela» era un calco del inglés. El caso `.p` y la letra no cambian.
+- `Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)` pasan a `trazado(paso:)` y devuelven un
+  `Trazado`, el nuevo nombre de `Disposicion` en `Hexagonos`. Los nombres anteriores siguen aceptándose, marcados como
+  obsoletos.
+- La documentación de `Digitacion.trastesPisados` decía que eran el más grave y el más agudo; son todos los que se
+  pisan.
 
 ### Carpetas
 

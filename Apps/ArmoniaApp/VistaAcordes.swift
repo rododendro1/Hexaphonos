@@ -60,10 +60,10 @@ struct VistaAcordes: View {
                     Text("No hay digitaciones cómodas para este acorde en este instrumento.")
                         .foregroundColor(.secondary)
                 }
-                ForEach(resultado.formas, id: \.cifra) { forma in
+                ForEach(resultado.formas, id: \.tablatura) { forma in
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(alignment: .firstTextBaseline) {
-                            Text(forma.cifra).font(.system(.body, design: .monospaced))
+                            Text(forma.tablatura).font(.system(.body, design: .monospaced))
                             Text(descripcionDeDedos(de: forma)).font(.caption).foregroundColor(.secondary)
                         }
                         DiagramaDeMastil(digitacion: forma, acorde: acorde, notacion: notacion)

@@ -20,7 +20,7 @@ mapa.vecinas(de: .origen).count             // 6
 
 Se recorre como una colección de pares `(casilla, valor)`, se transforma
 (``MapaHexagonal/transformado(_:)``, ``MapaHexagonal/filtrado(_:)``), se mueve, se gira y se refleja
-(``MapaHexagonal/desplazado(por:)``, ``MapaHexagonal/girado(sextos:alrededorDe:)``,
+(``MapaHexagonal/desplazado(por:)``, ``MapaHexagonal/rotado(sextos:alrededorDe:)``,
 ``MapaHexagonal/reflejado(sobre:alrededorDe:)``) y se guarda en JSON si sus valores se pueden guardar.
 
 ### Caminos con coste

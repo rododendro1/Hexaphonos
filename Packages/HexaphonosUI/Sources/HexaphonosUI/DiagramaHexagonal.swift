@@ -52,19 +52,19 @@ public struct DiagramaHexagonal: View {
 
     public var body: some View {
         GeometryReader { geometria in
-            let disposicion = PresentacionHexagonal.disposicion(
+            let trazado = PresentacionHexagonal.trazado(
                 para: casillas, orientacion: orientacion,
                 ancho: Double(geometria.size.width), alto: Double(geometria.size.height), margen: Self.margen)
             Canvas { contexto, _ in
-                if let disposicion {
-                    dibujar(en: &contexto, disposicion: disposicion)
+                if let trazado {
+                    dibujar(en: &contexto, trazado: trazado)
                 }
             }
             .contentShape(Rectangle())
             .onTapGesture { punto in
-                guard let alTocar, let disposicion,
+                guard let alTocar, let trazado,
                       let casilla = PresentacionHexagonal.casilla(en: Punto(x: Double(punto.x), y: Double(punto.y)),
-                                                                  disposicion: disposicion, mapa: Set(casillas))
+                                                                  trazado: trazado, mapa: Set(casillas))
                 else { return }
                 alTocar(casilla)
             }
@@ -76,12 +76,12 @@ public struct DiagramaHexagonal: View {
         .accessibilityValue(Text(PresentacionHexagonal.descripcion(casillas: casillas.count, seleccionada: seleccionada)))
     }
 
-    private func dibujar(en contexto: inout GraphicsContext, disposicion: Disposicion) {
-        let grosor = max(0.5, disposicion.tamano.x * 0.05)
+    private func dibujar(en contexto: inout GraphicsContext, trazado: Trazado) {
+        let grosor = max(0.5, trazado.tamano.x * 0.05)
 
         func hexagono(_ casilla: CoordenadaAxial) -> Path {
             var camino = Path()
-            camino.addLines(disposicion.vertices(de: casilla).map { CGPoint(x: $0.x, y: $0.y) })
+            camino.addLines(trazado.vertices(de: casilla).map { CGPoint(x: $0.x, y: $0.y) })
             camino.closeSubpath()
             return camino
         }
@@ -91,8 +91,8 @@ public struct DiagramaHexagonal: View {
             contexto.fill(forma, with: .color(relleno(casilla) ?? Color.gray.opacity(0.15)))
             contexto.stroke(forma, with: .color(.secondary), lineWidth: grosor)
             if let texto = rotulo(casilla) {
-                let centro = disposicion.centro(de: casilla)
-                contexto.draw(Text(texto).font(.system(size: max(6, disposicion.tamano.x * 0.45))),
+                let centro = trazado.centro(de: casilla)
+                contexto.draw(Text(texto).font(.system(size: max(6, trazado.tamano.x * 0.45))),
                               at: CGPoint(x: centro.x, y: centro.y))
             }
         }

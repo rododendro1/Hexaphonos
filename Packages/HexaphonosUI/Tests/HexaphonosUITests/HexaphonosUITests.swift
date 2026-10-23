@@ -83,7 +83,7 @@ final class PresentacionDeMastilTests: XCTestCase {
             for forma in guitarra.digitaciones(de: acorde, maximoTraste: 15) {
                 let rango = PresentacionDeMastil.rango(de: forma)
                 for posicion in forma.posiciones where posicion.traste > 0 {
-                    XCTAssertTrue(rango.contains(posicion.traste), "\(cifrado) \(forma.cifra): \(rango)")
+                    XCTAssertTrue(rango.contains(posicion.traste), "\(cifrado) \(forma.tablatura): \(rango)")
                 }
             }
         }

@@ -71,7 +71,7 @@ final class MapaHexagonalTests: XCTestCase {
         let vector = CoordenadaAxial(q: 2, r: -5)
         let desplazado = mapa.desplazado(por: vector)
         let centro = CoordenadaAxial(q: 1, r: 1)
-        let girado = mapa.girado(sextos: 2, alrededorDe: centro)
+        let girado = mapa.rotado(sextos: 2, alrededorDe: centro)
         let reflejado = mapa.reflejado(sobre: .s)
         for (casilla, valor) in mapa {
             XCTAssertEqual(desplazado[casilla + vector], valor)
@@ -79,8 +79,8 @@ final class MapaHexagonalTests: XCTestCase {
             XCTAssertEqual(reflejado[casilla.reflejada(sobre: .s)], valor)
         }
         XCTAssertEqual(girado.count, mapa.count)
-        XCTAssertEqual(mapa.girado(sextos: 6), mapa)
-        XCTAssertEqual(mapa.girado(sextos: 1).girado(sextos: -1), mapa)
+        XCTAssertEqual(mapa.rotado(sextos: 6), mapa)
+        XCTAssertEqual(mapa.rotado(sextos: 1).rotado(sextos: -1), mapa)
     }
 
     func testCaminosYVisibilidad() {
@@ -128,10 +128,10 @@ final class MapaHexagonalTests: XCTestCase {
 
     func testLimites() {
         let mapa = MapaHexagonal(repitiendo: 0, en: FormasDeMapa.hexagono(radio: 2))
-        let disposicion = Disposicion(orientacion: .puntiaguda, tamano: 10)
-        let limites = mapa.limites(con: disposicion)
+        let trazado = Trazado(orientacion: .puntiaguda, tamano: 10)
+        let limites = mapa.limites(con: trazado)
         XCTAssertNotNil(limites)
-        XCTAssertEqual(limites?.minimo.x ?? 0, disposicion.limites(de: FormasDeMapa.hexagono(radio: 2))?.minimo.x ?? 1)
-        XCTAssertNil(MapaHexagonal<Int>().limites(con: disposicion))
+        XCTAssertEqual(limites?.minimo.x ?? 0, trazado.limites(de: FormasDeMapa.hexagono(radio: 2))?.minimo.x ?? 1)
+        XCTAssertNil(MapaHexagonal<Int>().limites(con: trazado))
     }
 }

@@ -106,7 +106,7 @@ extension LineaDeComandos {
             }
             for forma in formas {
                 let notas = forma.notas(para: acorde).map { $0.nombre(en: notacion) }.joined(separator: " ")
-                lineas.append("  " + forma.cifra.padding(hasta: 17) + notas.padding(hasta: 18)
+                lineas.append("  " + forma.tablatura.padding(hasta: 17) + notas.padding(hasta: 18)
                               + descripcion(de: forma, notacion))
                 if conTab { lineas += tab(de: forma, notacion) }
             }

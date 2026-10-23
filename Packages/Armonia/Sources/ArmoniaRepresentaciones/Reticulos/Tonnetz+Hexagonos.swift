@@ -12,7 +12,7 @@ extension PuntoDelTonnetz {
     ///
     /// Los seis pasos del Tonnetz (quinta justa, tercera mayor y tercera menor, arriba o abajo) son
     /// las seis direcciones de la rejilla, así que la distancia es la de la rejilla:
-    /// `p.distancia(hasta: o) == p.coordenada.distancia(a: o.coordenada)`.
+    /// `p.distancia(hasta: o) == p.coordenada.distancia(hasta: o.coordenada)`.
     public var coordenada: CoordenadaAxial {
         CoordenadaAxial(q: quintas, r: terceras)
     }
@@ -28,17 +28,20 @@ extension Tonnetz {
     /// nota, las quintas hacia la derecha y las terceras mayores hacia arriba a la derecha.
     ///
     /// Las coordenadas son las del SVG (las de su `viewBox`), con el Do de partida en `(0, 0)`.
-    public static func disposicion(paso: Double) -> Disposicion {
+    public static func trazado(paso: Double) -> Trazado {
         // El lado del hexágono es paso / √3 para que dos centros vecinos queden a `paso`; el tamaño
         // vertical va en negativo porque las terceras suben y en SVG el eje y baja.
         let lado = paso / 3.0.squareRoot()
-        return Disposicion(orientacion: .puntiaguda, tamano: Punto(x: lado, y: -lado))
+        return Trazado(orientacion: .puntiaguda, tamano: Punto(x: lado, y: -lado))
     }
+
+    @available(*, deprecated, renamed: "trazado(paso:)")
+    public static func disposicion(paso: Double) -> Trazado { trazado(paso: paso) }
 
     /// La nota más cercana a un punto del dibujo de `svg(paso:)`, en las coordenadas del SVG: para
     /// saber qué nota se ha tocado.
     public static func punto(en punto: Punto, paso: Double) -> PuntoDelTonnetz {
-        PuntoDelTonnetz(disposicion(paso: paso).casilla(en: punto))
+        PuntoDelTonnetz(trazado(paso: paso).casilla(en: punto))
     }
 }
 
@@ -56,12 +59,15 @@ extension TablaArmonica {
 
     /// Dónde dibuja `svg(paso:)` cada hexágono, en las casillas de `coordenada(de:)`: hexágonos planos
     /// con dos vecinos a `paso` de distancia, en las coordenadas del SVG y con el Do de partida en `(0, 0)`.
-    public static func disposicion(paso: Double) -> Disposicion {
-        Disposicion(orientacion: .plana, tamano: paso / 3.0.squareRoot())
+    public static func trazado(paso: Double) -> Trazado {
+        Trazado(orientacion: .plana, tamano: paso / 3.0.squareRoot())
     }
+
+    @available(*, deprecated, renamed: "trazado(paso:)")
+    public static func disposicion(paso: Double) -> Trazado { trazado(paso: paso) }
 
     /// El hexágono que hay bajo un punto del dibujo de `svg(paso:)`, en las coordenadas del SVG.
     public static func punto(en punto: Punto, paso: Double) -> PuntoDelTonnetz {
-        self.punto(de: disposicion(paso: paso).casilla(en: punto))
+        self.punto(de: trazado(paso: paso).casilla(en: punto))
     }
 }

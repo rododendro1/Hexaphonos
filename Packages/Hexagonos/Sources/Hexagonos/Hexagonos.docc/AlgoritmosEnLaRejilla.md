@@ -10,18 +10,18 @@ Todos se escriben sobre ``CoordenadaAxial``.
 
 ``CoordenadaAxial/vecinos`` son las seis casillas que comparten una arista, en el orden de
 ``CoordenadaAxial/direcciones``; ``CoordenadaAxial/vecinosDiagonales``, las seis que están a dos pasos
-cruzando una arista. ``CoordenadaAxial/distancia(a:)`` cuenta los pasos entre dos casillas.
+cruzando una arista. ``CoordenadaAxial/distancia(hasta:)`` cuenta los pasos entre dos casillas.
 
 ```swift
 let a = CoordenadaAxial(q: 0, r: 0)
 a.vecino(0)                                 // (q: 1, r: 0)
-a.distancia(a: CoordenadaAxial(q: 3, r: -7))   // 7
+a.distancia(hasta: CoordenadaAxial(q: 3, r: -7))   // 7
 ```
 
 ### Líneas y visibilidad
 
 ``CoordenadaAxial/linea(hasta:)`` da las casillas de la recta entre dos, cada una vecina de la
-anterior. ``CoordenadaAxial/ve(_:tapada:)`` dice si la línea entre dos casillas está libre, y
+anterior. ``CoordenadaAxial/esVisible(_:tapada:)`` dice si la línea entre dos casillas está libre, y
 ``CoordenadaAxial/visibles(en:tapada:)``, qué casillas de una región se ven desde una.
 
 Si la recta pasa justo por una arista, basta con que uno de los dos lados esté libre: así `a` ve a

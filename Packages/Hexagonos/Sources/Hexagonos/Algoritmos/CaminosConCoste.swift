@@ -46,7 +46,7 @@ extension CoordenadaAxial {
                                 coste: (_ desde: CoordenadaAxial, _ hacia: CoordenadaAxial) -> Double?)
         -> CaminoHexagonal? {
         precondition(costeMinimo >= 0, "El coste mínimo no puede ser negativo (\(costeMinimo))")
-        func estimado(_ casilla: CoordenadaAxial) -> Double { costeMinimo * Double(casilla.distancia(a: destino)) }
+        func estimado(_ casilla: CoordenadaAxial) -> Double { costeMinimo * Double(casilla.distancia(hasta: destino)) }
 
         var gastado: [CoordenadaAxial: Double] = [self: 0]
         var previa: [CoordenadaAxial: CoordenadaAxial] = [:]

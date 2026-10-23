@@ -163,13 +163,13 @@ public struct TablaArmonica: Hashable, Sendable {
         let paso = paso ?? (recorrido.isEmpty ? 56 : 72)
         let margen = margen ?? (colocacion == .notas ? 1 : 2)
         let coseno = 0.8660254037844386   // cos 30°
-        let disposicion = TablaArmonica.disposicion(paso: paso)
-        let radio = disposicion.tamano.x   // del centro a un vértice
-        func x(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: TablaArmonica.coordenada(de: p)).x }
-        func y(_ p: PuntoDelTonnetz) -> Double { disposicion.centro(de: TablaArmonica.coordenada(de: p)).y }
+        let trazado = TablaArmonica.trazado(paso: paso)
+        let radio = trazado.tamano.x   // del centro a un vértice
+        func x(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: TablaArmonica.coordenada(de: p)).x }
+        func y(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: TablaArmonica.coordenada(de: p)).y }
         /// Los seis vértices, empezando por el de la derecha (0°) y en sentido horario en pantalla.
         func vertices(_ p: PuntoDelTonnetz) -> [(Double, Double)] {
-            disposicion.vertices(de: TablaArmonica.coordenada(de: p)).map { ($0.x, $0.y) }
+            trazado.vertices(de: TablaArmonica.coordenada(de: p)).map { ($0.x, $0.y) }
         }
 
         // La ventana: un rectángulo alrededor de las notas.

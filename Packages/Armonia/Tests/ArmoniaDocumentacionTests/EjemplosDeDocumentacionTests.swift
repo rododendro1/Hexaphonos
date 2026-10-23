@@ -570,12 +570,12 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
         let acorde = Acorde("Sol7/Si")
         let formas = mastil.digitaciones(de: acorde, limite: 3)
         let primera = formas.first
-        let cifra = primera?.cifra
+        let tablatura = primera?.tablatura
         let notas = primera?.notas(para: acorde)
         let dedos = primera?.dedos
         let cejilla = primera?.cejilla
         let pentatonica = mastil.posiciones(de: Escala(.la, .pentatonicaMenor), trastes: 0...12)
-        _ = (ukelele, cifra, notas, dedos, cejilla, pentatonica)
+        _ = (ukelele, tablatura, notas, dedos, cejilla, pentatonica)
     }
 
     func testTrastes2() throws {

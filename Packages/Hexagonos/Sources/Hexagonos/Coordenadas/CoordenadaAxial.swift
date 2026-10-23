@@ -10,12 +10,12 @@
 /// ```swift
 /// let a = CoordenadaAxial(q: 1, r: -2)
 /// a.s                          // 1
-/// a.distancia(a: .origen)      // 2
+/// a.distancia(hasta: .origen)      // 2
 /// a + CoordenadaAxial(q: 0, r: 1)   // (q: 1, r: -1)
 /// ```
 ///
 /// Las mismas coordenadas valen para hexágonos puntiagudos y planos: la orientación solo importa
-/// al dibujar (``Disposicion``) y en las coordenadas desplazadas y dobladas.
+/// al dibujar (``Trazado``) y en las coordenadas desplazadas y dobladas.
 public struct CoordenadaAxial: Hashable, Sendable, Codable {
     /// La columna (el eje q).
     public var q: Int
@@ -124,7 +124,7 @@ extension CoordenadaAxial {
 
     /// Si `otra` es una de las seis vecinas.
     public func esVecina(de otra: CoordenadaAxial) -> Bool {
-        distancia(a: otra) == 1
+        distancia(hasta: otra) == 1
     }
 }
 
@@ -137,9 +137,12 @@ extension CoordenadaAxial {
     }
 
     /// Los pasos entre las dos casillas (el menor número de vecinas que hay que recorrer).
-    public func distancia(a otra: CoordenadaAxial) -> Int {
+    public func distancia(hasta otra: CoordenadaAxial) -> Int {
         (self - otra).longitud
     }
+
+    @available(*, deprecated, renamed: "distancia(hasta:)")
+    public func distancia(a otra: CoordenadaAxial) -> Int { distancia(hasta: otra) }
 }
 
 /// Módulo no negativo para divisor positivo: `modulo(-1, 6) == 5`.

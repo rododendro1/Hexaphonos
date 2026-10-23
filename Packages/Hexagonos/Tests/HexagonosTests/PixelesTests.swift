@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 @testable import Hexagonos
 
-final class DisposicionTests: XCTestCase {
+final class TrazadoTests: XCTestCase {
     private let raiz3 = 3.0.squareRoot()
 
     private func igual(_ a: Punto, _ b: Punto, file: StaticString = #filePath, line: UInt = #line) {
@@ -11,25 +11,25 @@ final class DisposicionTests: XCTestCase {
     }
 
     func testCentrosPuntiagudos() {
-        let d = Disposicion(orientacion: .puntiaguda, tamano: 10)
+        let d = Trazado(orientacion: .puntiaguda, tamano: 10)
         igual(d.centro(de: .origen), .cero)
         igual(d.centro(de: CoordenadaAxial(q: 1, r: 0)), Punto(x: 10 * raiz3, y: 0))
         igual(d.centro(de: CoordenadaAxial(q: 0, r: 1)), Punto(x: 5 * raiz3, y: 15))
     }
 
     func testCentrosPlanos() {
-        let d = Disposicion(orientacion: .plana, tamano: 10, origen: Punto(x: 100, y: 50))
+        let d = Trazado(orientacion: .plana, tamano: 10, origen: Punto(x: 100, y: 50))
         igual(d.centro(de: .origen), Punto(x: 100, y: 50))
         igual(d.centro(de: CoordenadaAxial(q: 1, r: 0)), Punto(x: 115, y: 50 + 5 * raiz3))
         igual(d.centro(de: CoordenadaAxial(q: 0, r: 1)), Punto(x: 100, y: 50 + 10 * raiz3))
     }
 
     func testDePixelACasillaYVuelta() {
-        let disposiciones = [
-            Disposicion(orientacion: .puntiaguda, tamano: Punto(x: 3, y: 2), origen: Punto(x: 1, y: -4)),
-            Disposicion(orientacion: .plana, tamano: Punto(x: 7, y: 5), origen: Punto(x: -2, y: 9)),
+        let trazados = [
+            Trazado(orientacion: .puntiaguda, tamano: Punto(x: 3, y: 2), origen: Punto(x: 1, y: -4)),
+            Trazado(orientacion: .plana, tamano: Punto(x: 7, y: 5), origen: Punto(x: -2, y: 9)),
         ]
-        for d in disposiciones {
+        for d in trazados {
             for casilla in CoordenadaAxial.origen.alcance(radio: 5) {
                 let centro = d.centro(de: casilla)
                 XCTAssertEqual(d.casilla(en: centro), casilla)
@@ -44,7 +44,7 @@ final class DisposicionTests: XCTestCase {
 
     func testVertices() {
         for orientacion in Orientacion.allCases {
-            let d = Disposicion(orientacion: orientacion, tamano: 10)
+            let d = Trazado(orientacion: orientacion, tamano: 10)
             let casilla = CoordenadaAxial(q: 2, r: -1)
             let centro = d.centro(de: casilla)
             let vertices = d.vertices(de: casilla)
@@ -56,13 +56,13 @@ final class DisposicionTests: XCTestCase {
             }
         }
         // El primer vértice: a 30° en los puntiagudos, a 0° en los planos.
-        igual(Disposicion(orientacion: .puntiaguda, tamano: 10).vertices(de: .origen)[0], Punto(x: 5 * raiz3, y: 5))
-        igual(Disposicion(orientacion: .plana, tamano: 10).vertices(de: .origen)[0], Punto(x: 10, y: 0))
+        igual(Trazado(orientacion: .puntiaguda, tamano: 10).vertices(de: .origen)[0], Punto(x: 5 * raiz3, y: 5))
+        igual(Trazado(orientacion: .plana, tamano: 10).vertices(de: .origen)[0], Punto(x: 10, y: 0))
     }
 
     func testVerticesCompartidos() {
         // Dos vecinas comparten exactamente dos vértices.
-        let d = Disposicion(orientacion: .puntiaguda, tamano: 10)
+        let d = Trazado(orientacion: .puntiaguda, tamano: 10)
         func redondear(_ p: Punto) -> [Double] { [(p.x * 1e6).rounded(), (p.y * 1e6).rounded()] }
         let a = Set(d.vertices(de: .origen).map(redondear))
         for vecina in CoordenadaAxial.origen.vecinos {
@@ -71,19 +71,19 @@ final class DisposicionTests: XCTestCase {
     }
 
     func testAnchuraYAltura() {
-        let p = Disposicion(orientacion: .puntiaguda, tamano: 10)
+        let p = Trazado(orientacion: .puntiaguda, tamano: 10)
         XCTAssertEqual(p.anchura, 10 * raiz3, accuracy: 1e-9)
         XCTAssertEqual(p.altura, 20, accuracy: 1e-9)
         // En los puntiagudos, dos vecinas de la misma fila están a una anchura.
         XCTAssertEqual(p.centro(de: CoordenadaAxial(q: 1, r: 0)).x - p.centro(de: .origen).x, p.anchura, accuracy: 1e-9)
-        let f = Disposicion(orientacion: .plana, tamano: 10)
+        let f = Trazado(orientacion: .plana, tamano: 10)
         XCTAssertEqual(f.anchura, 20, accuracy: 1e-9)
         XCTAssertEqual(f.altura, 10 * raiz3, accuracy: 1e-9)
         XCTAssertEqual(f.centro(de: CoordenadaAxial(q: 0, r: 1)).y - f.centro(de: .origen).y, f.altura, accuracy: 1e-9)
     }
 
     func testLimites() {
-        let d = Disposicion(orientacion: .plana, tamano: 10)
+        let d = Trazado(orientacion: .plana, tamano: 10)
         XCTAssertNil(d.limites(de: []))
         let uno = d.limites(de: [.origen])
         XCTAssertEqual(uno?.minimo.x ?? 0, -10, accuracy: 1e-9)
@@ -93,7 +93,7 @@ final class DisposicionTests: XCTestCase {
     }
 
     func testSVG() {
-        let d = Disposicion(orientacion: .puntiaguda, tamano: 10)
+        let d = Trazado(orientacion: .puntiaguda, tamano: 10)
         let casillas = FormasDeMapa.hexagono(radio: 1)
         let svg = d.svg(casillas, relleno: { $0 == .origen ? "red" : nil }, rotulo: { "\($0.q),\($0.r)" })
         XCTAssertTrue(svg.hasPrefix("<svg xmlns=\"http://www.w3.org/2000/svg\""))
@@ -108,7 +108,7 @@ final class DisposicionTests: XCTestCase {
     }
 
     func testCodable() throws {
-        let d = Disposicion(orientacion: .plana, tamano: Punto(x: 3, y: 4), origen: Punto(x: 1, y: 2))
-        XCTAssertEqual(try JSONDecoder().decode(Disposicion.self, from: JSONEncoder().encode(d)), d)
+        let d = Trazado(orientacion: .plana, tamano: Punto(x: 3, y: 4), origen: Punto(x: 1, y: 2))
+        XCTAssertEqual(try JSONDecoder().decode(Trazado.self, from: JSONEncoder().encode(d)), d)
     }
 }

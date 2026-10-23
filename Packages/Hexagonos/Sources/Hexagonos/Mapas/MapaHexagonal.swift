@@ -93,9 +93,9 @@ public struct MapaHexagonal<Valor> {
         try valores.compactMap { try condicion($0.value) ? $0.key : nil }
     }
 
-    /// El rectángulo que ocupan sus hexágonos al dibujarlos con `disposicion`, o `nil` si está vacío.
-    public func limites(con disposicion: Disposicion) -> (minimo: Punto, maximo: Punto)? {
-        disposicion.limites(de: casillas)
+    /// El rectángulo que ocupan sus hexágonos al dibujarlos con `trazado`, o `nil` si está vacío.
+    public func limites(con trazado: Trazado) -> (minimo: Punto, maximo: Punto)? {
+        trazado.limites(de: casillas)
     }
 }
 
@@ -108,8 +108,13 @@ extension MapaHexagonal {
     }
 
     /// El mapa girado `sextos` veces 60° alrededor de `centro` (ver ``CoordenadaAxial/rotada(sextos:alrededorDe:)``).
-    public func girado(sextos: Int, alrededorDe centro: CoordenadaAxial = .origen) -> MapaHexagonal {
+    public func rotado(sextos: Int, alrededorDe centro: CoordenadaAxial = .origen) -> MapaHexagonal {
         recolocado { $0.rotada(sextos: sextos, alrededorDe: centro) }
+    }
+
+    @available(*, deprecated, renamed: "rotado(sextos:alrededorDe:)")
+    public func girado(sextos: Int, alrededorDe centro: CoordenadaAxial = .origen) -> MapaHexagonal {
+        rotado(sextos: sextos, alrededorDe: centro)
     }
 
     /// El mapa reflejado sobre un eje (ver ``CoordenadaAxial/reflejada(sobre:alrededorDe:)``).
@@ -154,7 +159,7 @@ extension MapaHexagonal {
     }
 
     /// Las casillas del mapa que se ven desde `origen`, si las de valor `tapa` tapan la vista (las
-    /// tapadas no se ven; las que no están en el mapa no tapan). Ver ``CoordenadaAxial/ve(_:tapada:)``.
+    /// tapadas no se ven; las que no están en el mapa no tapan). Ver ``CoordenadaAxial/esVisible(_:tapada:)``.
     public func visibles(desde origen: CoordenadaAxial, tapa: (Valor) -> Bool) -> [CoordenadaAxial] {
         origen.visibles(en: casillas) { valores[$0].map(tapa) ?? false }
     }
