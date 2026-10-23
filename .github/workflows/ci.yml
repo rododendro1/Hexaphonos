@@ -117,7 +117,7 @@ jobs:
       fail-fast: false
       matrix:
         swift: ["5.9", "6.2"]
-        paquete: [SepirizUI]
+        paquete: [HexaphonosUI]
     defaults:
       run:
         working-directory: Packages/${{ matrix.paquete }}
@@ -142,9 +142,9 @@ jobs:
       - name: Motor
         run: swift build && swift test --parallel --filter "^ArmoniaTests\\."
         working-directory: Packages/Armonia
-      - name: SepirizUI
+      - name: HexaphonosUI
         run: swift test --parallel
-        working-directory: Packages/SepirizUI
+        working-directory: Packages/HexaphonosUI
       - name: Línea de comandos y ejemplo
         run: |
           (cd Apps/ArmoniaCLI && swift test --parallel)
@@ -155,19 +155,19 @@ jobs:
         run: ./Scripts/generar_proyecto.sh
       - name: Armonía (macOS)
         run: >
-          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme ArmoniaApp
+          xcodebuild build -project Hexaphonos.xcodeproj -scheme ArmoniaApp
           -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
       - name: Tonnetz (macOS)
         run: >
-          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme TonnetzApp
+          xcodebuild build -project Hexaphonos.xcodeproj -scheme TonnetzApp
           -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
       - name: Armonía (iOS, simulador)
         run: >
-          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme ArmoniaApp
+          xcodebuild build -project Hexaphonos.xcodeproj -scheme ArmoniaApp
           -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
       - name: Tonnetz (iOS, simulador)
         run: >
-          xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme TonnetzApp
+          xcodebuild build -project Hexaphonos.xcodeproj -scheme TonnetzApp
           -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
 
   documentacion:

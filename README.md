@@ -1,4 +1,4 @@
-# SepirizHexaphonos
+# Hexaphonos
 
 Ecosistema de apps y paquetes de música en Swift. El motor de armonía (`Armonia`) es la base;
 encima hay paquetes para el mástil de los instrumentos de cuerda y para la interfaz, y dos apps de
@@ -15,7 +15,7 @@ Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
-└── SepirizUI/      Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, VistaSVG, tema) y lo que comparten las apps:
+└── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, VistaSVG, tema) y lo que comparten las apps:
                     el selector de notación y su ajuste
 Scripts/            Comprobaciones del repositorio (también las del motor) y generación del proyecto de Xcode
 Config/             Ajustes de compilación de las apps (Local.xcconfig, el de tu equipo, no se guarda en git)
@@ -25,7 +25,7 @@ project.yml         Definición del proyecto de Xcode (XcodeGen)
 ## Dependencias
 
 ```
-ArmoniaApp ──┬──► SepirizUI ──► Armonia
+ArmoniaApp ──┬──► HexaphonosUI ──► Armonia
 TonnetzApp ──┘
 ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo ──► Armonia
 ```
@@ -50,11 +50,11 @@ swift run --package-path Ejemplos/ArmoniaEjemplo ArmoniaEjemplo      # el ejempl
 # Las apps (macOS, con XcodeGen)
 brew install xcodegen
 cp Config/Local.xcconfig.ejemplo Config/Local.xcconfig   # tu equipo de firma y el prefijo de identificadores
-./Scripts/generar_proyecto.sh        # crea SepirizHexaphonos.xcodeproj
-open SepirizHexaphonos.xcodeproj     # elige el esquema ArmoniaApp o TonnetzApp
+./Scripts/generar_proyecto.sh        # crea Hexaphonos.xcodeproj
+open Hexaphonos.xcodeproj     # elige el esquema ArmoniaApp o TonnetzApp
 ```
 
-`SepirizUI` usa SwiftUI para dibujar, pero su lógica (notación, qué trastes y qué notas enseña el mástil) no: esa parte
+`HexaphonosUI` usa SwiftUI para dibujar, pero su lógica (notación, qué trastes y qué notas enseña el mástil) no: esa parte
 compila y se prueba también en Linux, y la de interfaz queda tras `#if canImport(SwiftUI)`. El dibujo y las apps se
 construyen en macOS.
 
@@ -68,7 +68,7 @@ construyen en macOS.
 
 ## Estado
 
-Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `SepirizUI`, la línea de
+Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `HexaphonosUI`, la línea de
 comandos, el ejemplo, las dos apps en macOS y en el simulador de iOS, y la documentación de DocC, sin enlaces sin
 resolver. `./Scripts/compilar_todo.sh` hace lo mismo en una máquina con Swift, por capas y con un log por paso.
 

@@ -78,15 +78,15 @@ else
     omitir "Motor: pruebas" "el motor no compila"
 fi
 
-# 3. Lo que depende del motor: la línea de comandos, el ejemplo y SepirizUI.
+# 3. Lo que depende del motor: la línea de comandos, el ejemplo y HexaphonosUI.
 if [ "$MOTOR_COMPILA" = 1 ]; then
     paso "Línea de comandos: compilar" Apps/ArmoniaCLI swift build &&
         paso "Línea de comandos: pruebas" Apps/ArmoniaCLI swift test --parallel
     paso "Ejemplo: ejecutar" Ejemplos/ArmoniaEjemplo swift run ArmoniaEjemplo
-    paso "SepirizUI: compilar" Packages/SepirizUI swift build &&
-        paso "SepirizUI: pruebas" Packages/SepirizUI swift test --parallel
+    paso "HexaphonosUI: compilar" Packages/HexaphonosUI swift build &&
+        paso "HexaphonosUI: pruebas" Packages/HexaphonosUI swift test --parallel
 else
-    omitir "Línea de comandos, ejemplo y SepirizUI" "el motor no compila"
+    omitir "Línea de comandos, ejemplo y HexaphonosUI" "el motor no compila"
 fi
 
 # 4. Las apps de SwiftUI, solo en macOS y con XcodeGen.
@@ -99,9 +99,9 @@ elif ! command -v xcodegen >/dev/null 2>&1; then
 elif [ "$MOTOR_COMPILA" = 1 ]; then
     paso "Apps: generar el proyecto" . ./Scripts/generar_proyecto.sh &&
         for esquema in ArmoniaApp TonnetzApp; do
-            paso "$esquema (macOS)" . xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme "$esquema" \
+            paso "$esquema (macOS)" . xcodebuild build -project Hexaphonos.xcodeproj -scheme "$esquema" \
                 -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO
-            paso "$esquema (iOS, simulador)" . xcodebuild build -project SepirizHexaphonos.xcodeproj -scheme "$esquema" \
+            paso "$esquema (iOS, simulador)" . xcodebuild build -project Hexaphonos.xcodeproj -scheme "$esquema" \
                 -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO
         done
 else

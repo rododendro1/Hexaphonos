@@ -1,6 +1,6 @@
 import SwiftUI
 import Armonia
-import SepirizUI
+import HexaphonosUI
 
 /// El Tonnetz de un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R.
 struct VistaTonnetz: View {
@@ -11,7 +11,7 @@ struct VistaTonnetz: View {
         var id: Self { self }
     }
 
-    @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
     @State private var contenido = Contenido.recorrido
     @State private var textoInicial = "Do"
     @State private var textoAcorde = "Dom7"
@@ -38,7 +38,7 @@ struct VistaTonnetz: View {
                 Spacer()
             }
         }
-        .padding(TemaSepiriz.margen)
+        .padding(TemaHexaphonos.margen)
         .navigationTitle("Tonnetz")
         .toolbarNotacion(clave: $claveDeNotacion)
         .onAppear { if recorrido.isEmpty { reiniciar() } }

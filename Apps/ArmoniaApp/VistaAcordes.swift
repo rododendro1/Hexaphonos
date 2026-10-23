@@ -1,10 +1,10 @@
 import SwiftUI
 import Armonia
-import SepirizUI
+import HexaphonosUI
 
 /// Escribe un cifrado (Sol7/Si, Dom, Fa#m7b5…) y muestra el acorde con sus digitaciones.
 struct VistaAcordes: View {
-    @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
     @State private var texto = "Sol7/Si"
     /// El acorde leído de `texto`. Se lee una vez por cambio del texto, no en cada redibujado.
     @State private var lectura = VistaAcordes.leer("Sol7/Si")

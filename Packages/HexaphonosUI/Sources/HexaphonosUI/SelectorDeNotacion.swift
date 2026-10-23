@@ -4,7 +4,7 @@ import Armonia
 
 /// El menú para elegir la notación. Guarda la `clave` de la `Nomenclatura`:
 ///
-///     @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+///     @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
 ///     …
 ///     .toolbarNotacion(clave: $claveDeNotacion)
 public struct SelectorDeNotacion: View {

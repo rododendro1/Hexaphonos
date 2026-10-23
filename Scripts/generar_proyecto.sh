@@ -1,5 +1,5 @@
 #!/bin/sh
-# Genera SepirizHexaphonos.xcodeproj a partir de project.yml (necesita XcodeGen).
+# Genera Hexaphonos.xcodeproj a partir de project.yml (necesita XcodeGen).
 set -eu
 cd "$(dirname "$0")/.."
 if ! command -v xcodegen >/dev/null 2>&1; then
@@ -7,4 +7,4 @@ if ! command -v xcodegen >/dev/null 2>&1; then
   exit 1
 fi
 xcodegen generate --spec project.yml
-echo "Listo: abre SepirizHexaphonos.xcodeproj"
+echo "Listo: abre Hexaphonos.xcodeproj"
