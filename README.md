@@ -71,6 +71,7 @@ Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y 
 comandos, el ejemplo, las dos apps en macOS y en el simulador de iOS, y la documentación de DocC, sin enlaces sin
 resolver. `./Scripts/compilar_todo.sh` hace lo mismo en una máquina con Swift, por capas y con un log por paso.
 
-Pendiente de decidir o de hacer antes de publicar: la licencia (no hay `LICENSE`), el icono de las apps
-(un `Assets.xcassets` con `AppIcon`) y el equipo de firma y el prefijo de los identificadores, que van en
-`Config/Local.xcconfig`.
+El código se publica con licencia MIT (`LICENSE`). Las dos apps llevan un icono provisional en
+`Apps/<App>/Assets.xcassets/AppIcon.appiconset`, que conviene sustituir por uno definitivo antes de publicarlas.
+El equipo de firma y el prefijo de los identificadores no se guardan en el repositorio: cada cual los pone en
+su `Config/Local.xcconfig`.
