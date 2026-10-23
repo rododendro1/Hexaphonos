@@ -1,9 +1,9 @@
 import XCTest
 import Armonia
-@testable import SepirizUI
+@testable import HexaphonosUI
 
 #if canImport(SwiftUI) && canImport(WebKit)
-final class SVGViewTests: XCTestCase {
+final class VistaSVGTests: XCTestCase {
     func testLaPaginaIncluyeElSVG() {
         let pagina = VistaSVG.pagina("<svg id=\"dibujo\"></svg>")
         XCTAssertTrue(pagina.contains("<svg id=\"dibujo\"></svg>"))

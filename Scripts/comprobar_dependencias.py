@@ -22,7 +22,7 @@ PAQUETES = RAIZ / "Packages"
 # De más básico a más alto: cada paquete solo puede depender de los anteriores que se listan.
 PERMITIDO = {
     "Armonia": set(),
-    "SepirizUI": {"Armonia"},
+    "HexaphonosUI": {"Armonia"},
 }
 
 errores = []

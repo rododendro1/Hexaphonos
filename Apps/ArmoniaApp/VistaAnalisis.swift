@@ -1,10 +1,10 @@
 import SwiftUI
 import Armonia
-import SepirizUI
+import HexaphonosUI
 
 /// Escribe una progresión (Do Lam Re7 Sol7 Do) y muestra su tonalidad, los grados y las funciones.
 struct VistaAnalisis: View {
-    @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
     @State private var texto = "Do Lam Re7 Sol7 Do"
 
     private var notacion: Nomenclatura { .desde(clave: claveDeNotacion) }

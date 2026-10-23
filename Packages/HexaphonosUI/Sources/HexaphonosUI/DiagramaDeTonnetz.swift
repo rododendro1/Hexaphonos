@@ -19,7 +19,7 @@ public struct DiagramaDeTonnetz: View {
 
     public var body: some View {
         VistaSVG(svg: tonnetz.svg(notacion: notacion, leyenda: leyenda))
-            .clipShape(RoundedRectangle(cornerRadius: TemaSepiriz.radioDeEsquina))
+            .clipShape(RoundedRectangle(cornerRadius: TemaHexaphonos.radioDeEsquina))
             .accessibilityLabel(Text(tonnetz.description))
     }
 }

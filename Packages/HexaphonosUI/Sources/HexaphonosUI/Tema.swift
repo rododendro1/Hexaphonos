@@ -2,7 +2,7 @@
 import SwiftUI
 
 /// Colores y medidas comunes de las apps del ecosistema.
-public enum TemaSepiriz {
+public enum TemaHexaphonos {
     /// El color de énfasis: el mismo violeta de las notas en los dibujos del Tonnetz.
     public static let acento = Color(red: 0.36, green: 0.25, blue: 0.62)
     /// Madera clara del mástil.

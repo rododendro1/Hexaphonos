@@ -2,6 +2,11 @@
 
 ## Sin publicar
 
+### Hexaphonos
+
+- El ecosistema pasa a llamarse Hexaphonos: el proyecto de Xcode es `Hexaphonos.xcodeproj`, y el paquete de la
+  interfaz, `SepirizUI`, pasa a `HexaphonosUI` (con `AjustesHexaphonos` y `TemaHexaphonos`). El motor no cambia.
+
 ### Nombres de tipos
 
 Los nombres anteriores se siguen aceptando, marcados como obsoletos.

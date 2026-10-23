@@ -1,11 +1,11 @@
 import SwiftUI
 import Armonia
-import SepirizUI
+import HexaphonosUI
 
 /// Elige una tónica y una escala del catálogo (occidentales y de otras tradiciones) y muestra sus notas,
 /// sus acordes y dónde caen en el mástil.
 struct VistaEscalas: View {
-    @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
     @State private var tonica = 0          // índice en `tonicas`
     @State private var tipo = 0            // índice en `catalogo`
 

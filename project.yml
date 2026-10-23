@@ -1,14 +1,14 @@
 # Proyecto de Xcode de las apps del ecosistema, generado con XcodeGen:
 #
 #     brew install xcodegen
-#     ./Scripts/generar_proyecto.sh        # crea SepirizHexaphonos.xcodeproj
+#     ./Scripts/generar_proyecto.sh        # crea Hexaphonos.xcodeproj
 #
 # El .xcodeproj no se guarda en git: este fichero es la fuente. Los paquetes locales se enlazan por
 # ruta, así que un cambio en `Packages/` se ve en las apps sin publicar nada.
 #
 # Lo que depende de tu equipo (el equipo de firma, el prefijo de los identificadores) no va aquí sino en
 # Config/Local.xcconfig, que no se guarda en git: copia Config/Local.xcconfig.ejemplo.
-name: SepirizHexaphonos
+name: Hexaphonos
 
 configFiles:
   Debug: Config/Compartido.xcconfig
@@ -45,8 +45,8 @@ settings:
 packages:
   Armonia:
     path: Packages/Armonia
-  SepirizUI:
-    path: Packages/SepirizUI
+  HexaphonosUI:
+    path: Packages/HexaphonosUI
 
 targets:
   ArmoniaApp:
@@ -67,7 +67,7 @@ targets:
     dependencies:
       - package: Armonia
         product: Armonia
-      - package: SepirizUI
+      - package: HexaphonosUI
 
   TonnetzApp:
     type: application
@@ -88,7 +88,7 @@ targets:
     dependencies:
       - package: Armonia
         product: Armonia
-      - package: SepirizUI
+      - package: HexaphonosUI
 
 schemes:
   ArmoniaApp:
