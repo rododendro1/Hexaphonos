@@ -68,14 +68,23 @@ sumando cero.
 
 ### Direcciones
 
-Las seis direcciones se numeran del 0 al 5 en sentido antihorario (con el eje y hacia abajo, como en
-la pantalla). Los nombres de los puntos cardinales dependen de la orientación:
+Las seis direcciones (``DireccionHexagonal``) se numeran del 0 al 5 en sentido antihorario (con el
+eje y hacia abajo, como en la pantalla). Cada una suma 1 a una coordenada cúbica y resta 1 a otra, y
+se llama por eso: ``DireccionHexagonal/qMasSMenos`` es `(q + 1, r, s − 1)`. Los puntos cardinales
+dependen de la orientación (``DireccionHexagonal/puntoCardinal(_:)``):
 
-| Número | Paso      | Puntiaguda | Plana     |
-|-------:|-----------|------------|-----------|
-|      0 | (+1,  0)  | este       | sureste   |
-|      1 | (+1, −1)  | noreste    | noreste   |
-|      2 | ( 0, −1)  | noroeste   | norte     |
-|      3 | (−1,  0)  | oeste      | noroeste  |
-|      4 | (−1, +1)  | suroeste   | suroeste  |
-|      5 | ( 0, +1)  | sureste    | sur       |
+| Número | Dirección      | Paso      | Puntiaguda | Plana     |
+|-------:|----------------|-----------|------------|-----------|
+|      0 | `qMasSMenos`   | (+1,  0)  | este       | sureste   |
+|      1 | `qMasRMenos`   | (+1, −1)  | noreste    | noreste   |
+|      2 | `sMasRMenos`   | ( 0, −1)  | noroeste   | norte     |
+|      3 | `sMasQMenos`   | (−1,  0)  | oeste      | noroeste  |
+|      4 | `rMasQMenos`   | (−1, +1)  | suroeste   | suroeste  |
+|      5 | `rMasSMenos`   | ( 0, +1)  | sureste    | sur       |
+
+```swift
+let este = DireccionHexagonal(.este, .puntiaguda)!   // .qMasSMenos
+CoordenadaAxial.origen.vecino(este)                  // (q: 1, r: 0)
+CoordenadaAxial.origen.avanzando(3, hacia: este)     // (q: 3, r: 0)
+este.opuesta                                         // .sMasQMenos
+```

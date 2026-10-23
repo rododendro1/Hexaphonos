@@ -37,7 +37,7 @@ final class CoordenadaAxialTests: XCTestCase {
         for (i, vecina) in a.vecinos.enumerated() {
             XCTAssertEqual(a.distancia(a: vecina), 1)
             XCTAssertTrue(a.esVecina(de: vecina))
-            XCTAssertEqual(a.direccion(hacia: vecina), i)
+            XCTAssertEqual(a.direccion(hacia: vecina)?.numero, i)
         }
         XCTAssertNil(a.direccion(hacia: a))
         XCTAssertNil(a.direccion(hacia: a.vecinoDiagonal(0)))
