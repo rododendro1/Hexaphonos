@@ -46,7 +46,7 @@ Cada módulo del motor es también un producto (`ArmoniaNucleo`, `ArmoniaTeoria`
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/rododendro1/Hexaphonos.git", from: "0.1.0"),
+    .package(url: "https://github.com/rododendro1/Hexaphonos.git", branch: "main"),
 ],
 targets: [
     .target(name: "MiApp", dependencies: [
@@ -55,8 +55,8 @@ targets: [
 ]
 ```
 
-Las versiones siguen el versionado semántico y tienen su etiqueta en git; los cambios de cada paquete están en su
-`CHANGELOG.md`. Mientras la versión empiece por 0, una versión menor (0.2.0) puede quitar lo que la anterior marcó
+Todavía no hay versiones con etiqueta, así que se sigue la rama `main`. Los cambios de cada paquete están en su
+`CHANGELOG.md`; mientras no haya versiones, un cambio puede quitar lo que uno anterior marcó
 como obsoleto.
 
 ## Empezar

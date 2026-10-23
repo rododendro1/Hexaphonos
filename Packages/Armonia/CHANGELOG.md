@@ -1,15 +1,11 @@
 # Cambios
 
-## 0.1.0 (23 de octubre de 2026)
-
-Primera versión con número de versión semántica y etiqueta en git (`0.1.0`). Las anteriores («Versión 5» y antes)
-eran internas, sin etiqueta. A partir de aquí, los nombres que se marcan como obsoletos se quitan en la siguiente
-versión menor (0.2.0).
+## Sin publicar
 
 ### Paquetes
 
 - El repositorio tiene un `Package.swift` en la raíz, para usar el motor desde otro proyecto:
-  `.package(url: "https://github.com/rododendro1/Hexaphonos.git", from: "0.1.0")`, con los productos `Armonia`
+  `.package(url: "https://github.com/rododendro1/Hexaphonos.git", branch: "main")`, con los productos `Armonia`
   (y uno por capa), `Hexagonos` y `HexaphonosUI`.
 - `import Armonia` ya no reexporta `Hexagonos`: quien nombre sus tipos (`CoordenadaAxial`, `FormasDeMapa`,
   `DireccionHexagonal`…) escribe también `import Hexagonos`. Lo que devuelve el motor no cambia.
