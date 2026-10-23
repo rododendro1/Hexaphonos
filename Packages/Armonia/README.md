@@ -201,8 +201,8 @@ compilador delante.
 
 ### Integración continua
 
-`.github/workflows/ci.yml` comprueba las rutas y las capas, compila, prueba y ejecuta el ejemplo en Linux (Swift 5.9, 5.10,
-6.0 y 6.1) y en macOS en cada push o pull request. Con Swift 6 también compila la
+`.github/workflows/ci.yml` comprueba las rutas y las capas, compila, prueba y ejecuta el ejemplo en Linux (Swift 5.9, la
+mínima, y 6.2) y en macOS en cada push o pull request. Con Swift 6 también compila la
 biblioteca con concurrencia estricta y los avisos tratados como errores. Primero ejecuta las
 pruebas rápidas y después las exhaustivas, así un fallo corriente se ve antes.
 
