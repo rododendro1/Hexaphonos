@@ -15,7 +15,7 @@ Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
-└── SepirizUI/      Componentes SwiftUI (MastilView, TonnetzView, SVGView, tema) y lo que comparten las apps:
+└── SepirizUI/      Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, VistaSVG, tema) y lo que comparten las apps:
                     el selector de notación y su ajuste
 Scripts/            Comprobaciones del repositorio (también las del motor) y generación del proyecto de Xcode
 Config/             Ajustes de compilación de las apps (Local.xcconfig, el de tu equipo, no se guarda en git)

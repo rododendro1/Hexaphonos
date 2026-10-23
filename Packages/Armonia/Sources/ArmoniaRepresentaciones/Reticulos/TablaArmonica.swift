@@ -22,7 +22,7 @@ import Foundation
 /// la forma.
 public struct TablaArmonica: Hashable, Sendable {
     /// Cómo se colocaron las notas.
-    public enum Modo: Hashable, Sendable {
+    public enum Colocacion: Hashable, Sendable {
         /// Notas con su ortografía, como en el Tonnetz.
         case notas
         /// Clases de altura: la tabla se repite como un toro.
@@ -33,8 +33,8 @@ public struct TablaArmonica: Hashable, Sendable {
 
     /// Los hexágonos de las notas, en el orden en que se dieron (sin repetir).
     public let puntos: [PuntoDelTonnetz]
-    public let modo: Modo
-    /// Las alturas dadas, en el modo `.alturas`.
+    public let colocacion: Colocacion
+    /// Las alturas dadas, con la colocación `.alturas`.
     public let alturas: [Altura]
     /// De dónde salen las notas, para el título del dibujo.
     package var origen: OrigenDelDibujo?
@@ -46,7 +46,7 @@ public struct TablaArmonica: Hashable, Sendable {
 
     /// Las notas como en el Tonnetz, con los nombres de un ciclo si lo es.
     private var comoTonnetz: Tonnetz {
-        var tonnetz = Tonnetz(puntos: puntos, conOrtografia: modo == .notas, recorrido: [])
+        var tonnetz = Tonnetz(puntos: puntos, conOrtografia: colocacion == .notas, recorrido: [])
         tonnetz.nombres = nombres
         return tonnetz
     }
@@ -59,7 +59,7 @@ public struct TablaArmonica: Hashable, Sendable {
     public init?(recorrido acordes: [Acorde]) {
         guard let tonnetz = Tonnetz(recorrido: acordes) else { return nil }
         puntos = tonnetz.puntos
-        modo = .notas
+        colocacion = .notas
         alturas = []
         recorrido = tonnetz.recorrido
     }
@@ -68,7 +68,7 @@ public struct TablaArmonica: Hashable, Sendable {
     public init?(caminoDesde origen: Acorde, hasta destino: Acorde) {
         guard let tonnetz = Tonnetz(caminoDesde: origen, hasta: destino) else { return nil }
         puntos = tonnetz.puntos
-        modo = .notas
+        colocacion = .notas
         alturas = []
         recorrido = tonnetz.recorrido
     }
@@ -80,7 +80,7 @@ public struct TablaArmonica: Hashable, Sendable {
     public init?(ciclo: CicloNeorriemanniano, desde acorde: Acorde) {
         guard let tonnetz = Tonnetz(ciclo: ciclo, desde: acorde) else { return nil }
         puntos = tonnetz.puntos
-        modo = .notas
+        colocacion = .notas
         alturas = []
         recorrido = tonnetz.recorrido
         nombres = tonnetz.nombres
@@ -91,7 +91,7 @@ public struct TablaArmonica: Hashable, Sendable {
     /// Coloca las notas con su ortografía, como `Tonnetz(_:)`.
     public init(_ notas: [Nota]) {
         puntos = Tonnetz(notas).puntos
-        modo = .notas
+        colocacion = .notas
         alturas = []
         origen = .notas(notas.reduce(into: []) { if !$0.contains($1) { $0.append($1) } })
     }
@@ -102,7 +102,7 @@ public struct TablaArmonica: Hashable, Sendable {
     /// Coloca las clases de altura en la tabla de doce notas, como `Tonnetz(_:)`.
     public init(_ conjunto: ConjuntoDeClases) {
         puntos = Tonnetz(conjunto).puntos
-        modo = .clasesDeAltura
+        colocacion = .clasesDeAltura
         alturas = []
         origen = .conjunto(conjunto)
     }
@@ -120,7 +120,7 @@ public struct TablaArmonica: Hashable, Sendable {
                 return modulo(resto, 7) == 0 ? PuntoDelTonnetz(quintas: resto / 7, terceras: b) : nil
             }
         }
-        modo = .alturas
+        colocacion = .alturas
         self.alturas = vistas
         origen = .alturas(vistas)
     }
@@ -149,7 +149,7 @@ public struct TablaArmonica: Hashable, Sendable {
     /// - Parameters:
     ///   - notacion: la de los nombres de las notas.
     ///   - margen: cuántos hexágonos se dibujan alrededor de las notas; si es `nil`, uno con
-    ///     ortografía y dos en los demás modos, para que se vean las repeticiones.
+    ///     ortografía y dos en las demás colocaciones, para que se vean las repeticiones.
     ///   - paso: la distancia entre los centros de dos hexágonos vecinos, en píxeles; si es `nil`,
     ///     56, o 72 en un recorrido, para que quepan las flechas.
     ///   - titulo: el título; si es `nil`, el que corresponda, y si es "", ninguno.
@@ -157,7 +157,7 @@ public struct TablaArmonica: Hashable, Sendable {
     public func svg(notacion: Nomenclatura = .espanol, margen: Int? = nil, paso: Double? = nil,
                     titulo: String? = nil, leyenda: Bool = true) -> String {
         let paso = paso ?? (recorrido.isEmpty ? 56 : 72)
-        let margen = margen ?? (modo == .notas ? 1 : 2)
+        let margen = margen ?? (colocacion == .notas ? 1 : 2)
         let coseno = 0.8660254037844386   // cos 30°
         let radio = paso / (2 * coseno)    // del centro a un vértice
         func x(_ p: PuntoDelTonnetz) -> Double { Double(p.terceras) * coseno * paso }
@@ -181,7 +181,7 @@ public struct TablaArmonica: Hashable, Sendable {
         // Los hexágonos marcados (con clases de altura o alturas, todos los que suenan igual) y los
         // de la primera nota.
         let clave: ((PuntoDelTonnetz) -> Int)?
-        switch modo {
+        switch colocacion {
         case .notas: clave = nil
         case .clasesDeAltura: clave = { $0.claseDeAltura }
         case .alturas: clave = { TablaArmonica.midi(de: $0) }
@@ -194,7 +194,7 @@ public struct TablaArmonica: Hashable, Sendable {
         let bemoles = alturas.contains { $0.nota.alteracion.simbolo.contains("♭") }
         let rotulos = comoTonnetz
         func nombre(_ p: PuntoDelTonnetz) -> String {
-            switch modo {
+            switch colocacion {
             case .notas: return rotulos.nombre(de: p).nombreCompacto(en: notacion)
             case .clasesDeAltura: return String(p.claseDeAltura)
             case .alturas:
@@ -267,7 +267,7 @@ public struct TablaArmonica: Hashable, Sendable {
             func entrada(_ muestra: EntradaDeLeyenda.Muestra, _ texto: String) {
                 entradas.append(EntradaDeLeyenda(muestra: muestra, texto: texto))
             }
-            let nota: DibujoSVG.Texto = modo == .notas ? .nota : modo == .clasesDeAltura ? .claseDeAltura : .altura
+            let nota: DibujoSVG.Texto = colocacion == .notas ? .nota : colocacion == .clasesDeAltura ? .claseDeAltura : .altura
             entrada(.hexagono(relleno: DibujoSVG.Color.nota, borde: DibujoSVG.Color.nota), nota.en(notacion))
             let primera = !recorrido.isEmpty ? (notacion == .ingles ? "root of the first chord" : "fundamental del primer acorde")
                 : (origen ?? .notas([])).primera(notacion)
@@ -289,10 +289,18 @@ public struct TablaArmonica: Hashable, Sendable {
 extension TablaArmonica: CustomStringConvertible {
     /// "Do (0, 0) · Mi (0, 1) · Sol (1, 0)"; con alturas, "Do4 (0, 0) · …".
     public var description: String {
-        switch modo {
+        switch colocacion {
         case .notas, .clasesDeAltura: return comoTonnetz.description
         case .alturas:
             return zip(alturas, puntos).map { "\($0.0) \($0.1)" }.joined(separator: " · ")
         }
     }
+}
+
+// Nombres anteriores, que se siguen aceptando.
+extension TablaArmonica {
+    @available(*, deprecated, renamed: "Colocacion")
+    public typealias Modo = Colocacion
+    @available(*, deprecated, renamed: "colocacion")
+    public var modo: Colocacion { colocacion }
 }

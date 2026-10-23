@@ -79,7 +79,7 @@ targets:
         # El módulo no puede llamarse `Tonnetz`: es el nombre de un tipo del motor.
         PRODUCT_MODULE_NAME: TonnetzApp
         PRODUCT_BUNDLE_IDENTIFIER: $(BUNDLE_ID_PREFIX).tonnetz
-        # Dibuja con un WKWebView (SVGView): en macOS, con sandbox, WebKit no pinta sin esta conexión.
+        # Dibuja con un WKWebView (VistaSVG): en macOS, con sandbox, WebKit no pinta sin esta conexión.
         "ENABLE_OUTGOING_NETWORK_CONNECTIONS[sdk=macosx*]": YES
         INFOPLIST_KEY_CFBundleDisplayName: Tonnetz
         INFOPLIST_KEY_UILaunchScreen_Generation: YES

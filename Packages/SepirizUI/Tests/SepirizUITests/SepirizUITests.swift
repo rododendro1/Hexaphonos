@@ -5,7 +5,7 @@ import Armonia
 #if canImport(SwiftUI) && canImport(WebKit)
 final class SVGViewTests: XCTestCase {
     func testLaPaginaIncluyeElSVG() {
-        let pagina = SVGView.pagina("<svg id=\"dibujo\"></svg>")
+        let pagina = VistaSVG.pagina("<svg id=\"dibujo\"></svg>")
         XCTAssertTrue(pagina.contains("<svg id=\"dibujo\"></svg>"))
         XCTAssertTrue(pagina.hasPrefix("<!doctype html>"))
     }

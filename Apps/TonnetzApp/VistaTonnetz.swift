@@ -4,7 +4,7 @@ import SepirizUI
 
 /// El Tonnetz de un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R.
 struct VistaTonnetz: View {
-    enum Modo: String, CaseIterable, Identifiable {
+    enum Contenido: String, CaseIterable, Identifiable {
         case recorrido = "Recorrido P·L·R"
         case acorde = "Acorde"
         case escala = "Escala"
@@ -12,7 +12,7 @@ struct VistaTonnetz: View {
     }
 
     @AppStorage(AjustesSepiriz.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
-    @State private var modo = Modo.recorrido
+    @State private var contenido = Contenido.recorrido
     @State private var textoInicial = "Do"
     @State private var textoAcorde = "Dom7"
     @State private var textoEscala = "Re dórico"
@@ -23,15 +23,15 @@ struct VistaTonnetz: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Picker("Modo", selection: $modo) {
-                ForEach(Modo.allCases) { Text($0.rawValue).tag($0) }
+            Picker("Modo", selection: $contenido) {
+                ForEach(Contenido.allCases) { Text($0.rawValue).tag($0) }
             }
             .pickerStyle(.segmented)
 
             controles
 
             if let tonnetz {
-                TonnetzView(tonnetz, notacion: notacion)
+                DiagramaDeTonnetz(tonnetz, notacion: notacion)
             } else {
                 Spacer()
                 Text("No se puede dibujar: revisa el texto.").foregroundColor(.secondary)
@@ -48,7 +48,7 @@ struct VistaTonnetz: View {
 
     @ViewBuilder
     private var controles: some View {
-        switch modo {
+        switch contenido {
         case .recorrido:
             HStack {
                 TextField("Tríada inicial (Do, Lam…)", text: $textoInicial)
@@ -82,7 +82,7 @@ struct VistaTonnetz: View {
     // MARK: El dibujo
 
     private var tonnetz: Tonnetz? {
-        switch modo {
+        switch contenido {
         case .recorrido:
             return recorrido.count >= 2 ? Tonnetz(recorrido: recorrido) : recorrido.first.map { Tonnetz($0) }
         case .acorde:

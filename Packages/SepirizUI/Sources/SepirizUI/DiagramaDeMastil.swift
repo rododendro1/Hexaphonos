@@ -4,13 +4,13 @@ import Armonia
 
 /// Un mástil dibujado en horizontal, con las cuerdas graves abajo, y unas posiciones marcadas.
 ///
-///     MastilView(mastil: Mastil(.guitarra), escala: Escala(.la, .pentatonicaMenor))
-///     MastilView(digitacion: digitacion, acorde: acorde)
+///     DiagramaDeMastil(mastil: Mastil(.guitarra), escala: Escala(.la, .pentatonicaMenor))
+///     DiagramaDeMastil(digitacion: digitacion, acorde: acorde)
 ///
 /// Las notas se escriben con la ortografía de la escala o del acorde (Si♭ en Fa mayor, no La♯).
 /// Si el rango no empieza en el 0, las cuerdas al aire se dibujan con un círculo vacío en un canal a la
 /// izquierda, y las apagadas con una ×.
-public struct MastilView: View {
+public struct DiagramaDeMastil: View {
     public let mastil: Mastil
     public let marcas: [Posicion]
     /// Los trastes que se dibujan (el 0 es la cuerda al aire).
@@ -121,7 +121,7 @@ public struct MastilView: View {
             if traste > 0 {
                 contexto.draw(Text("\(traste)").font(.caption2).foregroundColor(.secondary),
                               at: CGPoint(x: x(centroDe: traste), y: tamano.height - 8))
-                if MastilView.trastesConPunto.contains(traste) {
+                if DiagramaDeMastil.trastesConPunto.contains(traste) {
                     let centro = CGPoint(x: x(centroDe: traste), y: (yMinimo + yMaximo) / 2)
                     let punto = CGRect(x: centro.x - 3, y: centro.y - 3, width: 6, height: 6)
                     contexto.fill(Path(ellipseIn: punto), with: .color(.gray.opacity(0.5)))
@@ -164,4 +164,7 @@ public struct MastilView: View {
         }
     }
 }
+
+@available(*, deprecated, renamed: "DiagramaDeMastil")
+public typealias MastilView = DiagramaDeMastil
 #endif

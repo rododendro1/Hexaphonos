@@ -29,7 +29,7 @@ final class TonnetzTests: XCTestCase {
         XCTAssertEqual(mayor.puntos, [punto(0, 0), punto(0, 1), punto(1, 0)])
         XCTAssertEqual(mayor.triadas.map(\.acorde), [Acorde("Do")])
         XCTAssertTrue(mayor.triadas[0].mayor)
-        XCTAssertEqual(mayor.aristas.map(\.intervalo).sorted { "\($0)" < "\($1)" },
+        XCTAssertEqual(mayor.aristas.map(\.eje).sorted { "\($0)" < "\($1)" },
                        [.quintaJusta, .terceraMayor, .terceraMenor])
         let menor = Tonnetz(Acorde("Lam"))
         XCTAssertEqual(menor.triadas.map(\.acorde), [Acorde("Lam")])
@@ -55,7 +55,7 @@ final class TonnetzTests: XCTestCase {
         let tonos = Tonnetz(Escala(.do, .tonosEnteros))
         XCTAssertFalse(tonos.esConexo)
         XCTAssertTrue(tonos.triadas.isEmpty)
-        XCTAssertEqual(Set(tonos.aristas.map(\.intervalo)), [.terceraMayor])
+        XCTAssertEqual(Set(tonos.aristas.map(\.eje)), [.terceraMayor])
         // La aumentada encadena tríadas mayores y menores alternas.
         XCTAssertEqual(Tonnetz(Escala(.do, .aumentada)).triadas.count, 4)
         // Con las notas repetidas, cada una una vez.
@@ -98,7 +98,7 @@ final class TonnetzTests: XCTestCase {
         // Sin ortografía, el acorde de séptima disminuida es una línea de terceras menores.
         let disminuido = Tonnetz(ConjuntoDeClases([0, 3, 6, 9]))
         XCTAssertTrue(disminuido.esConexo)
-        XCTAssertEqual(Set(disminuido.aristas.map(\.intervalo)), [.terceraMenor])
+        XCTAssertEqual(Set(disminuido.aristas.map(\.eje)), [.terceraMenor])
         // Toda tríada mayor o menor, transportada, sigue siendo un triángulo.
         for n in 0..<12 {
             XCTAssertEqual(Tonnetz(ConjuntoDeClases([0, 4, 7]).transponer(n)).triadas.count, 1, "\(n)")
