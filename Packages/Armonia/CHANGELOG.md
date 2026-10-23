@@ -2,6 +2,15 @@
 
 ## Sin publicar
 
+### La línea de comandos, en inglés de verdad
+
+- Con `--ingles`, `armonia` ya no mezcla idiomas: la ayuda, los mensajes de uso («falta el cifrado…») y las
+  etiquetas de la salida («pasos», el nombre del instrumento) salen en inglés. Los textos de la herramienta están en
+  `Apps/ArmoniaCLI/Sources/ArmoniaCLI/Textos.swift`, cada uno en los dos idiomas, y `LineaDeComandos.ayuda(en:)`
+  devuelve la ayuda en el idioma de la notación.
+- `Encordado(nombre:)` acepta también «seven-string guitar», «drop D guitar» y «five-string bass».
+- «opción desconocida» lleva siempre comillas: antes, según la orden, salía `--foo`, `«--foo»` o `foo`.
+
 ### Digitaciones: dedos, orden y ukelele
 
 - **Dedos.** Nuevos `Digitacion.dedos` (los que hacen falta, como mínimo) y `Digitacion.cejilla` (el traste de la

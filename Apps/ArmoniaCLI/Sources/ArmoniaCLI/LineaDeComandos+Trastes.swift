@@ -32,9 +32,7 @@ extension LineaDeComandos {
 
     /// `digitaciones Sol7/Si --instrumento ukelele`: formas de tocar el acorde, de la más cómoda a la menos.
     static func digitaciones(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        let ingles = notacion.vocabulario == .ingles
         var argumentos = argumentos
-        let ejemplo = "armonia digitaciones Sol7/Si --instrumento ukelele"
 
         let conTab = quitarMarca(["--tab"], de: &argumentos)
         // Por defecto la quinta puede faltar en los acordes de cuatro notas o más (el Do7 `x32310`): es lo normal en
@@ -46,12 +44,9 @@ extension LineaDeComandos {
         case .ausente:
             break
         case .sinValor:
-            return uso("falta el instrumento: \(ejemplo)")
+            return uso(.faltaInstrumento, notacion)
         case .valor(let nombre):
-            guard let encontrado = Encordado(nombre: nombre) else {
-                let conocidos = Encordado.todos.map(\.nombre).joined(separator: ", ")
-                return uso("instrumento desconocido: «\(nombre)» (\(conocidos))")
-            }
+            guard let encontrado = Encordado(nombre: nombre) else { return uso(.instrumentoDesconocido(nombre), notacion) }
             encordado = encontrado
         }
 
@@ -60,10 +55,10 @@ extension LineaDeComandos {
         case .ausente:
             break
         case .sinValor:
-            return uso("falta el número de digitaciones: --limite 5")
+            return uso(.faltaLimite, notacion)
         case .valor(let texto):
             guard let n = Int(texto), (1...200).contains(n) else {
-                return uso("el límite es un número de 1 a 200: --limite 5")
+                return uso(.limiteFueraDeRango, notacion)
             }
             limite = n
         }
@@ -73,10 +68,10 @@ extension LineaDeComandos {
         case .ausente:
             break
         case .sinValor:
-            return uso("falta el número de dedos: --dedos 3")
+            return uso(.faltanDedos, notacion)
         case .valor(let texto):
             guard let n = Int(texto), (1...4).contains(n) else {
-                return uso("los dedos son un número de 1 a 4: --dedos 3")
+                return uso(.dedosFueraDeRango, notacion)
             }
             maximoDeDedos = n
         }
@@ -86,33 +81,33 @@ extension LineaDeComandos {
         case .ausente:
             break
         case .sinValor:
-            return uso("falta el traste más alto: --traste 12")
+            return uso(.faltaTraste, notacion)
         case .valor(let texto):
             guard let n = Int(texto), (0...24).contains(n) else {
-                return uso("el traste más alto es un número de 0 a 24: --traste 12")
+                return uso(.trasteFueraDeRango, notacion)
             }
             maximoTraste = n
         }
 
         if let desconocida = argumentos.first(where: { $0.hasPrefix("--") }) {
-            return uso("opción desconocida: «\(desconocida)»")
+            return uso(.opcionDesconocida(desconocida), notacion)
         }
-        guard !argumentos.isEmpty else { return uso("falta el cifrado: \(ejemplo)") }
+        guard !argumentos.isEmpty else { return uso(.faltaCifradoDeDigitaciones, notacion) }
 
         let mastil = Mastil(encordado)
         let bloques = try argumentos.map { texto -> String in
             let acorde = try Acorde(leyendo: texto)
-            var lineas = ["\(acorde.cifrado(en: notacion)) · \(encordado.nombre)"]
+            var lineas = ["\(acorde.cifrado(en: notacion)) · \(Mensaje.instrumento(encordado).texto(en: notacion))"]
             let formas = mastil.digitaciones(de: acorde, maximoDeDedos: maximoDeDedos, maximoTraste: maximoTraste,
                                              exigirQuinta: completo, limite: limite)
             guard !formas.isEmpty else {
-                lineas.append(ingles ? "  no comfortable fingerings found" : "  no hay digitaciones cómodas")
+                lineas.append("  " + Mensaje.sinDigitaciones.texto(en: notacion))
                 return lineas.joined(separator: "\n")
             }
             for forma in formas {
                 let notas = forma.notas(para: acorde).map { $0.nombre(en: notacion) }.joined(separator: " ")
                 lineas.append("  " + forma.cifra.padding(hasta: 17) + notas.padding(hasta: 18)
-                              + descripcion(de: forma, ingles: ingles))
+                              + descripcion(de: forma, notacion))
                 if conTab { lineas += tab(de: forma, notacion) }
             }
             return lineas.joined(separator: "\n")
@@ -121,11 +116,10 @@ extension LineaDeComandos {
     }
 
     /// «(3 dedos)», o «(4 dedos, cejilla en el traste 1)».
-    static func descripcion(de forma: Digitacion, ingles: Bool) -> String {
-        let n = forma.dedos
-        var texto = ingles ? "\(n) \(n == 1 ? "finger" : "fingers")" : "\(n) \(n == 1 ? "dedo" : "dedos")"
+    static func descripcion(de forma: Digitacion, _ notacion: Nomenclatura) -> String {
+        var texto = Mensaje.dedos(forma.dedos).texto(en: notacion)
         if let cejilla = forma.cejilla {
-            texto += ingles ? ", barre at fret \(cejilla)" : ", cejilla en el traste \(cejilla)"
+            texto += ", " + Mensaje.cejilla(cejilla).texto(en: notacion)
         }
         return "(\(texto))"
     }
