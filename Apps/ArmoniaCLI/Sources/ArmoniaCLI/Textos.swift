@@ -51,7 +51,11 @@ enum Mensaje {
         case .relativa: return ("relativa", "relative")
         case .homonima: return ("homónima", "parallel")
         case .bajo(let nota): return ("bajo \(nota)", "bass \(nota)")
-        case .inversion(let n): return ("inversión \(n)", "inversion \(n)")
+        case .inversion(let n):
+            let ordinales = [("primera", "first"), ("segunda", "second"), ("tercera", "third"), ("cuarta", "fourth"),
+                             ("quinta", "fifth"), ("sexta", "sixth")]
+            guard (1...ordinales.count).contains(n) else { return ("inversión \(n)", "inversion \(n)") }
+            return ("\(ordinales[n - 1].0) inversión", "\(ordinales[n - 1].1) inversion")
         case .bajoAjeno: return ("bajo ajeno al acorde", "bass not in the chord")
         case .sinAcordes: return ("No forman ningún acorde conocido.", "No chord found.")
         case .sin(let notas): return ("sin \(notas)", "omits \(notas)")
@@ -177,8 +181,8 @@ enum ErrorDeUso {
         case .faltaTonalidad:
             return ("falta la tonalidad: armonia tonalidad La menor", "missing the key: armonia key A minor")
         case .faltanAcordesDeLasVoces:
-            return ("faltan los acordes: armonia voces Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4",
-                    "missing the chords: armonia voices C3 E4 G4 C5, G2 D4 G4 B4")
+            return ("faltan los acordes: armonia revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4",
+                    "missing the chords: armonia check C3 E4 G4 C5, G2 D4 G4 B4")
         case .dosAcordesDeConduccion:
             return ("hacen falta dos acordes: armonia conduccion Sol7 Do", "two chords are needed: armonia voice-leading G7 C")
         case .faltaTonalidadTrasEn:
@@ -215,7 +219,8 @@ enum ErrorDeUso {
             return ("los vecinos se buscan entre séptimas de dominante, menores, semidisminuidas, disminuidas y maj7, o entre tríadas mayores, menores y aumentadas",
                     "neighbors are searched among dominant, minor, half-diminished, diminished and maj7 sevenths, or among major, minor and augmented triads")
         case .dosAcordesDeCamino:
-            return ("hacen falta dos acordes: armonia camino Sol7 Rem7", "two chords are needed: armonia path G7 Dm7")
+            return ("hacen falta dos acordes: armonia conduccion-parsimoniosa Sol7 Rem7",
+                    "two chords are needed: armonia smooth-path G7 Dm7")
         case .caminoSinConexion:
             return ("los dos acordes han de ser de la misma familia (séptimas, con o sin maj7, o tríadas) y estar conectados",
                     "both chords must be of the same family (sevenths, with or without maj7, or triads) and be connected")
@@ -230,8 +235,8 @@ enum ErrorDeUso {
             return ("falta «melodia», «coral» o «acordes»: armonia \(orden) melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4",
                     "missing \"melody\", \"chorale\" or \"chords\": armonia \(orden) melody C4:4 D4:8 E4:8 F4:2 --compas 3/4")
         case .instrumentoMIDI:
-            return ("el instrumento es un programa General MIDI de 0 a 127: --instrumento 52",
-                    "the instrument is a General MIDI program from 0 to 127: --instrumento 52")
+            return ("el programa es un número General MIDI de 0 a 127: --programa 52",
+                    "the program is a General MIDI number from 0 to 127: --program 52")
         case .marcasSoloMusicXML:
             return ("--cifrados y --analisis son para MusicXML", "--cifrados and --analisis are for MusicXML")
         case .faltaValor(let opcion):
@@ -275,13 +280,13 @@ enum ErrorDeUso {
                     "pitch classes are numbers from 0 to 11: armonia \(orden) --pcs 0 4 7")
         case .faltanTriadasDelRecorrido(let orden):
             return ("faltan las tríadas: armonia \(orden) --recorrido Do Lam Fa Rem",
-                    "missing the triads: armonia \(orden) --path C Am F Dm")
+                    "missing the triads: armonia \(orden) --sequence C Am F Dm")
         case .cicloMalEscrito(let orden):
             return ("el ciclo es hexatónico, octatónico o LR, desde una tríada: armonia \(orden) --ciclo hexatonico Do",
                     "the cycle is hexatonic, octatonic or LR, from a triad: armonia \(orden) --cycle hexatonic C")
         case .recorridoSoloTriadas(let orden):
             return ("el recorrido es de tríadas mayores y menores: armonia \(orden) --recorrido Do Lam Fa Rem",
-                    "the path is made of major and minor triads: armonia \(orden) --path C Am F Dm")
+                    "the sequence is made of major and minor triads: armonia \(orden) --sequence C Am F Dm")
         case .caminoSoloTriadas(let orden):
             return ("el camino va de una tríada mayor o menor a otra: armonia \(orden) --camino Do Mibm",
                     "the shortest path goes from one major or minor triad to another: armonia \(orden) --shortest C Ebm")

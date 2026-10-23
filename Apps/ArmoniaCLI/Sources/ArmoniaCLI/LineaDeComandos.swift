@@ -34,8 +34,9 @@ public enum LineaDeComandos {
       tonalidad <tonalidad>        armadura, relativas y grados          armonia tonalidad La menor
       analizar <acordes> [--en <tonalidad>]
                                    cifrado romano y funciones            armonia analizar Do Lam Re7 Sol7 Do
-      voces <acordes>              conducción de voces; acordes de
-                                   grave a agudo, separados por comas    armonia voces Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4
+      revisar <acordes>            faltas de conducción (quintas
+                                   paralelas…); acordes de grave a
+                                   agudo, separados por comas            armonia revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4
       musicxml melodia <eventos> [opciones]
                                    partitura MusicXML de una melodía     armonia musicxml melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4 > melodia.musicxml
       musicxml coral <acordes> [opciones]
@@ -50,7 +51,7 @@ public enum LineaDeComandos {
       midi melodia|coral|acordes <…> [opciones]
                                    lo mismo como fichero MIDI, para oírlo
                                    (sin --clave ni --cifrados; con
-                                   --instrumento 0…127, General MIDI)    armonia midi acordes Do Lam Re7 Sol7 Do > progresion.mid
+                                   --programa 0…127, General MIDI)       armonia midi acordes Do Lam Re7 Sol7 Do > progresion.mid
       tonnetz <notas>              Tonnetz en SVG de unas notas          armonia tonnetz Do Mi Sol Si > tonnetz.svg
       tonnetz --acorde <cifrado> | --escala <escala> | --clases <números>
                                    de un acorde, una escala o un
@@ -70,8 +71,9 @@ public enum LineaDeComandos {
                                    y disminuida; tríadas: mayor, menor y aumentada; un maj7, entre
                                    las séptimas y los maj7; --ampliada: con los maj7 también)
                                                                          armonia vecinos Sol7
-      camino <acorde> <acorde> [--voces 2] [--ampliada]
-                                   el camino más corto moviendo voces    armonia camino Sol7 Rem7
+      conduccion-parsimoniosa <acorde> <acorde> [--voces 2] [--ampliada]
+                                   de un acorde a otro moviendo una voz
+                                   (o dos) un semitono en cada paso      armonia conduccion-parsimoniosa Sol7 Rem7
       conduccion <acorde> <acorde> la conducción con menos semitonos     armonia conduccion Sol7 Do
       plr <tríada> <P, L, R…>      transformaciones neorriemannianas     armonia plr Do PLR
       plr <tríada> <tríada>        el camino más corto por P, L y R      armonia plr Do Mibm
@@ -106,8 +108,9 @@ public enum LineaDeComandos {
       key <key>                    key signature, relatives and degrees  armonia key A minor
       analyze <chords> [--in <key>]
                                    roman numerals and functions          armonia analyze C Am D7 G7 C
-      voices <chords>              voice leading; chords from low to
-                                   high, separated by commas             armonia voices C3 E4 G4 C5, G2 D4 G4 B4
+      check <chords>               voice-leading errors (parallel
+                                   fifths…); chords from low to high,
+                                   separated by commas                   armonia check C3 E4 G4 C5, G2 D4 G4 B4
       musicxml melody <events> [options]
                                    MusicXML score of a melody            armonia musicxml melody C4:4 D4:8 E4:8 F4:2 --compas 3/4 > melody.musicxml
       musicxml chorale <chords> [options]
@@ -123,20 +126,20 @@ public enum LineaDeComandos {
       midi melody|chorale|chords <…> [options]
                                    the same as a MIDI file, to listen to
                                    (without --clave or --cifrados; with
-                                   --instrumento 0…127, General MIDI)    armonia midi chords C Am D7 G7 C > progression.mid
+                                   --program 0…127, General MIDI)        armonia midi chords C Am D7 G7 C > progression.mid
       tonnetz <notes>              SVG Tonnetz of some notes             armonia tonnetz C E G B > tonnetz.svg
       tonnetz --chord <symbol> | --scale <scale> | --pcs <numbers>
                                    of a chord, a scale or a
                                    pitch-class set                       armonia tonnetz --scale D dorian > dorian.svg
-      tonnetz --path <triads> | --shortest <triad> <triad>
-                                   a path of triads, with arrows, or
-                                   the shortest path through P, L and R  armonia tonnetz --path C Am F Dm > path.svg
+      tonnetz --sequence <triads> | --shortest <triad> <triad>
+                                   a sequence of triads, with arrows, or
+                                   the shortest path through P, L and R  armonia tonnetz --sequence C Am F Dm > sequence.svg
       tonnetz --cycle <cycle> <triad>
                                    a hexatonic, octatonic or LR cycle    armonia tonnetz --cycle hexatonic C > cycle.svg
                                    (--margen 2: more grid around it)
       tabla <notes or pitches>     SVG harmonic table (hexagons)         armonia tabla C3 G3 E4 > table.svg
       tabla --chord <symbol> | --scale <scale> | --pcs <numbers>
-      tabla --path <triads> | --shortest <triad> <triad>
+      tabla --sequence <triads> | --shortest <triad> <triad>
       tabla --cycle <cycle> <triad>
                                    (--margen 2: more table around it)    armonia tabla --chord Cmaj7 > cmaj7.svg
       neighbors <chord> [--voices 2]
@@ -144,8 +147,9 @@ public enum LineaDeComandos {
                                    and diminished; triads: major, minor and augmented; a maj7, among
                                    the sevenths and the maj7s; --extended: with the maj7s too)
                                                                          armonia neighbors G7
-      path <chord> <chord> [--voices 2] [--extended]
-                                   the shortest path moving voices       armonia path G7 Dm7
+      smooth-path <chord> <chord> [--voices 2] [--extended]
+                                   from one chord to another moving one
+                                   voice (or two) a semitone at a time   armonia smooth-path G7 Dm7
       voice-leading <chord> <chord>
                                    the voice leading with fewest semitones
                                                                          armonia voice-leading G7 C
@@ -198,7 +202,7 @@ public enum LineaDeComandos {
                 return bien(describir(tonalidad: try Tonalidad(leyendo: resto.joined(separator: " ")), notacion))
             case "analizar", "analyze", "analyse":
                 return try analizar(resto, notacion)
-            case "voces", "voices":
+            case "revisar", "check", "voces", "voices":
                 guard !resto.isEmpty else { return uso(.faltanAcordesDeLasVoces, notacion) }
                 return bien(describir(conduccion: try ConduccionDeVoces(leyendo: resto.joined(separator: " ")), notacion))
             case "tonnetz":
@@ -207,7 +211,7 @@ public enum LineaDeComandos {
                 return try tablaArmonica(resto, notacion)
             case "vecinos", "neighbors":
                 return try vecinos(resto, notacion)
-            case "camino", "path":
+            case "conduccion-parsimoniosa", "conducción-parsimoniosa", "smooth-path", "camino", "path":
                 return try caminoParsimonioso(resto, notacion)
             case "conduccion", "conducción", "voice-leading":
                 guard resto.count == 2 else { return uso(.dosAcordesDeConduccion, notacion) }
