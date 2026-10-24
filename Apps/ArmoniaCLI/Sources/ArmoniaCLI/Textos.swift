@@ -8,7 +8,7 @@ import Armonia
 //
 // Cada caso da sus textos con una `Traduccion` del motor, que pide los cinco: un caso nuevo no
 // compila hasta que los tiene todos. El idioma es el de la notación (`--ingles`, `--idioma eu`…).
-// La ayuda está en español y en inglés; en catalán, gallego y euskera se muestra en español.
+// La ayuda (`LineaDeComandos.ayuda(en:)`) también está en los cinco idiomas.
 
 /// Las piezas de texto de la salida de las órdenes.
 enum Mensaje {
@@ -128,16 +128,8 @@ enum Mensaje {
                               ca: n == 1 ? "1 tríada" : "\(n) tríades", gl: n == 1 ? "1 tríade" : "\(n) tríades",
                               eu: "\(n) triade")
         case .ciclo(let ciclo):
-            switch ciclo {
-            case .hexatonico:
-                return Traduccion(ciclo.nombre, ciclo.nombreEnIngles, ca: "cicle hexatònic", gl: "ciclo hexatónico",
-                                  eu: "ziklo hexatonikoa")
-            case .octatonico:
-                return Traduccion(ciclo.nombre, ciclo.nombreEnIngles, ca: "cicle octatònic", gl: "ciclo octatónico",
-                                  eu: "ziklo oktatonikoa")
-            case .lr:
-                return Traduccion(ciclo.nombre, ciclo.nombreEnIngles, ca: "cicle LR", gl: "ciclo LR", eu: "LR zikloa")
-            }
+            return Traduccion(ciclo.nombre(en: .espanol), ciclo.nombre(en: .ingles), ca: ciclo.nombre(en: .catalan),
+                              gl: ciclo.nombre(en: .gallego), eu: ciclo.nombre(en: .euskera))
         case .instrumento(let encordado):
             // El catálogo del motor solo tiene el nombre en español, que es también el que se escribe en
             // `--instrumento`: en catalán, gallego y euskera se deja así para que se pueda copiar.

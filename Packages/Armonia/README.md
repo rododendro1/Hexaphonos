@@ -205,7 +205,8 @@ duraciones y colores) están junto a cada tipo, en un fichero `X+Idiomas.swift`
 en `Nomenclatura`, y corregir lo que el compilador señale: los `switch` sobre el idioma no tienen
 `default`. Tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano (`Altura(leyendo:en:)`,
 `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`). Los nombres que son datos de un catálogo (tipos
-de acorde y de escala, instrumentos) siguen junto a su catálogo, en español e inglés. Para que los
+de acorde y de escala, instrumentos) siguen junto a su catálogo, en los cinco idiomas (los de las
+escalas en catalán, gallego y euskera, en `TipoDeEscala+Peninsulares.swift`). Para que los
 textos salgan también en un idioma nuevo, se añade un campo a `Traduccion` y su caso en
 `Idioma.deLosTextos`.
 

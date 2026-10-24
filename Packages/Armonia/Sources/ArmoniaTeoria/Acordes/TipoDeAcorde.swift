@@ -71,15 +71,19 @@ public struct TipoDeAcorde: Sendable {
     public func cifrado(en notacion: Nomenclatura) -> String { cifrado(estilo: EstiloDeCifrado(notacion: notacion)) }
 
     /// Nombre en español si es un tipo conocido; si no, "acorde 7(♭9,♯11)".
-    public var nombre: String {
-        TipoDeAcorde.nombresConocidos[pasosDeQuinta]?.espanol ?? "acorde \(cifrado.isEmpty ? "mayor" : cifrado)"
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
-    /// En español, `nombre`; en inglés, "dominant seventh" si es un tipo conocido o
-    /// "7(b9,#11) chord" si no.
+    /// "séptima de dominante", "dominant seventh", "sèptima de dominant", "dominanteko zazpigarrena"
+    /// si es un tipo conocido; si no, "acorde 7(♭9,♯11)", "7(b9,#11) chord", "7(♭9,♯11) akordea"…
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
-        return TipoDeAcorde.nombresConocidos[pasosDeQuinta]?.ingles ?? "\(cifrado(en: notacion)) chord"
+        if let conocido = TipoDeAcorde.nombresConocidos[pasosDeQuinta] { return conocido.en(notacion) }
+        switch notacion.idioma {
+        case .espanol, .portugues: return "acorde \(cifrado.isEmpty ? "mayor" : cifrado)"
+        case .ingles, .aleman, .frances, .italiano: return "\(cifrado(en: notacion)) chord"
+        case .catalan: return "acord \(cifrado.isEmpty ? "major" : cifrado)"
+        case .gallego: return "acorde \(cifrado.isEmpty ? "maior" : cifrado)"
+        case .euskera: return cifrado.isEmpty ? "akorde maiorra" : "\(cifrado) akordea"
+        }
     }
 
     /// Sufijo para el cifrado romano (V7, viiø7, i(maj7), ii°…). La sexta añadida se escribe
@@ -168,46 +172,47 @@ public struct TipoDeAcorde: Sendable {
         .mayorNovenaAnadida, .dominanteUndecima, .menorSeptimaUndecima, .dominanteDecimotercera,
     ]
 
-    /// Nombres en español e inglés de los tipos habituales, indexados por su conjunto de quintas.
+    /// Nombres en los cinco idiomas de los textos (`Traduccion`) de los tipos habituales, indexados
+    /// por su conjunto de quintas.
     /// Se construye sin crear `TipoDeAcorde` para no depender de otras constantes estáticas.
-    package static let nombresConocidos: [Set<Int>: (espanol: String, ingles: String)] = {
-        let tabla: [([Intervalo], String, String)] = [
-            ([.terceraMayor, .quintaJusta], "mayor", "major"),
-            ([.terceraMenor, .quintaJusta], "menor", "minor"),
-            ([.terceraMenor, .quintaDisminuida], "disminuido", "diminished"),
-            ([.terceraMayor, .quintaAumentada], "aumentado", "augmented"),
-            ([.segundaMayor, .quintaJusta], "suspendido de segunda", "suspended second"),
-            ([.cuartaJusta, .quintaJusta], "suspendido de cuarta", "suspended fourth"),
-            ([.quintaJusta], "quinta (acorde de potencia)", "power chord"),
-            ([.terceraMayor, .quintaJusta, .septimaMenor], "séptima de dominante", "dominant seventh"),
-            ([.terceraMayor, .quintaJusta, .septimaMayor], "séptima mayor", "major seventh"),
-            ([.terceraMenor, .quintaJusta, .septimaMenor], "menor séptima", "minor seventh"),
-            ([.terceraMenor, .quintaDisminuida, .septimaMenor], "semidisminuido", "half-diminished seventh"),
-            ([.terceraMenor, .quintaDisminuida, .septimaDisminuida], "séptima disminuida", "diminished seventh"),
-            ([.terceraMenor, .quintaJusta, .septimaMayor], "menor con séptima mayor", "minor major seventh"),
-            ([.terceraMayor, .quintaAumentada, .septimaMenor], "aumentado con séptima menor", "augmented seventh"),
-            ([.terceraMayor, .quintaAumentada, .septimaMayor], "aumentado con séptima mayor", "augmented major seventh"),
-            ([.cuartaJusta, .quintaJusta, .septimaMenor], "séptima suspendida", "dominant seventh suspended fourth"),
-            ([.terceraMayor, .quintaJusta, .sextaMayor], "sexta", "major sixth"),
-            ([.terceraMenor, .quintaJusta, .sextaMayor], "menor sexta", "minor sixth"),
-            ([.terceraMayor, .quintaJusta, .sextaMayor, .segundaMayor], "sexta y novena", "six-nine"),
-            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMayor], "novena de dominante", "dominant ninth"),
-            ([.terceraMayor, .quintaJusta, .septimaMayor, .segundaMayor], "novena mayor", "major ninth"),
-            ([.terceraMenor, .quintaJusta, .septimaMenor, .segundaMayor], "menor novena", "minor ninth"),
-            ([.terceraMayor, .quintaJusta, .segundaMayor], "novena añadida", "added ninth"),
-            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMayor, .cuartaJusta], "undécima", "dominant eleventh"),
-            ([.terceraMenor, .quintaJusta, .septimaMenor, .segundaMayor, .cuartaJusta], "menor undécima", "minor eleventh"),
-            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMayor, .sextaMayor], "decimotercera", "dominant thirteenth"),
+    package static let nombresConocidos: [Set<Int>: Traduccion] = {
+        let tabla: [([Intervalo], Traduccion)] = [
+            ([.terceraMayor, .quintaJusta], Traduccion("mayor", "major", ca: "major", gl: "maior", eu: "maiorra")),
+            ([.terceraMenor, .quintaJusta], Traduccion("menor", "minor", ca: "menor", gl: "menor", eu: "minorra")),
+            ([.terceraMenor, .quintaDisminuida], Traduccion("disminuido", "diminished", ca: "disminuït", gl: "diminuído", eu: "gutxitua")),
+            ([.terceraMayor, .quintaAumentada], Traduccion("aumentado", "augmented", ca: "augmentat", gl: "aumentado", eu: "gehitua")),
+            ([.segundaMayor, .quintaJusta], Traduccion("suspendido de segunda", "suspended second", ca: "suspès de segona", gl: "suspendido de segunda", eu: "bigarrenera esekia")),
+            ([.cuartaJusta, .quintaJusta], Traduccion("suspendido de cuarta", "suspended fourth", ca: "suspès de quarta", gl: "suspendido de cuarta", eu: "laugarrenera esekia")),
+            ([.quintaJusta], Traduccion("quinta (acorde de potencia)", "power chord", ca: "quinta (acord de potència)", gl: "quinta (acorde de potencia)", eu: "bosgarrena (potentzia-akordea)")),
+            ([.terceraMayor, .quintaJusta, .septimaMenor], Traduccion("séptima de dominante", "dominant seventh", ca: "sèptima de dominant", gl: "sétima de dominante", eu: "dominanteko zazpigarrena")),
+            ([.terceraMayor, .quintaJusta, .septimaMayor], Traduccion("séptima mayor", "major seventh", ca: "sèptima major", gl: "sétima maior", eu: "zazpigarren handia")),
+            ([.terceraMenor, .quintaJusta, .septimaMenor], Traduccion("menor séptima", "minor seventh", ca: "menor sèptima", gl: "menor sétima", eu: "minor zazpigarrena")),
+            ([.terceraMenor, .quintaDisminuida, .septimaMenor], Traduccion("semidisminuido", "half-diminished seventh", ca: "semidisminuït", gl: "semidiminuído", eu: "erdi-gutxitua")),
+            ([.terceraMenor, .quintaDisminuida, .septimaDisminuida], Traduccion("séptima disminuida", "diminished seventh", ca: "sèptima disminuïda", gl: "sétima diminuída", eu: "zazpigarren gutxitua")),
+            ([.terceraMenor, .quintaJusta, .septimaMayor], Traduccion("menor con séptima mayor", "minor major seventh", ca: "menor amb sèptima major", gl: "menor con sétima maior", eu: "minorra zazpigarren handiarekin")),
+            ([.terceraMayor, .quintaAumentada, .septimaMenor], Traduccion("aumentado con séptima menor", "augmented seventh", ca: "augmentat amb sèptima menor", gl: "aumentado con sétima menor", eu: "gehitua zazpigarren txikiarekin")),
+            ([.terceraMayor, .quintaAumentada, .septimaMayor], Traduccion("aumentado con séptima mayor", "augmented major seventh", ca: "augmentat amb sèptima major", gl: "aumentado con sétima maior", eu: "gehitua zazpigarren handiarekin")),
+            ([.cuartaJusta, .quintaJusta, .septimaMenor], Traduccion("séptima suspendida", "dominant seventh suspended fourth", ca: "sèptima suspesa", gl: "sétima suspendida", eu: "zazpigarren esekia")),
+            ([.terceraMayor, .quintaJusta, .sextaMayor], Traduccion("sexta", "major sixth", ca: "sexta", gl: "sexta", eu: "seigarrena")),
+            ([.terceraMenor, .quintaJusta, .sextaMayor], Traduccion("menor sexta", "minor sixth", ca: "menor sexta", gl: "menor sexta", eu: "minor seigarrena")),
+            ([.terceraMayor, .quintaJusta, .sextaMayor, .segundaMayor], Traduccion("sexta y novena", "six-nine", ca: "sexta i novena", gl: "sexta e novena", eu: "seigarrena eta bederatzigarrena")),
+            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMayor], Traduccion("novena de dominante", "dominant ninth", ca: "novena de dominant", gl: "novena de dominante", eu: "dominanteko bederatzigarrena")),
+            ([.terceraMayor, .quintaJusta, .septimaMayor, .segundaMayor], Traduccion("novena mayor", "major ninth", ca: "novena major", gl: "novena maior", eu: "bederatzigarren handia")),
+            ([.terceraMenor, .quintaJusta, .septimaMenor, .segundaMayor], Traduccion("menor novena", "minor ninth", ca: "menor novena", gl: "menor novena", eu: "minor bederatzigarrena")),
+            ([.terceraMayor, .quintaJusta, .segundaMayor], Traduccion("novena añadida", "added ninth", ca: "novena afegida", gl: "novena engadida", eu: "bederatzigarren gehigarria")),
+            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMayor, .cuartaJusta], Traduccion("undécima", "dominant eleventh", ca: "onzena", gl: "undécima", eu: "hamaikagarrena")),
+            ([.terceraMenor, .quintaJusta, .septimaMenor, .segundaMayor, .cuartaJusta], Traduccion("menor undécima", "minor eleventh", ca: "menor onzena", gl: "menor undécima", eu: "minor hamaikagarrena")),
+            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMayor, .sextaMayor], Traduccion("decimotercera", "dominant thirteenth", ca: "tretzena", gl: "décimo terceira", eu: "hamahirugarrena")),
             ([.terceraMenor, .quintaJusta, .septimaMenor, .segundaMayor, .cuartaJusta, .sextaMayor],
-             "menor decimotercera", "minor thirteenth"),
-            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMenor], "séptima con novena menor", "dominant seventh flat nine"),
-            ([.terceraMayor, .sextaAumentada], "sexta aumentada italiana", "Italian augmented sixth"),
-            ([.terceraMayor, .cuartaAumentada, .sextaAumentada], "sexta aumentada francesa", "French augmented sixth"),
-            ([.terceraMayor, .quintaJusta, .sextaAumentada], "sexta aumentada alemana", "German augmented sixth"),
+             Traduccion("menor decimotercera", "minor thirteenth", ca: "menor tretzena", gl: "menor décimo terceira", eu: "minor hamahirugarrena")),
+            ([.terceraMayor, .quintaJusta, .septimaMenor, .segundaMenor], Traduccion("séptima con novena menor", "dominant seventh flat nine", ca: "sèptima amb novena menor", gl: "sétima con novena menor", eu: "zazpigarrena bederatzigarren txikiarekin")),
+            ([.terceraMayor, .sextaAumentada], Traduccion("sexta aumentada italiana", "Italian augmented sixth", ca: "sexta augmentada italiana", gl: "sexta aumentada italiana", eu: "seigarren gehitu italiarra")),
+            ([.terceraMayor, .cuartaAumentada, .sextaAumentada], Traduccion("sexta aumentada francesa", "French augmented sixth", ca: "sexta augmentada francesa", gl: "sexta aumentada francesa", eu: "seigarren gehitu frantsesa")),
+            ([.terceraMayor, .quintaJusta, .sextaAumentada], Traduccion("sexta aumentada alemana", "German augmented sixth", ca: "sexta augmentada alemanya", gl: "sexta aumentada alemá", eu: "seigarren gehitu alemana")),
         ]
-        var diccionario: [Set<Int>: (espanol: String, ingles: String)] = [:]
-        for (intervalos, espanol, internacional) in tabla {
-            diccionario[Set(intervalos.map(\.pasosDeQuinta)).union([0])] = (espanol, internacional)
+        var diccionario: [Set<Int>: Traduccion] = [:]
+        for (intervalos, nombre) in tabla {
+            diccionario[Set(intervalos.map(\.pasosDeQuinta)).union([0])] = nombre
         }
         return diccionario
     }()

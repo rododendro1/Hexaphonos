@@ -108,11 +108,18 @@ extension TipoDeEscala {
         (.hexacordo, ["hexachord", "Guidonian hexachord"]),
     ]
 
-    /// Nombre en español ("dórico") o en inglés ("dorian"). Un tipo sin nombre inglés
-    /// conocido (como un modo de una escala propia) usa su nombre español.
+    /// Nombre en español ("dórico"), inglés ("dorian"), catalán ("dòric"), gallego ("dórico") o
+    /// euskera ("doriarra"). Un tipo sin nombre conocido en ese idioma (como un modo de una escala
+    /// propia) usa su nombre español.
     public func nombre(en notacion: Nomenclatura) -> String {
-        // Los nombres propios de otras tradiciones (Kafi, Hitzaz…) son los mismos en inglés.
-        guard notacion.vocabulario == .ingles, !TipoDeEscala.nombresTradicionales.contains(nombre) else { return nombre }
-        return TipoDeEscala.nombreInglesPorTipo[self] ?? nombre
+        // Los nombres propios de otras tradiciones (Kafi, Hitzaz…) son los mismos en todos los idiomas.
+        guard !TipoDeEscala.nombresTradicionales.contains(nombre) else { return nombre }
+        switch notacion.idioma {
+        case .espanol, .portugues: return nombre
+        case .ingles, .aleman, .frances, .italiano: return TipoDeEscala.nombreInglesPorTipo[self] ?? nombre
+        case .catalan: return TipoDeEscala.nombrePeninsularPorTipo[self]?.catalan ?? nombre
+        case .gallego: return TipoDeEscala.nombrePeninsularPorTipo[self]?.gallego ?? nombre
+        case .euskera: return TipoDeEscala.nombrePeninsularPorTipo[self]?.euskera ?? nombre
+        }
     }
 }

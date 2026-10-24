@@ -156,7 +156,16 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
         self.clave = clave
     }
 
-    public func nombre(en notacion: Nomenclatura) -> String { notacion.vocabulario == .espanol ? nombre : nombreEnIngles }
+    /// "clarinete en si♭", "B♭ clarinet", "clarinet en si♭", "clarinete en si♭", "si♭ klarinetea".
+    public func nombre(en notacion: Nomenclatura) -> String {
+        switch notacion.idioma {
+        case .espanol, .portugues: return nombre
+        case .ingles, .aleman, .frances, .italiano: return nombreEnIngles
+        case .catalan: return Instrumento.nombresPeninsulares[nombre]?.catalan ?? nombre
+        case .gallego: return Instrumento.nombresPeninsulares[nombre]?.gallego ?? nombre
+        case .euskera: return Instrumento.nombresPeninsulares[nombre]?.euskera ?? nombre
+        }
+    }
 
     public var esTranspositor: Bool { transposicion != .unisono }
 

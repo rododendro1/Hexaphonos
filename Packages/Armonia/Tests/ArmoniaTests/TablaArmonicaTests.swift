@@ -80,6 +80,14 @@ final class TablaArmonicaTests: XCTestCase {
         XCTAssertEqual(alturas.todos("title").first?.texto, "C3 · G3")
         XCTAssertEqual(leyenda(alturas), ["pitch (every key)", "first note", "outline of the shape"])
         XCTAssertTrue(leyenda(try XCTUnwrap(ElementoXML.leer(TablaArmonica(Acorde("Do")).svg(leyenda: false)))).isEmpty)
+        // En catalán, gallego y euskera, el título y la leyenda también.
+        let euskera = try XCTUnwrap(ElementoXML.leer(TablaArmonica(Escala(.re, .dorico)).svg(notacion: .euskera)))
+        XCTAssertEqual(euskera.todos("title").first?.texto, "re doriarra")
+        XCTAssertEqual(leyenda(euskera)[1], "tonika")
+        let catalan = try XCTUnwrap(ElementoXML.leer(TablaArmonica(Acorde("Domaj7")).svg(notacion: .catalan)))
+        XCTAssertEqual(leyenda(catalan), ["nota", "fonamental", "contorn de la forma", "tríada major", "tríada menor"])
+        let ciclo = try XCTUnwrap(ElementoXML.leer(XCTUnwrap(TablaArmonica(ciclo: .hexatonico, desde: "Do")).svg(notacion: .gallego)))
+        XCTAssertTrue(leyenda(ciclo).contains("fundamental do primeiro acorde"))
     }
 
     func testRecorrido() throws {

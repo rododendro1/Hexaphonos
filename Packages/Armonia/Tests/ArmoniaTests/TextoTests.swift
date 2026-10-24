@@ -360,11 +360,12 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Tonalidad("re bemoll major"), Tonalidad("Reb mayor"))
         XCTAssertEqual(Tonalidad("re bemol maior"), Tonalidad("Reb mayor"))
         XCTAssertEqual(Tonalidad("fa diesa minorra"), Tonalidad("Fa# menor"))
-        // Los nombres de los catálogos salen en español.
+        // Las abreviaturas de los intervalos, como en español; los nombres de los catálogos, traducidos.
         XCTAssertEqual(Nomenclatura.catalan.vocabulario, .espanol)
-        XCTAssertEqual(Escala(.re, .dorico).nombre(en: .euskera), "re dórico")
-        XCTAssertEqual(Escala("Reb dórico").nombre(en: .catalan), "re bemoll dórico")
+        XCTAssertEqual(Escala(.re, .dorico).nombre(en: .euskera), "re doriarra")
+        XCTAssertEqual(Escala("Reb dórico").nombre(en: .catalan), "re bemoll dòric")
         XCTAssertEqual(Escala("re bemoll dórico"), Escala("Reb dórico"))
+        XCTAssertEqual(Escala("re bemoll dòric"), Escala("Reb dórico"))
         XCTAssertEqual(Escala("fa sostido menor armónica"), Escala("Fa# menor armónica"))
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .gallego), "3ª maior")
         XCTAssertEqual(Alteracion(1).nombre(en: .catalan), "sostingut")
@@ -414,12 +415,57 @@ final class OtrasNotacionesTests: XCTestCase {
         // En portugués, en español; en alemán, en inglés.
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .portugues), "3ª mayor")
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .aleman), "major third")
-        // Los catálogos siguen en español.
-        XCTAssertEqual(Acorde("Sol7").nombre(en: .euskera), Acorde("Sol7").nombre)
+        // Los catálogos también.
+        XCTAssertEqual(Acorde("Sol7").nombre(en: .euskera), "sol dominanteko zazpigarrena, oinarrizko egoera")
         // Todas las traducciones tienen los cinco textos, y las demás notaciones toman el de su idioma.
         let t = Traduccion("es", "en", ca: "ca", gl: "gl", eu: "eu")
         XCTAssertEqual(Nomenclatura.allCases.map(t.en),
                        ["es", "es", "en", "en", "en", "en", "en", "ca", "gl", "eu", "es"])
+    }
+
+    /// Los nombres de los catálogos (tipos de acorde y de escala, instrumentos, ciclos) en catalán,
+    /// gallego y euskera.
+    func testCatalogosEnCatalanGallegoEuskera() {
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .catalan), "sèptima de dominant")
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .gallego), "sétima de dominante")
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .euskera), "dominanteko zazpigarrena")
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .portugues), "séptima de dominante")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .catalan), "sol sèptima de dominant, primera inversió")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .gallego), "sol sétima de dominante, primeira inversión")
+        XCTAssertEqual(Acorde("Do/Re").nombre(en: .euskera), "do maiorra, baxua re dela")
+        XCTAssertEqual(Acorde("Do/Re").nombre(en: .catalan), "do major, amb el baix en re")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .aleman), "G dominant seventh, first inversion")
+        // Todos los tipos conocidos tienen nombre propio en cada idioma.
+        for (_, nombre) in TipoDeAcorde.nombresConocidos {
+            XCTAssertFalse(nombre.catalan.isEmpty || nombre.gallego.isEmpty || nombre.euskera.isEmpty, nombre.espanol)
+        }
+
+        XCTAssertEqual(Escala(.re, .dorico).nombre(en: .catalan), "re dòric")
+        XCTAssertEqual(Escala(.la, .menorArmonica).nombre(en: .gallego), "la menor harmónica")
+        XCTAssertEqual(Escala("re doriarra"), Escala("Re dórico"))
+        XCTAssertEqual(Escala("fa sostingut lidi"), Escala("Fa# lidio"))
+        // Los nombres de otras tradiciones son los mismos en todos los idiomas.
+        XCTAssertEqual(Escala(.re, .hirajoshi).nombre(en: .euskera), "re " + TipoDeEscala.hirajoshi.nombre)
+        // Cada escala del catálogo tiene nombre en los tres idiomas, y se vuelve a leer igual.
+        for tipo in TipoDeEscala.todos {
+            XCTAssertNotNil(TipoDeEscala.nombrePeninsularPorTipo[tipo], tipo.nombre)
+            let escala = Escala(.re, tipo)
+            for notacion in [Nomenclatura.catalan, .gallego, .euskera] {
+                let nombre = escala.nombre(en: notacion)
+                XCTAssertEqual(Escala(texto: nombre), escala, "\(nombre) (\(tipo.nombre))")
+            }
+        }
+
+        XCTAssertEqual(Instrumento.clarineteEnSib.nombre(en: .catalan), "clarinet en si♭")
+        XCTAssertEqual(Instrumento.violin.nombre(en: .euskera), "biolina")
+        XCTAssertEqual(Instrumento.saxofonAlto.nombre(en: .gallego), "saxofón alto")
+        for instrumento in Instrumento.todos {
+            XCTAssertNotNil(Instrumento.nombresPeninsulares[instrumento.nombre], instrumento.nombre)
+        }
+
+        XCTAssertEqual(CicloNeorriemanniano.hexatonico.nombre(en: .catalan), "cicle hexatònic")
+        XCTAssertEqual(CicloNeorriemanniano.lr.nombre(en: .euskera), "LR zikloa")
+        XCTAssertEqual(CicloNeorriemanniano.octatonico.nombre(en: .ingles), CicloNeorriemanniano.octatonico.nombreEnIngles)
     }
 
     func testPortugues() {
