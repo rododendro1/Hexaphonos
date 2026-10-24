@@ -130,9 +130,6 @@ public struct Digitacion: Hashable, Sendable, CustomStringConvertible {
     }
 
     public var description: String { tablatura }
-
-    @available(*, deprecated, renamed: "tablatura")
-    public var cifra: String { tablatura }
 }
 
 extension Mastil {

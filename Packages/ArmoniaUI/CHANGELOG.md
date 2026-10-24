@@ -2,6 +2,10 @@
 
 ## Sin publicar
 
+- Desaparecen los nombres marcados como obsoletos: `MastilView`, `TonnetzView` y `SVGView` (son `DiagramaDeMastil`,
+  `DiagramaDeTonnetz` y `VistaSVG`), `toolbarNotacion(clave:)` (es `selectorDeNotacionEnLaBarra(clave:)`) y
+  `campoDeCifrado()` (es `comoCampoDeCifrado()`).
+
 - El paquete pasa a llamarse `ArmoniaUI` (`Packages/ArmoniaUI`), y sus módulos `ArmoniaUI` y
   `ArmoniaPresentacion` (antes `HexaphonosUI` y `HexaphonosPresentacion`). En el código es `import ArmoniaUI`, y
   en un `Package.swift`, `.product(name: "ArmoniaUI", package: "ArmoniaUI")` (o `package: "Hexaphonos"` desde la

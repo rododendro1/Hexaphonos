@@ -24,6 +24,4 @@ public struct DiagramaDeTonnetz: View {
     }
 }
 
-@available(*, deprecated, renamed: "DiagramaDeTonnetz")
-public typealias TonnetzView = DiagramaDeTonnetz
 #endif

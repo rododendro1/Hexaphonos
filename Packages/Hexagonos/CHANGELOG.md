@@ -2,6 +2,10 @@
 
 ## Sin publicar
 
+- Desaparecen los nombres marcados como obsoletos: `Disposicion` (es `Trazado`), `distancia(a:)` (es
+  `distancia(hasta:)`), `ve(_:tapada:)` (es `esVisible(_:tapada:)`), `DireccionHexagonal.girada(sextos:)` (es
+  `rotada(sextos:)`) y `MapaHexagonal.girado(sextos:alrededorDe:)` (es `rotado(sextos:alrededorDe:)`).
+
 Rejillas hexagonales sin dependencias, solo con la biblioteca estándar y Foundation:
 
 - Coordenadas axiales, cúbicas, desplazadas (cuatro variantes), dobladas (dos) y fraccionarias, y las conversiones

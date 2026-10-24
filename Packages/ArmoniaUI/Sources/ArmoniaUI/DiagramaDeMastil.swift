@@ -165,6 +165,4 @@ public struct DiagramaDeMastil: View {
     }
 }
 
-@available(*, deprecated, renamed: "DiagramaDeMastil")
-public typealias MastilView = DiagramaDeMastil
 #endif

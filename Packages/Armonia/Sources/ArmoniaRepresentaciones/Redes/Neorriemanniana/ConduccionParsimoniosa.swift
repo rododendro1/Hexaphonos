@@ -44,9 +44,6 @@ public struct MovimientoDeVoz: Hashable, Sendable, CustomStringConvertible {
     /// "Fa→Mi"; con otra notación, `texto(en:)`.
     public var description: String { texto(en: .espanol) }
 
-    @available(*, deprecated, renamed: "texto(en:)")
-    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
-
     public func texto(en notacion: Notacion) -> String {
         desde.nombreCompacto(en: notacion) + "→" + hasta.nombreCompacto(en: notacion)
     }
@@ -59,9 +56,6 @@ public struct PasoParsimonioso: Hashable, Sendable, CustomStringConvertible {
 
     /// "Sol♯o7 (Sol→Sol♯)".
     public var description: String { texto(en: .espanol) }
-
-    @available(*, deprecated, renamed: "texto(en:)")
-    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
 
     public func texto(en notacion: Notacion) -> String {
         acorde.cifrado(en: notacion) + " (" + movimientos.map { $0.texto(en: notacion) }.joined(separator: ", ") + ")"
@@ -204,9 +198,6 @@ public struct ConduccionMinima: Hashable, Sendable, CustomStringConvertible {
 
     /// "Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos".
     public var description: String { texto(en: .espanol) }
-
-    @available(*, deprecated, renamed: "texto(en:)")
-    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
 
     public func texto(en notacion: Notacion) -> String {
         let voces = movimientos.map { m -> String in

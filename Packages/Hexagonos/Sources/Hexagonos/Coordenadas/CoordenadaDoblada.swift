@@ -57,9 +57,6 @@ public struct CoordenadaDoblada: Hashable, Sendable, Codable {
         case .altoDoble: return dc + max(0, (df - dc) / 2)
         }
     }
-
-    @available(*, deprecated, renamed: "distancia(hasta:_:)")
-    public func distancia(a otra: CoordenadaDoblada, _ doblado: Doblado) -> Int { distancia(hasta: otra, doblado) }
 }
 
 extension CoordenadaDoblada: CustomStringConvertible {

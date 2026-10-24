@@ -35,9 +35,6 @@ extension Tonnetz {
         return Trazado(orientacion: .puntiaguda, tamano: Punto(x: lado, y: -lado))
     }
 
-    @available(*, deprecated, renamed: "trazado(paso:)")
-    public static func disposicion(paso: Double) -> Trazado { trazado(paso: paso) }
-
     /// La nota más cercana a un punto del dibujo de `svg(paso:)`, en las coordenadas del SVG: para
     /// saber qué nota se ha tocado.
     public static func punto(en punto: Punto, paso: Double) -> PuntoDelTonnetz {
@@ -62,9 +59,6 @@ extension TablaArmonica {
     public static func trazado(paso: Double) -> Trazado {
         Trazado(orientacion: .plana, tamano: paso / 3.0.squareRoot())
     }
-
-    @available(*, deprecated, renamed: "trazado(paso:)")
-    public static func disposicion(paso: Double) -> Trazado { trazado(paso: paso) }
 
     /// El hexágono que hay bajo un punto del dibujo de `svg(paso:)`, en las coordenadas del SVG.
     public static func punto(en punto: Punto, paso: Double) -> PuntoDelTonnetz {

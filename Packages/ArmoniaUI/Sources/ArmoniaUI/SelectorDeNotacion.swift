@@ -78,9 +78,6 @@ extension View {
         }
     }
 
-    @available(*, deprecated, renamed: "selectorDeNotacionEnLaBarra(clave:)")
-    public func toolbarNotacion(clave: Binding<String>) -> some View { selectorDeNotacionEnLaBarra(clave: clave) }
-
     /// Un campo de texto para cifrados y escalas: sin autocorrección y, en iOS, sin mayúscula inicial
     /// (los cifrados distinguen `M` de `m`).
     public func comoCampoDeCifrado() -> some View {
@@ -90,8 +87,5 @@ extension View {
         return self.autocorrectionDisabled()
         #endif
     }
-
-    @available(*, deprecated, renamed: "comoCampoDeCifrado()")
-    public func campoDeCifrado() -> some View { comoCampoDeCifrado() }
 }
 #endif

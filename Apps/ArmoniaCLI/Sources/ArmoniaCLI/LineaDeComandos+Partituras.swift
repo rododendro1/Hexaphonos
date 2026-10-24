@@ -33,20 +33,16 @@ extension LineaDeComandos {
                 musica.append(argumento)
             }
         }
-        // `--programa` es el nombre de siempre de `--instrumento` en MIDI, que se sigue aceptando.
-        if formato == .midi {
-            for alias in ["programa", "program"] {
-                if let valor = opciones.removeValue(forKey: alias) { opciones["instrumento"] = valor }
-            }
-        }
+        // `--program` es `--programa` en inglés.
+        if formato == .midi, let valor = opciones.removeValue(forKey: "program") { opciones["programa"] = valor }
         let conocidas: Set = formato == .midi
-            ? ["compas", "anacrusa", "tonalidad", "tempo", "titulo", "duracion", "instrumento"]
+            ? ["compas", "anacrusa", "tonalidad", "tempo", "titulo", "duracion", "programa"]
             : ["compas", "anacrusa", "tonalidad", "clave", "tempo", "titulo", "duracion"]
         if let desconocida = opciones.keys.sorted().first(where: { !conocidas.contains($0) }) {
             return uso(.opcionDesconocida("--" + desconocida), notacion)
         }
         var instrumento: Int?
-        if let texto = opciones["instrumento"] {
+        if let texto = opciones["programa"] {
             guard let n = Int(texto), (0...127).contains(n) else {
                 return uso(.instrumentoMIDI, notacion)
             }

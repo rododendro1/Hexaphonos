@@ -151,6 +151,3 @@ public struct Trazado: Hashable, Sendable, Codable {
         return (minimo: minimo, maximo: maximo)
     }
 }
-
-@available(*, deprecated, renamed: "Trazado")
-public typealias Disposicion = Trazado

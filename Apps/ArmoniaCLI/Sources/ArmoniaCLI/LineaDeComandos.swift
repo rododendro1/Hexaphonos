@@ -89,7 +89,7 @@ public enum LineaDeComandos {
                 return try armonizar(resto, notacion)
             case "realizar", "realize", "realise":
                 return try realizar(resto, notacion)
-            case "revisar", "check", "voces", "voices":
+            case "revisar", "check":
                 return try revisar(resto, notacion)
             case "tonnetz":
                 return try tonnetz(resto, notacion)
@@ -97,7 +97,7 @@ public enum LineaDeComandos {
                 return try tablaArmonica(resto, notacion)
             case "vecinos", "neighbors":
                 return try vecinos(resto, notacion)
-            case "conduccion-parsimoniosa", "conducción-parsimoniosa", "smooth-path", "camino", "path":
+            case "conduccion-parsimoniosa", "conducción-parsimoniosa", "smooth-path":
                 return try caminoParsimonioso(resto, notacion)
             case "conduccion", "conducción", "voice-leading":
                 guard resto.count == 2 else { return uso(.dosAcordesDeConduccion, notacion) }

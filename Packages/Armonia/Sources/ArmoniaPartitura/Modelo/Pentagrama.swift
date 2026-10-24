@@ -140,9 +140,6 @@ public struct PosicionEnPentagrama: Hashable, Sendable, CustomStringConvertible 
 // Si♭ (una 2ª mayor más grave). La transposición es un intervalo con dirección desde la nota
 // escrita hasta la que suena, así que escribir para el instrumento es restarlo.
 
-@available(*, deprecated, renamed: "InstrumentoDePartitura")
-public typealias Instrumento = InstrumentoDePartitura
-
 /// Un instrumento tal como se escribe en la partitura: su nombre, la clave en la que se lee y, si es
 /// transpositor, lo que transporta. Las cuerdas de un instrumento con trastes y su afinación son un `Encordado`.
 public struct InstrumentoDePartitura: Hashable, Sendable, CustomStringConvertible {

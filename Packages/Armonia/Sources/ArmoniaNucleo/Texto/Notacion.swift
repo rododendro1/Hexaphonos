@@ -1,8 +1,5 @@
 // MARK: - Notación
 
-@available(*, deprecated, renamed: "Notacion")
-public typealias Nomenclatura = Notacion
-
 /// Cómo se escribe todo lo que el motor convierte en texto: el idioma (nombres de nota,
 /// de intervalos, de acordes, de escalas…) y si las alteraciones usan ♯/♭ o #/b.
 ///
@@ -79,13 +76,6 @@ public struct Notacion: Hashable, Sendable, CaseIterable {
 
     /// Las notaciones con nombre, una por escritura, con los textos en el idioma de sus notas.
     public static let allCases: [Notacion] = EscrituraDeNotas.allCases.map { Notacion(escritura: $0) }
-
-    /// Las notas de `notas` con los textos en `textos`.
-    @available(*, deprecated, renamed: "Notacion(escritura:textos:)",
-               message: "Notacion ya no es un enum: guarda la escritura de las notas y el idioma de los textos.")
-    public static func combinada(notas: Notacion, textos: Idioma) -> Notacion {
-        Notacion(escritura: notas.escritura, textos: textos)
-    }
 
     /// La misma notación de las notas con los textos en otro idioma: `Notacion.ruso.conTextos(en:
     /// .espanol)`. Un idioma sin textos propios (el alemán…) cuenta como el inglés.
@@ -269,24 +259,6 @@ public struct EstiloDeCifrado: Hashable, Sendable {
         self.aumentado = aumentado
         self.septimaMayor = septimaMayor
         self.semidisminuido = semidisminuido
-    }
-
-    @available(*, deprecated, renamed: "init(notacion:alteracionesASCII:menor:disminuido:aumentado:septimaMayor:semidisminuido:)")
-    public init(nomenclatura: Notacion,
-                alteracionesASCII: Bool = false,
-                menor: Menor = .m,
-                disminuido: Disminuido = .circulo,
-                aumentado: Aumentado = .mas,
-                septimaMayor: SeptimaMayor = .maj,
-                semidisminuido: Semidisminuido = .menorSeptimaQuintaBemol) {
-        self.init(notacion: nomenclatura, alteracionesASCII: alteracionesASCII, menor: menor, disminuido: disminuido,
-                  aumentado: aumentado, septimaMayor: septimaMayor, semidisminuido: semidisminuido)
-    }
-
-    @available(*, deprecated, renamed: "notacion")
-    public var nomenclatura: Notacion {
-        get { notacion }
-        set { notacion = newValue }
     }
 
     /// Do♯m7(♭5), Mi♭maj7.

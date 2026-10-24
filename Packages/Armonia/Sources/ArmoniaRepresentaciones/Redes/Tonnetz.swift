@@ -100,19 +100,12 @@ public struct Tonnetz: Hashable, Sendable {
         public let desde: PuntoDelTonnetz
         public let hasta: PuntoDelTonnetz
         public let eje: Eje
-
-        @available(*, deprecated, renamed: "Eje")
-        public typealias Intervalo = Eje
-        @available(*, deprecated, renamed: "eje")
-        public var intervalo: Eje { eje }
     }
 
     /// Los puntos de las notas, en el orden en que se dieron (sin repetir).
     public let puntos: [PuntoDelTonnetz]
     /// `true` si se colocaron notas con su ortografía; `false` para clases de altura.
     public let tieneOrtografia: Bool
-    @available(*, deprecated, renamed: "tieneOrtografia")
-    public var conOrtografia: Bool { tieneOrtografia }
     /// Las tríadas de un recorrido, en orden (`init(recorrido:)`); vacío si no lo es.
     public private(set) var recorrido: [Triada] = []
     /// De dónde salen las notas, para el título del dibujo.

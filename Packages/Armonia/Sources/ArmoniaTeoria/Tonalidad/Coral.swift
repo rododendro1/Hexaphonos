@@ -3,9 +3,6 @@ import ArmoniaNucleo
 
 // MARK: - FaltaDeConduccion
 
-@available(*, deprecated, renamed: "FaltaDeConduccion")
-public typealias ProblemaDeConduccion = FaltaDeConduccion
-
 /// Una falta de conducción de voces: qué regla se rompe, dónde y entre qué voces.
 ///
 /// Las voces se numeran de grave a agudo desde 0; a cuatro voces son bajo, tenor, contralto y
@@ -119,9 +116,6 @@ extension FaltaDeConduccion.Tipo: Nombrable, CustomStringConvertible {
 }
 
 // MARK: - Coral
-
-@available(*, deprecated, renamed: "Coral")
-public typealias ConduccionDeVoces = Coral
 
 /// Una sucesión de acordes escritos voz por voz, para comprobar su conducción.
 ///

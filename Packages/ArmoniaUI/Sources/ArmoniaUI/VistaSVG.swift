@@ -96,6 +96,4 @@ extension View {
     }
 }
 
-@available(*, deprecated, renamed: "VistaSVG")
-public typealias SVGView = VistaSVG
 #endif
