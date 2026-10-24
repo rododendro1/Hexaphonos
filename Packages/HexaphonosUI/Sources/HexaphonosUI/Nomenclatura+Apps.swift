@@ -4,8 +4,48 @@ import Armonia
 extension Nomenclatura {
     /// Cómo se llama cada notación en el selector.
     public var titulo: String {
+        esCombinada ? "\(escritura.titulo) · \(textos.titulo)" : escritura.titulo
+    }
+
+    /// El nombre con que se guarda en los ajustes. Es estable: no depende del orden de `allCases`.
+    /// Una notación combinada se guarda como «ruso+espanol».
+    public var clave: String {
+        esCombinada ? escritura.clave + "+" + textos.clave : escritura.clave
+    }
+
+    /// La notación guardada con esa clave; si no existe, el español.
+    public static func desde(clave: String) -> Nomenclatura {
+        let partes = clave.split(separator: "+", maxSplits: 1).map(String.init)
+        let notas = allCases.first { $0.clave == partes.first } ?? .espanol
+        guard partes.count == 2, let textos = Idioma.allCases.first(where: { $0.clave == partes[1] }) else { return notas }
+        return notas.conTextos(en: textos)
+    }
+
+    /// El idioma elegido para los textos, o `nil` si van en el de las notas.
+    public var idiomaElegidoParaLosTextos: Idioma? {
+        esCombinada ? textos : nil
+    }
+
+    /// Otras notas, conservando el idioma elegido para los textos.
+    public func conNotas(_ notas: Nomenclatura) -> Nomenclatura {
+        idiomaElegidoParaLosTextos.map { notas.conTextos(en: $0) } ?? notas.notas
+    }
+
+    /// Los mismos nombres de nota con los textos en otro idioma, o en el de las notas si es `nil`.
+    public func conTextosElegidos(_ idioma: Idioma?) -> Nomenclatura {
+        idioma.map { conTextos(en: $0) } ?? notas
+    }
+
+    /// Mensaje legible de un error del motor, en el idioma de esta notación.
+    public func mensaje(de error: Error) -> String {
+        (error as? ErrorDeLectura)?.descripcion(en: self) ?? error.localizedDescription
+    }
+}
+
+extension EscrituraDeNotas {
+    /// Cómo se llama cada escritura en el selector.
+    public var titulo: String {
         switch self {
-        case .combinada(let notas, let textos): return "\(notas.titulo) · \(textos.titulo)"
         case .espanol: return "Español (Fa♯)"
         case .espanolASCII: return "Español ASCII (Fa#)"
         case .ingles: return "English (F#)"
@@ -23,11 +63,9 @@ extension Nomenclatura {
         }
     }
 
-    /// El nombre con que se guarda en los ajustes. Es estable: no depende del orden de `allCases`.
-    /// Una notación combinada se guarda como «ruso+espanol».
+    /// El nombre con que se guarda en los ajustes.
     public var clave: String {
         switch self {
-        case .combinada(let notas, let textos): return notas.clave + "+" + textos.clave
         case .espanol: return "espanol"
         case .espanolASCII: return "espanolASCII"
         case .ingles: return "ingles"
@@ -43,35 +81,6 @@ extension Nomenclatura {
         case .ruso: return "ruso"
         case .griego: return "griego"
         }
-    }
-
-    /// La notación guardada con esa clave; si no existe, el español.
-    public static func desde(clave: String) -> Nomenclatura {
-        let partes = clave.split(separator: "+", maxSplits: 1).map(String.init)
-        let notas = allCases.first { $0.clave == partes.first } ?? .espanol
-        guard partes.count == 2, let textos = Idioma.allCases.first(where: { $0.clave == partes[1] }) else { return notas }
-        return notas.conTextos(en: textos)
-    }
-
-    /// El idioma elegido para los textos, o `nil` si van en el de las notas.
-    public var idiomaElegidoParaLosTextos: Idioma? {
-        if case .combinada(_, let textos) = self { return textos }
-        return nil
-    }
-
-    /// Otras notas, conservando el idioma elegido para los textos.
-    public func conNotas(_ notas: Nomenclatura) -> Nomenclatura {
-        idiomaElegidoParaLosTextos.map { notas.conTextos(en: $0) } ?? notas.notas
-    }
-
-    /// Los mismos nombres de nota con los textos en otro idioma, o en el de las notas si es `nil`.
-    public func conTextosElegidos(_ idioma: Idioma?) -> Nomenclatura {
-        idioma.map { conTextos(en: $0) } ?? notas
-    }
-
-    /// Mensaje legible de un error del motor, en el idioma de esta notación.
-    public func mensaje(de error: Error) -> String {
-        (error as? ErrorDeLectura)?.descripcion(en: self) ?? error.localizedDescription
     }
 }
 

@@ -100,13 +100,17 @@ Acorde("Sol7/Si").nombre(en: .portugues)         // "sol sétima de dominante, p
 
 ### Notas y textos en idiomas distintos
 
-`conTextos(en:)` combina los nombres de nota de una notación con los textos de otro idioma. Las
-apps lo ofrecen en el selector de notación, y la línea de comandos con `--textos`.
+Una `Nomenclatura` son dos elecciones: `escritura` (``EscrituraDeNotas``, cómo se escriben las notas)
+y `textos` (el ``Idioma`` de los intervalos, acordes y mensajes). Las notaciones con nombre (`.ruso`…)
+llevan los textos en el idioma de sus notas, y `conTextos(en:)` los cambia; también se puede crear
+directamente con `Nomenclatura(escritura:textos:)`. Las apps lo ofrecen en el selector de notación, y la
+línea de comandos con `--textos`.
 
 ```swift
 let notacion = Nomenclatura.ruso.conTextos(en: .espanol)
 Acorde("Sol7/Si").nombre(en: notacion)              // "соль séptima de dominante, primera inversión"
 Escala(.re, .dorico).nombre(en: Nomenclatura.ingles.conTextos(en: .euskera))   // "D doriarra"
+Nomenclatura(escritura: .ruso, textos: .espanol) == notacion   // true
 ```
 
 ### Escalas en otras lenguas
