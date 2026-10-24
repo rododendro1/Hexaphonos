@@ -121,8 +121,8 @@ final class TonalidadTipoTests: XCTestCase {
             XCTAssertEqual((error as? ErrorDeLectura)?.motivo, .modoNoReconocido("dórico"))
         }
         for tonalidad in Tonalidad.circuloDeQuintas() + Tonalidad.circuloDeQuintas(.menor) {
-            for notacion in Nomenclatura.allCases {
-                XCTAssertEqual(Tonalidad(texto: tonalidad.texto(notacion)), tonalidad, tonalidad.texto(notacion))
+            for notacion in Notacion.allCases {
+                XCTAssertEqual(Tonalidad(texto: tonalidad.texto(en: notacion)), tonalidad, tonalidad.texto(en: notacion))
             }
         }
         let datos = try JSONEncoder().encode([laMenor])
@@ -131,6 +131,6 @@ final class TonalidadTipoTests: XCTestCase {
 
         XCTAssertEqual(Tonalidad(.do) + .quintaJusta, Tonalidad(.sol))
         XCTAssertEqual(laMenor.numeroDeForte, "7-35")
-        XCTAssertEqual(Instrumento.trompaEnFa.escritura(de: Tonalidad("Sib mayor")), Tonalidad(.fa))
+        XCTAssertEqual(InstrumentoDePartitura.trompaEnFa.escritura(de: Tonalidad("Sib mayor")), Tonalidad(.fa))
     }
 }

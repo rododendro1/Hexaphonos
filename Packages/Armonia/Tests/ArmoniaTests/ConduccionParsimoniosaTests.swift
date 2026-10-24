@@ -120,7 +120,7 @@ final class ConduccionParsimoniosaTests: XCTestCase {
         XCTAssertEqual(Acorde("Do").conduccionMinima(hasta: "Do").total, 0)
         XCTAssertEqual(Acorde("Do").conduccionMinima(hasta: "Sol7").movimientos.count, 4)
         XCTAssertEqual(Acorde("Do").conduccionMinima(hasta: "Fa#").total, 6)
-        XCTAssertEqual(Acorde("Sol7").conduccionMinima(hasta: "Do").texto(.ingles), "G→G, B→C (+1), D→C (−2), F→E (−1): 4 semitones")
+        XCTAssertEqual(Acorde("Sol7").conduccionMinima(hasta: "Do").texto(en: .ingles), "G→G, B→C (+1), D→C (−2), F→E (−1): 4 semitones")
         // Simétrica en el total.
         for (a, b) in [("Sol7", "Do"), ("Rem7", "Solmaj7"), ("Do", "Fa#m"), ("Sio7", "Do")] {
             XCTAssertEqual(Acorde(texto: a)!.conduccionMinima(hasta: Acorde(texto: b)!).total,

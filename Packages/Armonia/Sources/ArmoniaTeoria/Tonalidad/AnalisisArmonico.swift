@@ -28,7 +28,7 @@ public enum FuncionTonal: Hashable, Sendable, CaseIterable, CustomStringConverti
 
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .tonica: return Traduccion("tónica", "tonic", ca: "tònica", gl: "tónica", eu: "tonika",
                                         pt: "tónica", fr: "tonique", it: "tonica").en(notacion)
@@ -106,7 +106,7 @@ public struct AnalisisArmonico: Hashable, Sendable, CustomStringConvertible {
     public var description: String { nombre(en: .espanol) }
 
     /// "I–IV–V7–I en Do mayor", "I–IV–V7–I in C major", "I–IV–V7–I do maiorrean".
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         cifrados.joined(separator: "–") + " " + tonalidad.lugar(en: notacion)
     }
 

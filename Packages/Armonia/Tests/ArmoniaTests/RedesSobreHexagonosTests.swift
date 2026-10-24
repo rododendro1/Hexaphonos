@@ -7,7 +7,7 @@ import XCTest
 import Hexagonos
 
 /// El Tonnetz, la tabla armónica y los teclados isomórficos sobre la rejilla de `Hexagonos`.
-final class RejillaHexagonalTests: XCTestCase {
+final class RedesSobreHexagonosTests: XCTestCase {
     private func punto(_ a: Int, _ b: Int) -> PuntoDelTonnetz { PuntoDelTonnetz(quintas: a, terceras: b) }
     private let region = FormasDeMapa.hexagono(radio: 5)
 

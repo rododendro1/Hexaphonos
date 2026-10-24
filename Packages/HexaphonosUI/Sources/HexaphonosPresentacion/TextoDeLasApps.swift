@@ -8,7 +8,7 @@ import Armonia
 /// idiomas: uno nuevo no compila hasta que los tiene. Los ejemplos de las indicaciones («Cifrado, por ejemplo
 /// Sol7/Si») se escriben en la notación elegida («G7/B»).
 ///
-///     Nomenclatura.ingles.texto(.digitaciones)    // "Fingerings"
+///     Notacion.ingles.texto(.digitaciones)    // "Fingerings"
 public enum TextoDeLasApps: Hashable, Sendable {
     // Pestañas y títulos
     case acordes
@@ -88,11 +88,11 @@ public enum TextoDeLasApps: Hashable, Sendable {
     case cuerdasApagadas(String)
     case sinMarcas
 
-    public func texto(en notacion: Nomenclatura) -> String {
+    public func texto(en notacion: Notacion) -> String {
         traduccion(notacion).en(notacion)
     }
 
-    func traduccion(_ notacion: Nomenclatura) -> Traduccion {
+    func traduccion(_ notacion: Notacion) -> Traduccion {
         switch self {
         case .acordes:
             return Traduccion("Acordes", "Chords", ca: "Acords", gl: "Acordes", eu: "Akordeak",
@@ -319,12 +319,12 @@ public enum TextoDeLasApps: Hashable, Sendable {
     }
 
     /// Un cifrado de ejemplo en la notación: «Sol7/Si» → «G7/B».
-    static func cifrado(_ texto: String, _ notacion: Nomenclatura) -> String {
+    static func cifrado(_ texto: String, _ notacion: Notacion) -> String {
         (try? Acorde(leyendo: texto))?.cifrado(en: notacion) ?? texto
     }
 
     /// Alturas de ejemplo en la notación: «Mi4 Fa4 Re4 Do4» → «E4 F4 D4 C4».
-    static func alturas(_ texto: String, _ notacion: Nomenclatura) -> String {
+    static func alturas(_ texto: String, _ notacion: Notacion) -> String {
         texto.split(separator: " ", omittingEmptySubsequences: false).map { palabra in
             let coma = palabra.hasSuffix(",")
             let limpia = coma ? String(palabra.dropLast()) : String(palabra)
@@ -341,7 +341,7 @@ extension Traduccion {
     }
 }
 
-extension Nomenclatura {
+extension Notacion {
     /// Un texto de la interfaz de las apps en el idioma de los textos de esta notación.
     public func texto(_ texto: TextoDeLasApps) -> String {
         texto.texto(en: self)
@@ -350,7 +350,7 @@ extension Nomenclatura {
 
 extension PresentacionDeCoral.Tarea {
     /// El nombre de la tarea en el selector: «Armonizar», «Harmonize»…
-    public func titulo(en notacion: Nomenclatura) -> String {
+    public func titulo(en notacion: Notacion) -> String {
         let traduccion: Traduccion
         switch self {
         case .armonizar:
@@ -367,7 +367,7 @@ extension PresentacionDeCoral.Tarea {
     }
 
     /// Qué se escribe en el campo de texto, con los ejemplos en la notación.
-    public func indicacion(en notacion: Nomenclatura) -> String {
+    public func indicacion(en notacion: Notacion) -> String {
         let traduccion: Traduccion
         switch self {
         case .armonizar:
@@ -399,7 +399,7 @@ extension PresentacionDeCoral.Tarea {
 
 extension FicheroParaExportar.Formato {
     /// Cómo se llama el formato en el menú: «Partitura MusicXML», «MusicXML score»…
-    public func titulo(en notacion: Nomenclatura) -> String {
+    public func titulo(en notacion: Notacion) -> String {
         let traduccion: Traduccion
         switch self {
         case .musicXML:
@@ -425,7 +425,7 @@ extension Encordado {
     /// El nombre del instrumento en el idioma de los textos, en minúscula para ir dentro de una frase:
     /// «guitarra de siete cuerdas», «seven-string guitar». Un encordado que no es de los de `todos` conserva
     /// su nombre.
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         let traduccion: Traduccion
         switch self {
         case .guitarra:
@@ -460,14 +460,14 @@ extension Encordado {
     }
 
     /// El nombre para un menú, con mayúscula: «Guitarra de siete cuerdas».
-    public func titulo(en notacion: Nomenclatura) -> String {
+    public func titulo(en notacion: Notacion) -> String {
         nombre(en: notacion).capitalizandoLaPrimera
     }
 }
 
 extension TransformacionNeorriemanniana {
     /// El nombre de la transformación en el idioma de los textos: «relativa», «relative».
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         let traduccion: Traduccion
         switch self {
         case .p:

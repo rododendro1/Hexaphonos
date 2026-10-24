@@ -79,7 +79,7 @@ public struct TecladoIsomorfico: Hashable, Sendable {
     /// El teclado dibujado en SVG: un hexágono por casilla con el nombre de su nota y su octava, las teclas
     /// negras del piano en gris y, si se dan, las `marcadas` en el violeta de las notas del Tonnetz.
     public func svg(_ casillas: [CoordenadaAxial], marcadas: Set<Int> = [], tamano: Double = 24,
-                    notacion: Nomenclatura = .espanol, preferirBemoles: Bool = false) -> String {
+                    notacion: Notacion = .espanol, preferirBemoles: Bool = false) -> String {
         let negras: Set<Int> = [1, 3, 6, 8, 10]
         return Trazado(orientacion: orientacion, tamano: tamano).svg(casillas, relleno: { casilla in
             let midi = self.midi(en: casilla)

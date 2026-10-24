@@ -64,7 +64,7 @@ public enum CicloNeorriemanniano: String, CaseIterable, Hashable, Sendable, Cust
 
     /// En los ocho idiomas de los textos: "ciclo hexatónico", "hexatonic cycle", "cicle hexatònic",
     /// "ciclo hexatónico", "ziklo hexatonikoa".
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .hexatonico:
             return Traduccion(nombre, nombreEnIngles, ca: "cicle hexatònic", gl: "ciclo hexatónico",
@@ -157,7 +157,7 @@ extension Tonnetz {
                 }
             }
         }
-        self.init(puntos: puntos, conOrtografia: true, recorrido: triadas)
+        self.init(puntos: puntos, tieneOrtografia: true, recorrido: triadas)
         self.nombres = nombres
         self.acordesDelRecorrido = acordes
         self.origen = .ciclo(ciclo, acorde)

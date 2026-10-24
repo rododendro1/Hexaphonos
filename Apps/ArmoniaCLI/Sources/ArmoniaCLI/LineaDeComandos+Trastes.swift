@@ -5,7 +5,7 @@ import Foundation
 
 extension LineaDeComandos {
     /// `digitaciones Sol7/Si --instrumento ukelele`: formas de tocar el acorde, de la más cómoda a la menos.
-    static func digitaciones(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func digitaciones(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var argumentos = Argumentos(argumentos)
 
         // `--tab` era el nombre anterior de `--diagrama`.
@@ -91,7 +91,7 @@ extension LineaDeComandos {
     }
 
     /// «(3 dedos)», o «(4 dedos, cejilla en el traste 1)».
-    static func descripcion(de forma: Digitacion, _ notacion: Nomenclatura) -> String {
+    static func descripcion(de forma: Digitacion, _ notacion: Notacion) -> String {
         var texto = Mensaje.dedos(forma.dedos).texto(en: notacion)
         if let cejilla = forma.cejilla {
             texto += ", " + Mensaje.cejilla(cejilla).texto(en: notacion)
@@ -100,7 +100,7 @@ extension LineaDeComandos {
     }
 
     /// La digitación con una línea por cuerda: la más aguda arriba, con su traste (o «x»).
-    static func diagrama(de forma: Digitacion, _ notacion: Nomenclatura) -> [String] {
+    static func diagrama(de forma: Digitacion, _ notacion: Notacion) -> [String] {
         let cuerdas = forma.mastil.encordado.cuerdas
         let nombres = cuerdas.map { $0.nota.nombre(en: notacion) }
         let ancho = nombres.map(\.count).max() ?? 0

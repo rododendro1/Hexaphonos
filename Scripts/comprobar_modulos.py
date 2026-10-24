@@ -5,7 +5,7 @@ La biblioteca se reparte en cinco módulos, más `Armonia`, que los reexporta:
 
     ArmoniaNucleo            Fundamentos, Texto, Postonal
     ArmoniaTeoria            Acordes, Escalas, Tonalidad   (se necesitan entre sí: van juntas)
-    ArmoniaRepresentaciones  Afinacion, Color, Dibujo, Reticulos (con Neorriemann)
+    ArmoniaRepresentaciones  Afinacion, Color, Dibujo, Redes (con Neorriemanniana)
     ArmoniaPartitura         Modelo, Formatos
     ArmoniaTrastes           Encordado, Mastil, Digitacion (instrumentos de cuerda con trastes)
     Armonia                  solo reexporta los cinco (no Hexagonos: quien lo use, lo importa)

@@ -1,5 +1,8 @@
 // MARK: - Notación
 
+@available(*, deprecated, renamed: "Notacion")
+public typealias Nomenclatura = Notacion
+
 /// Cómo se escribe todo lo que el motor convierte en texto: el idioma (nombres de nota,
 /// de intervalos, de acordes, de escalas…) y si las alteraciones usan ♯/♭ o #/b.
 ///
@@ -29,9 +32,9 @@
 ///
 /// Una notación son dos elecciones: cómo se escriben las notas (`escritura`) y en qué idioma salen los
 /// textos (`textos`). Las notaciones con nombre (`.espanol`, `.ruso`…) llevan los textos en el idioma de sus
-/// notas, y `conTextos(en:)` los cambia: `Nomenclatura.ruso.conTextos(en: .espanol)` escribe
+/// notas, y `conTextos(en:)` los cambia: `Notacion.ruso.conTextos(en: .espanol)` escribe
 /// «соль séptima de dominante, primera inversión».
-public struct Nomenclatura: Hashable, Sendable, CaseIterable {
+public struct Notacion: Hashable, Sendable, CaseIterable {
     /// Cómo se escriben los nombres de nota.
     public let escritura: EscrituraDeNotas
     /// El idioma de los textos (intervalos, acordes, mensajes…). Siempre uno con textos propios: el alemán,
@@ -46,53 +49,53 @@ public struct Nomenclatura: Hashable, Sendable, CaseIterable {
     }
 
     /// Español con símbolos tipográficos: Do, Fa♯, Si♭.
-    public static let espanol = Nomenclatura(escritura: .espanol)
+    public static let espanol = Notacion(escritura: .espanol)
     /// Español con caracteres ASCII: Do, Fa#, Sib.
-    public static let espanolASCII = Nomenclatura(escritura: .espanolASCII)
+    public static let espanolASCII = Notacion(escritura: .espanolASCII)
     /// Inglés con caracteres ASCII: C, F#, Bb (la forma habitual de escribir en inglés).
-    public static let ingles = Nomenclatura(escritura: .ingles)
+    public static let ingles = Notacion(escritura: .ingles)
     /// Inglés con símbolos tipográficos: C, F♯, B♭.
-    public static let inglesUnicode = Nomenclatura(escritura: .inglesUnicode)
+    public static let inglesUnicode = Notacion(escritura: .inglesUnicode)
     /// Alemán: C, Fis, Es, B (= Si♭), H (= Si), Heses; los cifrados quedan Fis7, B7, Hm7.
-    public static let aleman = Nomenclatura(escritura: .aleman)
+    public static let aleman = Notacion(escritura: .aleman)
     /// Francés: do, ré, fa dièse, si bémol; en los cifrados, Fa♯7, Si♭m.
-    public static let frances = Nomenclatura(escritura: .frances)
+    public static let frances = Notacion(escritura: .frances)
     /// Italiano: do, re, fa diesis, si bemolle; en los cifrados, Fa♯7, Si♭m.
-    public static let italiano = Nomenclatura(escritura: .italiano)
+    public static let italiano = Notacion(escritura: .italiano)
     /// Catalán: do, re, fa sostingut, si bemoll; en los cifrados, Fa♯7, Si♭m.
-    public static let catalan = Nomenclatura(escritura: .catalan)
+    public static let catalan = Notacion(escritura: .catalan)
     /// Gallego: do, re, fa sostido, si bemol; en los cifrados, Fa♯7, Si♭m.
-    public static let gallego = Nomenclatura(escritura: .gallego)
+    public static let gallego = Notacion(escritura: .gallego)
     /// Euskera: do, re, fa diesa, si bemol; en los cifrados, Fa♯7, Si♭m.
-    public static let euskera = Nomenclatura(escritura: .euskera)
+    public static let euskera = Notacion(escritura: .euskera)
     /// Portugués: dó, ré, fá sustenido, si bemol; en los cifrados, Fá♯7, Si♭m.
-    public static let portugues = Nomenclatura(escritura: .portugues)
+    public static let portugues = Notacion(escritura: .portugues)
     /// Occitano: do, re, fa dièsi, si bemòl; en los cifrados, Fa♯7, Si♭m.
-    public static let occitano = Nomenclatura(escritura: .occitano)
+    public static let occitano = Notacion(escritura: .occitano)
     /// Ruso: до, ре, фа-диез, си-бемоль; en los cifrados, Фа♯7, Си♭m.
-    public static let ruso = Nomenclatura(escritura: .ruso)
+    public static let ruso = Notacion(escritura: .ruso)
     /// Griego: ντο, ρε, φα δίεση, σι ύφεση; en los cifrados, Φα♯7, Σι♭m.
-    public static let griego = Nomenclatura(escritura: .griego)
+    public static let griego = Notacion(escritura: .griego)
 
     /// Las notaciones con nombre, una por escritura, con los textos en el idioma de sus notas.
-    public static let allCases: [Nomenclatura] = EscrituraDeNotas.allCases.map { Nomenclatura(escritura: $0) }
+    public static let allCases: [Notacion] = EscrituraDeNotas.allCases.map { Notacion(escritura: $0) }
 
     /// Las notas de `notas` con los textos en `textos`.
-    @available(*, deprecated, renamed: "Nomenclatura(escritura:textos:)",
-               message: "Nomenclatura ya no es un enum: guarda la escritura de las notas y el idioma de los textos.")
-    public static func combinada(notas: Nomenclatura, textos: Idioma) -> Nomenclatura {
-        Nomenclatura(escritura: notas.escritura, textos: textos)
+    @available(*, deprecated, renamed: "Notacion(escritura:textos:)",
+               message: "Notacion ya no es un enum: guarda la escritura de las notas y el idioma de los textos.")
+    public static func combinada(notas: Notacion, textos: Idioma) -> Notacion {
+        Notacion(escritura: notas.escritura, textos: textos)
     }
 
-    /// La misma notación de las notas con los textos en otro idioma: `Nomenclatura.ruso.conTextos(en:
+    /// La misma notación de las notas con los textos en otro idioma: `Notacion.ruso.conTextos(en:
     /// .espanol)`. Un idioma sin textos propios (el alemán…) cuenta como el inglés.
-    public func conTextos(en idioma: Idioma) -> Nomenclatura {
-        Nomenclatura(escritura: escritura, textos: idioma)
+    public func conTextos(en idioma: Idioma) -> Notacion {
+        Notacion(escritura: escritura, textos: idioma)
     }
 
     /// La notación de las notas con los textos en su propio idioma: `.ruso.conTextos(en: .espanol).notas`
     /// es `.ruso`.
-    public var notas: Nomenclatura { Nomenclatura(escritura: escritura) }
+    public var notas: Notacion { Notacion(escritura: escritura) }
 
     /// ¿Lleva los textos en un idioma distinto del de sus notas?
     public var esCombinada: Bool { textos != escritura.idioma.deLosTextos }
@@ -122,7 +125,7 @@ public struct Nomenclatura: Hashable, Sendable, CaseIterable {
 
 // MARK: - Escritura de las notas
 
-/// Cómo se escriben los nombres de nota en una `Nomenclatura`: el idioma y, en español e inglés, si las
+/// Cómo se escriben los nombres de nota en una `Notacion`: el idioma y, en español e inglés, si las
 /// alteraciones son ♯/♭ o #/b. Para recorrerlas con un `switch` exhaustivo: el compilador avisa al añadir una.
 public enum EscrituraDeNotas: Hashable, Sendable, CaseIterable {
     /// Do, Fa♯, Si♭.
@@ -204,7 +207,7 @@ public enum EscrituraDeNotas: Hashable, Sendable, CaseIterable {
 
 // MARK: - Idioma
 
-/// Idioma de una `Nomenclatura` (la notación añade si las alteraciones son ♯/♭ o #/b).
+/// Idioma de una `Notacion` (la notación añade si las alteraciones son ♯/♭ o #/b).
 public enum Idioma: Hashable, Sendable, CaseIterable {
     case espanol
     case ingles
@@ -241,7 +244,7 @@ public struct EstiloDeCifrado: Hashable, Sendable {
         case barrado
     }
 
-    public var nomenclatura: Nomenclatura
+    public var notacion: Notacion
     /// Escribe ♭ y ♯ como b y # en las tensiones.
     public var alteracionesASCII: Bool
     public var menor: Menor
@@ -250,15 +253,17 @@ public struct EstiloDeCifrado: Hashable, Sendable {
     public var septimaMayor: SeptimaMayor
     public var semidisminuido: Semidisminuido
 
-    public init(nomenclatura: Nomenclatura = .espanol,
-                alteracionesASCII: Bool = false,
+    /// Sin `alteracionesASCII`, las tensiones llevan b y # si las notas las llevan (`Notacion.usaASCII`): el
+    /// estilo básico de cada notación es `EstiloDeCifrado(notacion:)`, y `.ingles` escribe Bb7(b9).
+    public init(notacion: Notacion = .espanol,
+                alteracionesASCII: Bool? = nil,
                 menor: Menor = .m,
                 disminuido: Disminuido = .circulo,
                 aumentado: Aumentado = .mas,
                 septimaMayor: SeptimaMayor = .maj,
                 semidisminuido: Semidisminuido = .menorSeptimaQuintaBemol) {
-        self.nomenclatura = nomenclatura
-        self.alteracionesASCII = alteracionesASCII
+        self.notacion = notacion
+        self.alteracionesASCII = alteracionesASCII ?? notacion.usaASCII
         self.menor = menor
         self.disminuido = disminuido
         self.aumentado = aumentado
@@ -266,41 +271,36 @@ public struct EstiloDeCifrado: Hashable, Sendable {
         self.semidisminuido = semidisminuido
     }
 
-    /// El estilo básico de cada notación: `.espanol` → `.predeterminado`, `.espanolASCII` → `.ascii`,
-    /// `.ingles` → `.ingles`, `.inglesUnicode` → `.inglesUnicode`.
-    public init(notacion: Nomenclatura) {
-        switch notacion.escritura {
-        case .espanol: self.init()
-        case .espanolASCII: self.init(nomenclatura: .espanolASCII, alteracionesASCII: true)
-        case .ingles: self.init(nomenclatura: .ingles, alteracionesASCII: true)
-        case .inglesUnicode: self.init(nomenclatura: .inglesUnicode)
-        case .aleman: self.init(nomenclatura: .aleman, alteracionesASCII: true)
-        case .frances: self.init(nomenclatura: .frances)
-        case .italiano: self.init(nomenclatura: .italiano)
-        case .catalan: self.init(nomenclatura: .catalan)
-        case .gallego: self.init(nomenclatura: .gallego)
-        case .euskera: self.init(nomenclatura: .euskera)
-        case .portugues: self.init(nomenclatura: .portugues)
-        case .occitano: self.init(nomenclatura: .occitano)
-        case .ruso: self.init(nomenclatura: .ruso)
-        case .griego: self.init(nomenclatura: .griego)
-        }
-        nomenclatura = notacion
+    @available(*, deprecated, renamed: "init(notacion:alteracionesASCII:menor:disminuido:aumentado:septimaMayor:semidisminuido:)")
+    public init(nomenclatura: Notacion,
+                alteracionesASCII: Bool = false,
+                menor: Menor = .m,
+                disminuido: Disminuido = .circulo,
+                aumentado: Aumentado = .mas,
+                septimaMayor: SeptimaMayor = .maj,
+                semidisminuido: Semidisminuido = .menorSeptimaQuintaBemol) {
+        self.init(notacion: nomenclatura, alteracionesASCII: alteracionesASCII, menor: menor, disminuido: disminuido,
+                  aumentado: aumentado, septimaMayor: septimaMayor, semidisminuido: semidisminuido)
+    }
+
+    @available(*, deprecated, renamed: "notacion")
+    public var nomenclatura: Notacion {
+        get { notacion }
+        set { notacion = newValue }
     }
 
     /// Do♯m7(♭5), Mi♭maj7.
     public static let predeterminado = EstiloDeCifrado()
     /// Sólo caracteres ASCII: Do#m7(b5), Mibmaj7.
-    public static let ascii = EstiloDeCifrado(nomenclatura: .espanolASCII, alteracionesASCII: true)
+    public static let ascii = EstiloDeCifrado(notacion: .espanolASCII)
     /// Letras internacionales: C#m7(b5), Ebmaj7.
-    public static let ingles = EstiloDeCifrado(nomenclatura: .ingles, alteracionesASCII: true)
+    public static let ingles = EstiloDeCifrado(notacion: .ingles)
     /// Letras internacionales con símbolos tipográficos: C♯m7(♭5), E♭maj7.
-    public static let inglesUnicode = EstiloDeCifrado(nomenclatura: .inglesUnicode)
+    public static let inglesUnicode = EstiloDeCifrado(notacion: .inglesUnicode)
     /// Notación habitual en jazz: C#ø7, EbΔ7.
-    public static let jazz = EstiloDeCifrado(nomenclatura: .ingles, alteracionesASCII: true,
-                                           septimaMayor: .delta, semidisminuido: .barrado)
+    public static let jazz = EstiloDeCifrado(notacion: .ingles, septimaMayor: .delta, semidisminuido: .barrado)
     /// Calidades escritas con palabras: Domin7, Fadim, Solaug.
     public static let palabras = EstiloDeCifrado(menor: .min, disminuido: .dim, aumentado: .aug)
 
-    package func nombre(_ nota: Nota) -> String { nota.nombreCompacto(en: nomenclatura) }
+    package func nombre(_ nota: Nota) -> String { nota.nombreCompacto(en: notacion) }
 }

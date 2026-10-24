@@ -16,44 +16,44 @@ final class VistaSVGTests: XCTestCase {
 
 final class NotacionTests: XCTestCase {
     func testCadaNotacionTieneTituloYClaveDistintos() {
-        let todas = Nomenclatura.allCases
+        let todas = Notacion.allCases
         XCTAssertEqual(Set(todas.map(\.titulo)).count, todas.count)
         XCTAssertEqual(Set(todas.map(\.clave)).count, todas.count)
     }
 
     func testLaClaveVuelveALaNotacion() {
-        for notacion in Nomenclatura.allCases {
-            XCTAssertEqual(Nomenclatura.desde(clave: notacion.clave), notacion)
+        for notacion in Notacion.allCases {
+            XCTAssertEqual(Notacion.desde(clave: notacion.clave), notacion)
         }
     }
 
     func testNotasYTextosPorSeparado() {
-        let rusoEnEspanol = Nomenclatura.ruso.conTextos(en: .espanol)
+        let rusoEnEspanol = Notacion.ruso.conTextos(en: .espanol)
         XCTAssertEqual(rusoEnEspanol.clave, "ruso+espanol")
-        XCTAssertEqual(Nomenclatura.desde(clave: "ruso+espanol"), rusoEnEspanol)
+        XCTAssertEqual(Notacion.desde(clave: "ruso+espanol"), rusoEnEspanol)
         XCTAssertEqual(rusoEnEspanol.titulo, "Русский (фа-диез) · Español")
         XCTAssertEqual(rusoEnEspanol.idiomaElegidoParaLosTextos, .espanol)
-        XCTAssertNil(Nomenclatura.ruso.idiomaElegidoParaLosTextos)
+        XCTAssertNil(Notacion.ruso.idiomaElegidoParaLosTextos)
         // Cambiar las notas conserva los textos, y quitar los textos deja las notas.
-        XCTAssertEqual(rusoEnEspanol.conNotas(.griego), Nomenclatura.griego.conTextos(en: .espanol))
+        XCTAssertEqual(rusoEnEspanol.conNotas(.griego), Notacion.griego.conTextos(en: .espanol))
         XCTAssertEqual(rusoEnEspanol.conTextosElegidos(nil), .ruso)
-        XCTAssertEqual(Nomenclatura.ingles.conTextosElegidos(.catalan).clave, "ingles+catalan")
+        XCTAssertEqual(Notacion.ingles.conTextosElegidos(.catalan).clave, "ingles+catalan")
         // Una parte desconocida no rompe nada.
-        XCTAssertEqual(Nomenclatura.desde(clave: "ruso+klingon"), .ruso)
-        XCTAssertEqual(Nomenclatura.desde(clave: "klingon+espanol"), .espanol)
+        XCTAssertEqual(Notacion.desde(clave: "ruso+klingon"), .ruso)
+        XCTAssertEqual(Notacion.desde(clave: "klingon+espanol"), .espanol)
         XCTAssertEqual(Set(Idioma.allCases.map(\.clave)).count, Idioma.allCases.count)
     }
 
     func testUnaClaveDesconocidaDaElEspanol() {
-        XCTAssertEqual(Nomenclatura.desde(clave: ""), .espanol)
-        XCTAssertEqual(Nomenclatura.desde(clave: "klingon"), .espanol)
+        XCTAssertEqual(Notacion.desde(clave: ""), .espanol)
+        XCTAssertEqual(Notacion.desde(clave: "klingon"), .espanol)
         // Un ajuste antiguo guardado como índice no rompe nada.
-        XCTAssertEqual(Nomenclatura.desde(clave: "3"), .espanol)
+        XCTAssertEqual(Notacion.desde(clave: "3"), .espanol)
     }
 
     func testElMensajeDeUnErrorAjenoEsSuDescripcion() {
         struct Falla: LocalizedError { var errorDescription: String? { "falla de prueba" } }
-        XCTAssertEqual(Nomenclatura.espanol.mensaje(de: Falla()), "falla de prueba")
+        XCTAssertEqual(Notacion.espanol.mensaje(de: Falla()), "falla de prueba")
     }
 
     func testElMensajeDeUnErrorDeLecturaNoEstaVacio() {
@@ -61,8 +61,8 @@ final class NotacionTests: XCTestCase {
             _ = try Acorde(leyendo: "xyz!")
             XCTFail("«xyz!» no es un cifrado")
         } catch {
-            XCTAssertFalse(Nomenclatura.espanol.mensaje(de: error).isEmpty)
-            XCTAssertFalse(Nomenclatura.ingles.mensaje(de: error).isEmpty)
+            XCTAssertFalse(Notacion.espanol.mensaje(de: error).isEmpty)
+            XCTAssertFalse(Notacion.ingles.mensaje(de: error).isEmpty)
         }
     }
 }

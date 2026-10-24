@@ -8,7 +8,7 @@ extension LineaDeComandos {
 
     /// `musicxml melodia …` y `midi melodia …`: las mismas opciones, salvo la clave (solo MusicXML)
     /// y el instrumento (solo MIDI).
-    static func partitura(_ argumentos: [String], _ notacion: Nomenclatura, formato: Formato) throws -> ResultadoDeOrden {
+    static func partitura(_ argumentos: [String], _ notacion: Notacion, formato: Formato) throws -> ResultadoDeOrden {
         let orden = formato == .midi ? "midi" : "musicxml"
         guard let tipo = argumentos.first?.lowercased() else { return uso(.faltaTipoDePartitura(orden: orden), notacion) }
         // Los argumentos hasta la primera opción son la música; cada opción toma lo que la sigue.
@@ -95,7 +95,7 @@ extension LineaDeComandos {
                 return uso(.soloParaMelodia(opcion), notacion)
             }
             let duracion = try opciones["duracion"].map { try Duracion(leyendo: $0) } ?? .negra
-            let coral = try ConduccionDeVoces(leyendo: musica.joined(separator: " "))
+            let coral = try Coral(leyendo: musica.joined(separator: " "))
             if formato == .midi {
                 return binario(coral.midi(duracion: duracion, compas: compas, tonalidad: tonalidad, tempo: tempo,
                                           titulo: titulo, instrumento: instrumento ?? 52, notacion: notacion))

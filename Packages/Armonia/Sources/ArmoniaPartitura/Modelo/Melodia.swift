@@ -382,9 +382,12 @@ public struct Voz: Hashable, Sendable, Codable {
         return Voz(religados, compas: compas)
     }
 
+    @available(*, deprecated, renamed: "texto(en:)")
+    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
+
     /// Los eventos como texto, separados por espacios: "Do4:4 Re4:8 Mi4:8".
-    public func texto(_ notacion: Nomenclatura = .espanol) -> String {
-        eventos.map { $0.texto(notacion) }.joined(separator: " ")
+    public func texto(en notacion: Notacion = .espanol) -> String {
+        eventos.map { $0.texto(en: notacion) }.joined(separator: " ")
     }
 }
 

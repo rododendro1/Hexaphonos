@@ -20,17 +20,20 @@ public struct Armonizacion: Hashable, Sendable, CustomStringConvertible {
     public var cifrados: [String] { analisis.cifrados }
 
     /// La armonización a cuatro voces con la melodía en el soprano (ver
-    /// ``ConduccionDeVoces/realizar(_:soprano:en:)``). `nil` si la melodía no tiene tantas notas como
+    /// ``Coral/realizar(_:soprano:en:)``). `nil` si la melodía no tiene tantas notas como
     /// acordes, si sus notas no son las de la propuesta o si no hay realización sin faltas.
-    public func realizar(soprano: [Altura]) -> ConduccionDeVoces? {
+    public func realizar(soprano: [Altura]) -> Coral? {
         guard soprano.map(\.nota) == melodia else { return nil }
-        return ConduccionDeVoces.realizar(acordes, soprano: soprano, en: tonalidad)
+        return Coral.realizar(acordes, soprano: soprano, en: tonalidad)
     }
 
     /// "Do Sol Do (I–V–I)".
-    public var description: String { texto(.espanol) }
+    public var description: String { texto(en: .espanol) }
 
-    public func texto(_ notacion: Nomenclatura) -> String {
+    @available(*, deprecated, renamed: "texto(en:)")
+    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
+
+    public func texto(en notacion: Notacion) -> String {
         acordes.map { $0.cifrado(en: notacion) }.joined(separator: " ") + " (" + cifrados.joined(separator: "–") + ")"
     }
 }
@@ -124,18 +127,18 @@ extension Tonalidad {
 
     /// Armoniza una melodía y la escribe a cuatro voces, con la melodía en el soprano.
     ///
-    ///     let coral = Tonalidad(.do).armonizarACuatroVoces(["Mi4", "Re4", "Do4"])!
-    ///     coral.armonizacion.cifrados   // ["I", "V", "I"]
-    ///     coral.voces.esCorrecta        // true
+    ///     let armonizada = Tonalidad(.do).armonizarACuatroVoces(["Mi4", "Re4", "Do4"])!
+    ///     armonizada.armonizacion.cifrados   // ["I", "V", "I"]
+    ///     armonizada.coral.esCorrecta        // true
     ///
     /// Elige a la vez los acordes y las disposiciones: entre todas las armonizaciones que se pueden
-    /// realizar sin faltas (con las reglas de ``ConduccionDeVoces/realizar(_:soprano:en:)``), la que
+    /// realizar sin faltas (con las reglas de ``Coral/realizar(_:soprano:en:)``), la que
     /// suma menos coste armónico, como en ``armonizar(melodia:propuestas:)``, y, a igualdad, la que
     /// mueve menos las voces. Por eso no siempre es la primera de `armonizar`: si la mejor sucesión
     /// de acordes obliga a una falta con esa melodía, se queda con otra.
     ///
     /// `nil` si no hay ninguna (por ejemplo, si la melodía se sale de la tesitura del soprano, Do4–Sol5).
-    public func armonizarACuatroVoces(_ melodia: [Altura]) -> (armonizacion: Armonizacion, voces: ConduccionDeVoces)? {
+    public func armonizarACuatroVoces(_ melodia: [Altura]) -> (armonizacion: Armonizacion, coral: Coral)? {
         guard !melodia.isEmpty else { return nil }
         let notas = melodia.map(\.nota)
         let opciones = notas.map { acordes(para: $0) }
@@ -149,7 +152,7 @@ extension Tonalidad {
         // Los estados: un acorde de los posibles para la nota y una de sus disposiciones.
         let estados: [[(acorde: Int, alturas: [Altura], coste: Double)]] = (0..<n).map { i in
             opciones[i].indices.flatMap { j in
-                ConduccionDeVoces.disposiciones(de: opciones[i][j].valor, soprano: melodia[i], sensible: sensible)
+                Coral.disposiciones(de: opciones[i][j].valor, soprano: melodia[i], sensible: sensible)
                     .map { (j, $0.alturas, opciones[i][j].coste + pesoDeLasVoces * $0.coste) }
             }
         }
@@ -168,7 +171,7 @@ extension Tonalidad {
                 for (a, actual) in estados[i - 1].enumerated() where costes[a] < .infinity {
                     let anterior = lecturas[i - 1][actual.acorde]
                     let destino = destinos[opciones[i - 1][actual.acorde].valor] ?? nil
-                    guard let voces = ConduccionDeVoces.costeDePaso(
+                    guard let voces = Coral.costeDePaso(
                         de: actual.alturas, a: siguiente.alturas, septima: anterior.acorde.septima,
                         sensible: Cadencia.esDominante(anterior) ? sensible : nil, tonica: tonica) else { continue }
                     var total = costes[a] + siguiente.coste + pesoDeLasVoces * voces
@@ -192,7 +195,7 @@ extension Tonalidad {
             voces.insert(estado.alturas, at: 0)
             indice = previos[i][indice]
         }
-        guard let conduccion = ConduccionDeVoces(voces) else { return nil }
+        guard let conduccion = Coral(voces) else { return nil }
         return (Armonizacion(tonalidad: self, melodia: notas, acordes: elegidos), conduccion)
     }
 

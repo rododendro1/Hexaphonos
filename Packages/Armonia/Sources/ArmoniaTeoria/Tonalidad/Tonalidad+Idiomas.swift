@@ -6,7 +6,7 @@ import ArmoniaNucleo
 extension Tonalidad.Modo {
     public var nombre: String { self == .mayor ? "mayor" : "menor" }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch notacion.idioma {
         case .espanol: return nombre
         case .ingles: return self == .mayor ? "major" : "minor"
@@ -30,7 +30,7 @@ extension Tonalidad {
     /// "La menor" en español, "A minor" en inglés, "a-Moll" en alemán (con la tónica en minúscula
     /// si es menor), "la mineur" en francés, "la minore" en italiano, "ля минор" en ruso, "λα ελάσσονα"
     /// en griego.
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         guard notacion.idioma == .aleman else { return "\(tonica.nombre(en: notacion)) \(modo.nombre(en: notacion))" }
         let nombreTonica = tonica.nombre(en: .aleman)
         return (modo == .menor ? nombreTonica.lowercased() : nombreTonica) + "-" + modo.nombre(en: .aleman)
@@ -41,7 +41,7 @@ extension Tonalidad {
     /// La tonalidad como lugar, en los idiomas de los textos: "en Do mayor", "in C major",
     /// "en do major", "en do maior", "em dó maior", "en do majeur", "in do maggiore" y, en euskera,
     /// con el inesivo: "do maiorrean".
-    package func lugar(en notacion: Nomenclatura) -> String {
+    package func lugar(en notacion: Notacion) -> String {
         let completo = self.nombre(en: notacion)
         switch notacion.idiomaDeLosTextos {
         case .espanol, .catalan, .gallego, .frances: return "en " + completo

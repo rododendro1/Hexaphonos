@@ -2,7 +2,7 @@ import Foundation
 import Armonia
 
 /// Lo que comparten las apps al elegir y guardar la notación. No usa SwiftUI, así que se prueba en Linux.
-extension Nomenclatura {
+extension Notacion {
     /// Cómo se llama cada notación en el selector.
     public var titulo: String {
         esCombinada ? "\(escritura.titulo) · \(textos.titulo)" : escritura.titulo
@@ -17,7 +17,7 @@ extension Nomenclatura {
     /// La notación del idioma del sistema, para cuando aún no se ha elegido ninguna: con el sistema en
     /// catalán, `.catalan`; en un idioma sin notación propia, la española. `idiomas` son los códigos
     /// de `Locale.preferredLanguages` («ca-ES», «en-GB»…), y manda el primero que se conozca.
-    public static func delSistema(idiomas: [String] = Locale.preferredLanguages) -> Nomenclatura {
+    public static func delSistema(idiomas: [String] = Locale.preferredLanguages) -> Notacion {
         for codigo in idiomas {
             switch codigo.lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" }).first.map(String.init) {
             case "es": return .espanol
@@ -39,7 +39,7 @@ extension Nomenclatura {
     }
 
     /// La notación guardada con esa clave; si no existe, el español.
-    public static func desde(clave: String) -> Nomenclatura {
+    public static func desde(clave: String) -> Notacion {
         let partes = clave.split(separator: "+", maxSplits: 1).map(String.init)
         let notas = allCases.first { $0.clave == partes.first } ?? .espanol
         guard partes.count == 2, let textos = Idioma.allCases.first(where: { $0.clave == partes[1] }) else { return notas }
@@ -52,12 +52,12 @@ extension Nomenclatura {
     }
 
     /// Otras notas, conservando el idioma elegido para los textos.
-    public func conNotas(_ notas: Nomenclatura) -> Nomenclatura {
+    public func conNotas(_ notas: Notacion) -> Notacion {
         idiomaElegidoParaLosTextos.map { notas.conTextos(en: $0) } ?? notas.notas
     }
 
     /// Los mismos nombres de nota con los textos en otro idioma, o en el de las notas si es `nil`.
-    public func conTextosElegidos(_ idioma: Idioma?) -> Nomenclatura {
+    public func conTextosElegidos(_ idioma: Idioma?) -> Notacion {
         idioma.map { conTextos(en: $0) } ?? notas
     }
 

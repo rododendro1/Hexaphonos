@@ -5,7 +5,7 @@ import Foundation
 // MARK: - Consultas: acordes, notas, escalas, tonalidades y análisis
 
 extension LineaDeComandos {
-    static func describir(acorde: Acorde, _ notacion: Nomenclatura) -> String {
+    static func describir(acorde: Acorde, _ notacion: Notacion) -> String {
         var lineas = ["\(acorde.cifrado(en: notacion)): \(acorde.tipo.nombre(en: notacion))"]
         let notas = acorde.notas.map { $0.nombre(en: notacion) }.joined(separator: " ")
         let t = { (mensaje: Mensaje) in mensaje.texto(en: notacion) }
@@ -21,7 +21,7 @@ extension LineaDeComandos {
         return lineas.joined(separator: "\n")
     }
 
-    static func identificar(_ textos: [String], _ notacion: Nomenclatura) throws -> String {
+    static func identificar(_ textos: [String], _ notacion: Notacion) throws -> String {
         // Con octava se tiene en cuenta el bajo; sin ella, solo las notas.
         let candidatos: [Candidato<Acorde>]
         if let alturas = try? textos.map({ try Altura(leyendo: $0) }) {
@@ -40,7 +40,7 @@ extension LineaDeComandos {
         }.joined(separator: "\n")
     }
 
-    static func intervalo(_ a: String, _ b: String, _ notacion: Nomenclatura) throws -> String {
+    static func intervalo(_ a: String, _ b: String, _ notacion: Notacion) throws -> String {
         let intervalo: Intervalo
         if let grave = try? Altura(leyendo: a), let aguda = try? Altura(leyendo: b) {
             intervalo = aguda - grave
@@ -48,10 +48,10 @@ extension LineaDeComandos {
             intervalo = try Nota(leyendo: a).intervalo(hasta: try Nota(leyendo: b))
         }
         let semitonos = Mensaje.semitonos(intervalo.semitonos).texto(en: notacion)
-        return "\(intervalo.nombre(en: notacion)) (\(intervalo.texto(notacion)), \(semitonos))"
+        return "\(intervalo.nombre(en: notacion)) (\(intervalo.texto(en: notacion)), \(semitonos))"
     }
 
-    static func describir(escala: Escala, _ notacion: Nomenclatura) -> String {
+    static func describir(escala: Escala, _ notacion: Notacion) -> String {
         let t = { (mensaje: Mensaje) in mensaje.texto(en: notacion) }
         var lineas = [escala.nombre(en: notacion),
                       "  \(t(.notas)): " + escala.notas.map { $0.nombre(en: notacion) }.joined(separator: " ")]
@@ -65,7 +65,7 @@ extension LineaDeComandos {
         return lineas.joined(separator: "\n")
     }
 
-    static func describir(tonalidad: Tonalidad, _ notacion: Nomenclatura) -> String {
+    static func describir(tonalidad: Tonalidad, _ notacion: Notacion) -> String {
         let t = { (mensaje: Mensaje) in mensaje.texto(en: notacion) }
         let armadura: String
         switch tonalidad.armadura {
@@ -85,7 +85,7 @@ extension LineaDeComandos {
         ].joined(separator: "\n")
     }
 
-    static func analizar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func analizar(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var acordes = Argumentos(argumentos)
         guard let tonalidad = try acordes.quitarTonalidad() else { return uso(.faltaTonalidadTrasEn, notacion) }
         guard !acordes.restantes.isEmpty else { return uso(.faltanAcordesDelAnalisis, notacion) }

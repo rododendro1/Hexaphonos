@@ -40,7 +40,7 @@ final class ArmonizacionTests: XCTestCase {
         XCTAssertEqual(propuestas.map(\.coste), propuestas.map(\.coste).sorted())
         XCTAssertEqual(Set(propuestas.map(\.valor.acordes)).count, 4)
         XCTAssertEqual(propuestas[0].valor.description, "Do Sol Do (I–V–I)")
-        XCTAssertEqual(propuestas[0].valor.texto(.ingles), "C G C (I–V–I)")
+        XCTAssertEqual(propuestas[0].valor.texto(en: .ingles), "C G C (I–V–I)")
         XCTAssertEqual(propuestas[0].valor.melodia, ["Mi", "Re", "Do"])
     }
 
@@ -78,7 +78,7 @@ final class ArmonizacionTests: XCTestCase {
     private func comprobarRealizacion(_ texto: String, en tonalidad: Tonalidad? = nil,
                                       file: StaticString = #filePath, line: UInt = #line) {
         let acordes = texto.split(separator: " ").map { Acorde(texto: String($0))! }
-        guard let coral = ConduccionDeVoces.realizar(acordes, en: tonalidad) else {
+        guard let coral = Coral.realizar(acordes, en: tonalidad) else {
             return XCTFail("«\(texto)» no se realiza", file: file, line: line)
         }
         XCTAssertEqual(coral.problemas, [], texto, file: file, line: line)
@@ -110,16 +110,16 @@ final class ArmonizacionTests: XCTestCase {
 
     func testRealizarConSoprano() throws {
         let soprano: [Altura] = ["Mi4", "Fa4", "Re4", "Do4"]
-        let coral = try XCTUnwrap(ConduccionDeVoces.realizar(["Do", "Fa", "Sol", "Do"], soprano: soprano))
+        let coral = try XCTUnwrap(Coral.realizar(["Do", "Fa", "Sol", "Do"], soprano: soprano))
         XCTAssertEqual(coral.voz(3), soprano)
         XCTAssertTrue(coral.esCorrecta)
         XCTAssertEqual(coral.voz(0).map(\.nota), ["Do", "Fa", "Sol", "Do"])
         // Do–Rem con el soprano Sol4–La4 obliga a quintas paralelas con el bajo: no hay realización.
-        XCTAssertNil(ConduccionDeVoces.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"]))
+        XCTAssertNil(Coral.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"]))
     }
 
     func testLaSensibleSubeEnElSoprano() throws {
-        let coral = try XCTUnwrap(ConduccionDeVoces.realizar(["Do", "Sol", "Do"], soprano: ["Mi4", "Si4", "Do5"]))
+        let coral = try XCTUnwrap(Coral.realizar(["Do", "Sol", "Do"], soprano: ["Mi4", "Si4", "Do5"]))
         XCTAssertTrue(coral.esCorrecta)
         // Y no se duplica.
         for voces in coral.acordes {
@@ -128,20 +128,20 @@ final class ArmonizacionTests: XCTestCase {
     }
 
     func testRealizarImposible() {
-        XCTAssertNil(ConduccionDeVoces.realizar([]))
+        XCTAssertNil(Coral.realizar([]))
         // El soprano no tiene tantas notas, o una no es del acorde, o está fuera de tesitura.
-        XCTAssertNil(ConduccionDeVoces.realizar(["Do", "Sol"], soprano: ["Do5"]))
-        XCTAssertNil(ConduccionDeVoces.realizar(["Do", "Sol"], soprano: ["Do5", "Do5"]))
-        XCTAssertNil(ConduccionDeVoces.realizar(["Do", "Sol"], soprano: ["Do6", "Si5"]))
+        XCTAssertNil(Coral.realizar(["Do", "Sol"], soprano: ["Do5"]))
+        XCTAssertNil(Coral.realizar(["Do", "Sol"], soprano: ["Do5", "Do5"]))
+        XCTAssertNil(Coral.realizar(["Do", "Sol"], soprano: ["Do6", "Si5"]))
         // Más de cuatro notas obligatorias.
-        XCTAssertNil(ConduccionDeVoces.realizar(["Do7(9,13)"]))
+        XCTAssertNil(Coral.realizar(["Do7(9,13)"]))
     }
 
     func testDisposicionesSinFaltas() {
-        let disposiciones = ConduccionDeVoces.disposiciones(de: "Sol7", soprano: nil, sensible: .si)
+        let disposiciones = Coral.disposiciones(de: "Sol7", soprano: nil, sensible: .si)
         XCTAssertFalse(disposiciones.isEmpty)
         for d in disposiciones {
-            XCTAssertTrue(ConduccionDeVoces([d.alturas])!.esCorrecta)
+            XCTAssertTrue(Coral([d.alturas])!.esCorrecta)
             XCTAssertEqual(d.alturas[0].nota, .sol)
             XCTAssertLessThanOrEqual(d.alturas.filter { $0.nota == .si }.count, 1)
         }
@@ -151,11 +151,11 @@ final class ArmonizacionTests: XCTestCase {
 
     func testArmonizarACuatroVoces() throws {
         let melodia: [Altura] = ["Do5", "Si4", "La4", "Sol4", "Fa4", "Mi4", "Re4", "Do4"]
-        let coral = try XCTUnwrap(Tonalidad(.do).armonizarACuatroVoces(melodia))
-        XCTAssertEqual(coral.voces.voz(3), melodia)
-        XCTAssertTrue(coral.voces.esCorrecta)
-        XCTAssertEqual(coral.armonizacion.melodia, melodia.map(\.nota))
-        XCTAssertEqual(coral.armonizacion.cifrados.last, "I")
+        let armonizada = try XCTUnwrap(Tonalidad(.do).armonizarACuatroVoces(melodia))
+        XCTAssertEqual(armonizada.coral.voz(3), melodia)
+        XCTAssertTrue(armonizada.coral.esCorrecta)
+        XCTAssertEqual(armonizada.armonizacion.melodia, melodia.map(\.nota))
+        XCTAssertEqual(armonizada.armonizacion.cifrados.last, "I")
         XCTAssertNil(Tonalidad(.do).armonizarACuatroVoces(["Do6", "Si5", "Do6"]))
     }
 
@@ -177,10 +177,10 @@ final class ArmonizacionTests: XCTestCase {
             }
             guard !saltos.contains(where: alterado) else { continue }
             probadas += 1
-            guard let coral = tonalidad.armonizarACuatroVoces(melodia) else { continue }
+            guard let armonizada = tonalidad.armonizarACuatroVoces(melodia) else { continue }
             realizadas += 1
-            XCTAssertEqual(coral.voces.voz(3), melodia)
-            XCTAssertEqual(coral.voces.problemas, [], "\(melodia)")
+            XCTAssertEqual(armonizada.coral.voz(3), melodia)
+            XCTAssertEqual(armonizada.coral.problemas, [], "\(melodia)")
         }
         XCTAssertGreaterThanOrEqual(realizadas, 18)
     }

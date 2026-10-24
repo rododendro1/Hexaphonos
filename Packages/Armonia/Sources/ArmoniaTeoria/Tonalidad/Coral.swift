@@ -1,14 +1,17 @@
 import ArmoniaNucleo
 // Conducción de voces: las reglas de la armonía a cuatro voces sobre una sucesión de acordes.
 
-// MARK: - ProblemaDeConduccion
+// MARK: - FaltaDeConduccion
+
+@available(*, deprecated, renamed: "FaltaDeConduccion")
+public typealias ProblemaDeConduccion = FaltaDeConduccion
 
 /// Una falta de conducción de voces: qué regla se rompe, dónde y entre qué voces.
 ///
 /// Las voces se numeran de grave a agudo desde 0; a cuatro voces son bajo, tenor, contralto y
 /// soprano. `acorde` es el índice del acorde donde está la falta o, si es un movimiento, del
 /// acorde de partida (el movimiento va de `acorde` a `acorde + 1`).
-public struct ProblemaDeConduccion: Hashable, Sendable, CustomStringConvertible {
+public struct FaltaDeConduccion: Hashable, Sendable, CustomStringConvertible {
     public enum Tipo: Hashable, Sendable, CaseIterable {
         /// Dos voces a distancia de quinta justa que se mueven a otra quinta justa.
         case quintasParalelas
@@ -38,8 +41,8 @@ public struct ProblemaDeConduccion: Hashable, Sendable, CustomStringConvertible 
     /// "Quintas paralelas entre bajo y soprano (acordes 1 → 2)". Los acordes se cuentan desde 1.
     public var description: String { descripcion(en: .espanol) }
 
-    public func descripcion(en notacion: Nomenclatura) -> String {
-        let nombres = voces.map { ConduccionDeVoces.nombreDeVoz($0, de: numeroDeVoces, en: notacion) }
+    public func descripcion(en notacion: Notacion) -> String {
+        let nombres = voces.map { Coral.nombreDeVoz($0, de: numeroDeVoces, en: notacion) }
         let primera = nombres.first ?? ""
         let entre = Traduccion("entre " + nombres.joined(separator: " y "), "between " + nombres.joined(separator: " and "),
                                ca: "entre " + nombres.joined(separator: " i "), gl: "entre " + nombres.joined(separator: " e "),
@@ -68,10 +71,10 @@ public struct ProblemaDeConduccion: Hashable, Sendable, CustomStringConvertible 
     }
 }
 
-extension ProblemaDeConduccion.Tipo: Nombrable, CustomStringConvertible {
+extension FaltaDeConduccion.Tipo: Nombrable, CustomStringConvertible {
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .quintasParalelas:
             return Traduccion("Quintas paralelas", "Parallel fifths", ca: "Quintes paral·leles", gl: "Quintas paralelas",
@@ -115,17 +118,20 @@ extension ProblemaDeConduccion.Tipo: Nombrable, CustomStringConvertible {
     public var description: String { nombre }
 }
 
-// MARK: - ConduccionDeVoces
+// MARK: - Coral
+
+@available(*, deprecated, renamed: "Coral")
+public typealias ConduccionDeVoces = Coral
 
 /// Una sucesión de acordes escritos voz por voz, para comprobar su conducción.
 ///
-///     let c = try ConduccionDeVoces(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
+///     let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
 ///     c.problemas.map(\.tipo)   // [.quintasParalelas, .octavasParalelas]
 ///
 /// Cada acorde lleva sus alturas de grave a agudo, y todos tienen el mismo número de voces.
 /// A cuatro voces se comprueban también las tesituras: bajo Mi2–Do4, tenor Do3–Sol4,
 /// contralto Sol3–Re5 y soprano Do4–Sol5.
-public struct ConduccionDeVoces: Hashable, Sendable {
+public struct Coral: Hashable, Sendable {
     /// Los acordes, cada uno con sus alturas de la voz más grave a la más aguda.
     public let acordes: [[Altura]]
 
@@ -174,7 +180,7 @@ public struct ConduccionDeVoces: Hashable, Sendable {
         try cerrarAltura()
         acordes.removeAll { $0.isEmpty }
         guard !acordes.isEmpty else { throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .textoVacio) }
-        guard let conduccion = ConduccionDeVoces(acordes) else {
+        guard let conduccion = Coral(acordes) else {
             throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .vocesDistintas)
         }
         self = conduccion
@@ -186,23 +192,23 @@ public struct ConduccionDeVoces: Hashable, Sendable {
     public func voz(_ indice: Int) -> [Altura] { acordes.map { $0[indice] } }
 
     /// Todas las faltas, en orden de aparición.
-    public var problemas: [ProblemaDeConduccion] {
-        var problemas: [ProblemaDeConduccion] = []
+    public var problemas: [FaltaDeConduccion] {
+        var problemas: [FaltaDeConduccion] = []
         let n = numeroDeVoces
         for (i, acorde) in acordes.enumerated() {
-            ConduccionDeVoces.faltas(en: acorde) { tipo, voces in
-                problemas.append(ProblemaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
+            Coral.faltas(en: acorde) { tipo, voces in
+                problemas.append(FaltaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
             }
             guard i + 1 < acordes.count else { continue }
-            ConduccionDeVoces.faltas(de: acorde, a: acordes[i + 1]) { tipo, voces in
-                problemas.append(ProblemaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
+            Coral.faltas(de: acorde, a: acordes[i + 1]) { tipo, voces in
+                problemas.append(FaltaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
             }
         }
         return problemas
     }
 
     /// Las faltas dentro de un acorde: cruces, separación y tesituras (estas, solo a cuatro voces).
-    package static func faltas(en acorde: [Altura], _ anotar: (ProblemaDeConduccion.Tipo, [Int]) -> Void) {
+    package static func faltas(en acorde: [Altura], _ anotar: (FaltaDeConduccion.Tipo, [Int]) -> Void) {
         let n = acorde.count
         for v in 0..<(n - 1) where acorde[v].midi > acorde[v + 1].midi {
             anotar(.cruceDeVoces, [v, v + 1])
@@ -218,7 +224,7 @@ public struct ConduccionDeVoces: Hashable, Sendable {
     }
 
     /// Las faltas al pasar de un acorde al siguiente: saltos, superposiciones, paralelas y directas.
-    package static func faltas(de acorde: [Altura], a siguiente: [Altura], _ anotar: (ProblemaDeConduccion.Tipo, [Int]) -> Void) {
+    package static func faltas(de acorde: [Altura], a siguiente: [Altura], _ anotar: (FaltaDeConduccion.Tipo, [Int]) -> Void) {
         let n = acorde.count
         let soprano = n - 1
 
@@ -283,7 +289,7 @@ public struct ConduccionDeVoces: Hashable, Sendable {
         }
     }
 
-    package static func nombreDeVoz(_ voz: Int, de total: Int, en notacion: Nomenclatura) -> String {
+    package static func nombreDeVoz(_ voz: Int, de total: Int, en notacion: Notacion) -> String {
         if total == 4 {
             return [Traduccion("bajo", "bass", ca: "baix", gl: "baixo", eu: "baxua",
                                pt: "baixo", fr: "basse", it: "basso"),

@@ -168,12 +168,12 @@ final class ErroresTests: XCTestCase {
         for motivo in Self.motivos {
             let error = ErrorDeLectura(texto: "x", posicion: 0, motivo: motivo)
             let espanol = error.explicacion
-            for notacion in [Nomenclatura.catalan, .gallego, .euskera, .portugues, .frances, .italiano] {
+            for notacion in [Notacion.catalan, .gallego, .euskera, .portugues, .frances, .italiano] {
                 let texto = error.explicacion(en: notacion)
                 XCTAssertFalse(texto.isEmpty, "\(motivo) \(notacion)")
                 XCTAssertEqual(Set(citas(texto)), Set(citas(espanol)), "\(motivo) \(notacion): \(texto)")
             }
-            for notacion in [Nomenclatura.euskera, .frances, .italiano] {
+            for notacion in [Notacion.euskera, .frances, .italiano] {
                 XCTAssertNotEqual(error.explicacion(en: notacion), espanol, "\(motivo) \(notacion)")
             }
         }
@@ -268,11 +268,11 @@ final class NotacionInternacionalTests: XCTestCase {
     }
 
     func testNotacionUnica() {
-        XCTAssertEqual(Nomenclatura(idioma: .espanol, ascii: true), .espanolASCII)
-        XCTAssertEqual(Nomenclatura(idioma: .ingles, ascii: false), .inglesUnicode)
-        XCTAssertEqual(Nomenclatura.ingles.idioma, .ingles)
-        XCTAssertTrue(Nomenclatura.ingles.usaASCII)
-        XCTAssertFalse(Nomenclatura.espanol.usaASCII)
+        XCTAssertEqual(Notacion(idioma: .espanol, ascii: true), .espanolASCII)
+        XCTAssertEqual(Notacion(idioma: .ingles, ascii: false), .inglesUnicode)
+        XCTAssertEqual(Notacion.ingles.idioma, .ingles)
+        XCTAssertTrue(Notacion.ingles.usaASCII)
+        XCTAssertFalse(Notacion.espanol.usaASCII)
 
         let escala: Escala = "Fa# dórico"
         XCTAssertEqual(escala.nombre(en: .espanol), "Fa♯ dórico")
@@ -372,7 +372,7 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Tonalidad("re bemol maior"), Tonalidad("Reb mayor"))
         XCTAssertEqual(Tonalidad("fa diesa minorra"), Tonalidad("Fa# menor"))
         // Las abreviaturas de los intervalos, como en español; los nombres de los catálogos, traducidos.
-        XCTAssertEqual(Nomenclatura.catalan.vocabulario, .espanol)
+        XCTAssertEqual(Notacion.catalan.vocabulario, .espanol)
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: .euskera), "re doriarra")
         XCTAssertEqual(Escala("Reb dórico").nombre(en: .catalan), "re bemoll dòric")
         XCTAssertEqual(Escala("re bemoll dórico"), Escala("Reb dórico"))
@@ -391,10 +391,10 @@ final class OtrasNotacionesTests: XCTestCase {
 
     /// Los textos del motor que no son nombres de nota, en catalán, gallego y euskera.
     func testTextosEnCatalanGallegoEuskera() throws {
-        XCTAssertEqual(Nomenclatura.catalan.idiomaDeLosTextos, .catalan)
-        XCTAssertEqual(Nomenclatura.aleman.idiomaDeLosTextos, .ingles)
-        XCTAssertEqual(Nomenclatura.portugues.idiomaDeLosTextos, .portugues)
-        XCTAssertEqual(Nomenclatura.espanolASCII.idiomaDeLosTextos, .espanol)
+        XCTAssertEqual(Notacion.catalan.idiomaDeLosTextos, .catalan)
+        XCTAssertEqual(Notacion.aleman.idiomaDeLosTextos, .ingles)
+        XCTAssertEqual(Notacion.portugues.idiomaDeLosTextos, .portugues)
+        XCTAssertEqual(Notacion.espanolASCII.idiomaDeLosTextos, .espanol)
 
         let sexta = try Intervalo(leyendo: "-6m")
         XCTAssertEqual(sexta.nombre, "6ª menor descendente")
@@ -419,7 +419,7 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Figura.blanca.nombre(en: .gallego), "branca")
         XCTAssertEqual(CorrespondenciaDeColores.circuloDeQuintas.nombre(en: .euskera), "bosgarrenen zirkulua")
         XCTAssertEqual(Cadencia.Tipo.semicadencia.nombre(en: .euskera), "erdi-kadentzia")
-        XCTAssertEqual(ProblemaDeConduccion.Tipo.quintasParalelas.nombre(en: .catalan), "Quintes paral·leles")
+        XCTAssertEqual(FaltaDeConduccion.Tipo.quintasParalelas.nombre(en: .catalan), "Quintes paral·leles")
         XCTAssertEqual(Tonalidad(.do).analizar(["Do", "Fa", "Sol7", "Do"]).nombre(en: .euskera), "I–IV–V7–I do maiorrean")
         XCTAssertEqual(Tonalidad(.la, .menor).analizar(["Lam", "Mi7", "Lam"]).nombre(en: .catalan),
                        "i–V7–i en la menor")
@@ -430,7 +430,7 @@ final class OtrasNotacionesTests: XCTestCase {
         // Todas las traducciones tienen los ocho textos; el alemán, el occitano, el ruso y el griego
         // toman el inglés.
         let t = Traduccion("es", "en", ca: "ca", gl: "gl", eu: "eu", pt: "pt", fr: "fr", it: "it")
-        XCTAssertEqual(Nomenclatura.allCases.map(t.en),
+        XCTAssertEqual(Notacion.allCases.map(t.en),
                        ["es", "es", "en", "en", "en", "fr", "it", "ca", "gl", "eu", "pt", "en", "en", "en"])
     }
 
@@ -461,17 +461,17 @@ final class OtrasNotacionesTests: XCTestCase {
         for tipo in TipoDeEscala.todos {
             XCTAssertNotNil(TipoDeEscala.nombrePeninsularPorTipo[tipo], tipo.nombre)
             let escala = Escala(.re, tipo)
-            for notacion in [Nomenclatura.catalan, .gallego, .euskera] {
+            for notacion in [Notacion.catalan, .gallego, .euskera] {
                 let nombre = escala.nombre(en: notacion)
                 XCTAssertEqual(Escala(texto: nombre), escala, "\(nombre) (\(tipo.nombre))")
             }
         }
 
-        XCTAssertEqual(Instrumento.clarineteEnSib.nombre(en: .catalan), "clarinet en si♭")
-        XCTAssertEqual(Instrumento.violin.nombre(en: .euskera), "biolina")
-        XCTAssertEqual(Instrumento.saxofonAlto.nombre(en: .gallego), "saxofón alto")
-        for instrumento in Instrumento.todos {
-            XCTAssertNotNil(Instrumento.nombresPeninsulares[instrumento.nombre], instrumento.nombre)
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnSib.nombre(en: .catalan), "clarinet en si♭")
+        XCTAssertEqual(InstrumentoDePartitura.violin.nombre(en: .euskera), "biolina")
+        XCTAssertEqual(InstrumentoDePartitura.saxofonAlto.nombre(en: .gallego), "saxofón alto")
+        for instrumento in InstrumentoDePartitura.todos {
+            XCTAssertNotNil(InstrumentoDePartitura.nombresPeninsulares[instrumento.nombre], instrumento.nombre)
         }
 
         XCTAssertEqual(CicloNeorriemanniano.hexatonico.nombre(en: .catalan), "cicle hexatònic")
@@ -481,8 +481,8 @@ final class OtrasNotacionesTests: XCTestCase {
 
     /// Los textos del motor y los catálogos en portugués, francés e italiano.
     func testTextosEnPortuguesFrancesItaliano() throws {
-        XCTAssertEqual(Nomenclatura.frances.idiomaDeLosTextos, .frances)
-        XCTAssertEqual(Nomenclatura.italiano.idiomaDeLosTextos, .italiano)
+        XCTAssertEqual(Notacion.frances.idiomaDeLosTextos, .frances)
+        XCTAssertEqual(Notacion.italiano.idiomaDeLosTextos, .italiano)
 
         let sexta = try Intervalo(leyendo: "-6m")
         XCTAssertEqual(sexta.nombre(en: .portugues), "6ª menor descendente")
@@ -530,11 +530,11 @@ final class OtrasNotacionesTests: XCTestCase {
             XCTAssertEqual(Escala(texto: nombre), escala, "\(nombre) (\(tipo.nombre))")
         }
 
-        XCTAssertEqual(Instrumento.clarineteEnSib.nombre(en: .frances), "clarinette en si♭")
-        XCTAssertEqual(Instrumento.violin.nombre(en: .portugues), "violino")
-        XCTAssertEqual(Instrumento.saxofonAlto.nombre(en: .italiano), "sassofono contralto")
-        for instrumento in Instrumento.todos {
-            XCTAssertNotNil(Instrumento.nombresRomanicos[instrumento.nombre], instrumento.nombre)
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnSib.nombre(en: .frances), "clarinette en si♭")
+        XCTAssertEqual(InstrumentoDePartitura.violin.nombre(en: .portugues), "violino")
+        XCTAssertEqual(InstrumentoDePartitura.saxofonAlto.nombre(en: .italiano), "sassofono contralto")
+        for instrumento in InstrumentoDePartitura.todos {
+            XCTAssertNotNil(InstrumentoDePartitura.nombresRomanicos[instrumento.nombre], instrumento.nombre)
         }
         XCTAssertEqual(CicloNeorriemanniano.hexatonico.nombre(en: .italiano), "ciclo esatonico")
     }
@@ -568,9 +568,9 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Alteracion(5).nombre(en: .portugues), "5 sustenidos")
         XCTAssertEqual(Alteracion("sustenido"), .sostenido)
         XCTAssertEqual(Alteracion("duplo bemol"), .dobleBemol)
-        XCTAssertEqual(Nomenclatura.portugues.vocabulario, .espanol)
-        XCTAssertEqual(Nomenclatura(idioma: .portugues, ascii: true), .portugues)
-        XCTAssertEqual(EstiloDeCifrado(notacion: .portugues).nomenclatura, .portugues)
+        XCTAssertEqual(Notacion.portugues.vocabulario, .espanol)
+        XCTAssertEqual(Notacion(idioma: .portugues, ascii: true), .portugues)
+        XCTAssertEqual(EstiloDeCifrado(notacion: .portugues).notacion, .portugues)
     }
 
     /// Los nombres de nota en occitano, ruso y griego: se escriben y se leen, también sin indicar
@@ -587,7 +587,7 @@ final class OtrasNotacionesTests: XCTestCase {
         ]
         for (espanol, occitano, ruso, griego) in casos {
             let nota = Nota(texto: espanol)!
-            for (notacion, nombre) in [(Nomenclatura.occitano, occitano), (.ruso, ruso), (.griego, griego)] {
+            for (notacion, nombre) in [(Notacion.occitano, occitano), (.ruso, ruso), (.griego, griego)] {
                 XCTAssertEqual(nota.nombre(en: notacion), nombre)
                 XCTAssertEqual(try Nota(leyendo: nombre, en: notacion), nota, nombre)
                 XCTAssertEqual(Nota(texto: nombre), nota, nombre)
@@ -620,7 +620,7 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Tonalidad("σι ύφεση ελάσσονα"), Tonalidad("Sib menor"))
         XCTAssertEqual(Tonalidad("fa dièsi menor"), Tonalidad("Fa# menor"))
         // Los demás textos, en inglés.
-        XCTAssertEqual(Nomenclatura.ruso.idiomaDeLosTextos, .ingles)
+        XCTAssertEqual(Notacion.ruso.idiomaDeLosTextos, .ingles)
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .griego), "major third")
         XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .ruso), "соль dominant seventh, first inversion")
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: .occitano), "re dorian")
@@ -628,18 +628,18 @@ final class OtrasNotacionesTests: XCTestCase {
 
     /// Las notas en una notación y los textos en otro idioma.
     func testNotasYTextosPorSeparado() {
-        let rusoEnEspanol = Nomenclatura.ruso.conTextos(en: .espanol)
-        XCTAssertEqual(rusoEnEspanol, Nomenclatura(escritura: .ruso, textos: .espanol))
+        let rusoEnEspanol = Notacion.ruso.conTextos(en: .espanol)
+        XCTAssertEqual(rusoEnEspanol, Notacion(escritura: .ruso, textos: .espanol))
         XCTAssertEqual(rusoEnEspanol.idioma, .ruso)
         XCTAssertEqual(rusoEnEspanol.idiomaDeLosTextos, .espanol)
         XCTAssertEqual(rusoEnEspanol.notas, .ruso)
         XCTAssertEqual(rusoEnEspanol.escritura, .ruso)
         XCTAssertEqual(rusoEnEspanol.textos, .espanol)
         XCTAssertTrue(rusoEnEspanol.esCombinada)
-        XCTAssertFalse(Nomenclatura.ruso.esCombinada)
-        XCTAssertEqual(Nomenclatura.ruso.textos, .ingles)
-        XCTAssertEqual(Nomenclatura(escritura: .aleman, textos: .aleman), .aleman)
-        XCTAssertEqual(Nomenclatura.allCases.map(\.escritura), EscrituraDeNotas.allCases)
+        XCTAssertFalse(Notacion.ruso.esCombinada)
+        XCTAssertEqual(Notacion.ruso.textos, .ingles)
+        XCTAssertEqual(Notacion(escritura: .aleman, textos: .aleman), .aleman)
+        XCTAssertEqual(Notacion.allCases.map(\.escritura), EscrituraDeNotas.allCases)
         XCTAssertEqual(Acorde("Sol7/Si").nombre(en: rusoEnEspanol), "соль séptima de dominante, primera inversión")
         XCTAssertEqual(Acorde("Sol7/La").nombre(en: rusoEnEspanol), "соль séptima de dominante, con bajo en ля")
         XCTAssertEqual(Acorde("Fa#m7").cifrado(en: rusoEnEspanol), "Фа♯m7")
@@ -649,26 +649,26 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(try Nota(leyendo: "фа-диез", en: rusoEnEspanol), Nota("Fa#"))
         XCTAssertEqual(try Altura(leyendo: "фа-диез3", en: rusoEnEspanol), Altura("Fa#3"))
         // Letras inglesas con textos en euskera; sílabas con textos en inglés.
-        let inglesEnEuskera = Nomenclatura.ingles.conTextos(en: .euskera)
+        let inglesEnEuskera = Notacion.ingles.conTextos(en: .euskera)
         XCTAssertEqual(Acorde("Sol7").nombre(en: inglesEnEuskera), "G dominanteko zazpigarrena, oinarrizko egoera")
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: inglesEnEuskera), "D doriarra")
-        XCTAssertEqual(Acorde("Sol7").nombre(en: Nomenclatura.espanol.conTextos(en: .ingles)),
+        XCTAssertEqual(Acorde("Sol7").nombre(en: Notacion.espanol.conTextos(en: .ingles)),
                        "Sol dominant seventh, root position")
-        XCTAssertEqual(Tonalidad("Fa# mayor").nombre(en: Nomenclatura.aleman.conTextos(en: .frances)), "Fis-Dur")
-        XCTAssertEqual(Acorde("Sib7").cifrado(en: Nomenclatura.aleman.conTextos(en: .frances)), "B7")
+        XCTAssertEqual(Tonalidad("Fa# mayor").nombre(en: Notacion.aleman.conTextos(en: .frances)), "Fis-Dur")
+        XCTAssertEqual(Acorde("Sib7").cifrado(en: Notacion.aleman.conTextos(en: .frances)), "B7")
         // Si el idioma ya es el de los textos, la notación queda simple; no se anidan.
-        XCTAssertEqual(Nomenclatura.catalan.conTextos(en: .catalan), .catalan)
-        XCTAssertEqual(Nomenclatura.aleman.conTextos(en: .aleman), .aleman)
-        XCTAssertEqual(Nomenclatura.griego.conTextos(en: .ingles), .griego)
-        XCTAssertEqual(rusoEnEspanol.conTextos(en: .frances), Nomenclatura(escritura: .ruso, textos: .frances))
+        XCTAssertEqual(Notacion.catalan.conTextos(en: .catalan), .catalan)
+        XCTAssertEqual(Notacion.aleman.conTextos(en: .aleman), .aleman)
+        XCTAssertEqual(Notacion.griego.conTextos(en: .ingles), .griego)
+        XCTAssertEqual(rusoEnEspanol.conTextos(en: .frances), Notacion(escritura: .ruso, textos: .frances))
         XCTAssertEqual(rusoEnEspanol.conTextos(en: .ingles), .ruso)
-        XCTAssertFalse(Nomenclatura.allCases.contains(rusoEnEspanol))
+        XCTAssertFalse(Notacion.allCases.contains(rusoEnEspanol))
         // Los mensajes de error.
         do {
             _ = try Acorde(leyendo: "Do7(b3)")
             XCTFail("Do7(b3) no es un cifrado válido")
         } catch let error as ErrorDeLectura {
-            XCTAssertEqual(error.descripcion(en: Nomenclatura.ingles.conTextos(en: .espanol)), error.description)
+            XCTAssertEqual(error.descripcion(en: Notacion.ingles.conTextos(en: .espanol)), error.description)
         } catch {
             XCTFail("\(error)")
         }
@@ -692,7 +692,7 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Escala(texto: "ντο altered"), Escala(.do, .alterada))
         // Todos los nombres franceses e italianos del catálogo se leen.
         for tipo in TipoDeEscala.todos {
-            for notacion in [Nomenclatura.frances, .italiano] {
+            for notacion in [Notacion.frances, .italiano] {
                 let escala = Escala(Nota("Fa#"), tipo)
                 XCTAssertEqual(Escala(texto: escala.nombre(en: notacion)), escala, escala.nombre(en: notacion))
             }
@@ -706,15 +706,15 @@ final class OtrasNotacionesTests: XCTestCase {
     }
 
     func testVocabularioEIdas() {
-        XCTAssertEqual(Nomenclatura.aleman.idioma, .aleman)
-        XCTAssertEqual(Nomenclatura.frances.vocabulario, .ingles)
-        XCTAssertEqual(Nomenclatura.espanolASCII.vocabulario, .espanol)
-        XCTAssertEqual(Nomenclatura(idioma: .italiano, ascii: false), .italiano)
+        XCTAssertEqual(Notacion.aleman.idioma, .aleman)
+        XCTAssertEqual(Notacion.frances.vocabulario, .ingles)
+        XCTAssertEqual(Notacion.espanolASCII.vocabulario, .espanol)
+        XCTAssertEqual(Notacion(idioma: .italiano, ascii: false), .italiano)
         // En alemán, el resto del vocabulario sale en inglés.
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: .aleman), "D dorian")
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .aleman), "major third")
         // Todos los nombres de nota (hasta cuatro alteraciones) vuelven a leerse igual.
-        for notacion in [Nomenclatura.aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues] {
+        for notacion in [Notacion.aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues] {
             for quintas in -29...33 {
                 let nombre = Nota(pasosDeQuinta: quintas)
                 XCTAssertEqual(try Nota(leyendo: nombre.nombre(en: notacion), en: notacion), nombre,

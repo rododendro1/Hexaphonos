@@ -8,8 +8,8 @@ Lo que comparten varios tipos se declara una sola vez, en `Protocolos.swift`:
 
 | Protocolo | Requisito | Lo que aporta | Tipos |
 |---|---|---|---|
-| `RepresentableComoTexto` | `init(leyendo:)`, `texto(_:)` | `init?(texto:)`, literal de texto, `Codable`, `texto` | `Nota`, `Altura`, `Intervalo`, `TipoDeAcorde`, `Acorde`, `Escala` |
-| `Nombrable` | `nombre(en:)` | el mismo nombre en cualquier `Nomenclatura` | los anteriores y `NotaNatural`, `CalidadDeIntervalo`, `Consonancia`, `TipoDeEscala`, `NombreDeGrado`, `Clave`, `Instrumento`, `PapelEnAcorde`, `CalidadDeTriada` |
+| `RepresentableComoTexto` | `init(leyendo:)`, `texto(en:)` | `init?(texto:)`, literal de texto, `Codable`, `texto` | `Nota`, `Altura`, `Intervalo`, `TipoDeAcorde`, `Acorde`, `Escala` |
+| `Nombrable` | `nombre(en:)` | el mismo nombre en cualquier `Notacion` | los anteriores y `NotaNatural`, `CalidadDeIntervalo`, `Consonancia`, `TipoDeEscala`, `NombreDeGrado`, `Clave`, `InstrumentoDePartitura`, `PapelEnAcorde`, `CalidadDeTriada` |
 | `Transponible` | `transponer(_:)` | operadores `+` y `−`, `transponer(_:veces:)`, `secuencia(_:veces:)` | `Nota`, `Altura`, `Acorde`, `Escala`, `Melodia`, `ConjuntoDeClases` |
 | `ConClasesDeAltura` | `conjuntoDeClases` | `numeroDeForte`, `vectorIntervalico`, `esDeLaMismaClase(que:)` | `Acorde`, `Escala`, `Melodia`, `ConjuntoDeClases` |
 
@@ -19,7 +19,7 @@ subirQuinta(Acorde("Do7"))                  // Sol7
 subirQuinta(Escala(.do))                      // Sol mayor
 Nota.do.secuencia(.quintaJusta, veces: 3)          // Do, Sol, Re, La
 Acorde("Do").esDeLaMismaClase(que: Acorde("Lam"))      // true (3-11)
-Acorde("Sib7(b9)/Re").texto(.ingles)             // "Bb7(b9)/D"
+Acorde("Sib7(b9)/Re").texto(en: .ingles)             // "Bb7(b9)/D"
 Escala("Re dórico").nombre(en: .ingles)                 // "D dorian"
 ```
 

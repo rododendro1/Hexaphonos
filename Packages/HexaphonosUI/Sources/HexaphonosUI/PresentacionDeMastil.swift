@@ -34,7 +34,7 @@ enum PresentacionDeMastil {
     }
 
     /// Una descripción corta para VoiceOver, en el idioma de los textos.
-    static func descripcion(marcas: [Posicion], apagadas: Set<Int>, en notacion: Nomenclatura = .espanol) -> String {
+    static func descripcion(marcas: [Posicion], apagadas: Set<Int>, en notacion: Notacion = .espanol) -> String {
         var partes: [String] = []
         if marcas.count > 12 {
             partes.append(notacion.texto(.marcas(marcas.count)))
@@ -49,7 +49,7 @@ enum PresentacionDeMastil {
     }
 
     /// Lo que es el diagrama, para VoiceOver: «Mástil de guitarra, trastes 0 a 5».
-    static func etiqueta(de mastil: Mastil, rango: ClosedRange<Int>, en notacion: Nomenclatura = .espanol) -> String {
+    static func etiqueta(de mastil: Mastil, rango: ClosedRange<Int>, en notacion: Notacion = .espanol) -> String {
         notacion.texto(.mastilDe(mastil.encordado.nombre(en: notacion), desde: rango.lowerBound, hasta: rango.upperBound))
     }
 }

@@ -41,10 +41,13 @@ public struct MovimientoDeVoz: Hashable, Sendable, CustomStringConvertible {
         semitonos = d > 6 ? d - 12 : d
     }
 
-    /// "Fa→Mi"; con otra notación, `texto(_:)`.
-    public var description: String { texto(.espanol) }
+    /// "Fa→Mi"; con otra notación, `texto(en:)`.
+    public var description: String { texto(en: .espanol) }
 
-    public func texto(_ notacion: Nomenclatura) -> String {
+    @available(*, deprecated, renamed: "texto(en:)")
+    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
+
+    public func texto(en notacion: Notacion) -> String {
         desde.nombreCompacto(en: notacion) + "→" + hasta.nombreCompacto(en: notacion)
     }
 }
@@ -55,10 +58,13 @@ public struct PasoParsimonioso: Hashable, Sendable, CustomStringConvertible {
     public let movimientos: [MovimientoDeVoz]
 
     /// "Sol♯o7 (Sol→Sol♯)".
-    public var description: String { texto(.espanol) }
+    public var description: String { texto(en: .espanol) }
 
-    public func texto(_ notacion: Nomenclatura) -> String {
-        acorde.cifrado(en: notacion) + " (" + movimientos.map { $0.texto(notacion) }.joined(separator: ", ") + ")"
+    @available(*, deprecated, renamed: "texto(en:)")
+    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
+
+    public func texto(en notacion: Notacion) -> String {
+        acorde.cifrado(en: notacion) + " (" + movimientos.map { $0.texto(en: notacion) }.joined(separator: ", ") + ")"
     }
 }
 
@@ -197,11 +203,14 @@ public struct ConduccionMinima: Hashable, Sendable, CustomStringConvertible {
     public var vocesQueSeMueven: [MovimientoDeVoz] { movimientos.filter { $0.semitonos != 0 } }
 
     /// "Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos".
-    public var description: String { texto(.espanol) }
+    public var description: String { texto(en: .espanol) }
 
-    public func texto(_ notacion: Nomenclatura) -> String {
+    @available(*, deprecated, renamed: "texto(en:)")
+    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
+
+    public func texto(en notacion: Notacion) -> String {
         let voces = movimientos.map { m -> String in
-            m.semitonos == 0 ? m.texto(notacion) : m.texto(notacion) + " (" + (m.semitonos > 0 ? "+" : "−") + "\(abs(m.semitonos)))"
+            m.semitonos == 0 ? m.texto(en: notacion) : m.texto(en: notacion) + " (" + (m.semitonos > 0 ? "+" : "−") + "\(abs(m.semitonos)))"
         }
         let n = total
         let semitonos = Traduccion(n == 1 ? "1 semitono" : "\(n) semitonos", n == 1 ? "1 semitone" : "\(n) semitones",

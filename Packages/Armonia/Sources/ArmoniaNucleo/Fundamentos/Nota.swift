@@ -102,7 +102,7 @@ public struct Alteracion: Hashable, Sendable, Comparable, ExpressibleByIntegerLi
         var tabla: [String: Alteracion] = ["": 0, "becuadro": 0, "natural": 0]
         for n in -4...4 where n != 0 {
             let a = Alteracion(n)
-            for notacion in [Nomenclatura.espanol, .ingles, .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues,
+            for notacion in [Notacion.espanol, .ingles, .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues,
                               .occitano, .ruso, .griego] {
                 tabla[a.nombre(en: notacion).claveDeBusqueda] = a
             }
@@ -124,7 +124,7 @@ extension Alteracion: CustomStringConvertible {
 
 extension Alteracion: RepresentableComoTexto, Nombrable {
     /// Signos tras la nota ("♯", "bb"); el natural se escribe "♮" ("n" en ASCII).
-    public func texto(_ notacion: Nomenclatura) -> String {
+    public func texto(en notacion: Notacion) -> String {
         if semitonos == 0 { return notacion.usaASCII ? "n" : "♮" }
         return notacion.usaASCII ? simboloASCII : simbolo
     }
@@ -177,7 +177,7 @@ public struct Nota: Hashable, Sendable {
     /// Nombre en catalán, gallego, euskera, portugués, occitano, ruso o griego, si lo es.
     package static func leerEnLenguasPeninsulares(_ texto: String) -> Nota? {
         let clave = texto.claveDeBusqueda
-        for notacion in Nomenclatura.deLecturaGenerica {
+        for notacion in Notacion.deLecturaGenerica {
             if let nombre = porNombre[notacion]?[clave] { return nombre }
         }
         return nil
@@ -196,7 +196,7 @@ public struct Nota: Hashable, Sendable {
     /// Lee un nombre escrito en una notación concreta: `Nota(leyendo: "Fis", en: .aleman)`,
     /// `Nota(leyendo: "B", en: .aleman)` → Si♭, `Nota(leyendo: "ré bémol", en: .frances)`.
     /// No distingue mayúsculas ni tildes. En español e inglés, igual que `init(leyendo:)`.
-    public init(leyendo texto: String, en notacion: Nomenclatura) throws {
+    public init(leyendo texto: String, en notacion: Notacion) throws {
         let notacion = notacion.notas
         switch notacion.escritura {
         case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
@@ -212,9 +212,9 @@ public struct Nota: Hashable, Sendable {
     }
 
     /// Nombres de cada notación (hasta cuatro alteraciones) → nombre de nota.
-    package static let porNombre: [Nomenclatura: [String: Nota]] = {
-        var tablas: [Nomenclatura: [String: Nota]] = [:]
-        for notacion in [Nomenclatura.aleman, .frances, .italiano] + Nomenclatura.deLecturaGenerica {
+    package static let porNombre: [Notacion: [String: Nota]] = {
+        var tablas: [Notacion: [String: Nota]] = [:]
+        for notacion in [Notacion.aleman, .frances, .italiano] + Notacion.deLecturaGenerica {
             var tabla: [String: Nota] = [:]
             for quintas in -29...33 {
                 let nombre = Nota(pasosDeQuinta: quintas)
@@ -267,12 +267,12 @@ extension Nota: CustomStringConvertible {
 }
 
 extension Nota: RepresentableComoTexto, Nombrable, Transponible {
-    public func texto(_ notacion: Nomenclatura) -> String { nombre(en: notacion) }
+    public func texto(en notacion: Notacion) -> String { nombre(en: notacion) }
 }
 
-extension Nomenclatura {
+extension Notacion {
     /// Notaciones que también leen `Nota(leyendo:)` y `Altura(leyendo:)` sin indicar el idioma,
     /// porque sus nombres no se confunden con los españoles ni con los ingleses.
-    package static let deLecturaGenerica: [Nomenclatura] = [.catalan, .gallego, .euskera, .portugues,
+    package static let deLecturaGenerica: [Notacion] = [.catalan, .gallego, .euskera, .portugues,
                                                            .occitano, .ruso, .griego]
 }

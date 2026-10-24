@@ -89,8 +89,9 @@ cambiar el significado. Todos los estilos se vuelven a leer igual.
 | `.jazz` | Bb7(b9)/D | C#ø7 | EbΔ7 | F+ |
 | `.palabras` | Si♭7(♭9)/Re | Do♯min7(♭5) | Mi♭maj7 | Faaug |
 
-Cada opción (`nomenclatura`, `alteracionesASCII`, `menor`, `disminuido`, `aumentado`,
-`septimaMayor`, `semidisminuido`) se puede combinar libremente.
+Cada opción (`notacion`, `alteracionesASCII`, `menor`, `disminuido`, `aumentado`,
+`septimaMayor`, `semidisminuido`) se puede combinar libremente. Si no se da `alteracionesASCII`, las
+tensiones llevan b y # cuando las notas de la notación los llevan.
 
 ## Estructura del acorde
 

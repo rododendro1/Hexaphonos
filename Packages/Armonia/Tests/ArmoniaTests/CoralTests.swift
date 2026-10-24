@@ -5,11 +5,11 @@ import XCTest
 @testable import ArmoniaRepresentaciones
 @testable import ArmoniaPartitura
 
-final class ConduccionDeVocesTests: XCTestCase {
+final class CoralTests: XCTestCase {
     private func problemas(_ texto: String, file: StaticString = #filePath, line: UInt = #line)
-        -> [ProblemaDeConduccion.Tipo] {
+        -> [FaltaDeConduccion.Tipo] {
         do {
-            return try ConduccionDeVoces(leyendo: texto).problemas.map(\.tipo)
+            return try Coral(leyendo: texto).problemas.map(\.tipo)
         } catch {
             XCTFail("«\(texto)»: \(error)", file: file, line: line)
             return []
@@ -17,7 +17,7 @@ final class ConduccionDeVocesTests: XCTestCase {
     }
 
     func testCadenciaCorrecta() throws {
-        let c = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+        let c = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
         XCTAssertEqual(c.problemas, [])
         XCTAssertTrue(c.esCorrecta)
         XCTAssertEqual(c.numeroDeVoces, 4)
@@ -25,7 +25,7 @@ final class ConduccionDeVocesTests: XCTestCase {
     }
 
     func testParalelas() throws {
-        let c = try ConduccionDeVoces(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
+        let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
         XCTAssertEqual(c.problemas.map(\.tipo), [.quintasParalelas, .octavasParalelas])
         XCTAssertEqual(c.problemas.map(\.voces), [[0, 1], [0, 3]])
         XCTAssertEqual(c.problemas.map(\.acorde), [0, 0])
@@ -61,7 +61,7 @@ final class ConduccionDeVocesTests: XCTestCase {
         XCTAssertEqual(problemas("Do3 Do4 Mi4 Sol5"), [.separacionExcesiva])
         // Entre bajo y tenor sí puede haber más de una octava.
         XCTAssertEqual(problemas("Do2 Mi3 Sol3 Do4"), [.fueraDeTesitura])
-        let c = try ConduccionDeVoces(leyendo: "Do2 Mi3 Sol3 Do4")
+        let c = try Coral(leyendo: "Do2 Mi3 Sol3 Do4")
         XCTAssertEqual(c.problemas[0].voces, [0])
         XCTAssertEqual(c.problemas[0].description, "Fuera de tesitura en bajo (acorde 1)")
         // Con otro número de voces no hay tesituras.
@@ -75,31 +75,31 @@ final class ConduccionDeVocesTests: XCTestCase {
         // Una octava justa, o un semitono cromático, sí son melódicos.
         XCTAssertEqual(problemas("Do3 Do4 | Do3 Do5"), [])
         XCTAssertEqual(problemas("Do3 Do4 | Do3 Do#4"), [])
-        let c = try ConduccionDeVoces(leyendo: "Fa3 Do4 La4 Fa5 | Sol#3 Si3 Mi4 Si4")
+        let c = try Coral(leyendo: "Fa3 Do4 La4 Fa5 | Sol#3 Si3 Mi4 Si4")
         XCTAssertEqual(c.problemas[0].descripcion(en: .ingles), "Unmelodic leap in the bass (chords 1 → 2)")
     }
 
     func testConstruccion() throws {
         let acordes: [[Altura]] = [["Do3", "Mi4", "Sol4", "Do5"], ["Sol2", "Re4", "Sol4", "Si4"]]
         let porVoces: [[Altura]] = [["Do3", "Sol2"], ["Mi4", "Re4"], ["Sol4", "Sol4"], ["Do5", "Si4"]]
-        XCTAssertEqual(ConduccionDeVoces(acordes), ConduccionDeVoces(voces: porVoces))
-        XCTAssertEqual(try ConduccionDeVoces(leyendo: "C3 E4 G4 C5, G2 D4 G4 B4"), ConduccionDeVoces(acordes))
-        XCTAssertNil(ConduccionDeVoces([]))
-        XCTAssertNil(ConduccionDeVoces([["Do4"]]))
-        XCTAssertNil(ConduccionDeVoces([["Do4", "Mi4"], ["Do4"]]))
-        XCTAssertNil(ConduccionDeVoces(voces: [["Do4", "Re4"], ["Mi4"]]))
+        XCTAssertEqual(Coral(acordes), Coral(voces: porVoces))
+        XCTAssertEqual(try Coral(leyendo: "C3 E4 G4 C5, G2 D4 G4 B4"), Coral(acordes))
+        XCTAssertNil(Coral([]))
+        XCTAssertNil(Coral([["Do4"]]))
+        XCTAssertNil(Coral([["Do4", "Mi4"], ["Do4"]]))
+        XCTAssertNil(Coral(voces: [["Do4", "Re4"], ["Mi4"]]))
     }
 
     func testErrores() {
-        XCTAssertThrowsError(try ConduccionDeVoces(leyendo: "Do3 Mi4 | Sol2 H4")) { error in
+        XCTAssertThrowsError(try Coral(leyendo: "Do3 Mi4 | Sol2 H4")) { error in
             let error = error as? ErrorDeLectura
             XCTAssertEqual(error?.posicion, 15)
             XCTAssertEqual(error?.texto, "Do3 Mi4 | Sol2 H4")
         }
-        XCTAssertThrowsError(try ConduccionDeVoces(leyendo: "Do3 Mi4 | Sol2")) { error in
+        XCTAssertThrowsError(try Coral(leyendo: "Do3 Mi4 | Sol2")) { error in
             guard case .vocesDistintas? = (error as? ErrorDeLectura)?.motivo else { return XCTFail("\(error)") }
         }
-        XCTAssertThrowsError(try ConduccionDeVoces(leyendo: " | ")) { error in
+        XCTAssertThrowsError(try Coral(leyendo: " | ")) { error in
             guard case .textoVacio? = (error as? ErrorDeLectura)?.motivo else { return XCTFail("\(error)") }
         }
     }

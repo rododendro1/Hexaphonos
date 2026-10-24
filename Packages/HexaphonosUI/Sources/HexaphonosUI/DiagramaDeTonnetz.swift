@@ -8,10 +8,10 @@ import Armonia
 ///     DiagramaDeTonnetz(Tonnetz(Escala(.re, .dorico)), notacion: .ingles)
 public struct DiagramaDeTonnetz: View {
     public let tonnetz: Tonnetz
-    public let notacion: Nomenclatura
+    public let notacion: Notacion
     public let leyenda: Bool
 
-    public init(_ tonnetz: Tonnetz, notacion: Nomenclatura = .espanol, leyenda: Bool = true) {
+    public init(_ tonnetz: Tonnetz, notacion: Notacion = .espanol, leyenda: Bool = true) {
         self.tonnetz = tonnetz
         self.notacion = notacion
         self.leyenda = leyenda

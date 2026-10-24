@@ -21,10 +21,10 @@ public struct DiagramaDeMastil: View {
     public let apagadas: Set<Int>
     /// Cómo se escribe cada clase de altura (0…11). Las que no estén se escriben como `Altura(midi:)`.
     public let ortografia: [Int: Nota]
-    public let notacion: Nomenclatura
+    public let notacion: Notacion
 
     public init(mastil: Mastil, marcas: [Posicion] = [], rango: ClosedRange<Int> = 0...12, etiquetas: Bool = true,
-                apagadas: Set<Int> = [], ortografia: [Int: Nota] = [:], notacion: Nomenclatura = .espanol) {
+                apagadas: Set<Int> = [], ortografia: [Int: Nota] = [:], notacion: Notacion = .espanol) {
         self.mastil = mastil
         self.marcas = marcas
         self.rango = rango
@@ -36,7 +36,7 @@ public struct DiagramaDeMastil: View {
 
     /// Las notas de una escala en el mástil, escritas como las escribe la escala.
     public init(mastil: Mastil, escala: Escala, rango: ClosedRange<Int> = 0...12, etiquetas: Bool = true,
-                notacion: Nomenclatura = .espanol) {
+                notacion: Notacion = .espanol) {
         self.init(mastil: mastil, marcas: mastil.posiciones(de: escala, trastes: rango), rango: rango,
                   etiquetas: etiquetas, ortografia: PresentacionDeMastil.ortografia(de: escala.notas),
                   notacion: notacion)
@@ -45,7 +45,7 @@ public struct DiagramaDeMastil: View {
     /// Muestra una digitación, con un rango de trastes que la deja a la vista. Si se da el acorde, las
     /// notas se escriben con su ortografía.
     public init(digitacion: Digitacion, acorde: Acorde? = nil, etiquetas: Bool = true,
-                notacion: Nomenclatura = .espanol) {
+                notacion: Notacion = .espanol) {
         self.init(mastil: digitacion.mastil, marcas: digitacion.posiciones,
                   rango: PresentacionDeMastil.rango(de: digitacion), etiquetas: etiquetas,
                   apagadas: PresentacionDeMastil.apagadas(de: digitacion),

@@ -38,7 +38,7 @@ public struct AcordePivote: Hashable, Sendable, CustomStringConvertible {
     /// "Lam = vi en Do mayor = ii en Sol mayor".
     public var description: String { descripcion(en: .espanol) }
 
-    public func descripcion(en notacion: Nomenclatura) -> String {
+    public func descripcion(en notacion: Notacion) -> String {
         acorde.cifrado(en: notacion)
             + " = \(antes.cifrado) " + tonalidadDePartida.lugar(en: notacion)
             + " = \(despues.cifrado) " + tonalidadDeLlegada.lugar(en: notacion)
@@ -60,7 +60,7 @@ public struct Modulacion: Hashable, Sendable, CustomStringConvertible {
     /// "De Do mayor a Sol mayor en el acorde 5 (pivote: Lam = vi en Do mayor = ii en Sol mayor)".
     public var description: String { descripcion(en: .espanol) }
 
-    public func descripcion(en notacion: Nomenclatura) -> String {
+    public func descripcion(en notacion: Notacion) -> String {
         let de = self.desde.nombre(en: notacion), a = self.hasta.nombre(en: notacion), n = acorde + 1
         // En euskera, con el ablativo y el adlativo: "Do maiorretik sol maiorrera, 5. akordean".
         let deEnEuskera = Tonalidad.declinar(de, "etik")
@@ -129,7 +129,7 @@ public struct RecorridoTonal: Hashable, Sendable, CustomStringConvertible {
     /// "I–IV–V7–I en Do mayor → ii–V7–I en Sol mayor".
     public var description: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         tramos.map { $0.analisis.nombre(en: notacion) }.joined(separator: " → ")
     }
 

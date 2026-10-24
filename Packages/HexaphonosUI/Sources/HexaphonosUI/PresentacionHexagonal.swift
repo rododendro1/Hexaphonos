@@ -33,7 +33,7 @@ enum PresentacionHexagonal {
     }
 
     /// Una descripción corta para VoiceOver, en el idioma de los textos: cuántas casillas hay y cuál está elegida.
-    static func descripcion(casillas: Int, seleccionada: CoordenadaAxial?, en notacion: Nomenclatura = .espanol) -> String {
+    static func descripcion(casillas: Int, seleccionada: CoordenadaAxial?, en notacion: Notacion = .espanol) -> String {
         let cuantas = notacion.texto(.casillas(casillas))
         guard let seleccionada else { return cuantas }
         return cuantas + "; " + notacion.texto(.casillaElegida(q: seleccionada.q, r: seleccionada.r))

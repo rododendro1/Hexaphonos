@@ -110,7 +110,9 @@ public struct Tonnetz: Hashable, Sendable {
     /// Los puntos de las notas, en el orden en que se dieron (sin repetir).
     public let puntos: [PuntoDelTonnetz]
     /// `true` si se colocaron notas con su ortografía; `false` para clases de altura.
-    public let conOrtografia: Bool
+    public let tieneOrtografia: Bool
+    @available(*, deprecated, renamed: "tieneOrtografia")
+    public var conOrtografia: Bool { tieneOrtografia }
     /// Las tríadas de un recorrido, en orden (`init(recorrido:)`); vacío si no lo es.
     public private(set) var recorrido: [Triada] = []
     /// De dónde salen las notas, para el título del dibujo.
@@ -120,9 +122,9 @@ public struct Tonnetz: Hashable, Sendable {
     /// En un ciclo, las tríadas con la ortografía con que se escriben.
     package var acordesDelRecorrido: [Acorde] = []
 
-    package init(puntos: [PuntoDelTonnetz], conOrtografia: Bool, recorrido: [Triada]) {
+    package init(puntos: [PuntoDelTonnetz], tieneOrtografia: Bool, recorrido: [Triada]) {
         self.puntos = puntos
-        self.conOrtografia = conOrtografia
+        self.tieneOrtografia = tieneOrtografia
         self.recorrido = recorrido
     }
 
@@ -134,7 +136,7 @@ public struct Tonnetz: Hashable, Sendable {
             // Los puntos con a + 4b = pasos, con b cerca de los ya colocados.
             cerca.map { b in PuntoDelTonnetz(quintas: pasos - 4 * b, terceras: b) }
         }
-        conOrtografia = true
+        tieneOrtografia = true
         origen = .notas(vistas)
     }
 
@@ -148,7 +150,7 @@ public struct Tonnetz: Hashable, Sendable {
                 }
             }
         }
-        conOrtografia = false
+        tieneOrtografia = false
         origen = .conjunto(conjunto)
     }
 
@@ -337,10 +339,10 @@ public struct Tonnetz: Hashable, Sendable {
     ///     recorrido, para que quepan las flechas.
     ///   - titulo: el título; si es `nil`, el que corresponda, y si es "", ninguno.
     ///   - leyenda: si se dibuja la leyenda.
-    public func svg(notacion: Nomenclatura = .espanol, margen: Int? = nil, paso: Double? = nil,
+    public func svg(notacion: Notacion = .espanol, margen: Int? = nil, paso: Double? = nil,
                     titulo: String? = nil, leyenda: Bool = true) -> String {
         let paso = paso ?? (recorrido.isEmpty ? 64 : 88)
-        let margen = margen ?? (conOrtografia ? 1 : 2)
+        let margen = margen ?? (tieneOrtografia ? 1 : 2)
         let altura = paso * 0.8660254037844386   // √3/2, entre dos filas
         let trazado = Tonnetz.trazado(paso: paso)
         func x(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: p.coordenada).x }
@@ -362,7 +364,7 @@ public struct Tonnetz: Hashable, Sendable {
         }
         let enRed = Set(red)
         // Los puntos marcados: los de las notas o, sin ortografía, todos los de sus clases.
-        let marcados = DibujoSVG.marcar(puntos, en: red, clave: conOrtografia ? nil : { $0.claseDeAltura }).marcados
+        let marcados = DibujoSVG.marcar(puntos, en: red, clave: tieneOrtografia ? nil : { $0.claseDeAltura }).marcados
         let radio = paso * 0.26
         let borde = radio + paso * 0.1
         // El título de un recorrido: "Do –R→ Lam –L→ Fa".
@@ -397,7 +399,7 @@ public struct Tonnetz: Hashable, Sendable {
         // Notas.
         for punto in red {
             let marcado = marcados.contains(punto)
-            let nombre = conOrtografia ? self.nombre(de: punto).nombreCompacto(en: notacion) : String(punto.claseDeAltura)
+            let nombre = tieneOrtografia ? self.nombre(de: punto).nombreCompacto(en: notacion) : String(punto.claseDeAltura)
             svg += "  <circle cx=\"\(f(x(punto)))\" cy=\"\(f(y(punto)))\" r=\"\(f(radio))\" "
             svg += marcado ? "fill=\"\(DibujoSVG.Color.nota)\" stroke=\"\(DibujoSVG.Color.nota)\"/>\n" : "fill=\"#ffffff\" stroke=\"#bbbbbb\"/>\n"
             svg += "  <text x=\"\(f(x(punto)))\" y=\"\(f(y(punto)))\" text-anchor=\"middle\" dominant-baseline=\"central\" "
@@ -412,7 +414,7 @@ public struct Tonnetz: Hashable, Sendable {
             func entrada(_ muestra: EntradaDeLeyenda.Muestra, _ texto: DibujoSVG.Texto) {
                 entradas.append(EntradaDeLeyenda(muestra: muestra, texto: texto.en(notacion)))
             }
-            entrada(.circulo(relleno: DibujoSVG.Color.nota, borde: DibujoSVG.Color.nota), conOrtografia ? .nota : .claseDeAltura)
+            entrada(.circulo(relleno: DibujoSVG.Color.nota, borde: DibujoSVG.Color.nota), tieneOrtografia ? .nota : .claseDeAltura)
             if hayLados { entrada(.linea("#333333", grosor: 3), .intervalos) }
             if triadasDibujadas.contains(where: \.mayor) { entrada(.triangulo(DibujoSVG.Color.mayor), .triadaMayor) }
             if triadasDibujadas.contains(where: { !$0.mayor }) { entrada(.triangulo(DibujoSVG.Color.menor), .triadaMenor) }
@@ -427,7 +429,7 @@ public struct Tonnetz: Hashable, Sendable {
 extension Tonnetz: CustomStringConvertible {
     /// "Do (0, 0) · Mi (0, 1) · Sol (1, 0)".
     public var description: String {
-        puntos.map { (conOrtografia ? nombre(de: $0).description : String($0.claseDeAltura)) + " \($0)" }
+        puntos.map { (tieneOrtografia ? nombre(de: $0).description : String($0.claseDeAltura)) + " \($0)" }
             .joined(separator: " · ")
     }
 }

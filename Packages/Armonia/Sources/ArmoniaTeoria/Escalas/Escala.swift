@@ -54,9 +54,9 @@ public struct Escala: Hashable, Sendable {
     }
 
     /// Tónica en una de las lenguas que se leen sin indicar la notación, o en francés o italiano.
-    private static func leerTonica(_ texto: String) -> (Nota, Nomenclatura)? {
+    private static func leerTonica(_ texto: String) -> (Nota, Notacion)? {
         let clave = texto.claveDeBusqueda
-        for notacion in Nomenclatura.deLecturaGenerica + [.frances, .italiano] {
+        for notacion in Notacion.deLecturaGenerica + [.frances, .italiano] {
             if let nombre = Nota.porNombre[notacion]?[clave] { return (nombre, notacion) }
         }
         return nil
@@ -184,7 +184,7 @@ public struct Escala: Hashable, Sendable {
     public var nombre: String { "\(tonica.nombre) \(tipo.nombre)" }
 
     /// Nombre en la notación indicada: "Re dórico", "D dorian", `.inglesUnicode` → "B♭ harmonic minor".
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         "\(tonica.nombre(en: notacion)) \(tipo.nombre(en: notacion))"
     }
 }
@@ -215,7 +215,7 @@ extension Escala: Codable {
 extension Escala: RepresentableComoTexto, Nombrable, Transponible, ConClasesDeAltura {
     /// "Re dórico", "D dorian". Los tipos sin nombre conocido no se pueden volver a leer;
     /// por eso `Escala` se codifica con su estructura y no con este texto.
-    public func texto(_ notacion: Nomenclatura) -> String { nombre(en: notacion) }
+    public func texto(en notacion: Notacion) -> String { nombre(en: notacion) }
 
     /// Clases de altura de la escala: cualquier escala mayor → 7-35.
     /// Clases de altura de la forma ascendente (la menor melódica es 7-34, como la de jazz).

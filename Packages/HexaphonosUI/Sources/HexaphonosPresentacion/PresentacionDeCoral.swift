@@ -38,15 +38,15 @@ public struct CoralPresentado: Hashable, Sendable {
         /// La revisión no ha encontrado faltas.
         case sinFaltasDeConduccion
         /// Una falta de conducción (quintas paralelas, cruzamiento…).
-        case falta(ProblemaDeConduccion)
+        case falta(FaltaDeConduccion)
 
-        public func texto(en notacion: Nomenclatura) -> String {
+        public func texto(en notacion: Notacion) -> String {
             if case .falta(let problema) = self { return problema.descripcion(en: notacion) }
             return traduccion(notacion)?.en(notacion) ?? ""
         }
 
         /// Los textos de los avisos fijos; las faltas las describe el motor.
-        private func traduccion(_ notacion: Nomenclatura) -> Traduccion? {
+        private func traduccion(_ notacion: Notacion) -> Traduccion? {
             let nombre = { (nota: Nota, octava: Int) in Altura(nota, octava: octava).nombre(en: notacion) }
             switch self {
             case .sinArmonizacion:
@@ -131,7 +131,7 @@ public enum PresentacionDeCoral {
 
     /// Hace la tarea con el texto y, si no está vacía, la tonalidad («La menor»).
     public static func presentar(_ tarea: Tarea, _ texto: String, tonalidad: String = "", propuestas: Int = 3,
-                                 notacion: Nomenclatura) throws -> CoralPresentado {
+                                 notacion: Notacion) throws -> CoralPresentado {
         let dada = tonalidad.trimmingCharacters(in: .whitespaces)
         let leida: Tonalidad? = try dada.isEmpty ? nil : Tonalidad(leyendo: dada)
         switch tarea {
@@ -144,7 +144,7 @@ public enum PresentacionDeCoral {
     /// Las mejores armonizaciones de una melodía y, si las notas llevan octava, el coral a cuatro voces
     /// con la melodía en el soprano.
     public static func armonizar(_ texto: String, en tonalidad: Tonalidad?, propuestas: Int = 3,
-                          notacion: Nomenclatura) throws -> CoralPresentado {
+                          notacion: Notacion) throws -> CoralPresentado {
         let partes = texto.split(whereSeparator: \.isWhitespace).map(String.init)
         guard !partes.isEmpty else { throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .textoVacio) }
         // Con ritmo («Mi4:4 Re4:8»), la voz: se armonizan sus notas (la más aguda si una es un acorde) y el
@@ -168,23 +168,23 @@ public enum PresentacionDeCoral {
         var sonido = Sonido.silencio
         if !conOctavas {
             avisos.append(.faltanOctavas)
-        } else if let coral = tonalidad.armonizarACuatroVoces(alturas) {
-            filas = self.filas(coral.armonizacion.analisis, coral.voces, notacion)
-            ficheros = self.ficheros(coral.voces, tonalidad, notacion, nombre: "Armonización")
-            sonido = voz.map { .alturas(coral.voces.acordes, conElRitmoDe: $0) } ?? .alturas(coral.voces.acordes)
+        } else if let armonizada = tonalidad.armonizarACuatroVoces(alturas) {
+            filas = self.filas(armonizada.armonizacion.analisis, armonizada.coral, notacion)
+            ficheros = self.ficheros(armonizada.coral, tonalidad, notacion, nombre: "Armonización")
+            sonido = voz.map { .alturas(armonizada.coral.acordes, conElRitmoDe: $0) } ?? .alturas(armonizada.coral.acordes)
         } else {
             avisos.append(.sinCoralParaLaMelodia)
         }
         return CoralPresentado(titulo: tonalidad.nombre(en: notacion),
-                               propuestas: candidatos.map { $0.valor.texto(notacion) },
+                               propuestas: candidatos.map { $0.valor.texto(en: notacion) },
                                filas: filas, avisos: avisos, ficheros: ficheros, sonido: sonido)
     }
 
     /// Los acordes escritos a cuatro voces, sin faltas de conducción.
-    public static func realizar(_ texto: String, en tonalidad: Tonalidad?, notacion: Nomenclatura) throws -> CoralPresentado {
+    public static func realizar(_ texto: String, en tonalidad: Tonalidad?, notacion: Notacion) throws -> CoralPresentado {
         let analisis = try AnalisisArmonico.analizar(leyendo: texto, en: tonalidad)
         let titulo = analisis.tonalidad.nombre(en: notacion)
-        guard let voces = ConduccionDeVoces.realizar(analisis.acordes.map(\.acorde), en: analisis.tonalidad) else {
+        guard let voces = Coral.realizar(analisis.acordes.map(\.acorde), en: analisis.tonalidad) else {
             return CoralPresentado(titulo: titulo, propuestas: [], filas: [],
                                    avisos: [.sinRealizacion],
                                    ficheros: [])
@@ -195,8 +195,8 @@ public enum PresentacionDeCoral {
     }
 
     /// Las faltas de conducción (quintas y octavas paralelas, cruzamientos…) de unas voces escritas a mano.
-    public static func revisar(_ texto: String, notacion: Nomenclatura) throws -> CoralPresentado {
-        let coral = try ConduccionDeVoces(leyendo: texto)
+    public static func revisar(_ texto: String, notacion: Notacion) throws -> CoralPresentado {
+        let coral = try Coral(leyendo: texto)
         let filas = coral.acordes.map { alturas in
             CoralPresentado.Fila(cifrado: Acorde.identificar(alturas).first?.cifrado(en: notacion) ?? "–", grado: "",
                                  voces: voces(alturas, notacion))
@@ -207,20 +207,20 @@ public enum PresentacionDeCoral {
                                ficheros: ficheros(coral, nil, notacion, nombre: "Coral"), sonido: .alturas(coral.acordes))
     }
 
-    static func filas(_ analisis: AnalisisArmonico, _ coral: ConduccionDeVoces,
-                      _ notacion: Nomenclatura) -> [CoralPresentado.Fila] {
+    static func filas(_ analisis: AnalisisArmonico, _ coral: Coral,
+                      _ notacion: Notacion) -> [CoralPresentado.Fila] {
         zip(analisis.acordes, coral.acordes).map { analizado, alturas in
             CoralPresentado.Fila(cifrado: analizado.acorde.cifrado(en: notacion), grado: analizado.cifrado,
                                  voces: voces(alturas, notacion))
         }
     }
 
-    static func voces(_ alturas: [Altura], _ notacion: Nomenclatura) -> String {
+    static func voces(_ alturas: [Altura], _ notacion: Notacion) -> String {
         alturas.map { $0.nombre(en: notacion) }.joined(separator: " ")
     }
 
     /// La partitura, con los cifrados encima y el análisis debajo, y el MIDI.
-    static func ficheros(_ coral: ConduccionDeVoces, _ tonalidad: Tonalidad?, _ notacion: Nomenclatura,
+    static func ficheros(_ coral: Coral, _ tonalidad: Tonalidad?, _ notacion: Notacion,
                          nombre: String) -> [FicheroParaExportar] {
         [
             .musicXML(coral.musicXML(tonalidad: tonalidad, titulo: nombre, cifrados: true, analisis: true,

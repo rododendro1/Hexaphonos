@@ -140,7 +140,12 @@ public struct PosicionEnPentagrama: Hashable, Sendable, CustomStringConvertible 
 // Si♭ (una 2ª mayor más grave). La transposición es un intervalo con dirección desde la nota
 // escrita hasta la que suena, así que escribir para el instrumento es restarlo.
 
-public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
+@available(*, deprecated, renamed: "InstrumentoDePartitura")
+public typealias Instrumento = InstrumentoDePartitura
+
+/// Un instrumento tal como se escribe en la partitura: su nombre, la clave en la que se lee y, si es
+/// transpositor, lo que transporta. Las cuerdas de un instrumento con trastes y su afinación son un `Encordado`.
+public struct InstrumentoDePartitura: Hashable, Sendable, CustomStringConvertible {
     public let nombre: String
     private let nombreEnIngles: String
     /// Intervalo desde la nota escrita hasta la que suena (descendente si suena más grave).
@@ -158,16 +163,16 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
 
     /// "clarinete en si♭", "B♭ clarinet", "clarinet en si♭", "clarinete en si♭", "si♭ klarinetea",
     /// "clarinete em si♭", "clarinette en si♭", "clarinetto in si♭".
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch notacion.idiomaDeLosTextos {
         case .espanol: return nombre
         case .ingles, .aleman, .occitano, .ruso, .griego: return nombreEnIngles
-        case .catalan: return Instrumento.nombresPeninsulares[nombre]?.catalan ?? nombre
-        case .gallego: return Instrumento.nombresPeninsulares[nombre]?.gallego ?? nombre
-        case .euskera: return Instrumento.nombresPeninsulares[nombre]?.euskera ?? nombre
-        case .portugues: return Instrumento.nombresRomanicos[nombre]?.portugues ?? nombre
-        case .frances: return Instrumento.nombresRomanicos[nombre]?.frances ?? nombre
-        case .italiano: return Instrumento.nombresRomanicos[nombre]?.italiano ?? nombre
+        case .catalan: return InstrumentoDePartitura.nombresPeninsulares[nombre]?.catalan ?? nombre
+        case .gallego: return InstrumentoDePartitura.nombresPeninsulares[nombre]?.gallego ?? nombre
+        case .euskera: return InstrumentoDePartitura.nombresPeninsulares[nombre]?.euskera ?? nombre
+        case .portugues: return InstrumentoDePartitura.nombresRomanicos[nombre]?.portugues ?? nombre
+        case .frances: return InstrumentoDePartitura.nombresRomanicos[nombre]?.frances ?? nombre
+        case .italiano: return InstrumentoDePartitura.nombresRomanicos[nombre]?.italiano ?? nombre
         }
     }
 
@@ -209,58 +214,58 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
 
     private static func abajo(_ i: Intervalo) -> Intervalo { -i }
 
-    public static let piano = Instrumento(nombre: "piano", nombreEnIngles: "piano")
-    public static let flauta = Instrumento(nombre: "flauta", nombreEnIngles: "flute")
-    public static let flautin = Instrumento(nombre: "flautín", nombreEnIngles: "piccolo",
+    public static let piano = InstrumentoDePartitura(nombre: "piano", nombreEnIngles: "piano")
+    public static let flauta = InstrumentoDePartitura(nombre: "flauta", nombreEnIngles: "flute")
+    public static let flautin = InstrumentoDePartitura(nombre: "flautín", nombreEnIngles: "piccolo",
                                             transposicion: .octava)
-    public static let flautaEnSol = Instrumento(nombre: "flauta en sol", nombreEnIngles: "alto flute",
+    public static let flautaEnSol = InstrumentoDePartitura(nombre: "flauta en sol", nombreEnIngles: "alto flute",
                                                 transposicion: abajo(.cuartaJusta))
-    public static let oboe = Instrumento(nombre: "oboe", nombreEnIngles: "oboe")
-    public static let cornoIngles = Instrumento(nombre: "corno inglés", nombreEnIngles: "English horn",
+    public static let oboe = InstrumentoDePartitura(nombre: "oboe", nombreEnIngles: "oboe")
+    public static let cornoIngles = InstrumentoDePartitura(nombre: "corno inglés", nombreEnIngles: "English horn",
                                                 transposicion: abajo(.quintaJusta))
-    public static let clarineteEnSib = Instrumento(nombre: "clarinete en si♭", nombreEnIngles: "B♭ clarinet",
+    public static let clarineteEnSib = InstrumentoDePartitura(nombre: "clarinete en si♭", nombreEnIngles: "B♭ clarinet",
                                                    transposicion: abajo(.segundaMayor))
-    public static let clarineteEnLa = Instrumento(nombre: "clarinete en la", nombreEnIngles: "A clarinet",
+    public static let clarineteEnLa = InstrumentoDePartitura(nombre: "clarinete en la", nombreEnIngles: "A clarinet",
                                                   transposicion: abajo(.terceraMenor))
-    public static let clarineteEnMib = Instrumento(nombre: "clarinete en mi♭", nombreEnIngles: "E♭ clarinet",
+    public static let clarineteEnMib = InstrumentoDePartitura(nombre: "clarinete en mi♭", nombreEnIngles: "E♭ clarinet",
                                                    transposicion: .terceraMenor)
-    public static let clarineteBajo = Instrumento(nombre: "clarinete bajo", nombreEnIngles: "bass clarinet",
+    public static let clarineteBajo = InstrumentoDePartitura(nombre: "clarinete bajo", nombreEnIngles: "bass clarinet",
                                                   transposicion: abajo(.novenaMayor))
-    public static let fagot = Instrumento(nombre: "fagot", nombreEnIngles: "bassoon", clave: .fa)
-    public static let saxofonSoprano = Instrumento(nombre: "saxofón soprano", nombreEnIngles: "soprano saxophone",
+    public static let fagot = InstrumentoDePartitura(nombre: "fagot", nombreEnIngles: "bassoon", clave: .fa)
+    public static let saxofonSoprano = InstrumentoDePartitura(nombre: "saxofón soprano", nombreEnIngles: "soprano saxophone",
                                                    transposicion: abajo(.segundaMayor))
-    public static let saxofonAlto = Instrumento(nombre: "saxofón alto", nombreEnIngles: "alto saxophone",
+    public static let saxofonAlto = InstrumentoDePartitura(nombre: "saxofón alto", nombreEnIngles: "alto saxophone",
                                                 transposicion: abajo(.sextaMayor))
-    public static let saxofonTenor = Instrumento(nombre: "saxofón tenor", nombreEnIngles: "tenor saxophone",
+    public static let saxofonTenor = InstrumentoDePartitura(nombre: "saxofón tenor", nombreEnIngles: "tenor saxophone",
                                                  transposicion: abajo(.novenaMayor))
-    public static let saxofonBaritono = Instrumento(nombre: "saxofón barítono", nombreEnIngles: "baritone saxophone",
+    public static let saxofonBaritono = InstrumentoDePartitura(nombre: "saxofón barítono", nombreEnIngles: "baritone saxophone",
                                                     transposicion: abajo(.decimoterceraMayor))
-    public static let trompetaEnSib = Instrumento(nombre: "trompeta en si♭", nombreEnIngles: "B♭ trumpet",
+    public static let trompetaEnSib = InstrumentoDePartitura(nombre: "trompeta en si♭", nombreEnIngles: "B♭ trumpet",
                                                   transposicion: abajo(.segundaMayor))
-    public static let trompetaEnDo = Instrumento(nombre: "trompeta en do", nombreEnIngles: "C trumpet")
-    public static let fliscorno = Instrumento(nombre: "fliscorno", nombreEnIngles: "flugelhorn",
+    public static let trompetaEnDo = InstrumentoDePartitura(nombre: "trompeta en do", nombreEnIngles: "C trumpet")
+    public static let fliscorno = InstrumentoDePartitura(nombre: "fliscorno", nombreEnIngles: "flugelhorn",
                                               transposicion: abajo(.segundaMayor))
-    public static let trompaEnFa = Instrumento(nombre: "trompa en fa", nombreEnIngles: "horn in F",
+    public static let trompaEnFa = InstrumentoDePartitura(nombre: "trompa en fa", nombreEnIngles: "horn in F",
                                                transposicion: abajo(.quintaJusta))
-    public static let trombon = Instrumento(nombre: "trombón", nombreEnIngles: "trombone", clave: .fa)
-    public static let tuba = Instrumento(nombre: "tuba", nombreEnIngles: "tuba", clave: .fa)
-    public static let violin = Instrumento(nombre: "violín", nombreEnIngles: "violin")
-    public static let viola = Instrumento(nombre: "viola", nombreEnIngles: "viola", clave: .doEnTercera)
-    public static let violonchelo = Instrumento(nombre: "violonchelo", nombreEnIngles: "cello", clave: .fa)
-    public static let contrabajo = Instrumento(nombre: "contrabajo", nombreEnIngles: "double bass",
+    public static let trombon = InstrumentoDePartitura(nombre: "trombón", nombreEnIngles: "trombone", clave: .fa)
+    public static let tuba = InstrumentoDePartitura(nombre: "tuba", nombreEnIngles: "tuba", clave: .fa)
+    public static let violin = InstrumentoDePartitura(nombre: "violín", nombreEnIngles: "violin")
+    public static let viola = InstrumentoDePartitura(nombre: "viola", nombreEnIngles: "viola", clave: .doEnTercera)
+    public static let violonchelo = InstrumentoDePartitura(nombre: "violonchelo", nombreEnIngles: "cello", clave: .fa)
+    public static let contrabajo = InstrumentoDePartitura(nombre: "contrabajo", nombreEnIngles: "double bass",
                                                transposicion: abajo(.octava), clave: .fa)
-    public static let guitarra = Instrumento(nombre: "guitarra", nombreEnIngles: "guitar",
+    public static let guitarra = InstrumentoDePartitura(nombre: "guitarra", nombreEnIngles: "guitar",
                                              transposicion: abajo(.octava), clave: .solOctavaBaja)
-    public static let bajoElectrico = Instrumento(nombre: "bajo eléctrico", nombreEnIngles: "electric bass",
+    public static let bajoElectrico = InstrumentoDePartitura(nombre: "bajo eléctrico", nombreEnIngles: "electric bass",
                                                   transposicion: abajo(.octava), clave: .fa)
-    public static let xilofono = Instrumento(nombre: "xilófono", nombreEnIngles: "xylophone",
+    public static let xilofono = InstrumentoDePartitura(nombre: "xilófono", nombreEnIngles: "xylophone",
                                              transposicion: .octava)
-    public static let glockenspiel = Instrumento(nombre: "glockenspiel", nombreEnIngles: "glockenspiel",
+    public static let glockenspiel = InstrumentoDePartitura(nombre: "glockenspiel", nombreEnIngles: "glockenspiel",
                                                  transposicion: 2 * Intervalo.octava)
-    public static let celesta = Instrumento(nombre: "celesta", nombreEnIngles: "celesta",
+    public static let celesta = InstrumentoDePartitura(nombre: "celesta", nombreEnIngles: "celesta",
                                             transposicion: .octava)
 
-    public static let todos: [Instrumento] = [
+    public static let todos: [InstrumentoDePartitura] = [
         .piano, .flauta, .flautin, .flautaEnSol, .oboe, .cornoIngles,
         .clarineteEnSib, .clarineteEnLa, .clarineteEnMib, .clarineteBajo, .fagot,
         .saxofonSoprano, .saxofonAlto, .saxofonTenor, .saxofonBaritono,
@@ -270,4 +275,4 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
     ]
 }
 
-extension Instrumento: Nombrable {}
+extension InstrumentoDePartitura: Nombrable {}

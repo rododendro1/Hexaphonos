@@ -23,7 +23,7 @@ extension LineaDeComandos {
 
     /// Lee los argumentos comunes de `tonnetz` y `tabla`: `--margen N` y lo que se dibuja
     /// (notas, `--acorde`, `--escala`, `--clases`, `--recorrido`, `--camino` o `--ciclo`).
-    static func leerDibujo(_ argumentos: [String], orden: String, _ notacion: Nomenclatura) throws -> Lectura {
+    static func leerDibujo(_ argumentos: [String], orden: String, _ notacion: Notacion) throws -> Lectura {
         var lectura = Argumentos(argumentos)
         var margen: Int?
         switch lectura.quitarOpcion("--margen") {
@@ -73,20 +73,20 @@ extension LineaDeComandos {
         return .dibujo(dibujo, margen: margen)
     }
 
-    static func errorDeRecorrido(_ orden: String, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+    static func errorDeRecorrido(_ orden: String, _ notacion: Notacion) -> ResultadoDeOrden {
         uso(.recorridoSoloTriadas(orden: orden), notacion)
     }
 
-    static func errorDeCamino(_ orden: String, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+    static func errorDeCamino(_ orden: String, _ notacion: Notacion) -> ResultadoDeOrden {
         uso(.caminoSoloTriadas(orden: orden), notacion)
     }
 
-    static func errorDeCiclo(_ orden: String, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+    static func errorDeCiclo(_ orden: String, _ notacion: Notacion) -> ResultadoDeOrden {
         uso(.cicloSoloTriadas(orden: orden), notacion)
     }
 
     /// `tonnetz Do Mi Sol`, `tonnetz --acorde Domaj7`, `tonnetz --ciclo hexatonico Do`…
-    static func tonnetz(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func tonnetz(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         let (dibujo, margen): (Dibujo, Int?)
         switch try leerDibujo(argumentos, orden: "tonnetz", notacion) {
         case .error(let error): return error
@@ -113,7 +113,7 @@ extension LineaDeComandos {
 
     /// `tabla Do Mi Sol`, `tabla Do3 Sol3 Mi4` (con octava, alturas), `tabla --acorde Domaj7`,
     /// `tabla --ciclo octatonico Do`…
-    static func tablaArmonica(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func tablaArmonica(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         let (dibujo, margen): (Dibujo, Int?)
         switch try leerDibujo(argumentos, orden: "tabla", notacion) {
         case .error(let error): return error

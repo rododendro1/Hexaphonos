@@ -178,7 +178,7 @@ extension Duracion: CustomStringConvertible {
 
 extension Duracion: RepresentableComoTexto, Nombrable {
     /// "4", "8.", "2.."; si no es una figura de redonda o menor, la fracción ("5/8", "1/12", "2/1").
-    public func texto(_ notacion: Nomenclatura) -> String {
+    public func texto(en notacion: Notacion) -> String {
         if let escritura = figuraYPuntillos, escritura.figura != .cuadrada {
             return "\(1 << escritura.figura.rawValue)" + String(repeating: ".", count: escritura.puntillos)
         }
@@ -351,7 +351,7 @@ public struct Compas: Hashable, Sendable, CustomStringConvertible {
 }
 
 extension Compas: RepresentableComoTexto {
-    public func texto(_ notacion: Nomenclatura) -> String { description }
+    public func texto(en notacion: Notacion) -> String { description }
 }
 
 // MARK: - Tempo
@@ -475,8 +475,8 @@ extension Evento: CustomStringConvertible {
 }
 
 extension Evento: RepresentableComoTexto, Transponible {
-    public func texto(_ notacion: Nomenclatura) -> String {
-        let notasTexto = esSilencio ? "-" : alturas.map { $0.texto(notacion) }.joined(separator: "+")
-        return notasTexto + ":" + duracion.texto(notacion) + (ligada ? "~" : "")
+    public func texto(en notacion: Notacion) -> String {
+        let notasTexto = esSilencio ? "-" : alturas.map { $0.texto(en: notacion) }.joined(separator: "+")
+        return notasTexto + ":" + duracion.texto(en: notacion) + (ligada ? "~" : "")
     }
 }

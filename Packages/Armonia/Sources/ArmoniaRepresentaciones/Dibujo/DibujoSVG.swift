@@ -16,7 +16,7 @@ package enum OrigenDelDibujo: Hashable, Sendable {
     case ciclo(CicloNeorriemanniano, Acorde)
 
     /// "Domaj7", "Re dórico", "Do · Mi · Sol", "Conjunto [0, 4, 7]", "Do3 · Sol3 · Mi4".
-    package func titulo(_ notacion: Nomenclatura) -> String {
+    package func titulo(_ notacion: Notacion) -> String {
         switch self {
         case .notas(let notas): return notas.map { $0.nombreCompacto(en: notacion) }.joined(separator: " · ")
         case .acorde(let acorde): return acorde.cifrado(en: notacion)
@@ -38,7 +38,7 @@ package enum OrigenDelDibujo: Hashable, Sendable {
     }
 
     /// "tónica", "fundamental" o "primera nota".
-    package func primera(_ notacion: Nomenclatura) -> String {
+    package func primera(_ notacion: Notacion) -> String {
         switch self {
         case .escala: return NombreDeGrado.tonica.nombre(en: notacion)
         case .acorde: return PapelEnAcorde.fundamental.nombre(en: notacion)
@@ -85,7 +85,7 @@ package enum DibujoSVG {
         case nota, claseDeAltura, altura, intervalos, contorno, triadaMayor, triadaMenor, pasoDelRecorrido
         case fundamentalDelPrimerAcorde
 
-        package func en(_ notacion: Nomenclatura) -> String { traduccion.en(notacion) }
+        package func en(_ notacion: Notacion) -> String { traduccion.en(notacion) }
 
         private var traduccion: Traduccion {
             switch self {
@@ -234,7 +234,7 @@ package enum DibujoSVG {
     /// entre tríadas que no son vecinas; vacío si no hay recorrido.
     /// Con `acordes`, los nombres de las tríadas son esos (los de un ciclo, que no siempre
     /// coinciden con la posición del triángulo).
-    package static func titulo(deRecorrido recorrido: [Tonnetz.Triada], _ notacion: Nomenclatura,
+    package static func titulo(deRecorrido recorrido: [Tonnetz.Triada], _ notacion: Notacion,
                        acordes: [Acorde] = []) -> String {
         guard !recorrido.isEmpty else { return "" }
         let nombres = acordes.count == recorrido.count ? acordes : recorrido.map(\.acorde)

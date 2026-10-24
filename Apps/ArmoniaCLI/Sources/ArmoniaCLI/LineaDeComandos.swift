@@ -41,7 +41,7 @@ public enum LineaDeComandos {
     /// Ejecuta una orden con sus argumentos (sin el nombre del programa).
     public static func ejecutar(_ argumentos: [String]) -> ResultadoDeOrden {
         var opciones = Argumentos(argumentos)
-        var notacion: Nomenclatura = opciones.quitarMarca("--ingles", "--english") ? .ingles : .espanol
+        var notacion: Notacion = opciones.quitarMarca("--ingles", "--english") ? .ingles : .espanol
         switch opciones.quitarOpcion("--idioma", "--language") {
         case .ausente:
             break
@@ -102,7 +102,7 @@ public enum LineaDeComandos {
             case "conduccion", "conducción", "voice-leading":
                 guard resto.count == 2 else { return uso(.dosAcordesDeConduccion, notacion) }
                 let conduccion = try Acorde(leyendo: resto[0]).conduccionMinima(hasta: try Acorde(leyendo: resto[1]))
-                return bien(conduccion.texto(notacion))
+                return bien(conduccion.texto(en: notacion))
             case "digitaciones", "digitacion", "digitación", "fingerings":
                 return try digitaciones(resto, notacion)
             case "plr", "neorriemanniano", "neoriemannian":
@@ -131,12 +131,12 @@ public enum LineaDeComandos {
         ResultadoDeOrden(salida: texto + "\n", error: "", codigo: 0)
     }
 
-    static func uso(_ error: ErrorDeUso, _ notacion: Nomenclatura) -> ResultadoDeOrden {
+    static func uso(_ error: ErrorDeUso, _ notacion: Notacion) -> ResultadoDeOrden {
         ResultadoDeOrden(salida: "", error: error.texto(en: notacion), codigo: 2)
     }
 
-    /// La ayuda en el idioma de los textos de la notación (`Nomenclatura.idiomaDeLosTextos`).
-    public static func ayuda(en notacion: Nomenclatura) -> String {
+    /// La ayuda en el idioma de los textos de la notación (`Notacion.idiomaDeLosTextos`).
+    public static func ayuda(en notacion: Notacion) -> String {
         switch notacion.idiomaDeLosTextos {
         case .ingles, .aleman, .occitano, .ruso, .griego: return help
         case .catalan: return ajuda
@@ -150,7 +150,7 @@ public enum LineaDeComandos {
     }
 
     /// La notación de `--idioma`: es, en, ca, gl, eu, pt, fr o it, o el nombre del idioma.
-    static func notacionDelIdioma(_ texto: String) -> Nomenclatura? {
+    static func notacionDelIdioma(_ texto: String) -> Notacion? {
         switch texto.lowercased() {
         case "es", "espanol", "español", "castellano": return .espanol
         case "en", "ingles", "inglés", "english": return .ingles

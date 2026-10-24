@@ -22,21 +22,21 @@ final class TextoDeLasAppsTests: XCTestCase {
 
     func testCadaTextoEstaEnCadaIdioma() {
         for idioma in Idioma.traducidos {
-            let notacion = Nomenclatura.espanol.conTextos(en: idioma)
+            let notacion = Notacion.espanol.conTextos(en: idioma)
             for texto in Self.todos {
                 XCTAssertFalse(notacion.texto(texto).isEmpty, "\(texto) en \(idioma)")
             }
         }
-        XCTAssertEqual(Nomenclatura.ingles.texto(.digitaciones), "Fingerings")
-        XCTAssertEqual(Nomenclatura.euskera.texto(.acordes), "Akordeak")
+        XCTAssertEqual(Notacion.ingles.texto(.digitaciones), "Fingerings")
+        XCTAssertEqual(Notacion.euskera.texto(.acordes), "Akordeak")
         // El alemán no tiene textos propios: van en inglés.
-        XCTAssertEqual(Nomenclatura.aleman.texto(.escalas), "Scales")
+        XCTAssertEqual(Notacion.aleman.texto(.escalas), "Scales")
     }
 
     func testLosEjemplosVanEnLaNotacion() {
-        XCTAssertEqual(Nomenclatura.espanol.texto(.campoDeCifrado), "Cifrado, por ejemplo Sol7/Si")
-        XCTAssertEqual(Nomenclatura.ingles.texto(.campoDeCifrado), "Chord symbol, for example G7/B")
-        XCTAssertEqual(Nomenclatura.ingles.texto(.campoDeTriadaInicial), "Starting triad (C, Am…)")
+        XCTAssertEqual(Notacion.espanol.texto(.campoDeCifrado), "Cifrado, por ejemplo Sol7/Si")
+        XCTAssertEqual(Notacion.ingles.texto(.campoDeCifrado), "Chord symbol, for example G7/B")
+        XCTAssertEqual(Notacion.ingles.texto(.campoDeTriadaInicial), "Starting triad (C, Am…)")
         XCTAssertEqual(PresentacionDeCoral.Tarea.armonizar.indicacion(en: .ingles),
                        "Melody (E4 F4 D4 C4, without octaves or with rhythm: E4:4 D4:8)")
         XCTAssertEqual(PresentacionDeCoral.Tarea.revisar.indicacion(en: .espanol),
@@ -45,14 +45,14 @@ final class TextoDeLasAppsTests: XCTestCase {
     }
 
     func testLosDedosYLaCejilla() {
-        XCTAssertEqual(Nomenclatura.espanol.texto(.dedos(1, cejilla: nil)), "1 dedo")
-        XCTAssertEqual(Nomenclatura.espanol.texto(.dedos(4, cejilla: 1)), "4 dedos, cejilla en el traste 1")
-        XCTAssertEqual(Nomenclatura.ingles.texto(.dedos(3, cejilla: 5)), "3 fingers, barre at fret 5")
+        XCTAssertEqual(Notacion.espanol.texto(.dedos(1, cejilla: nil)), "1 dedo")
+        XCTAssertEqual(Notacion.espanol.texto(.dedos(4, cejilla: 1)), "4 dedos, cejilla en el traste 1")
+        XCTAssertEqual(Notacion.ingles.texto(.dedos(3, cejilla: 5)), "3 fingers, barre at fret 5")
     }
 
     func testLasTareasLosFormatosYLasRedesTienenNombreEnCadaIdioma() {
         for idioma in Idioma.traducidos {
-            let notacion = Nomenclatura.espanol.conTextos(en: idioma)
+            let notacion = Notacion.espanol.conTextos(en: idioma)
             let tareas = PresentacionDeCoral.Tarea.allCases.map { $0.titulo(en: notacion) }
             XCTAssertEqual(Set(tareas).count, tareas.count, "\(idioma)")
             let formatos = FicheroParaExportar.Formato.allCases.map { $0.titulo(en: notacion) }
@@ -65,7 +65,7 @@ final class TextoDeLasAppsTests: XCTestCase {
 
     func testLosInstrumentosYLasTransformacionesTienenNombreEnCadaIdioma() {
         for idioma in Idioma.traducidos {
-            let notacion = Nomenclatura.espanol.conTextos(en: idioma)
+            let notacion = Notacion.espanol.conTextos(en: idioma)
             let instrumentos = Encordado.todos.map { $0.nombre(en: notacion) }
             XCTAssertEqual(Set(instrumentos).count, instrumentos.count, "\(idioma)")
             let transformaciones = TransformacionNeorriemanniana.allCases.map { $0.nombre(en: notacion) }
@@ -91,17 +91,17 @@ final class TextoDeLasAppsTests: XCTestCase {
         XCTAssertEqual(PresentacionDeMastil.etiqueta(de: Mastil(.guitarra), rango: 3...7, en: .espanol),
                        "Mástil de guitarra, trastes 3 a 7")
         XCTAssertEqual(PresentacionHexagonal.descripcion(casillas: 1, seleccionada: nil, en: .ingles), "1 cell")
-        XCTAssertEqual(Nomenclatura.euskera.texto(.casillas(19)), "19 gelaxka")
+        XCTAssertEqual(Notacion.euskera.texto(.casillas(19)), "19 gelaxka")
     }
 
     func testLaNotacionInicialEsLaDelSistema() {
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: ["ca-ES", "es-ES"]), .catalan)
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: ["en-GB"]), .ingles)
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: ["eu"]), .euskera)
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: ["pt_BR"]), .portugues)
+        XCTAssertEqual(Notacion.delSistema(idiomas: ["ca-ES", "es-ES"]), .catalan)
+        XCTAssertEqual(Notacion.delSistema(idiomas: ["en-GB"]), .ingles)
+        XCTAssertEqual(Notacion.delSistema(idiomas: ["eu"]), .euskera)
+        XCTAssertEqual(Notacion.delSistema(idiomas: ["pt_BR"]), .portugues)
         // Un idioma sin notación se salta; si no queda ninguno, el español.
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: ["ja-JP", "fr-CA"]), .frances)
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: ["ja-JP"]), .espanol)
-        XCTAssertEqual(Nomenclatura.delSistema(idiomas: []), .espanol)
+        XCTAssertEqual(Notacion.delSistema(idiomas: ["ja-JP", "fr-CA"]), .frances)
+        XCTAssertEqual(Notacion.delSistema(idiomas: ["ja-JP"]), .espanol)
+        XCTAssertEqual(Notacion.delSistema(idiomas: []), .espanol)
     }
 }

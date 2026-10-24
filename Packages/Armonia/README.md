@@ -161,7 +161,7 @@ Sources/
 ├── ArmoniaNucleo/
 │   ├── Fundamentos/       Nota (con NotaNatural y Alteracion), Altura, Intervalo (con Direccion,
 │   │                      CalidadDeIntervalo, Consonancia), Candidato, Protocolos, Aritmetica
-│   ├── Texto/             Idiomas (los nombres que dependen del idioma, de los tipos del núcleo), Nomenclatura (con Idioma y
+│   ├── Texto/             Idiomas (los nombres que dependen del idioma, de los tipos del núcleo), Notacion (con Idioma y
 │   │                      EstiloDeCifrado), Lector, ErrorDeLectura
 │   └── Postonal/          ConjuntoDeClases, TablaForte
 ├── ArmoniaTeoria/
@@ -173,19 +173,19 @@ Sources/
 │   │   └── Tradiciones/   TipoDeEscala+India, +Grecia, +China, +Japon, +Corea, +Etiopia, +MaqamatYDastgah,
 │   │                      +Indonesia, +Klezmer, +Andes y +Tradiciones (la lista `tradicionales`)
 │   └── Tonalidad/         Tonalidad, Tonalidad+Deteccion, AnalisisArmonico (con FuncionTonal y AcordeAnalizado),
-│                          ConduccionDeVoces (quintas y octavas paralelas, cruces…)
+│                          Coral (quintas y octavas paralelas, cruces…)
 ├── ArmoniaRepresentaciones/
 │   ├── Afinacion/     Afinacion (frecuencias), BaseDeHewlett (números)
 │   ├── Color/         CorrespondenciaDeColores (colores)
-│   ├── Reticulos/     Tonnetz (la red de quintas y terceras, en SVG),
+│   ├── Redes/         Tonnetz (la red de quintas y terceras, en SVG),
 │   │   │              TablaArmonica (hexágonos de teclado isomórfico, en SVG)
-│   │   └── Neorriemann/   TransformacionesNeorriemannianas (P, L, R y caminos), CiclosNeorriemannianos
+│   │   └── Neorriemanniana/   TransformacionesNeorriemannianas (P, L, R y caminos), CiclosNeorriemannianos
 │   │                  (hexatónico, octatónico, LR), ConduccionParsimoniosa (vecinos a un semitono,
 │   │                  conducción mínima): todo lo que se apoya en el Tonnetz
 │   └── Dibujo/        DibujoSVG (título, leyenda y colores comunes de los dibujos)
 ├── ArmoniaPartitura/
 │   ├── Modelo/        Ritmo (Figura, Duracion, Compas, Tempo, Evento), Melodia (con Voz),
-│   │                  Pentagrama (Clave, PosicionEnPentagrama, Instrumento)
+│   │                  Pentagrama (Clave, PosicionEnPentagrama, InstrumentoDePartitura)
 │   └── Formatos/      MusicXML (exportación de voces y corales),
 │                      MIDI (ficheros MIDI estándar de voces, corales y progresiones)
 ├── ArmoniaTrastes/    Encordado (afinaciones del instrumento), Mastil (con Posicion: dónde suena cada nota),
@@ -203,8 +203,8 @@ están en `Texto/Idiomas.swift`, y los mensajes de error, en `Texto/ErrorDeLectu
 (modos y tonalidades, papeles en el acorde, calidades de tríada, grados, claves, figuras,
 duraciones y colores) están junto a cada tipo, en un fichero `X+Idiomas.swift`
 (`find Sources -name '*+Idiomas.swift'` los lista). Para añadir un idioma: un caso en `Idioma` y
-en `Nomenclatura`, y corregir lo que el compilador señale: los `switch` sobre el idioma no tienen
-`default`. Tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano (`Altura(leyendo:en:)`,
+en `Notacion`, y corregir lo que el compilador señale: los `switch` sobre el idioma no tienen
+`default`. Tres `switch` sobre `Notacion` sí lo tienen y se revisan a mano (`Altura(leyendo:en:)`,
 `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`). Los nombres que son datos de un catálogo (tipos
 de acorde y de escala, instrumentos) siguen junto a su catálogo, en los ocho idiomas (los de las
 escalas en los seis que no son español ni inglés, en `TipoDeEscala+Peninsulares.swift`). Para que los
@@ -222,7 +222,7 @@ línea de comandos están con ella, en `Apps/ArmoniaCLI/Tests/`.
 Aunque la biblioteca es un solo módulo, las carpetas siguen unas capas que podrían separarse en
 módulos: **Núcleo** (Fundamentos, Texto, Postonal), **Teoría** (Acordes, Escalas, Tonalidad, que
 se necesitan entre sí), y dos hojas independientes que usan las anteriores, **Representaciones**
-(con Neorriemann) y **Partitura**. `python3 Scripts/comprobar_capas.py` muestra las dependencias
+(con las redes y la teoría neorriemanniana) y **Partitura**. `python3 Scripts/comprobar_capas.py` muestra las dependencias
 entre ellas y el CI impide que aparezcan nuevas hacia arriba. Hoy no hay ninguna, así que el
 Núcleo, la Teoría, las Representaciones y la Partitura podrían separarse en módulos; falta
 decidir qué miembros `internal` pasan a `package` o `public`, algo que conviene hacer con el
