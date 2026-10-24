@@ -3,7 +3,7 @@
 // Los nombres que dependen del idioma de los tipos del núcleo: las letras y las alteraciones en
 // las nueve lenguas de `Nomenclatura` (español, inglés, alemán, francés, italiano, catalán,
 // gallego, euskera y portugués), y los nombres de las calidades de intervalo, los intervalos y
-// las consonancias en los cinco idiomas de los textos (`Traduccion`).
+// las consonancias en los ocho idiomas de los textos (`Traduccion`).
 //
 // El de los tipos de las demás capas está junto a cada tipo, en un fichero `X+Idiomas.swift`
 // (`Tonalidad+Idiomas`, `EstructuraDeAcorde+Idiomas`, `Escala+Idiomas`, `Pentagrama+Idiomas`,
@@ -154,27 +154,37 @@ extension CalidadDeIntervalo {
     public var nombre: String { nombre(en: .espanol) }
 
     /// "justa", "mayor"… en español; "perfect", "major", "doubly diminished"… en inglés; "justa",
-    /// "major" en catalán; "xusta", "maior" en gallego; "justua", "handia", "bi aldiz gehitua" en euskera.
+    /// "major" en catalán; "xusta", "maior" en gallego; "justua", "handia", "bi aldiz gehitua" en
+    /// euskera; "justa", "diminuta" en portugués; "juste", "majeure" en francés; "giusta",
+    /// "maggiore" en italiano.
     public func nombre(en notacion: Nomenclatura) -> String {
         switch self {
-        case .justa: return Traduccion("justa", "perfect", ca: "justa", gl: "xusta", eu: "justua").en(notacion)
-        case .mayor: return Traduccion("mayor", "major", ca: "major", gl: "maior", eu: "handia").en(notacion)
-        case .menor: return Traduccion("menor", "minor", ca: "menor", gl: "menor", eu: "txikia").en(notacion)
+        case .justa: return Traduccion("justa", "perfect", ca: "justa", gl: "xusta", eu: "justua",
+                                       pt: "justa", fr: "juste", it: "giusta").en(notacion)
+        case .mayor: return Traduccion("mayor", "major", ca: "major", gl: "maior", eu: "handia",
+                                       pt: "maior", fr: "majeure", it: "maggiore").en(notacion)
+        case .menor: return Traduccion("menor", "minor", ca: "menor", gl: "menor", eu: "txikia",
+                                       pt: "menor", fr: "mineure", it: "minore").en(notacion)
         case .aumentada(let n):
             return CalidadDeIntervalo.multiplicidad(n).en(notacion)
-                + Traduccion("aumentada", "augmented", ca: "augmentada", gl: "aumentada", eu: "gehitua").en(notacion)
+                + Traduccion("aumentada", "augmented", ca: "augmentada", gl: "aumentada", eu: "gehitua",
+                             pt: "aumentada", fr: "augmentée", it: "aumentata").en(notacion)
         case .disminuida(let n):
             return CalidadDeIntervalo.multiplicidad(n).en(notacion)
-                + Traduccion("disminuida", "diminished", ca: "disminuïda", gl: "diminuída", eu: "gutxitua").en(notacion)
+                + Traduccion("disminuida", "diminished", ca: "disminuïda", gl: "diminuída", eu: "gutxitua",
+                             pt: "diminuta", fr: "diminuée", it: "diminuita").en(notacion)
         }
     }
 
     private static func multiplicidad(_ n: Int) -> Traduccion {
         switch n {
-        case 1: return Traduccion("", "", ca: "", gl: "", eu: "")
-        case 2: return Traduccion("doble ", "doubly ", ca: "doble ", gl: "dobre ", eu: "bi aldiz ")
-        case 3: return Traduccion("triple ", "triply ", ca: "triple ", gl: "triple ", eu: "hiru aldiz ")
-        default: return Traduccion("\(n) veces ", "\(n)× ", ca: "\(n) vegades ", gl: "\(n) veces ", eu: "\(n) aldiz ")
+        case 1: return Traduccion("", "", ca: "", gl: "", eu: "", pt: "", fr: "", it: "")
+        case 2: return Traduccion("doble ", "doubly ", ca: "doble ", gl: "dobre ", eu: "bi aldiz ",
+                                  pt: "duplamente ", fr: "doublement ", it: "doppiamente ")
+        case 3: return Traduccion("triple ", "triply ", ca: "triple ", gl: "triple ", eu: "hiru aldiz ",
+                                  pt: "triplamente ", fr: "triplement ", it: "triplamente ")
+        default: return Traduccion("\(n) veces ", "\(n)× ", ca: "\(n) vegades ", gl: "\(n) veces ", eu: "\(n) aldiz ",
+                                   pt: "\(n) vezes ", fr: "\(n) fois ", it: "\(n) volte ")
         }
     }
 }
@@ -186,15 +196,26 @@ extension Intervalo {
     public var nombre: String { nombre(en: .espanol) }
 
     /// "3ª mayor" en español; "major third", "descending minor sixth" en inglés; "3a major" en
-    /// catalán; "3ª maior" en gallego; "3. handia", "beheranzko 6. txikia" en euskera.
+    /// catalán; "3ª maior" en gallego y en portugués; "3. handia", "beheranzko 6. txikia" en
+    /// euskera; "tierce majeure" en francés; "terza maggiore" en italiano.
     public func nombre(en notacion: Nomenclatura) -> String {
         let calidad = self.calidad.nombre(en: notacion)
         let descendente = direccion == .descendente
         switch notacion.idioma {
         case .espanol, .portugues:
             return "\(numero)ª \(calidad)" + (descendente ? " descendente" : "")
-        case .ingles, .aleman, .frances, .italiano:
+        case .ingles, .aleman:
             return (descendente ? "descending " : "") + "\(calidad) \(Intervalo.ordinalEnIngles(numero))"
+        case .frances:
+            // El unísono es masculino: "unisson augmenté".
+            let nombre = Intervalo.ordinalEnFrances(numero)
+            let concordada = numero == 1 && calidad.hasSuffix("ée") ? String(calidad.dropLast()) : calidad
+            return "\(nombre) \(concordada)" + (descendente ? " descendante" : "")
+        case .italiano:
+            // El unísono es masculino: "unisono aumentato".
+            let nombre = Intervalo.ordinalEnItaliano(numero)
+            let concordada = numero == 1 && calidad.hasSuffix("a") ? String(calidad.dropLast()) + "o" : calidad
+            return "\(nombre) \(concordada)" + (descendente ? " discendente" : "")
         case .catalan:
             return "\(numero)a \(calidad)" + (descendente ? " descendent" : "")
         case .gallego:
@@ -202,6 +223,22 @@ extension Intervalo {
         case .euskera:
             return (descendente ? "beheranzko " : "") + "\(numero). \(calidad)"
         }
+    }
+
+    /// "unisson", "seconde", "tierce"… "octave", "neuvième", "16e".
+    package static func ordinalEnFrances(_ n: Int) -> String {
+        let nombres = [1: "unisson", 2: "seconde", 3: "tierce", 4: "quarte", 5: "quinte", 6: "sixte",
+                       7: "septième", 8: "octave", 9: "neuvième", 10: "dixième", 11: "onzième",
+                       12: "douzième", 13: "treizième", 14: "quatorzième", 15: "double octave"]
+        return nombres[n] ?? "\(n)e"
+    }
+
+    /// "unisono", "seconda", "terza"… "ottava", "nona", "16ª".
+    package static func ordinalEnItaliano(_ n: Int) -> String {
+        let nombres = [1: "unisono", 2: "seconda", 3: "terza", 4: "quarta", 5: "quinta", 6: "sesta",
+                       7: "settima", 8: "ottava", 9: "nona", 10: "decima", 11: "undicesima",
+                       12: "dodicesima", 13: "tredicesima", 14: "quattordicesima", 15: "doppia ottava"]
+        return nombres[n] ?? "\(n)ª"
     }
 
     package static func ordinalEnIngles(_ n: Int) -> String {
@@ -230,13 +267,15 @@ extension Consonancia {
         switch self {
         case .perfecta:
             return Traduccion("consonancia perfecta", "perfect consonance", ca: "consonància perfecta",
-                              gl: "consonancia perfecta", eu: "kontsonantzia perfektua").en(notacion)
+                              gl: "consonancia perfecta", eu: "kontsonantzia perfektua",
+                              pt: "consonância perfeita", fr: "consonance parfaite", it: "consonanza perfetta").en(notacion)
         case .imperfecta:
             return Traduccion("consonancia imperfecta", "imperfect consonance", ca: "consonància imperfecta",
-                              gl: "consonancia imperfecta", eu: "kontsonantzia inperfektua").en(notacion)
+                              gl: "consonancia imperfecta", eu: "kontsonantzia inperfektua",
+                              pt: "consonância imperfeita", fr: "consonance imparfaite", it: "consonanza imperfetta").en(notacion)
         case .disonancia:
             return Traduccion("disonancia", "dissonance", ca: "dissonància", gl: "disonancia",
-                              eu: "disonantzia").en(notacion)
+                              eu: "disonantzia", pt: "dissonância", fr: "dissonance", it: "dissonanza").en(notacion)
         }
     }
 }

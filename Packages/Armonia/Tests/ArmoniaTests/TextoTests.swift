@@ -89,9 +89,17 @@ final class ErroresTests: XCTestCase {
                            "Cannot read \"Do7(b3)\" (character 5): \"b3\" is not a valid tension "
                            + "(♭/♯ go with 5, 9, 11 and 13, and add with 2, 4, 6, 9, 11 and 13)")
             XCTAssertEqual(error.descripcion(en: .espanol), error.description)
-            // El idioma lo da la notación: el alemán usa el inglés; el portugués, el español.
+            // El idioma lo da la notación: el alemán usa el inglés.
             XCTAssertEqual(error.explicacion(en: .aleman), error.explicacion(en: .ingles))
-            XCTAssertEqual(error.explicacion(en: .portugues), error.explicacion)
+            XCTAssertEqual(error.descripcion(en: .portugues),
+                           "Não é possível ler «Do7(b3)» (caractere 5): «b3» não é uma tensão válida "
+                           + "(admitem-se ♭/♯ com 5, 9, 11 e 13, e add com 2, 4, 6, 9, 11 e 13)")
+            XCTAssertEqual(error.descripcion(en: .frances),
+                           "Impossible de lire « Do7(b3) » (caractère 5) : « b3 » n'est pas une tension valide "
+                           + "(♭/♯ s'emploient avec 5, 9, 11 et 13, et add avec 2, 4, 6, 9, 11 et 13)")
+            XCTAssertEqual(error.descripcion(en: .italiano),
+                           "Impossibile leggere «Do7(b3)» (carattere 5): «b3» non è una tensione valida "
+                           + "(si ammettono ♭/♯ con 5, 9, 11 e 13, e add con 2, 4, 6, 9, 11 e 13)")
             XCTAssertEqual(error.descripcion(en: .catalan),
                            "No es pot llegir «Do7(b3)» (caràcter 5): «b3» no és una tensió vàlida "
                            + "(s'admeten ♭/♯ amb 5, 9, 11 i 13, i add amb 2, 4, 6, 9, 11 i 13)")
@@ -147,24 +155,27 @@ final class ErroresTests: XCTestCase {
         }
     }
 
-    /// Todos los motivos tienen explicación en catalán, gallego y euskera, con los mismos datos
-    /// entre comillas latinas que la española.
+    /// Todos los motivos tienen explicación en catalán, gallego, euskera, portugués, francés e
+    /// italiano, con los mismos datos entre comillas latinas que la española.
     func testTodosLosMotivosEnCatalanGallegoEuskera() throws {
         let comillas = try NSRegularExpression(pattern: "«[^»]*»")
         func citas(_ texto: String) -> [String] {
             comillas.matches(in: texto, range: NSRange(texto.startIndex..., in: texto))
                 .map { String(texto[Range($0.range, in: texto)!]) }
+                // En francés, las comillas llevan espacios: « x ».
+                .map { "«" + $0.dropFirst().dropLast().trimmingCharacters(in: .whitespaces) + "»" }
         }
         for motivo in Self.motivos {
             let error = ErrorDeLectura(texto: "x", posicion: 0, motivo: motivo)
             let espanol = error.explicacion
-            for notacion in [Nomenclatura.catalan, .gallego, .euskera] {
+            for notacion in [Nomenclatura.catalan, .gallego, .euskera, .portugues, .frances, .italiano] {
                 let texto = error.explicacion(en: notacion)
                 XCTAssertFalse(texto.isEmpty, "\(motivo) \(notacion)")
                 XCTAssertEqual(Set(citas(texto)), Set(citas(espanol)), "\(motivo) \(notacion): \(texto)")
             }
-            XCTAssertNotEqual(error.explicacion(en: .euskera), espanol, "\(motivo)")
-            XCTAssertEqual(error.explicacion(en: .portugues), espanol, "\(motivo)")
+            for notacion in [Nomenclatura.euskera, .frances, .italiano] {
+                XCTAssertNotEqual(error.explicacion(en: notacion), espanol, "\(motivo) \(notacion)")
+            }
         }
         XCTAssertEqual(ErrorDeLectura(texto: "", posicion: nil, motivo: .textoVacio).descripcion(en: .gallego),
                        "Valor non válido: o texto está baleiro")
@@ -382,7 +393,7 @@ final class OtrasNotacionesTests: XCTestCase {
     func testTextosEnCatalanGallegoEuskera() throws {
         XCTAssertEqual(Nomenclatura.catalan.idiomaDeLosTextos, .catalan)
         XCTAssertEqual(Nomenclatura.aleman.idiomaDeLosTextos, .ingles)
-        XCTAssertEqual(Nomenclatura.portugues.idiomaDeLosTextos, .espanol)
+        XCTAssertEqual(Nomenclatura.portugues.idiomaDeLosTextos, .portugues)
         XCTAssertEqual(Nomenclatura.espanolASCII.idiomaDeLosTextos, .espanol)
 
         let sexta = try Intervalo(leyendo: "-6m")
@@ -412,15 +423,14 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Tonalidad(.do).analizar(["Do", "Fa", "Sol7", "Do"]).nombre(en: .euskera), "I–IV–V7–I do maiorrean")
         XCTAssertEqual(Tonalidad(.la, .menor).analizar(["Lam", "Mi7", "Lam"]).nombre(en: .catalan),
                        "i–V7–i en la menor")
-        // En portugués, en español; en alemán, en inglés.
-        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .portugues), "3ª mayor")
+        // En alemán, en inglés.
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .aleman), "major third")
         // Los catálogos también.
         XCTAssertEqual(Acorde("Sol7").nombre(en: .euskera), "sol dominanteko zazpigarrena, oinarrizko egoera")
-        // Todas las traducciones tienen los cinco textos, y las demás notaciones toman el de su idioma.
-        let t = Traduccion("es", "en", ca: "ca", gl: "gl", eu: "eu")
+        // Todas las traducciones tienen los ocho textos, y el alemán toma el inglés.
+        let t = Traduccion("es", "en", ca: "ca", gl: "gl", eu: "eu", pt: "pt", fr: "fr", it: "it")
         XCTAssertEqual(Nomenclatura.allCases.map(t.en),
-                       ["es", "es", "en", "en", "en", "en", "en", "ca", "gl", "eu", "es"])
+                       ["es", "es", "en", "en", "en", "fr", "it", "ca", "gl", "eu", "pt"])
     }
 
     /// Los nombres de los catálogos (tipos de acorde y de escala, instrumentos, ciclos) en catalán,
@@ -429,7 +439,7 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .catalan), "sèptima de dominant")
         XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .gallego), "sétima de dominante")
         XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .euskera), "dominanteko zazpigarrena")
-        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .portugues), "séptima de dominante")
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .portugues), "sétima de dominante")
         XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .catalan), "sol sèptima de dominant, primera inversió")
         XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .gallego), "sol sétima de dominante, primeira inversión")
         XCTAssertEqual(Acorde("Do/Re").nombre(en: .euskera), "do maiorra, baxua re dela")
@@ -466,6 +476,66 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(CicloNeorriemanniano.hexatonico.nombre(en: .catalan), "cicle hexatònic")
         XCTAssertEqual(CicloNeorriemanniano.lr.nombre(en: .euskera), "LR zikloa")
         XCTAssertEqual(CicloNeorriemanniano.octatonico.nombre(en: .ingles), CicloNeorriemanniano.octatonico.nombreEnIngles)
+    }
+
+    /// Los textos del motor y los catálogos en portugués, francés e italiano.
+    func testTextosEnPortuguesFrancesItaliano() throws {
+        XCTAssertEqual(Nomenclatura.frances.idiomaDeLosTextos, .frances)
+        XCTAssertEqual(Nomenclatura.italiano.idiomaDeLosTextos, .italiano)
+
+        let sexta = try Intervalo(leyendo: "-6m")
+        XCTAssertEqual(sexta.nombre(en: .portugues), "6ª menor descendente")
+        XCTAssertEqual(sexta.nombre(en: .frances), "sixte mineure descendante")
+        XCTAssertEqual(sexta.nombre(en: .italiano), "sesta minore discendente")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .portugues), "3ª maior")
+        XCTAssertEqual(Intervalo.quintaJusta.nombre(en: .frances), "quinte juste")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .italiano), "terza maggiore")
+        // El unísono es masculino.
+        let unisono = try Intervalo(leyendo: "1A")
+        XCTAssertEqual(unisono.nombre(en: .frances), "unisson augmenté")
+        XCTAssertEqual(unisono.nombre(en: .italiano), "unisono aumentato")
+        XCTAssertEqual(CalidadDeIntervalo.disminuida(2).nombre(en: .frances), "doublement diminuée")
+        XCTAssertEqual(Consonancia.perfecta.nombre(en: .italiano), "consonanza perfetta")
+        XCTAssertEqual(PapelEnAcorde.fundamental.nombre(en: .frances), "fondamentale")
+        XCTAssertEqual(NombreDeGrado.sensible.nombre(en: .portugues), "sensível")
+        XCTAssertEqual(Clave.sol.nombre(en: .italiano), "chiave di violino")
+        XCTAssertEqual(Duracion(.negra, puntillos: 1).nombre(en: .frances), "noire pointée")
+        XCTAssertEqual(Duracion(.corchea, puntillos: 2).nombre(en: .italiano), "croma doppiamente puntata")
+        XCTAssertEqual(Figura.blanca.nombre(en: .portugues), "mínima")
+        XCTAssertEqual(Cadencia.Tipo.rota.nombre(en: .frances), "cadence rompue")
+        XCTAssertEqual(Tonalidad(.do).analizar(["Do", "Fa", "Sol7", "Do"]).nombre(en: .portugues), "I–IV–V7–I em dó maior")
+        XCTAssertEqual(Tonalidad(.la, .menor).analizar(["Lam", "Mi7", "Lam"]).nombre(en: .italiano),
+                       "i–V7–i in la minore")
+
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .frances), "septième de dominante")
+        XCTAssertEqual(TipoDeAcorde.dominanteSeptima.nombre(en: .italiano), "settima di dominante")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .portugues), "sol sétima de dominante, primeira inversão")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .frances), "sol septième de dominante, premier renversement")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .italiano), "sol settima di dominante, primo rivolto")
+        XCTAssertEqual(Acorde("Do/Re").nombre(en: .italiano), "do maggiore, con il basso in re")
+        for (_, nombre) in TipoDeAcorde.nombresConocidos {
+            XCTAssertFalse(nombre.portugues.isEmpty || nombre.frances.isEmpty || nombre.italiano.isEmpty, nombre.espanol)
+        }
+
+        XCTAssertEqual(Escala(.re, .dorico).nombre(en: .frances), "ré dorien")
+        XCTAssertEqual(Escala(.la, .menorArmonica).nombre(en: .italiano), "la minore armonica")
+        XCTAssertEqual(Escala("dó maior"), Escala("Do mayor"))
+        XCTAssertEqual(Escala(.re, .hirajoshi).nombre(en: .frances), "ré " + TipoDeEscala.hirajoshi.nombre)
+        // Cada escala del catálogo tiene nombre en los tres idiomas; la portuguesa se vuelve a leer igual.
+        for tipo in TipoDeEscala.todos {
+            XCTAssertNotNil(TipoDeEscala.nombreRomanicoPorTipo[tipo], tipo.nombre)
+            let escala = Escala(.re, tipo)
+            let nombre = escala.nombre(en: .portugues)
+            XCTAssertEqual(Escala(texto: nombre), escala, "\(nombre) (\(tipo.nombre))")
+        }
+
+        XCTAssertEqual(Instrumento.clarineteEnSib.nombre(en: .frances), "clarinette en si♭")
+        XCTAssertEqual(Instrumento.violin.nombre(en: .portugues), "violino")
+        XCTAssertEqual(Instrumento.saxofonAlto.nombre(en: .italiano), "sassofono contralto")
+        for instrumento in Instrumento.todos {
+            XCTAssertNotNil(Instrumento.nombresRomanicos[instrumento.nombre], instrumento.nombre)
+        }
+        XCTAssertEqual(CicloNeorriemanniano.hexatonico.nombre(en: .italiano), "ciclo esatonico")
     }
 
     func testPortugues() {
@@ -507,9 +577,9 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Nomenclatura.frances.vocabulario, .ingles)
         XCTAssertEqual(Nomenclatura.espanolASCII.vocabulario, .espanol)
         XCTAssertEqual(Nomenclatura(idioma: .italiano, ascii: false), .italiano)
-        // El resto del vocabulario sale en inglés.
+        // En alemán, el resto del vocabulario sale en inglés.
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: .aleman), "D dorian")
-        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .frances), "major third")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .aleman), "major third")
         // Todos los nombres de nota (hasta cuatro alteraciones) vuelven a leerse igual.
         for notacion in [Nomenclatura.aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues] {
             for quintas in -29...33 {

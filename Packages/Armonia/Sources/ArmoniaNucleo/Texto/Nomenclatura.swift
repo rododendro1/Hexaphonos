@@ -10,18 +10,18 @@
 /// | `.ingles` | F# | major third | dominant seventh | D dorian |
 /// | `.inglesUnicode` | F♯ | major third | dominant seventh | D dorian |
 /// | `.aleman` | Fis | major third | dominant seventh | Fis dorian |
-/// | `.frances` | fa dièse | major third | dominant seventh | fa dièse dorian |
-/// | `.italiano` | fa diesis | major third | dominant seventh | fa diesis dorian |
+/// | `.frances` | fa dièse | tierce majeure | septième de dominante | fa dièse dorien |
+/// | `.italiano` | fa diesis | terza maggiore | settima di dominante | fa diesis dorico |
 /// | `.catalan` | fa sostingut | 3a major | sèptima de dominant | fa sostingut dòric |
 /// | `.gallego` | fa sostido | 3ª maior | sétima de dominante | fa sostido dórico |
 /// | `.euskera` | fa diesa | 3. handia | dominanteko zazpigarrena | fa diesa doriarra |
-/// | `.portugues` | fá sustenido | 3ª mayor | séptima de dominante | fá sustenido dórico |
+/// | `.portugues` | fá sustenido | 3ª maior | sétima de dominante | fá sustenido dórico |
 ///
 /// En alemán, francés, italiano, catalán, gallego, euskera y portugués están traducidos los nombres
 /// de nota, de alteración y los modos de las tonalidades (Fis-Dur, fa dièse majeur, re bemoll major,
 /// fá sustenido maior). Los textos del motor (mensajes de error, intervalos, cadencias…) y los
-/// nombres de los catálogos (acordes, escalas, instrumentos) están además en catalán, gallego y
-/// euskera; en las otras tres salen en inglés, y en portugués, en español (`idiomaDeLosTextos`).
+/// nombres de los catálogos (acordes, escalas, instrumentos) están además en todos esos idiomas
+/// salvo el alemán, en el que salen en inglés (`idiomaDeLosTextos`).
 public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     /// Español con símbolos tipográficos: Do, Fa♯, Si♭.
     case espanol

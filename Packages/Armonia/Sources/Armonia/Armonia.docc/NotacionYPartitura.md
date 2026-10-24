@@ -68,13 +68,13 @@ Escala("ré dórico")                                 // Re dórico
   un acorde se escribe como su fundamental (`Acorde("Sol7/Si")`, `Acorde("G7/B")`, pero no
   «Sol7/B», que da el error `.idiomasMezclados`).
 - Los textos del motor (mensajes de error, intervalos, calidades, papeles en el acorde, grados,
-  claves, figuras, cadencias y faltas de conducción) están en español, inglés, catalán, gallego y
-  euskera; en alemán, francés e italiano salen en inglés, y en portugués, en español. Es lo que
-  indica `notacion.idiomaDeLosTextos`, y cada texto es una `Traduccion` con los cinco idiomas.
+  claves, figuras, cadencias y faltas de conducción) están en español, inglés, catalán, gallego,
+  euskera, portugués, francés e italiano; en alemán salen en inglés. Es lo que indica
+  `notacion.idiomaDeLosTextos`, y cada texto es una `Traduccion` con los ocho idiomas.
 - Los nombres de los catálogos (tipos de acorde y de escala, instrumentos) siguen el mismo
   `idiomaDeLosTextos`. Los nombres tradicionales de escala (raga, maqam, pentatónicas japonesas…)
   se escriben igual en todos los idiomas, y una escala se lee también con su nombre en catalán,
-  gallego o euskera (`Escala("re doriarra")`).
+  gallego, euskera o portugués (`Escala("re doriarra")`, `Escala("dó maior")`).
 
 ```swift
 Intervalo.terceraMayor.nombre(en: .catalan)        // "3a major"
@@ -83,6 +83,10 @@ Intervalo.sextaMenor.nombre(en: .euskera)          // "6. txikia"
 Cadencia.Tipo.rota.nombre(en: .catalan)            // "cadència trencada"
 Escala(.re, .dorico).nombre(en: .euskera)          // "re doriarra"
 Acorde("Sol7/Si").nombre(en: .catalan)           // "sol sèptima de dominant, primera inversió"
+Intervalo.terceraMayor.nombre(en: .frances)        // "tierce majeure"
+Cadencia.Tipo.rota.nombre(en: .italiano)           // "cadenza d'inganno"
+Escala(.re, .dorico).nombre(en: .frances)          // "ré dorien"
+Acorde("Sol7/Si").nombre(en: .portugues)         // "sol sétima de dominante, primeira inversão"
 ```
 
 ## Alteraciones
@@ -130,10 +134,10 @@ Cada tipo tiene un inicializador `init(leyendo:)` que lanza `ErrorDeLectura` con
 texto, el carácter donde se detuvo y el motivo. Los inicializadores opcionales
 (`Acorde(texto: …)`) siguen existiendo y devuelven `nil`.
 
-El mensaje está en español (`description`, `explicacion`) y también en inglés, catalán, gallego y
-euskera: `descripcion(en:)` y `explicacion(en:)` usan el idioma de los textos de la notación
-(`notacion.idiomaDeLosTextos`), como los nombres de intervalos: inglés para `.ingles`, `.aleman`,
-`.frances` e `.italiano`; español para `.espanol` y `.portugues`.
+El mensaje está en español (`description`, `explicacion`) y también en inglés, catalán, gallego,
+euskera, portugués, francés e italiano: `descripcion(en:)` y `explicacion(en:)` usan el idioma de
+los textos de la notación (`notacion.idiomaDeLosTextos`), como los nombres de intervalos; con
+`.aleman` sale en inglés.
 
 ```swift
 do {

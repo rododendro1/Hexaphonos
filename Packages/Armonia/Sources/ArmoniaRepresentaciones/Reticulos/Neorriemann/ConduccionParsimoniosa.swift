@@ -206,7 +206,8 @@ public struct ConduccionMinima: Hashable, Sendable, CustomStringConvertible {
         let n = total
         let semitonos = Traduccion(n == 1 ? "1 semitono" : "\(n) semitonos", n == 1 ? "1 semitone" : "\(n) semitones",
                                    ca: n == 1 ? "1 semitò" : "\(n) semitons", gl: n == 1 ? "1 semiton" : "\(n) semitons",
-                                   eu: "\(n) tonuerdi").en(notacion)
+                                   eu: "\(n) tonuerdi",
+                                   pt: n == 1 ? "1 semitom" : "\(n) semitons", fr: n == 1 ? "1 demi-ton" : "\(n) demi-tons", it: n == 1 ? "1 semitono" : "\(n) semitoni").en(notacion)
         return voces.joined(separator: ", ") + ": " + semitonos
     }
 }

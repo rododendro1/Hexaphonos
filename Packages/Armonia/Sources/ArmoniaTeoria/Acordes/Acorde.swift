@@ -101,20 +101,21 @@ public struct Acorde: Hashable, Sendable {
 
     /// "Do séptima de dominante, primera inversión", "C dominant seventh, first inversion",
     /// "C major over D", "do sèptima de dominant, primera inversió", "do dominanteko zazpigarrena,
-    /// lehen inbertsioa". En portugués, como en español.
+    /// lehen inbertsioa", "dó sétima de dominante, primeira inversão", "sol septième de dominante,
+    /// premier renversement", "sol settima di dominante, primo rivolto".
     public func nombre(en notacion: Nomenclatura) -> String {
-        let idioma: Idioma
-        switch notacion.idioma {
-        case .espanol, .portugues: return nombre
-        case .ingles, .aleman, .frances, .italiano: idioma = .ingles
-        case .catalan, .gallego, .euskera: idioma = notacion.idioma
-        }
         let raiz = fundamental.nombre(en: notacion)
         let bajo = self.bajo.nombre(en: notacion)
         let tipo = self.tipo.nombre(en: notacion)
         let inversiones: [String]
         let inversionN: String, conBajo: String
-        switch idioma {
+        switch notacion.idioma {
+        case .espanol: return nombre
+        case .ingles, .aleman:
+            guard let i = inversion else { return "\(raiz) \(tipo) over \(bajo)" }
+            let enIngles = ["root position", "first inversion", "second inversion", "third inversion",
+                            "fourth inversion", "fifth inversion"]
+            return "\(raiz) \(tipo), " + (i < enIngles.count ? enIngles[i] : "inversion \(i)")
         case .catalan:
             inversiones = ["estat fonamental", "primera inversió", "segona inversió", "tercera inversió",
                            "quarta inversió", "cinquena inversió"]
@@ -127,15 +128,22 @@ public struct Acorde: Hashable, Sendable {
             inversiones = ["oinarrizko egoera", "lehen inbertsioa", "bigarren inbertsioa", "hirugarren inbertsioa",
                            "laugarren inbertsioa", "bosgarren inbertsioa"]
             inversionN = "inbertsioa"; conBajo = "baxua \(bajo) dela"
-        case .espanol, .portugues, .ingles, .aleman, .frances, .italiano:
-            guard let i = inversion else { return "\(raiz) \(tipo) over \(bajo)" }
-            let enIngles = ["root position", "first inversion", "second inversion", "third inversion",
-                            "fourth inversion", "fifth inversion"]
-            return "\(raiz) \(tipo), " + (i < enIngles.count ? enIngles[i] : "inversion \(i)")
+        case .portugues:
+            inversiones = ["estado fundamental", "primeira inversão", "segunda inversão", "terceira inversão",
+                           "quarta inversão", "quinta inversão"]
+            inversionN = "inversão"; conBajo = "com o baixo em \(bajo)"
+        case .frances:
+            inversiones = ["état fondamental", "premier renversement", "deuxième renversement",
+                           "troisième renversement", "quatrième renversement", "cinquième renversement"]
+            inversionN = "renversement"; conBajo = "avec la basse en \(bajo)"
+        case .italiano:
+            inversiones = ["stato fondamentale", "primo rivolto", "secondo rivolto", "terzo rivolto",
+                           "quarto rivolto", "quinto rivolto"]
+            inversionN = "rivolto"; conBajo = "con il basso in \(bajo)"
         }
         guard let i = inversion else { return "\(raiz) \(tipo), \(conBajo)" }
         let detalle = i < inversiones.count ? inversiones[i]
-            : (idioma == .euskera ? "\(i). \(inversionN)" : "\(inversionN) \(i)")
+            : (notacion.idioma == .euskera ? "\(i). \(inversionN)" : "\(inversionN) \(i)")
         return "\(raiz) \(tipo), \(detalle)"
     }
 

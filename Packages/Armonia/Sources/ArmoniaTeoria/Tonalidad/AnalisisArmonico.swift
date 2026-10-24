@@ -30,12 +30,15 @@ public enum FuncionTonal: Hashable, Sendable, CaseIterable, CustomStringConverti
 
     public func nombre(en notacion: Nomenclatura) -> String {
         switch self {
-        case .tonica: return Traduccion("tónica", "tonic", ca: "tònica", gl: "tónica", eu: "tonika").en(notacion)
+        case .tonica: return Traduccion("tónica", "tonic", ca: "tònica", gl: "tónica", eu: "tonika",
+                                        pt: "tônica", fr: "tonique", it: "tonica").en(notacion)
         case .subdominante:
             return Traduccion("subdominante", "subdominant", ca: "subdominant", gl: "subdominante",
-                              eu: "subdominantea").en(notacion)
+                              eu: "subdominantea",
+                              pt: "subdominante", fr: "sous-dominante", it: "sottodominante").en(notacion)
         case .dominante:
-            return Traduccion("dominante", "dominant", ca: "dominant", gl: "dominante", eu: "dominantea").en(notacion)
+            return Traduccion("dominante", "dominant", ca: "dominant", gl: "dominante", eu: "dominantea",
+                              pt: "dominante", fr: "dominante", it: "dominante").en(notacion)
         }
     }
 

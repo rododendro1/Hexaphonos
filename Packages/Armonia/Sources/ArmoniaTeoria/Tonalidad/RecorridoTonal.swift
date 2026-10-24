@@ -68,12 +68,15 @@ public struct Modulacion: Hashable, Sendable, CustomStringConvertible {
             + " " + Tonalidad.declinar(a, "era") + ", \(n). akordean"
         var texto = Traduccion("De \(de) a \(a) en el acorde \(n)", "From \(de) to \(a) at chord \(n)",
                                ca: "De \(de) a \(a) a l'acord \(n)", gl: "De \(de) a \(a) no acorde \(n)",
-                               eu: enEuskera).en(notacion)
+                               eu: enEuskera,
+                               pt: "De \(de) para \(a) no acorde \(n)", fr: "De \(de) à \(a) à l'accord \(n)", it: "Da \(de) a \(a) all'accordo \(n)").en(notacion)
         if let pivote {
-            texto += " (" + Traduccion("pivote", "pivot", ca: "pivot", gl: "pivote", eu: "pibota").en(notacion)
+            texto += " (" + Traduccion("pivote", "pivot", ca: "pivot", gl: "pivote", eu: "pibota",
+                                       pt: "pivô", fr: "pivot", it: "perno").en(notacion)
                 + ": " + pivote.descripcion(en: notacion) + ")"
         } else {
-            texto += Traduccion(" (directa)", " (direct)", ca: " (directa)", gl: " (directa)", eu: " (zuzena)").en(notacion)
+            texto += Traduccion(" (directa)", " (direct)", ca: " (directa)", gl: " (directa)", eu: " (zuzena)",
+                                pt: " (direta)", fr: " (directe)", it: " (diretta)").en(notacion)
         }
         return texto
     }

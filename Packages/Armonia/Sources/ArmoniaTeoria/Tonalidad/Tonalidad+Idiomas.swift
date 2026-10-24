@@ -34,13 +34,15 @@ extension Tonalidad {
 }
 
 extension Tonalidad {
-    /// La tonalidad como lugar, en los cinco idiomas de los textos: "en Do mayor", "in C major",
-    /// "en do major", "en do maior" y, en euskera, con el inesivo: "do maiorrean".
+    /// La tonalidad como lugar, en los idiomas de los textos: "en Do mayor", "in C major",
+    /// "en do major", "en do maior", "em dó maior", "en do majeur", "in do maggiore" y, en euskera,
+    /// con el inesivo: "do maiorrean".
     package func lugar(en notacion: Nomenclatura) -> String {
         let completo = self.nombre(en: notacion)
         switch notacion.idioma {
-        case .espanol, .portugues, .catalan, .gallego: return "en " + completo
-        case .ingles, .aleman, .frances, .italiano: return "in " + completo
+        case .espanol, .catalan, .gallego, .frances: return "en " + completo
+        case .portugues: return "em " + completo
+        case .ingles, .aleman, .italiano: return "in " + completo
         case .euskera: return Tonalidad.declinar(completo, "ean")
         }
     }

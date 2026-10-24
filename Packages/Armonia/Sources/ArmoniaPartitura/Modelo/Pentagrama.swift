@@ -156,14 +156,18 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
         self.clave = clave
     }
 
-    /// "clarinete en si♭", "B♭ clarinet", "clarinet en si♭", "clarinete en si♭", "si♭ klarinetea".
+    /// "clarinete en si♭", "B♭ clarinet", "clarinet en si♭", "clarinete en si♭", "si♭ klarinetea",
+    /// "clarinete em si♭", "clarinette en si♭", "clarinetto in si♭".
     public func nombre(en notacion: Nomenclatura) -> String {
         switch notacion.idioma {
-        case .espanol, .portugues: return nombre
-        case .ingles, .aleman, .frances, .italiano: return nombreEnIngles
+        case .espanol: return nombre
+        case .ingles, .aleman: return nombreEnIngles
         case .catalan: return Instrumento.nombresPeninsulares[nombre]?.catalan ?? nombre
         case .gallego: return Instrumento.nombresPeninsulares[nombre]?.gallego ?? nombre
         case .euskera: return Instrumento.nombresPeninsulares[nombre]?.euskera ?? nombre
+        case .portugues: return Instrumento.nombresRomanicos[nombre]?.portugues ?? nombre
+        case .frances: return Instrumento.nombresRomanicos[nombre]?.frances ?? nombre
+        case .italiano: return Instrumento.nombresRomanicos[nombre]?.italiano ?? nombre
         }
     }
 

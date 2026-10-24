@@ -2,6 +2,16 @@
 
 ## Sin publicar
 
+### Textos en portugués, francés e italiano
+
+- Los textos del motor y los nombres de los catálogos salen también en portugués, francés e italiano con esas
+  notaciones: antes salían en español (portugués) o en inglés (francés e italiano). `Traduccion` pide ahora ocho
+  textos (`pt:`, `fr:`, `it:`), y `idiomaDeLosTextos` solo cambia el alemán, que sigue en inglés.
+  `Intervalo.terceraMayor.nombre(en: .frances)` es «tierce majeure»; `Escala(.re, .dorico).nombre(en: .italiano)`,
+  «re dorico»; `Acorde("Sol7/Si").nombre(en: .portugues)`, «sol sétima de dominante, primeira inversão».
+- Las escalas se leen también con su nombre en portugués: `Escala("dó maior")`.
+- En la línea de comandos, `--idioma pt|fr|it` y la ayuda en esos idiomas.
+
 ### Textos en catalán, gallego y euskera
 
 - Los textos del motor salen en catalán, gallego y euskera con esas notaciones, además de en español e inglés:

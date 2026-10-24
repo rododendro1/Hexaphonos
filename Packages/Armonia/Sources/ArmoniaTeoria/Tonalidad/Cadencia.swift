@@ -44,7 +44,8 @@ public struct Cadencia: Hashable, Sendable, CustomStringConvertible {
     public func descripcion(en notacion: Nomenclatura) -> String {
         let pasos = "\(acorde + 1) → \(acorde + 2)"
         let lugar = Traduccion("acordes \(pasos)", "chords \(pasos)", ca: "acords \(pasos)", gl: "acordes \(pasos)",
-                               eu: "\(pasos) akordeak").en(notacion)
+                               eu: "\(pasos) akordeak",
+                               pt: "acordes \(pasos)", fr: "accords \(pasos)", it: "accordi \(pasos)").en(notacion)
         let nombre = tipo.nombre(en: notacion)
         return nombre.prefix(1).uppercased() + nombre.dropFirst()
             + " " + acordes.map(\.cifrado).joined(separator: "–") + " (\(lugar))"
@@ -105,16 +106,20 @@ extension Cadencia.Tipo: Nombrable, CustomStringConvertible {
         switch self {
         case .autentica:
             return Traduccion("cadencia auténtica", "authentic cadence", ca: "cadència autèntica",
-                              gl: "cadencia auténtica", eu: "kadentzia autentikoa").en(notacion)
+                              gl: "cadencia auténtica", eu: "kadentzia autentikoa",
+                              pt: "cadência autêntica", fr: "cadence parfaite", it: "cadenza perfetta").en(notacion)
         case .plagal:
             return Traduccion("cadencia plagal", "plagal cadence", ca: "cadència plagal", gl: "cadencia plagal",
-                              eu: "kadentzia plagala").en(notacion)
+                              eu: "kadentzia plagala",
+                              pt: "cadência plagal", fr: "cadence plagale", it: "cadenza plagale").en(notacion)
         case .rota:
             return Traduccion("cadencia rota", "deceptive cadence", ca: "cadència trencada", gl: "cadencia rota",
-                              eu: "kadentzia hautsia").en(notacion)
+                              eu: "kadentzia hautsia",
+                              pt: "cadência de engano", fr: "cadence rompue", it: "cadenza d'inganno").en(notacion)
         case .semicadencia:
             return Traduccion("semicadencia", "half cadence", ca: "semicadència", gl: "semicadencia",
-                              eu: "erdi-kadentzia").en(notacion)
+                              eu: "erdi-kadentzia",
+                              pt: "semicadência", fr: "demi-cadence", it: "semicadenza").en(notacion)
         }
     }
 
