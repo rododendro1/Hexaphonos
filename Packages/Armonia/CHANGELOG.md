@@ -8,6 +8,14 @@
   por idioma (de 765 a 458 líneas). Los textos no cambian, y un motivo nuevo no compila sin sus ocho idiomas.
 - Los `switch` sobre `Nomenclatura` de `Nota(leyendo:en:)`, `Altura(leyendo:en:)` y `Nota.nombreCompacto(en:)`
   ya no tienen `default`: el compilador avisa al añadir una notación.
+- `Nomenclatura` deja de ser un `enum` y pasa a ser un `struct` con dos partes: `escritura`
+  (`EscrituraDeNotas`, cómo se escriben las notas) y `textos` (el `Idioma` de los textos). `.espanol`,
+  `.ruso`… siguen existiendo como constantes, y `conTextos(en:)`, `notas`, `idioma` e `idiomaDeLosTextos` no
+  cambian. Desaparece el caso `.combinada(notas:textos:)`: `Nomenclatura.combinada(notas:textos:)` se sigue
+  aceptando, marcada como obsoleta, y se escribe `Nomenclatura(escritura: .ruso, textos: .espanol)`.
+  `esCombinada` dice si los textos van en otro idioma. Los `switch` que antes iban sobre `Nomenclatura` van
+  ahora sobre `escritura`, sin `default`. Un `switch` sobre `Nomenclatura` fuera del paquete tiene que pasar a
+  `escritura`.
 
 ### Notas y textos en idiomas distintos
 

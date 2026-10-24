@@ -629,10 +629,17 @@ final class OtrasNotacionesTests: XCTestCase {
     /// Las notas en una notación y los textos en otro idioma.
     func testNotasYTextosPorSeparado() {
         let rusoEnEspanol = Nomenclatura.ruso.conTextos(en: .espanol)
-        XCTAssertEqual(rusoEnEspanol, .combinada(notas: .ruso, textos: .espanol))
+        XCTAssertEqual(rusoEnEspanol, Nomenclatura(escritura: .ruso, textos: .espanol))
         XCTAssertEqual(rusoEnEspanol.idioma, .ruso)
         XCTAssertEqual(rusoEnEspanol.idiomaDeLosTextos, .espanol)
         XCTAssertEqual(rusoEnEspanol.notas, .ruso)
+        XCTAssertEqual(rusoEnEspanol.escritura, .ruso)
+        XCTAssertEqual(rusoEnEspanol.textos, .espanol)
+        XCTAssertTrue(rusoEnEspanol.esCombinada)
+        XCTAssertFalse(Nomenclatura.ruso.esCombinada)
+        XCTAssertEqual(Nomenclatura.ruso.textos, .ingles)
+        XCTAssertEqual(Nomenclatura(escritura: .aleman, textos: .aleman), .aleman)
+        XCTAssertEqual(Nomenclatura.allCases.map(\.escritura), EscrituraDeNotas.allCases)
         XCTAssertEqual(Acorde("Sol7/Si").nombre(en: rusoEnEspanol), "соль séptima de dominante, primera inversión")
         XCTAssertEqual(Acorde("Sol7/La").nombre(en: rusoEnEspanol), "соль séptima de dominante, con bajo en ля")
         XCTAssertEqual(Acorde("Fa#m7").cifrado(en: rusoEnEspanol), "Фа♯m7")
@@ -653,7 +660,7 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Nomenclatura.catalan.conTextos(en: .catalan), .catalan)
         XCTAssertEqual(Nomenclatura.aleman.conTextos(en: .aleman), .aleman)
         XCTAssertEqual(Nomenclatura.griego.conTextos(en: .ingles), .griego)
-        XCTAssertEqual(rusoEnEspanol.conTextos(en: .frances), .combinada(notas: .ruso, textos: .frances))
+        XCTAssertEqual(rusoEnEspanol.conTextos(en: .frances), Nomenclatura(escritura: .ruso, textos: .frances))
         XCTAssertEqual(rusoEnEspanol.conTextos(en: .ingles), .ruso)
         XCTAssertFalse(Nomenclatura.allCases.contains(rusoEnEspanol))
         // Los mensajes de error.

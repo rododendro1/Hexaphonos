@@ -56,7 +56,7 @@ public struct Altura: Hashable, Sendable {
     /// `Altura(leyendo: "ré bémol 3", en: .frances)`. La octava es la científica (Do4 = do central).
     public init(leyendo texto: String, en notacion: Nomenclatura) throws {
         let notacion = notacion.notas
-        switch notacion {
+        switch notacion.escritura {
         case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let limpio = texto.trimmingEspacios()
             let cifras = limpio.reversed().prefix(while: { $0.isNumber || $0 == "-" })
@@ -70,8 +70,7 @@ public struct Altura: Hashable, Sendable {
             } catch let error as ErrorDeLectura {
                 throw ErrorDeLectura(texto: texto, posicion: 0, motivo: error.motivo)
             }
-        // `notas` nunca es combinada; el caso está para que el `switch` no tenga `default`.
-        case .espanol, .espanolASCII, .ingles, .inglesUnicode, .combinada:
+        case .espanol, .espanolASCII, .ingles, .inglesUnicode:
             try self.init(leyendo: texto)
         }
     }

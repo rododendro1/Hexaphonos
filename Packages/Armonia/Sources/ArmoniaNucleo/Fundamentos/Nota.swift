@@ -198,16 +198,15 @@ public struct Nota: Hashable, Sendable {
     /// No distingue mayúsculas ni tildes. En español e inglés, igual que `init(leyendo:)`.
     public init(leyendo texto: String, en notacion: Nomenclatura) throws {
         let notacion = notacion.notas
-        switch notacion {
+        switch notacion.escritura {
         case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let clave = texto.claveDeBusqueda
             guard let nombre = Nota.porNombre[notacion]?[clave] else {
                 throw ErrorDeLectura(texto: texto, posicion: 0, motivo: .notaNoReconocida)
             }
             self = nombre
-        // `notas` nunca es combinada; el caso está para que el `switch` no tenga `default` y el
-        // compilador avise al añadir una notación.
-        case .espanol, .espanolASCII, .ingles, .inglesUnicode, .combinada:
+        // Sin `default`: el compilador avisa al añadir una notación.
+        case .espanol, .espanolASCII, .ingles, .inglesUnicode:
             try self.init(leyendo: texto)
         }
     }
