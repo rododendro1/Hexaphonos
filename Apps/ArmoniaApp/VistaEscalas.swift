@@ -59,7 +59,7 @@ struct VistaEscalas: View {
             }
         }
         .navigationTitle("Escalas")
-        .toolbarNotacion(clave: $claveDeNotacion)
+        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
     }
 
     private func nombre(_ indice: Int) -> String {

@@ -98,7 +98,7 @@ jobs:
       - uses: actions/checkout@v5
       - name: Compilar
         run: swift build
-      - name: Pruebas (solo la línea de comandos tiene)
+      - name: Pruebas de la línea de comandos
         if: matrix.paquete.nombre == 'ArmoniaCLI'
         run: swift test --parallel
       - name: Ejemplo
@@ -157,7 +157,7 @@ jobs:
           xcode-version: ${{ env.XCODE }}
       - name: Versión de Swift y de Xcode
         run: swift --version && xcodebuild -version
-      - name: Motor
+      - name: Armonia
         run: swift build && swift test --parallel --filter "^ArmoniaTests\\."
         working-directory: Packages/Armonia
       - name: HexaphonosUI

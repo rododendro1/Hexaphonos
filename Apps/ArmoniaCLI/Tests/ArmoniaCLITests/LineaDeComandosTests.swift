@@ -189,7 +189,7 @@ final class LineaDeComandosTests: XCTestCase {
                       "analizar C F G7 C Am D7 G", "armonizar E4 F4 D4 C4", "armonizar C6 B5 C6", "realizar C F G7 C",
                       "realizar C7(9,13)",
                       "voces C3 E4 G4 C5, G2 D4 G4 B4", "plr C PLR", "plr C C", "plr C hexatonico",
-                      "camino G7 Dm7", "vecinos G7", "digitaciones F --tab", "digitaciones C --instrumento ukelele",
+                      "camino G7 Dm7", "vecinos G7", "digitaciones F --diagrama", "digitaciones C --instrumento ukelele",
                       "digitaciones C --instrumento bajo --dedos 1 --traste 0"] {
             let resultado = LineaDeComandos.ejecutar((orden + " --ingles").split(separator: " ").map(String.init))
             XCTAssertEqual(resultado.codigo, 0, "\(orden): \(resultado.error)")
@@ -430,13 +430,17 @@ final class LineaDeComandosTests: XCTestCase {
         XCTAssertTrue(salida("digitaciones C --limite 100 --ingles").contains("C E G C E"))
     }
 
-    func testDigitacionesConTablatura() {
-        let lineas = salida("digitaciones Do --limite 1 --tab").split(separator: "\n").map(String.init)
+    func testDigitacionesConDiagrama() {
+        let lineas = salida("digitaciones Do --limite 1 --diagrama").split(separator: "\n").map(String.init)
         // Encabezado, la forma y una línea por cuerda.
         XCTAssertEqual(lineas.count, 1 + 1 + 6, lineas.joined(separator: "\n"))
         XCTAssertTrue(lineas.dropFirst(2).allSatisfy { $0.contains("|-") })
         // La cuerda más aguda va arriba.
         XCTAssertTrue(lineas[2].contains("Mi"), lineas[2])
+    }
+
+    func testTabSigueSiendoElDiagrama() {
+        XCTAssertEqual(salida("digitaciones Do --limite 1 --tab"), salida("digitaciones Do --limite 1 --diagrama"))
     }
 
     func testVariosAcordesSeparadosPorUnaLineaEnBlanco() {
