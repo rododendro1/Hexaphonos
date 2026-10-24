@@ -32,6 +32,9 @@ final class ConduccionDeVocesTests: XCTestCase {
         XCTAssertEqual(c.problemas.map(\.description), ["Quintas paralelas entre bajo y tenor (acordes 1 → 2)",
                                                          "Octavas paralelas entre bajo y soprano (acordes 1 → 2)"])
         XCTAssertEqual(c.problemas[0].descripcion(en: .ingles), "Parallel fifths between bass and tenor (chords 1 → 2)")
+        XCTAssertEqual(c.problemas[0].descripcion(en: .gallego), "Quintas paralelas entre baixo e tenor (acordes 1 → 2)")
+        XCTAssertEqual(c.problemas[1].descripcion(en: .catalan), "Octaves paral·leles entre baix i soprano (acords 1 → 2)")
+        XCTAssertEqual(c.problemas[0].descripcion(en: .euskera), "Bosgarren paraleloak baxua eta tenorra (1 → 2 akordeak)")
         // Por movimiento contrario también cuentan; el unísono es una octava.
         XCTAssertEqual(problemas("Do3 Sol3 Mi4 Do5 | Sol2 Re4 Sol4 Si4"), [.quintasParalelas])
         XCTAssertEqual(problemas("Do4 Do4 Sol4 | Re4 Re4 La4"), [.superposicion, .octavasParalelas, .quintasParalelas, .quintasParalelas])

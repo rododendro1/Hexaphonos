@@ -12,15 +12,17 @@
 /// | `.aleman` | Fis | major third | dominant seventh | Fis dorian |
 /// | `.frances` | fa dièse | major third | dominant seventh | fa dièse dorian |
 /// | `.italiano` | fa diesis | major third | dominant seventh | fa diesis dorian |
-/// | `.catalan` | fa sostingut | 3ª mayor | séptima de dominante | fa sostingut dórico |
-/// | `.gallego` | fa sostido | 3ª mayor | séptima de dominante | fa sostido dórico |
-/// | `.euskera` | fa diesa | 3ª mayor | séptima de dominante | fa diesa dórico |
+/// | `.catalan` | fa sostingut | 3a major | séptima de dominante | fa sostingut dórico |
+/// | `.gallego` | fa sostido | 3ª maior | séptima de dominante | fa sostido dórico |
+/// | `.euskera` | fa diesa | 3. handia | séptima de dominante | fa diesa dórico |
 /// | `.portugues` | fá sustenido | 3ª mayor | séptima de dominante | fá sustenido dórico |
 ///
 /// En alemán, francés, italiano, catalán, gallego, euskera y portugués están traducidos los nombres
 /// de nota, de alteración y los modos de las tonalidades (Fis-Dur, fa dièse majeur, re bemoll major,
-/// fá sustenido maior); el resto del vocabulario (intervalos, acordes, escalas) sale en inglés en
-/// las tres primeras y en español en las demás, que es lo que da `vocabulario`.
+/// fá sustenido maior). Los textos del motor (mensajes de error, intervalos, cadencias…) están
+/// además en catalán, gallego y euskera; en las otras tres salen en inglés, y en portugués, en
+/// español (`idiomaDeLosTextos`). Los nombres de los catálogos (acordes, escalas) salen en inglés en
+/// alemán, francés e italiano, y en español en las demás, que es lo que da `vocabulario`.
 public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     /// Español con símbolos tipográficos: Do, Fa♯, Si♭.
     case espanol
@@ -75,8 +77,9 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
         }
     }
 
-    /// Idioma de los nombres que no son de nota (intervalos, acordes, escalas…): español en
-    /// español, catalán, gallego, euskera y portugués; inglés en las demás.
+    /// Idioma de los nombres de los catálogos (tipos de acorde y de escala, instrumentos), que solo
+    /// están en español e inglés: español en español, catalán, gallego, euskera y portugués; inglés
+    /// en las demás. Los demás textos siguen `idiomaDeLosTextos`.
     public var vocabulario: Idioma {
         switch idioma {
         case .espanol, .catalan, .gallego, .euskera, .portugues: return .espanol

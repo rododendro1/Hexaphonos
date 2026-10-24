@@ -26,20 +26,16 @@ public enum FuncionTonal: Hashable, Sendable, CaseIterable, CustomStringConverti
         }
     }
 
-    public var nombre: String {
-        switch self {
-        case .tonica: return "tónica"
-        case .subdominante: return "subdominante"
-        case .dominante: return "dominante"
-        }
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
         switch self {
-        case .tonica: return "tonic"
-        case .subdominante: return "subdominant"
-        case .dominante: return "dominant"
+        case .tonica: return Traduccion("tónica", "tonic", ca: "tònica", gl: "tónica", eu: "tonika").en(notacion)
+        case .subdominante:
+            return Traduccion("subdominante", "subdominant", ca: "subdominant", gl: "subdominante",
+                              eu: "subdominantea").en(notacion)
+        case .dominante:
+            return Traduccion("dominante", "dominant", ca: "dominant", gl: "dominante", eu: "dominantea").en(notacion)
         }
     }
 
@@ -106,10 +102,9 @@ public struct AnalisisArmonico: Hashable, Sendable, CustomStringConvertible {
     /// "I–IV–V7–I en Do mayor".
     public var description: String { nombre(en: .espanol) }
 
-    /// "I–IV–V7–I en Do mayor", "I–IV–V7–I in C major".
+    /// "I–IV–V7–I en Do mayor", "I–IV–V7–I in C major", "I–IV–V7–I do maiorrean".
     public func nombre(en notacion: Nomenclatura) -> String {
-        let preposicion = notacion.vocabulario == .ingles ? "in" : "en"
-        return cifrados.joined(separator: "–") + " \(preposicion) " + tonalidad.nombre(en: notacion)
+        cifrados.joined(separator: "–") + " " + tonalidad.lugar(en: notacion)
     }
 
     /// Analiza los acordes buscando antes la tonalidad: entre las más probables por sus notas,

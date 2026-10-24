@@ -196,15 +196,18 @@ Sources/
 ```
 
 Los nombres que dependen del idioma están en dos sitios. Los de los tipos del núcleo (letras y
-alteraciones en las nueve lenguas, y el vocabulario en español e inglés de calidades de intervalo,
-intervalos y consonancias) están en `Texto/Idiomas.swift`. Los de los tipos de las demás capas
+alteraciones en las nueve lenguas, y las calidades de intervalo, los intervalos y las consonancias
+en los cinco idiomas de los textos: español, inglés, catalán, gallego y euskera, con `Traduccion`)
+están en `Texto/Idiomas.swift`, y los mensajes de error, en `Texto/ErrorDeLectura.swift`. Los de los tipos de las demás capas
 (modos y tonalidades, papeles en el acorde, calidades de tríada, grados, claves, figuras,
 duraciones y colores) están junto a cada tipo, en un fichero `X+Idiomas.swift`
 (`find Sources -name '*+Idiomas.swift'` los lista). Para añadir un idioma: un caso en `Idioma` y
 en `Nomenclatura`, y corregir lo que el compilador señale: los `switch` sobre el idioma no tienen
 `default`. Tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano (`Altura(leyendo:en:)`,
 `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`). Los nombres que son datos de un catálogo (tipos
-de acorde y de escala, instrumentos) siguen junto a su catálogo.
+de acorde y de escala, instrumentos) siguen junto a su catálogo, en español e inglés. Para que los
+textos salgan también en un idioma nuevo, se añade un campo a `Traduccion` y su caso en
+`Idioma.deLosTextos`.
 
 Las pruebas rápidas están en `Tests/ArmoniaTests/`, un fichero por carpeta de fuentes
 (`FundamentosTests.swift`, `TonalidadTests.swift`, `PartituraTests.swift`…) más `GeneralTests.swift`, solo con lo que atraviesa todo el motor

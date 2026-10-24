@@ -89,9 +89,18 @@ final class ErroresTests: XCTestCase {
                            "Cannot read \"Do7(b3)\" (character 5): \"b3\" is not a valid tension "
                            + "(♭/♯ go with 5, 9, 11 and 13, and add with 2, 4, 6, 9, 11 and 13)")
             XCTAssertEqual(error.descripcion(en: .espanol), error.description)
-            // El idioma lo da el vocabulario de la notación: el alemán usa el inglés; el catalán, el español.
+            // El idioma lo da la notación: el alemán usa el inglés; el portugués, el español.
             XCTAssertEqual(error.explicacion(en: .aleman), error.explicacion(en: .ingles))
-            XCTAssertEqual(error.explicacion(en: .catalan), error.explicacion)
+            XCTAssertEqual(error.explicacion(en: .portugues), error.explicacion)
+            XCTAssertEqual(error.descripcion(en: .catalan),
+                           "No es pot llegir «Do7(b3)» (caràcter 5): «b3» no és una tensió vàlida "
+                           + "(s'admeten ♭/♯ amb 5, 9, 11 i 13, i add amb 2, 4, 6, 9, 11 i 13)")
+            XCTAssertEqual(error.descripcion(en: .gallego),
+                           "Non se pode ler «Do7(b3)» (carácter 5): «b3» non é unha tensión válida "
+                           + "(admítense ♭/♯ con 5, 9, 11 e 13, e add con 2, 4, 6, 9, 11 e 13)")
+            XCTAssertEqual(error.descripcion(en: .euskera),
+                           "Ezin da «Do7(b3)» irakurri (5. karakterea): «b3» ez da tentsio baliozkoa "
+                           + "(♭/♯ 5, 9, 11 eta 13rekin onartzen dira, eta add 2, 4, 6, 9, 11 eta 13rekin)")
         }
         XCTAssertThrowsError(try Intervalo(leyendo: "5M")) { error in
             XCTAssertEqual((error as! ErrorDeLectura).explicacion(en: .ingles),
@@ -107,9 +116,7 @@ final class ErroresTests: XCTestCase {
                        ["1st", "2nd", "3rd", "4th", "11th", "12th", "13th", "21st", "22nd"])
     }
 
-    /// Todos los motivos tienen explicación en los dos idiomas, y la inglesa no lleva texto en español.
-    func testTodosLosMotivosEnLosDosIdiomas() {
-        let motivos: [ErrorDeLectura.Motivo] = [
+    private static let motivos: [ErrorDeLectura.Motivo] = [
             .textoVacio, .notaNoReconocida, .caracteresSobrantes("x"), .octavaNoValida(""), .octavaNoValida("x"),
             .numeroDeIntervaloNoValido(""), .numeroDeIntervaloNoValido("x"), .calidadNoValida(""),
             .calidadNoValida("X"), .intervaloInexistente(numero: 1, calidad: .disminuida(1)),
@@ -123,6 +130,10 @@ final class ErroresTests: XCTestCase {
             .tipoDeEscalaNoReconocido("x"), .modoNoReconocido("dórico"), .alteracionNoReconocida("?"),
             .duracionNoValida("x"), .compasNoValido("x"), .vocesDistintas,
         ]
+
+    /// Todos los motivos tienen explicación en inglés, y la inglesa no lleva texto en español.
+    func testTodosLosMotivosEnLosDosIdiomas() {
+        let motivos = Self.motivos
         let espanol = ["el ", "la ", " no ", "falta", "sobra", "se esperaba", "tiene", "texto"]
         for motivo in motivos {
             let error = ErrorDeLectura(texto: "x", posicion: 0, motivo: motivo)
@@ -134,6 +145,32 @@ final class ErroresTests: XCTestCase {
                 XCTFail("\(motivo): «\(palabra)» en «\(ingles)»")
             }
         }
+    }
+
+    /// Todos los motivos tienen explicación en catalán, gallego y euskera, con los mismos datos
+    /// entre comillas latinas que la española.
+    func testTodosLosMotivosEnCatalanGallegoEuskera() throws {
+        let comillas = try NSRegularExpression(pattern: "«[^»]*»")
+        func citas(_ texto: String) -> [String] {
+            comillas.matches(in: texto, range: NSRange(texto.startIndex..., in: texto))
+                .map { String(texto[Range($0.range, in: texto)!]) }
+        }
+        for motivo in Self.motivos {
+            let error = ErrorDeLectura(texto: "x", posicion: 0, motivo: motivo)
+            let espanol = error.explicacion
+            for notacion in [Nomenclatura.catalan, .gallego, .euskera] {
+                let texto = error.explicacion(en: notacion)
+                XCTAssertFalse(texto.isEmpty, "\(motivo) \(notacion)")
+                XCTAssertEqual(Set(citas(texto)), Set(citas(espanol)), "\(motivo) \(notacion): \(texto)")
+            }
+            XCTAssertNotEqual(error.explicacion(en: .euskera), espanol, "\(motivo)")
+            XCTAssertEqual(error.explicacion(en: .portugues), espanol, "\(motivo)")
+        }
+        XCTAssertEqual(ErrorDeLectura(texto: "", posicion: nil, motivo: .textoVacio).descripcion(en: .gallego),
+                       "Valor non válido: o texto está baleiro")
+        XCTAssertEqual(ErrorDeLectura(texto: "x", posicion: nil, motivo: .intervaloInexistente(numero: 5, calidad: .mayor))
+                        .explicacion(en: .euskera),
+                       "5. handia ez da existitzen: unisonoa, 4.a, 5.a eta 8.a justuak, gehituak edo gutxituak dira")
     }
 
     func testLosFallablesSiguenDevolviendoNil() {
@@ -323,13 +360,13 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Tonalidad("re bemoll major"), Tonalidad("Reb mayor"))
         XCTAssertEqual(Tonalidad("re bemol maior"), Tonalidad("Reb mayor"))
         XCTAssertEqual(Tonalidad("fa diesa minorra"), Tonalidad("Fa# menor"))
-        // El resto del vocabulario sale en español.
+        // Los nombres de los catálogos salen en español.
         XCTAssertEqual(Nomenclatura.catalan.vocabulario, .espanol)
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: .euskera), "re dórico")
         XCTAssertEqual(Escala("Reb dórico").nombre(en: .catalan), "re bemoll dórico")
         XCTAssertEqual(Escala("re bemoll dórico"), Escala("Reb dórico"))
         XCTAssertEqual(Escala("fa sostido menor armónica"), Escala("Fa# menor armónica"))
-        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .gallego), "3ª mayor")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .gallego), "3ª maior")
         XCTAssertEqual(Alteracion(1).nombre(en: .catalan), "sostingut")
         XCTAssertEqual(Alteracion(-2).nombre(en: .gallego), "dobre bemol")
         XCTAssertEqual(Alteracion(2).nombre(en: .euskera), "diesa bikoitza")
@@ -338,6 +375,51 @@ final class OtrasNotacionesTests: XCTestCase {
         // Los errores de siempre no cambian.
         XCTAssertNil(Nota(texto: "Fa#4"))
         XCTAssertNil(Altura(texto: "Do"))
+    }
+
+    /// Los textos del motor que no son nombres de nota, en catalán, gallego y euskera.
+    func testTextosEnCatalanGallegoEuskera() throws {
+        XCTAssertEqual(Nomenclatura.catalan.idiomaDeLosTextos, .catalan)
+        XCTAssertEqual(Nomenclatura.aleman.idiomaDeLosTextos, .ingles)
+        XCTAssertEqual(Nomenclatura.portugues.idiomaDeLosTextos, .espanol)
+        XCTAssertEqual(Nomenclatura.espanolASCII.idiomaDeLosTextos, .espanol)
+
+        let sexta = try Intervalo(leyendo: "-6m")
+        XCTAssertEqual(sexta.nombre, "6ª menor descendente")
+        XCTAssertEqual(sexta.nombre(en: .catalan), "6a menor descendent")
+        XCTAssertEqual(sexta.nombre(en: .gallego), "6ª menor descendente")
+        XCTAssertEqual(sexta.nombre(en: .euskera), "beheranzko 6. txikia")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .catalan), "3a major")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .euskera), "3. handia")
+        XCTAssertEqual(CalidadDeIntervalo.aumentada(2).nombre(en: .euskera), "bi aldiz gehitua")
+        XCTAssertEqual(CalidadDeIntervalo.disminuida(1).nombre(en: .catalan), "disminuïda")
+        XCTAssertEqual(CalidadDeIntervalo.justa.nombre(en: .gallego), "xusta")
+        XCTAssertEqual(Consonancia.imperfecta.nombre(en: .catalan), "consonància imperfecta")
+        XCTAssertEqual(PapelEnAcorde.fundamental.nombre(en: .euskera), "oinarria")
+        XCTAssertEqual(PapelEnAcorde.tension(11).nombre(en: .catalan), "onzena")
+        XCTAssertEqual(CalidadDeTriada.disminuida.nombre(en: .gallego), "diminuída")
+        XCTAssertEqual(NombreDeGrado.sensible.nombre(en: .euskera), "sentsiblea")
+        XCTAssertEqual(FuncionTonal.dominante.nombre(en: .catalan), "dominant")
+        XCTAssertEqual(Clave.fa.nombre(en: .gallego), "clave de fa")
+        XCTAssertEqual(Clave.sol.nombre(en: .euskera), "sol giltza")
+        XCTAssertEqual(Duracion(.negra, puntillos: 1).nombre(en: .catalan), "negra amb punt")
+        XCTAssertEqual(Duracion(.corchea, puntillos: 1).nombre(en: .euskera), "kortxea puntuduna")
+        XCTAssertEqual(Figura.blanca.nombre(en: .gallego), "branca")
+        XCTAssertEqual(CorrespondenciaDeColores.circuloDeQuintas.nombre(en: .euskera), "bosgarrenen zirkulua")
+        XCTAssertEqual(Cadencia.Tipo.semicadencia.nombre(en: .euskera), "erdi-kadentzia")
+        XCTAssertEqual(ProblemaDeConduccion.Tipo.quintasParalelas.nombre(en: .catalan), "Quintes paral·leles")
+        XCTAssertEqual(Tonalidad(.do).analizar(["Do", "Fa", "Sol7", "Do"]).nombre(en: .euskera), "I–IV–V7–I do maiorrean")
+        XCTAssertEqual(Tonalidad(.la, .menor).analizar(["Lam", "Mi7", "Lam"]).nombre(en: .catalan),
+                       "i–V7–i en la menor")
+        // En portugués, en español; en alemán, en inglés.
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .portugues), "3ª mayor")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .aleman), "major third")
+        // Los catálogos siguen en español.
+        XCTAssertEqual(Acorde("Sol7").nombre(en: .euskera), Acorde("Sol7").nombre)
+        // Todas las traducciones tienen los cinco textos, y las demás notaciones toman el de su idioma.
+        let t = Traduccion("es", "en", ca: "ca", gl: "gl", eu: "eu")
+        XCTAssertEqual(Nomenclatura.allCases.map(t.en),
+                       ["es", "es", "en", "en", "en", "en", "en", "ca", "gl", "eu", "es"])
     }
 
     func testPortugues() {

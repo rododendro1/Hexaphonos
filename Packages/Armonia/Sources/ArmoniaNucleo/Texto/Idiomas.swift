@@ -2,15 +2,16 @@
 //
 // Los nombres que dependen del idioma de los tipos del núcleo: las letras y las alteraciones en
 // las nueve lenguas de `Nomenclatura` (español, inglés, alemán, francés, italiano, catalán,
-// gallego, euskera y portugués), y el vocabulario en español e inglés de las calidades de
-// intervalo, los intervalos y las consonancias.
+// gallego, euskera y portugués), y los nombres de las calidades de intervalo, los intervalos y
+// las consonancias en los cinco idiomas de los textos (`Traduccion`).
 //
 // El de los tipos de las demás capas está junto a cada tipo, en un fichero `X+Idiomas.swift`
 // (`Tonalidad+Idiomas`, `EstructuraDeAcorde+Idiomas`, `Escala+Idiomas`, `Pentagrama+Idiomas`,
 // `Ritmo+Idiomas` y `CorrespondenciaDeColores+Idiomas`): así el núcleo no depende de ellas.
 //
 // Para añadir un idioma: un caso en `Idioma` y en `Nomenclatura`, y sus palabras en esos
-// ficheros. Los `switch` sobre `idioma` no tienen `default`, así que el compilador señala los que
+// ficheros. Para que el motor escriba también sus textos en él: un campo en `Traduccion`, y su
+// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idioma` de los textos. Los `switch` sobre `idioma` no tienen `default`, así que el compilador señala los que
 // faltan; tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano: `Altura(leyendo:en:)`,
 // `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`. Los nombres que son datos de un catálogo
 // (tipos de acorde y de escala, instrumentos) siguen junto a su catálogo.
@@ -150,43 +151,30 @@ extension Nota {
 // MARK: - CalidadDeIntervalo
 
 extension CalidadDeIntervalo {
-    public var nombre: String {
-        switch self {
-        case .justa: return "justa"
-        case .mayor: return "mayor"
-        case .menor: return "menor"
-        case .aumentada(let n): return CalidadDeIntervalo.multiplicidad(n) + "aumentada"
-        case .disminuida(let n): return CalidadDeIntervalo.multiplicidad(n) + "disminuida"
-        }
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
-    /// "justa", "mayor"… en español; "perfect", "major", "doubly diminished"… en inglés.
+    /// "justa", "mayor"… en español; "perfect", "major", "doubly diminished"… en inglés; "justa",
+    /// "major" en catalán; "xusta", "maior" en gallego; "justua", "handia", "bi aldiz gehitua" en euskera.
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
         switch self {
-        case .justa: return "perfect"
-        case .mayor: return "major"
-        case .menor: return "minor"
-        case .aumentada(let n): return CalidadDeIntervalo.multiplicidadInternacional(n) + "augmented"
-        case .disminuida(let n): return CalidadDeIntervalo.multiplicidadInternacional(n) + "diminished"
+        case .justa: return Traduccion("justa", "perfect", ca: "justa", gl: "xusta", eu: "justua").en(notacion)
+        case .mayor: return Traduccion("mayor", "major", ca: "major", gl: "maior", eu: "handia").en(notacion)
+        case .menor: return Traduccion("menor", "minor", ca: "menor", gl: "menor", eu: "txikia").en(notacion)
+        case .aumentada(let n):
+            return CalidadDeIntervalo.multiplicidad(n).en(notacion)
+                + Traduccion("aumentada", "augmented", ca: "augmentada", gl: "aumentada", eu: "gehitua").en(notacion)
+        case .disminuida(let n):
+            return CalidadDeIntervalo.multiplicidad(n).en(notacion)
+                + Traduccion("disminuida", "diminished", ca: "disminuïda", gl: "diminuída", eu: "gutxitua").en(notacion)
         }
     }
 
-    private static func multiplicidadInternacional(_ n: Int) -> String {
+    private static func multiplicidad(_ n: Int) -> Traduccion {
         switch n {
-        case 1: return ""
-        case 2: return "doubly "
-        case 3: return "triply "
-        default: return "\(n)× "
-        }
-    }
-
-    private static func multiplicidad(_ n: Int) -> String {
-        switch n {
-        case 1: return ""
-        case 2: return "doble "
-        case 3: return "triple "
-        default: return "\(n) veces "
+        case 1: return Traduccion("", "", ca: "", gl: "", eu: "")
+        case 2: return Traduccion("doble ", "doubly ", ca: "doble ", gl: "dobre ", eu: "bi aldiz ")
+        case 3: return Traduccion("triple ", "triply ", ca: "triple ", gl: "triple ", eu: "hiru aldiz ")
+        default: return Traduccion("\(n) veces ", "\(n)× ", ca: "\(n) vegades ", gl: "\(n) veces ", eu: "\(n) aldiz ")
         }
     }
 }
@@ -195,15 +183,25 @@ extension CalidadDeIntervalo {
 
 extension Intervalo {
     /// "3ª mayor", "5ª justa descendente".
-    public var nombre: String {
-        "\(numero)ª \(calidad.nombre)" + (direccion == .descendente ? " descendente" : "")
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
-    /// "3ª mayor" en español; "major third", "descending minor sixth" en inglés.
+    /// "3ª mayor" en español; "major third", "descending minor sixth" en inglés; "3a major" en
+    /// catalán; "3ª maior" en gallego; "3. handia", "beheranzko 6. txikia" en euskera.
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
-        return (direccion == .descendente ? "descending " : "")
-            + "\(calidad.nombre(en: .ingles)) \(Intervalo.ordinalEnIngles(numero))"
+        let calidad = self.calidad.nombre(en: notacion)
+        let descendente = direccion == .descendente
+        switch notacion.idioma {
+        case .espanol, .portugues:
+            return "\(numero)ª \(calidad)" + (descendente ? " descendente" : "")
+        case .ingles, .aleman, .frances, .italiano:
+            return (descendente ? "descending " : "") + "\(calidad) \(Intervalo.ordinalEnIngles(numero))"
+        case .catalan:
+            return "\(numero)a \(calidad)" + (descendente ? " descendent" : "")
+        case .gallego:
+            return "\(numero)ª \(calidad)" + (descendente ? " descendente" : "")
+        case .euskera:
+            return (descendente ? "beheranzko " : "") + "\(numero). \(calidad)"
+        }
     }
 
     package static func ordinalEnIngles(_ n: Int) -> String {
@@ -226,20 +224,19 @@ extension Intervalo {
 // MARK: - Consonancia
 
 extension Consonancia {
-    public var nombre: String {
-        switch self {
-        case .perfecta: return "consonancia perfecta"
-        case .imperfecta: return "consonancia imperfecta"
-        case .disonancia: return "disonancia"
-        }
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
         switch self {
-        case .perfecta: return "perfect consonance"
-        case .imperfecta: return "imperfect consonance"
-        case .disonancia: return "dissonance"
+        case .perfecta:
+            return Traduccion("consonancia perfecta", "perfect consonance", ca: "consonància perfecta",
+                              gl: "consonancia perfecta", eu: "kontsonantzia perfektua").en(notacion)
+        case .imperfecta:
+            return Traduccion("consonancia imperfecta", "imperfect consonance", ca: "consonància imperfecta",
+                              gl: "consonancia imperfecta", eu: "kontsonantzia inperfektua").en(notacion)
+        case .disonancia:
+            return Traduccion("disonancia", "dissonance", ca: "dissonància", gl: "disonancia",
+                              eu: "disonantzia").en(notacion)
         }
     }
 }

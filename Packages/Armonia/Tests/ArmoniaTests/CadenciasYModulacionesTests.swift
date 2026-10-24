@@ -40,6 +40,8 @@ final class CadenciasYModulacionesTests: XCTestCase {
         XCTAssertEqual(perfecta.acordes.map(\.cifrado), ["V7", "I"])
         XCTAssertEqual(perfecta.description, "Cadencia auténtica V7–I (acordes 3 → 4)")
         XCTAssertEqual(perfecta.descripcion(en: .ingles), "Authentic cadence V7–I (chords 3 → 4)")
+        XCTAssertEqual(perfecta.descripcion(en: .catalan), "Cadència autèntica V7–I (acords 3 → 4)")
+        XCTAssertEqual(perfecta.descripcion(en: .euskera), "Kadentzia autentikoa V7–I (3 → 4 akordeak)")
         let imperfecta = try AnalisisArmonico.analizar(leyendo: "Do Fa Sol7/Si Do", en: Tonalidad(.do)).cadencias[0]
         XCTAssertFalse(imperfecta.esPerfecta)
         XCTAssertEqual(Cadencia.Tipo.semicadencia.nombre(en: .ingles), "half cadence")
@@ -62,6 +64,12 @@ final class CadenciasYModulacionesTests: XCTestCase {
         XCTAssertEqual(modulacion.description,
                        "De Do mayor a Sol mayor en el acorde 5 (pivote: Lam = vi en Do mayor = ii en Sol mayor)")
         XCTAssertEqual(recorrido.description, "I–IV–V7–I en Do mayor → ii–V7–I en Sol mayor")
+        XCTAssertEqual(modulacion.descripcion(en: .catalan),
+                       "De do major a sol major a l'acord 5 (pivot: Lam = vi en do major = ii en sol major)")
+        XCTAssertEqual(modulacion.descripcion(en: .gallego),
+                       "De do maior a sol maior no acorde 5 (pivote: Lam = vi en do maior = ii en sol maior)")
+        XCTAssertEqual(modulacion.descripcion(en: .euskera),
+                       "Do maiorretik sol maiorrera, 5. akordean (pibota: Lam = vi do maiorrean = ii sol maiorrean)")
         XCTAssertEqual(recorrido.cadencias.map(\.tipo), [.autentica, .autentica])
         XCTAssertEqual(recorrido.cadencias.map(\.tonalidad), [Tonalidad(.do), Tonalidad(.sol)])
         XCTAssertEqual(recorrido.cadencias.map(\.acorde), [2, 5])

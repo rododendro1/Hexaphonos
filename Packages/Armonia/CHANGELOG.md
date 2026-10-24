@@ -2,6 +2,22 @@
 
 ## Sin publicar
 
+### Textos en catalán, gallego y euskera
+
+- Los textos del motor salen en catalán, gallego y euskera con esas notaciones, además de en español e inglés:
+  los mensajes de `ErrorDeLectura`, los nombres de intervalos, calidades, consonancias, papeles en el acorde,
+  calidades de tríada, grados, funciones tonales, claves, figuras y duraciones, cadencias, faltas de conducción,
+  análisis y modulaciones, y los nombres de las pistas MIDI. `Intervalo.terceraMayor.nombre(en: .catalan)` es
+  «3a major»; en euskera, «3. handia».
+- `Traduccion`: un texto en los cinco idiomas, sin valores por omisión, para que el compilador señale el que falta.
+  `Nomenclatura.idiomaDeLosTextos` dice en qué idioma salen: el propio en esos cinco, el inglés en alemán, francés
+  e italiano, y el español en portugués.
+- Cambia la salida con `.catalan`, `.gallego` y `.euskera`, que antes era en español. `Nomenclatura.vocabulario`
+  sigue igual y ahora solo decide los nombres de los catálogos (tipos de acorde y de escala, instrumentos), que
+  siguen en español e inglés.
+- En la línea de comandos, `--idioma ca|gl|eu|es|en` (o `--language`) escribe las notas, las etiquetas y los
+  errores en ese idioma; la ayuda sigue en español o en inglés.
+
 ### Cadencias, modulaciones y armonización
 
 - `AnalisisArmonico.cadencias`: las cadencias de la progresión (`Cadencia`, con su `Tipo`: auténtica, plagal, rota
