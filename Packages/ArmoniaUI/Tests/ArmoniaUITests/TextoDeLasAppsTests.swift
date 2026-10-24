@@ -1,8 +1,8 @@
 import XCTest
 import Armonia
 import Hexagonos
-@testable import HexaphonosUI
-@testable import HexaphonosPresentacion
+@testable import ArmoniaUI
+@testable import ArmoniaPresentacion
 
 // Los textos de la interfaz de las apps y la notación inicial. No usan SwiftUI: se ejecutan también en Linux.
 

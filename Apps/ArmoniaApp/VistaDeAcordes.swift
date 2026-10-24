@@ -1,6 +1,6 @@
 import SwiftUI
 import Armonia
-import HexaphonosUI
+import ArmoniaUI
 
 /// Escribe un cifrado (Sol7/Si, Dom, Fa#m7b5…) y muestra el acorde con sus digitaciones.
 struct VistaDeAcordes: View {

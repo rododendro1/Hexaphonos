@@ -25,7 +25,7 @@ PERMITIDO = {
     "Hexagonos": set(),
     # El motor usa su geometría para el Tonnetz, la tabla armónica y los teclados isomórficos.
     "Armonia": {"Hexagonos"},
-    "HexaphonosUI": {"Armonia", "Hexagonos"},
+    "ArmoniaUI": {"Armonia", "Hexagonos"},
 }
 
 errores = []

@@ -1,7 +1,7 @@
 import Armonia
 
 /// Lo que suena al pulsar «Escuchar» en las apps: notas MIDI con su inicio y su duración, en segundos. Aquí solo
-/// se decide qué suena y cuándo; el reproductor de HexaphonosUI lo toca con el sintetizador del sistema.
+/// se decide qué suena y cuándo; el reproductor de ArmoniaUI lo toca con el sintetizador del sistema.
 ///
 ///     Sonido.acorde(Acorde("Sol7/Si")).eventos.map(\.midi)   // [59, 62, 65, 67]: Si3 Re4 Fa4 Sol4
 public struct Sonido: Hashable, Sendable {

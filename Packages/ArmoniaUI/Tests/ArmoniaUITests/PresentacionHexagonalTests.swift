@@ -1,6 +1,6 @@
 import XCTest
 import Hexagonos
-@testable import HexaphonosUI
+@testable import ArmoniaUI
 
 // No usa SwiftUI: se ejecuta también en Linux.
 

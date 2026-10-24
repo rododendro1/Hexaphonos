@@ -2,7 +2,7 @@
 import AVFoundation
 import SwiftUI
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 /// Toca un `Sonido` con el sintetizador del sistema (un `AVAudioUnitSampler`). En macOS usa el piano del banco
 /// General MIDI del sistema; en iOS, que no lo trae, el sonido básico del sampler. Tocar algo corta lo que

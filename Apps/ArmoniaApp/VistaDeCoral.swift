@@ -1,6 +1,6 @@
 import SwiftUI
 import Armonia
-import HexaphonosUI
+import ArmoniaUI
 
 /// Armoniza una melodía, escribe unos acordes a cuatro voces o revisa la conducción de unas voces, y
 /// exporta el coral como partitura o MIDI.

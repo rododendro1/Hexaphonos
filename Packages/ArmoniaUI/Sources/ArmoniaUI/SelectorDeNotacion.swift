@@ -1,7 +1,7 @@
 #if canImport(SwiftUI)
 import SwiftUI
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 /// El menú para elegir la notación de las notas y, aparte, el idioma de los textos. Guarda la `clave`
 /// de la `Notacion` (combinada si los textos van en otro idioma). Lo habitual es ponerlo en la barra

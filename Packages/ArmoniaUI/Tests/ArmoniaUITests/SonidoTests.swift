@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 import Armonia
-@testable import HexaphonosPresentacion
+@testable import ArmoniaPresentacion
 
 // Lo que suena al pulsar «Escuchar». No usa AVFoundation: se ejecuta también en Linux.
 

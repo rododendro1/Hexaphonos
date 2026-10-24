@@ -1,5 +1,5 @@
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 /// La parte de `DiagramaDeMastil` que no es dibujo: qué trastes se enseñan, qué cuerdas se apagan, cómo se
 /// escriben las notas y cómo se describe el mástil a VoiceOver. No usa SwiftUI, así que se prueba

@@ -1,5 +1,5 @@
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 // MARK: - Armonización y realización a cuatro voces
 

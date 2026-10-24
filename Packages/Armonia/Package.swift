@@ -27,7 +27,7 @@ let modulos: [Target.Dependency] = [
 
 let package = Package(
     name: "Armonia",
-    // Las mismas que piden las apps y HexaphonosUI. Sin esta línea SwiftPM asume macOS 10.13 / iOS 11, y la
+    // Las mismas que piden las apps y ArmoniaUI. Sin esta línea SwiftPM asume macOS 10.13 / iOS 11, y la
     // biblioteca estándar de esas versiones no tiene APIs que el código puede usar sin darse cuenta.
     platforms: [.macOS(.v13), .iOS(.v16)],
     products: [

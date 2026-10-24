@@ -1,5 +1,5 @@
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 import Foundation
 
 // MARK: - Consultas: acordes, notas, escalas, tonalidades y análisis
