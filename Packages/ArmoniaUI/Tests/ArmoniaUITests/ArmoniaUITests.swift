@@ -142,7 +142,7 @@ final class PresentacionDeMastilTests: XCTestCase {
     // MARK: Descripción
 
     func testLaDescripcionVaDeGraveAAgudo() {
-        let marcas = [Posicion(cuerda: 1, traste: 3), Posicion(cuerda: 0, traste: 0)]
+        let marcas = [PosicionEnElMastil(cuerda: 1, traste: 3), PosicionEnElMastil(cuerda: 0, traste: 0)]
         XCTAssertEqual(PresentacionDeMastil.descripcion(marcas: marcas, apagadas: []),
                        "cuerda 1, traste 0; cuerda 2, traste 3")
         XCTAssertEqual(PresentacionDeMastil.descripcion(marcas: marcas, apagadas: [5]),
@@ -150,7 +150,7 @@ final class PresentacionDeMastilTests: XCTestCase {
     }
 
     func testLaDescripcionSeAcortaSiHayMuchasMarcas() {
-        let muchas = (0...12).map { Posicion(cuerda: 0, traste: $0) }
+        let muchas = (0...12).map { PosicionEnElMastil(cuerda: 0, traste: $0) }
         XCTAssertEqual(PresentacionDeMastil.descripcion(marcas: muchas, apagadas: []), "13 marcas")
     }
 

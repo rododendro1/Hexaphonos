@@ -20,7 +20,7 @@ Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
-├── ArmoniaUI/      Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
+├── ArmoniaUI/      Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaDeRejilla, VistaSVG, tema) y lo que comparten las apps:
 │                   el selector de notación y su ajuste (en el entorno), los textos de la interfaz en ocho
 │                   idiomas, lo que enseña cada vista, el cálculo en segundo plano y el menú para exportar.
 │                   El análisis y el coral están en el módulo `ArmoniaPresentacion`, sin SwiftUI, que

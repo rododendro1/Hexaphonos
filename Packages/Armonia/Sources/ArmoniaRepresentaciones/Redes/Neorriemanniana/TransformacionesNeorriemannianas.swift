@@ -76,7 +76,7 @@ extension Tonnetz.Triada {
     /// (pasos de quinta, 0)); `nil` para otros acordes. Se ignora la inversión.
     public init?(_ acorde: Acorde) {
         guard acorde.tipo == .mayor || acorde.tipo == .menor else { return nil }
-        self.init(fundamental: PuntoDelTonnetz(quintas: acorde.fundamental.pasosDeQuinta, terceras: 0),
+        self.init(fundamental: PuntoDeLaRed(quintas: acorde.fundamental.pasosDeQuinta, terceras: 0),
                   mayor: acorde.tipo == .mayor)
     }
 
@@ -84,7 +84,7 @@ extension Tonnetz.Triada {
     public func transformar(_ transformacion: TransformacionNeorriemanniana) -> Tonnetz.Triada {
         let a = fundamental.quintas, b = fundamental.terceras
         func triada(_ a: Int, _ b: Int, _ mayor: Bool) -> Tonnetz.Triada {
-            Tonnetz.Triada(fundamental: PuntoDelTonnetz(quintas: a, terceras: b), mayor: mayor)
+            Tonnetz.Triada(fundamental: PuntoDeLaRed(quintas: a, terceras: b), mayor: mayor)
         }
         switch (transformacion, mayor) {
         case (.p, _): return triada(a, b, !mayor)          // el lado de la quinta
@@ -167,12 +167,12 @@ extension Tonnetz {
             // Las copias del triángulo, desplazadas por (4, −1), que da la misma nota.
             let b0 = anterior.fundamental.terceras
             let copias = ((b0 - 3)...(b0 + 3)).map { b in
-                Triada(fundamental: PuntoDelTonnetz(quintas: triada.fundamental.quintas - 4 * b, terceras: b),
+                Triada(fundamental: PuntoDeLaRed(quintas: triada.fundamental.quintas - 4 * b, terceras: b),
                        mayor: triada.mayor)
             }
             triadas.append(copias.min { Tonnetz.separacion(anterior, $0) < Tonnetz.separacion(anterior, $1) }!)
         }
-        var puntos: [PuntoDelTonnetz] = []
+        var puntos: [PuntoDeLaRed] = []
         for vertice in triadas.flatMap(\.vertices) where !puntos.contains(vertice) { puntos.append(vertice) }
         self.init(puntos: puntos, tieneOrtografia: true, recorrido: triadas)
     }

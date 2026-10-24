@@ -25,7 +25,7 @@
 /// fá sustenido maior), y también en occitano, ruso y griego (fa dièsi major, фа-диез мажор,
 /// φα δίεση μείζονα). Los textos del motor (mensajes de error, intervalos, cadencias…) y los
 /// nombres de los catálogos (acordes, escalas, instrumentos) están además en todos esos idiomas
-/// salvo el alemán, el occitano, el ruso y el griego, en los que salen en inglés (`idiomaDeLosTextos`).
+/// salvo el alemán, el occitano, el ruso y el griego, en los que salen en inglés (`textos`).
 ///
 /// Una notación son dos elecciones: cómo se escriben las notas (`escritura`) y en qué idioma salen los
 /// textos (`textos`). Las notaciones con nombre (`.espanol`, `.ruso`…) llevan los textos en el idioma de sus
@@ -90,19 +90,15 @@ public struct Notacion: Hashable, Sendable, CaseIterable {
     /// ¿Lleva los textos en un idioma distinto del de sus notas?
     public var esCombinada: Bool { textos != escritura.idioma.deLosTextos }
 
-    public init(idioma: Idioma, ascii: Bool) {
-        self.init(escritura: EscrituraDeNotas(idioma: idioma, ascii: ascii))
-    }
-
     /// El idioma de los nombres de nota.
-    public var idioma: Idioma { escritura.idioma }
+    public var idiomaDeLasNotas: Idioma { escritura.idioma }
 
     /// Idioma de las abreviaturas de los intervalos (5J, P5), que solo están en español e inglés:
     /// español en español, catalán, gallego, euskera, portugués y occitano; inglés en las demás. Los demás
-    /// textos siguen `idiomaDeLosTextos`.
-    public var vocabulario: Idioma {
+    /// textos siguen `textos`.
+    public var idiomaDeLasAbreviaturas: Idioma {
         // Con los textos en otro idioma manda ese; si no, el de las notas (el occitano usa las españolas).
-        switch esCombinada ? textos : idioma {
+        switch esCombinada ? textos : idiomaDeLasNotas {
         case .espanol, .catalan, .gallego, .euskera, .portugues, .occitano: return .espanol
         case .ingles, .aleman, .frances, .italiano, .ruso, .griego: return .ingles
         }

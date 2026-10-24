@@ -76,7 +76,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
     public var explicacion: String { explicacion(en: .espanol) }
 
     /// Explicación del motivo en el idioma de los textos de la notación: en inglés para el alemán
-    /// (`notacion.idiomaDeLosTextos`).
+    /// (`notacion.textos`).
     public func explicacion(en notacion: Notacion) -> String {
         explicacionTraducida(notacion).en(notacion)
     }
@@ -101,7 +101,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
                                  pt: " (caractere \(p + 1))", fr: " (caractère \(p + 1))", it: " (carattere \(p + 1))").en(notacion)
         }
         // En francés, los dos puntos llevan espacio delante.
-        return inicio + (notacion.idiomaDeLosTextos == .frances ? " : " : ": ") + explicacion(en: notacion)
+        return inicio + (notacion.textos == .frances ? " : " : ": ") + explicacion(en: notacion)
     }
 
     /// La explicación en los ocho idiomas de los textos. La notación solo hace falta para los

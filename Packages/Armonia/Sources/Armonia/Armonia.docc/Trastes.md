@@ -5,7 +5,7 @@ Instrumentos de cuerda con trastes: dónde suena cada nota en el mástil y cómo
 ## Overview
 
 ``Encordado`` es la afinación de un instrumento (guitarra, bajo, ukelele, mandolina y algunas
-variantes), ``Mastil`` es ese encordado con un número de trastes, ``Posicion`` es un lugar del
+variantes), ``Mastil`` es ese encordado con un número de trastes, ``PosicionEnElMastil`` es un lugar del
 mástil (una cuerda y un traste, con el 0 como cuerda al aire) y ``Digitacion`` es una forma de tocar
 un acorde: un traste, o ninguno, por cada cuerda.
 
@@ -56,7 +56,7 @@ import Armonia
 let mastil = Mastil(.guitarra)
 let leida = Digitacion(leyendo: "x32010", en: mastil)            // nil si no se entiende o no cabe
 let comprobada = Digitacion(comprobando: [nil, 3, 2, 0, 1, 0], en: mastil)
-let sonido = mastil.midiSiExiste(en: Posicion(cuerda: 9, traste: 0))   // nil: no hay décima cuerda
+let sonido = mastil.midiSiExiste(en: PosicionEnElMastil(cuerda: 9, traste: 0))   // nil: no hay décima cuerda
 ```
 
 ## Topics
@@ -65,7 +65,7 @@ let sonido = mastil.midiSiExiste(en: Posicion(cuerda: 9, traste: 0))   // nil: n
 
 - ``Encordado``
 - ``Mastil``
-- ``Posicion``
+- ``PosicionEnElMastil``
 
 ### Acordes en el mástil
 

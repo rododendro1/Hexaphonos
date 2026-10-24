@@ -125,7 +125,7 @@ extension Tonnetz.Triada {
             triada.vertices.contains { abs($0.nota.alteracion.semitonos) > 1 }
         }
         let enarmonicas = [-12, 12].map { desplazamiento in
-            Tonnetz.Triada(fundamental: PuntoDelTonnetz(quintas: fundamental.quintas + desplazamiento,
+            Tonnetz.Triada(fundamental: PuntoDeLaRed(quintas: fundamental.quintas + desplazamiento,
                                                         terceras: fundamental.terceras), mayor: mayor)
         }
         let mejor = enarmonicas.min { alteraciones($0) < alteraciones($1) }!
@@ -147,8 +147,8 @@ extension Tonnetz {
         for i in 0..<ciclo.longitud {
             triadas.append(triadas.last!.transformar(ciclo.transformaciones[i % 2]))
         }
-        var puntos: [PuntoDelTonnetz] = []
-        var nombres: [PuntoDelTonnetz: Nota] = [:]
+        var puntos: [PuntoDeLaRed] = []
+        var nombres: [PuntoDeLaRed: Nota] = [:]
         for (triada, acordeDelCiclo) in zip(triadas, acordes) {
             for vertice in triada.vertices {
                 if !puntos.contains(vertice) { puntos.append(vertice) }
@@ -166,10 +166,10 @@ extension Tonnetz {
     /// La nota que se escribe en un punto: la suya o, en un ciclo, la de la tríada que lo toca;
     /// en los puntos de alrededor, la enarmónica con menos alteraciones (y, entre Fa♯ y Sol♭, la
     /// del punto con nombre más cercano).
-    package func nombre(de punto: PuntoDelTonnetz) -> Nota {
+    package func nombre(de punto: PuntoDeLaRed) -> Nota {
         guard !nombres.isEmpty else { return punto.nota }
         if let nota = nombres[punto] { return nota }
-        func distancia(_ otro: PuntoDelTonnetz) -> Double {
+        func distancia(_ otro: PuntoDeLaRed) -> Double {
             let dx = Double(otro.quintas - punto.quintas) + Double(otro.terceras - punto.terceras) / 2
             let dy = Double(otro.terceras - punto.terceras) * 0.8660254037844386
             return dx * dx + dy * dy

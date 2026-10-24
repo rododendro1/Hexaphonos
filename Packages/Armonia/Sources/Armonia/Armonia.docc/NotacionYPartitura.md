@@ -79,9 +79,9 @@ Tonalidad("ля минор")                               // La menor
 - Los textos del motor (mensajes de error, intervalos, calidades, papeles en el acorde, grados,
   claves, figuras, cadencias y faltas de conducción) están en español, inglés, catalán, gallego,
   euskera, portugués, francés e italiano; en alemán, occitano, ruso y griego salen en inglés. Es lo que indica
-  `notacion.idiomaDeLosTextos`, y cada texto es una `Traduccion` con los ocho idiomas.
+  `notacion.textos`, y cada texto es una `Traduccion` con los ocho idiomas.
 - Los nombres de los catálogos (tipos de acorde y de escala, instrumentos) siguen el mismo
-  `idiomaDeLosTextos`. Los nombres tradicionales de escala (raga, maqam, pentatónicas japonesas…)
+  `textos`. Los nombres tradicionales de escala (raga, maqam, pentatónicas japonesas…)
   se escriben igual en todos los idiomas, y una escala se lee también con su nombre en catalán,
   gallego, euskera o portugués (`Escala("re doriarra")`, `Escala("dó maior")`).
 
@@ -172,7 +172,7 @@ texto, el carácter donde se detuvo y el motivo. Los inicializadores opcionales
 
 El mensaje está en español (`description`, `explicacion`) y también en inglés, catalán, gallego,
 euskera, portugués, francés e italiano: `descripcion(en:)` y `explicacion(en:)` usan el idioma de
-los textos de la notación (`notacion.idiomaDeLosTextos`), como los nombres de intervalos; con
+los textos de la notación (`notacion.textos`), como los nombres de intervalos; con
 `.aleman`, `.occitano`, `.ruso` y `.griego` sale en inglés.
 
 ```swift

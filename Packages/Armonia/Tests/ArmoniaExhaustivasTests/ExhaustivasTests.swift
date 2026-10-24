@@ -133,7 +133,7 @@ final class IdaYVueltaTests: XCTestCase {
     func testIntervalos() {
         for q in -21...21 {
             for o in -15...15 {
-                for direccion in [Direccion.ascendente, .descendente] {
+                for direccion in [SentidoDelIntervalo.ascendente, .descendente] {
                     let intervalo = Intervalo(pasosDeQuinta: q, pasosDeOctava: o, direccion: direccion)
                     XCTAssertEqual(Intervalo(texto: intervalo.abreviatura), intervalo, intervalo.abreviatura)
                     XCTAssertEqual(Intervalo(texto: intervalo.abreviatura(en: .ingles)), intervalo,

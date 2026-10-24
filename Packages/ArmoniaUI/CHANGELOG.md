@@ -2,6 +2,11 @@
 
 ## Sin publicar
 
+- Más nombres claros, sin alias: `TemaHexaphonos` y `AjustesHexaphonos` pasan a llamarse `TemaDeLasApps` y
+  `AjustesDeLasApps` (los ajustes guardados se conservan), `DiagramaHexagonal` y `PresentacionHexagonal`,
+  `DiagramaDeRejilla` y `PresentacionDeRejilla`, y `Sonido.eventos` y `Sonido(eventos:)`, `Sonido.notas` y
+  `Sonido(notas:)`.
+
 - Desaparecen los nombres marcados como obsoletos: `MastilView`, `TonnetzView` y `SVGView` (son `DiagramaDeMastil`,
   `DiagramaDeTonnetz` y `VistaSVG`), `toolbarNotacion(clave:)` (es `selectorDeNotacionEnLaBarra(clave:)`) y
   `campoDeCifrado()` (es `comoCampoDeCifrado()`).

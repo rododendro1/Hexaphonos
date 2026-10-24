@@ -79,7 +79,7 @@ public struct Escala: Hashable, Sendable {
     public var notasEnAmbasDirecciones: [Nota] { tipo.intervalosEnAmbasDirecciones.map { tonica + $0 } }
 
     /// Notas de una dirección: las de subida o las de bajada (de grave a agudo).
-    public func notas(direccion: Direccion) -> [Nota] {
+    public func notas(direccion: SentidoDelIntervalo) -> [Nota] {
         direccion == .ascendente ? notas : Escala(tonica, tipo.formaDescendente).notas
     }
 
@@ -91,7 +91,7 @@ public struct Escala: Hashable, Sendable {
     /// Alturas de la escala con octava. Al subir, de la tónica en `octava` a la tónica superior;
     /// al bajar, de la tónica superior a la tónica en `octava`, con la forma descendente del tipo
     /// (La menor melódica baja con Sol♮ y Fa♮).
-    public func alturas(octava: Int, direccion: Direccion = .ascendente) -> [Altura] {
+    public func alturas(octava: Int, direccion: SentidoDelIntervalo = .ascendente) -> [Altura] {
         guard direccion == .ascendente else {
             return Array(Escala(tonica, tipo.formaDescendente).alturas(octava: octava).reversed())
         }
@@ -102,12 +102,12 @@ public struct Escala: Hashable, Sendable {
 
     /// Contiene el nombre exacto (Fa♯ ≠ Sol♭), al subir o al bajar; con `direccion`, solo en
     /// esa dirección. La menor melódica contiene Sol (al bajar) y Sol♯ (al subir).
-    public func contiene(_ nota: Nota, direccion: Direccion? = nil) -> Bool {
+    public func contiene(_ nota: Nota, direccion: SentidoDelIntervalo? = nil) -> Bool {
         (direccion.map { notas(direccion: $0) } ?? notasEnAmbasDirecciones).contains(nota)
     }
 
     /// Contiene la altura, sin importar la ortografía (al subir o al bajar, o en `direccion`).
-    public func contieneEnarmonico(_ nota: Nota, direccion: Direccion? = nil) -> Bool {
+    public func contieneEnarmonico(_ nota: Nota, direccion: SentidoDelIntervalo? = nil) -> Bool {
         (direccion.map { notas(direccion: $0) } ?? notasEnAmbasDirecciones).contains { $0.esEnarmonica(de: nota) }
     }
 

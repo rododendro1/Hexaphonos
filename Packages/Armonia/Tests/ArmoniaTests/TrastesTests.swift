@@ -9,21 +9,21 @@ import XCTest
 final class MastilTests: XCTestCase {
     func testAlturasAlAireDeLaGuitarra() {
         let mastil = Mastil(.guitarra)
-        let midis = (0..<6).map { mastil.midi(en: Posicion(cuerda: $0, traste: 0)) }
+        let midis = (0..<6).map { mastil.midi(en: PosicionEnElMastil(cuerda: $0, traste: 0)) }
         XCTAssertEqual(midis, [40, 45, 50, 55, 59, 64])   // Mi2 La2 Re3 Sol3 Si3 Mi4
     }
 
     func testAlturaEnUnTraste() {
         let mastil = Mastil(.guitarra)
         // Cuerda de La, traste 3: Do3.
-        XCTAssertEqual(mastil.altura(en: Posicion(cuerda: 1, traste: 3)), Altura(.do, octava: 3))
+        XCTAssertEqual(mastil.altura(en: PosicionEnElMastil(cuerda: 1, traste: 3)), Altura(.do, octava: 3))
         // Cuerda de Mi grave, traste 1: Fa2.
-        XCTAssertEqual(mastil.altura(en: Posicion(cuerda: 0, traste: 1)), Altura(.fa, octava: 2))
+        XCTAssertEqual(mastil.altura(en: PosicionEnElMastil(cuerda: 0, traste: 1)), Altura(.fa, octava: 2))
     }
 
     func testBemolesSiSePide() {
         let mastil = Mastil(.guitarra)
-        let posicion = Posicion(cuerda: 1, traste: 1)   // Si♭2 / La♯2
+        let posicion = PosicionEnElMastil(cuerda: 1, traste: 1)   // Si♭2 / La♯2
         XCTAssertEqual(mastil.altura(en: posicion, preferirBemoles: true).nota.nombre, "Si♭")
         XCTAssertEqual(mastil.altura(en: posicion).nota.nombre, "La♯")
     }
@@ -34,7 +34,7 @@ final class MastilTests: XCTestCase {
         // en las demás cuerdas está más allá del traste 12.
         let posiciones = mastil.posiciones(de: Altura(.mi, octava: 4))
         XCTAssertEqual(posiciones, [
-            Posicion(cuerda: 5, traste: 0), Posicion(cuerda: 4, traste: 5), Posicion(cuerda: 3, traste: 9),
+            PosicionEnElMastil(cuerda: 5, traste: 0), PosicionEnElMastil(cuerda: 4, traste: 5), PosicionEnElMastil(cuerda: 3, traste: 9),
         ])
     }
 
@@ -51,9 +51,9 @@ final class MastilTests: XCTestCase {
 
     func testPosicionesFueraDelMastilNoExisten() {
         let mastil = Mastil(.guitarra, trastes: 12)
-        XCTAssertFalse(mastil.contiene(Posicion(cuerda: 6, traste: 0)))
-        XCTAssertFalse(mastil.contiene(Posicion(cuerda: 0, traste: 13)))
-        XCTAssertTrue(mastil.contiene(Posicion(cuerda: 0, traste: 12)))
+        XCTAssertFalse(mastil.contiene(PosicionEnElMastil(cuerda: 6, traste: 0)))
+        XCTAssertFalse(mastil.contiene(PosicionEnElMastil(cuerda: 0, traste: 13)))
+        XCTAssertTrue(mastil.contiene(PosicionEnElMastil(cuerda: 0, traste: 12)))
     }
 
     func testEscalaEnUnRangoDeTrastes() {
@@ -77,12 +77,12 @@ final class MastilTests: XCTestCase {
 
     func testPosicionesFueraDelMastilSinDetenerElPrograma() {
         let mastil = Mastil(.guitarra, trastes: 12)
-        XCTAssertNil(mastil.midiSiExiste(en: Posicion(cuerda: 0, traste: 13)))
-        XCTAssertNil(mastil.midiSiExiste(en: Posicion(cuerda: 6, traste: 0)))
-        XCTAssertNil(mastil.midiSiExiste(en: Posicion(cuerda: -1, traste: 0)))
-        XCTAssertNil(mastil.alturaSiExiste(en: Posicion(cuerda: 0, traste: -1)))
-        XCTAssertEqual(mastil.midiSiExiste(en: Posicion(cuerda: 0, traste: 0)), Altura(.mi, octava: 2).midi)
-        let tercer = Posicion(cuerda: 1, traste: 3)
+        XCTAssertNil(mastil.midiSiExiste(en: PosicionEnElMastil(cuerda: 0, traste: 13)))
+        XCTAssertNil(mastil.midiSiExiste(en: PosicionEnElMastil(cuerda: 6, traste: 0)))
+        XCTAssertNil(mastil.midiSiExiste(en: PosicionEnElMastil(cuerda: -1, traste: 0)))
+        XCTAssertNil(mastil.alturaSiExiste(en: PosicionEnElMastil(cuerda: 0, traste: -1)))
+        XCTAssertEqual(mastil.midiSiExiste(en: PosicionEnElMastil(cuerda: 0, traste: 0)), Altura(.mi, octava: 2).midi)
+        let tercer = PosicionEnElMastil(cuerda: 1, traste: 3)
         XCTAssertEqual(mastil.alturaSiExiste(en: tercer), mastil.altura(en: tercer))
         XCTAssertEqual(mastil.midiSiExiste(en: tercer), mastil.midi(en: tercer))
     }

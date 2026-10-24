@@ -45,7 +45,7 @@ final class TocarLasRedesTests: XCTestCase {
     func testEnLaTablaYEnLosTecladosTambien() throws {
         let doMayor = ContenidoDeRed.acorde(try Acorde(leyendo: "Do"))
         let tabla = TablaArmonica.trazado(paso: PresentacionDeRedes.paso(doMayor, en: .tablaArmonica))
-        let sol = tabla.centro(de: TablaArmonica.coordenada(de: PuntoDelTonnetz(quintas: 1, terceras: 0)))
+        let sol = tabla.centro(de: TablaArmonica.coordenada(de: PuntoDeLaRed(quintas: 1, terceras: 0)))
         XCTAssertEqual(PresentacionDeRedes.midi(en: sol, de: doMayor, enLaRed: .tablaArmonica), 67)
 
         for red in [RedDeNotas.wickiHayden, .janko] {

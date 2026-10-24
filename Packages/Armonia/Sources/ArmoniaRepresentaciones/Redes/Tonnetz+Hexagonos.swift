@@ -7,7 +7,7 @@ import Hexagonos
 
 import Foundation
 
-extension PuntoDelTonnetz {
+extension PuntoDeLaRed {
     /// El punto como casilla de una rejilla hexagonal: `q` son las quintas y `r` las terceras mayores.
     ///
     /// Los seis pasos del Tonnetz (quinta justa, tercera mayor y tercera menor, arriba o abajo) son
@@ -17,7 +17,7 @@ extension PuntoDelTonnetz {
         CoordenadaAxial(q: quintas, r: terceras)
     }
 
-    /// El punto que ocupa la casilla: `PuntoDelTonnetz(CoordenadaAxial(q: 0, r: 1)).nota` es Mi.
+    /// El punto que ocupa la casilla: `PuntoDeLaRed(CoordenadaAxial(q: 0, r: 1)).nota` es Mi.
     public init(_ coordenada: CoordenadaAxial) {
         self.init(quintas: coordenada.q, terceras: coordenada.r)
     }
@@ -37,21 +37,21 @@ extension Tonnetz {
 
     /// La nota más cercana a un punto del dibujo de `svg(paso:)`, en las coordenadas del SVG: para
     /// saber qué nota se ha tocado.
-    public static func punto(en punto: Punto, paso: Double) -> PuntoDelTonnetz {
-        PuntoDelTonnetz(trazado(paso: paso).casilla(en: punto))
+    public static func punto(en punto: Punto, paso: Double) -> PuntoDeLaRed {
+        PuntoDeLaRed(trazado(paso: paso).casilla(en: punto))
     }
 }
 
 extension TablaArmonica {
     /// La casilla del hexágono de un punto en la rejilla de la tabla, de hexágonos planos con la
     /// quinta hacia arriba: la del Tonnetz girada 120° (`q` son las terceras mayores y `s`, las quintas).
-    public static func coordenada(de punto: PuntoDelTonnetz) -> CoordenadaAxial {
+    public static func coordenada(de punto: PuntoDeLaRed) -> CoordenadaAxial {
         punto.coordenada.rotada(sextos: 2)
     }
 
     /// El punto del Tonnetz cuyo hexágono es esa casilla de la tabla (la inversa de `coordenada(de:)`).
-    public static func punto(de coordenada: CoordenadaAxial) -> PuntoDelTonnetz {
-        PuntoDelTonnetz(coordenada.rotada(sextos: -2))
+    public static func punto(de coordenada: CoordenadaAxial) -> PuntoDeLaRed {
+        PuntoDeLaRed(coordenada.rotada(sextos: -2))
     }
 
     /// Dónde dibuja `svg(paso:)` cada hexágono, en las casillas de `coordenada(de:)`: hexágonos planos
@@ -61,7 +61,7 @@ extension TablaArmonica {
     }
 
     /// El hexágono que hay bajo un punto del dibujo de `svg(paso:)`, en las coordenadas del SVG.
-    public static func punto(en punto: Punto, paso: Double) -> PuntoDelTonnetz {
+    public static func punto(en punto: Punto, paso: Double) -> PuntoDeLaRed {
         self.punto(de: trazado(paso: paso).casilla(en: punto))
     }
 }

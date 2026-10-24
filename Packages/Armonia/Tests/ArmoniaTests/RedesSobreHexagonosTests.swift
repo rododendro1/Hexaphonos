@@ -8,16 +8,16 @@ import Hexagonos
 
 /// El Tonnetz, la tabla armónica y los teclados isomórficos sobre la rejilla de `Hexagonos`.
 final class RedesSobreHexagonosTests: XCTestCase {
-    private func punto(_ a: Int, _ b: Int) -> PuntoDelTonnetz { PuntoDelTonnetz(quintas: a, terceras: b) }
+    private func punto(_ a: Int, _ b: Int) -> PuntoDeLaRed { PuntoDeLaRed(quintas: a, terceras: b) }
     private let region = FormasDeMapa.hexagono(radio: 5)
 
     // MARK: Tonnetz
 
     func testUnPuntoEsUnaCasilla() {
         XCTAssertEqual(punto(2, -1).coordenada, CoordenadaAxial(q: 2, r: -1))
-        XCTAssertEqual(PuntoDelTonnetz(CoordenadaAxial(q: 0, r: 1)).nota, Nota.mi)
+        XCTAssertEqual(PuntoDeLaRed(CoordenadaAxial(q: 0, r: 1)).nota, Nota.mi)
         for casilla in region {
-            XCTAssertEqual(PuntoDelTonnetz(casilla).coordenada, casilla)
+            XCTAssertEqual(PuntoDeLaRed(casilla).coordenada, casilla)
         }
     }
 
@@ -28,13 +28,13 @@ final class RedesSobreHexagonosTests: XCTestCase {
 
     func testLaDistanciaEsLaDeLaRejilla() {
         // La fórmula de antes, para comprobar que no cambia.
-        func distanciaAnterior(_ p: PuntoDelTonnetz, _ o: PuntoDelTonnetz) -> Int {
+        func distanciaAnterior(_ p: PuntoDeLaRed, _ o: PuntoDeLaRed) -> Int {
             let x = o.quintas - p.quintas, y = o.terceras - p.terceras
             return (x >= 0) == (y >= 0) ? abs(x) + abs(y) : max(abs(x), abs(y))
         }
         let centro = punto(1, -2)
         for casilla in region {
-            let p = PuntoDelTonnetz(casilla)
+            let p = PuntoDeLaRed(casilla)
             XCTAssertEqual(centro.distancia(hasta: p), distanciaAnterior(centro, p), "\(p)")
         }
     }
@@ -43,7 +43,7 @@ final class RedesSobreHexagonosTests: XCTestCase {
         for paso in [64.0, 88, 50] {
             let d = Tonnetz.trazado(paso: paso)
             for casilla in region {
-                let p = PuntoDelTonnetz(casilla)
+                let p = PuntoDeLaRed(casilla)
                 let centro = d.centro(de: p.coordenada)
                 // Las fórmulas que usaba el dibujo: x = (a + b/2)·paso, y = −b·(√3/2)·paso.
                 XCTAssertEqual(centro.x, (Double(p.quintas) + Double(p.terceras) / 2) * paso, accuracy: 1e-9)
@@ -65,7 +65,7 @@ final class RedesSobreHexagonosTests: XCTestCase {
         XCTAssertEqual(TablaArmonica.coordenada(de: punto(1, 0)), CoordenadaAxial(q: 0, r: -1))   // la quinta, arriba
         XCTAssertEqual(TablaArmonica.coordenada(de: punto(0, 1)), CoordenadaAxial(q: 1, r: -1))   // la tercera mayor
         for casilla in region {
-            let p = PuntoDelTonnetz(casilla)
+            let p = PuntoDeLaRed(casilla)
             XCTAssertEqual(TablaArmonica.punto(de: TablaArmonica.coordenada(de: p)), p)
             // Girar no cambia las distancias: dos hexágonos vecinos siguen siéndolo.
             XCTAssertEqual(TablaArmonica.coordenada(de: p).longitud, p.coordenada.longitud)
@@ -78,7 +78,7 @@ final class RedesSobreHexagonosTests: XCTestCase {
             XCTAssertEqual(d.orientacion, .plana)
             XCTAssertEqual(d.tamano.x, paso / (2 * 0.8660254037844386), accuracy: 1e-9)
             for casilla in region {
-                let p = PuntoDelTonnetz(casilla)
+                let p = PuntoDeLaRed(casilla)
                 let centro = d.centro(de: TablaArmonica.coordenada(de: p))
                 // Las fórmulas que usaba el dibujo: x = b·cos 30°·paso, y = −(a + b/2)·paso.
                 XCTAssertEqual(centro.x, Double(p.terceras) * 0.8660254037844386 * paso, accuracy: 1e-9)
@@ -106,7 +106,7 @@ final class RedesSobreHexagonosTests: XCTestCase {
     func testLaTablaArmonicaComoTeclado() {
         let teclado = TecladoIsomorfico.tablaArmonica
         for casilla in region {
-            let p = PuntoDelTonnetz(casilla)
+            let p = PuntoDeLaRed(casilla)
             XCTAssertEqual(teclado.midi(en: TablaArmonica.coordenada(de: p)), TablaArmonica.midi(de: p))
         }
         // Arriba (el norte de los planos), una quinta; arriba a la derecha, una tercera mayor; arriba a la izquierda, una menor.

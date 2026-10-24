@@ -286,8 +286,8 @@ enum ErrorDeUso {
                               eu: "akordeak falta dira: " + ejemplo,
                               pt: "faltam os acordes: " + ejemplo, fr: "il manque les accords : " + ejemplo, it: "mancano gli accordi: " + ejemplo)
         case .dosAcordesDeConduccion:
-            let ejemplo = "armonia conduccion Sol7 Do"
-            return Traduccion("hacen falta dos acordes: " + ejemplo, "two chords are needed: armonia voice-leading G7 C",
+            let ejemplo = "armonia conduccion-minima Sol7 Do"
+            return Traduccion("hacen falta dos acordes: " + ejemplo, "two chords are needed: armonia minimal-voice-leading G7 C",
                               ca: "calen dos acords: " + ejemplo, gl: "fan falta dous acordes: " + ejemplo,
                               eu: "bi akorde behar dira: " + ejemplo,
                               pt: "são necessários dois acordes: " + ejemplo, fr: "il faut deux accords : " + ejemplo, it: "servono due accordi: " + ejemplo)

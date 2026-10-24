@@ -1,6 +1,7 @@
-// MARK: - Dirección
+// MARK: - Sentido del intervalo
 
-public enum Direccion: Int, Hashable, Sendable {
+/// Si un intervalo sube o baja.
+public enum SentidoDelIntervalo: Int, Hashable, Sendable {
     case ascendente = 1
     case descendente = -1
 
@@ -33,7 +34,7 @@ public enum CalidadDeIntervalo: Hashable, Sendable, CustomStringConvertible {
 
     /// Abreviatura en una notación: "J" en español y "P" (perfect) en inglés; las demás coinciden.
     public func abreviatura(en notacion: Notacion) -> String {
-        notacion.vocabulario == .ingles && self == .justa ? "P" : abreviatura
+        notacion.idiomaDeLasAbreviaturas == .ingles && self == .justa ? "P" : abreviatura
     }
 }
 
@@ -65,7 +66,7 @@ extension CalidadDeIntervalo: Nombrable {}
 public struct Intervalo: Hashable, Sendable {
     public let pasosDeQuinta: Int
     public let pasosDeOctava: Int
-    public let direccion: Direccion
+    public let direccion: SentidoDelIntervalo
 
     /// Quintas que tiene el intervalo base de cada número simple
     /// (unísono, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª) en su calidad justa o mayor.
@@ -74,7 +75,7 @@ public struct Intervalo: Hashable, Sendable {
     /// Crea un intervalo a partir de coordenadas. Si el vector resultante
     /// (`pasosDeQuinta`, `pasosDeOctava`) × signo de `direccion` desciende, se normaliza
     /// a magnitud positiva con dirección descendente.
-    public init(pasosDeQuinta: Int, pasosDeOctava: Int, direccion: Direccion = .ascendente) {
+    public init(pasosDeQuinta: Int, pasosDeOctava: Int, direccion: SentidoDelIntervalo = .ascendente) {
         let q = pasosDeQuinta * direccion.signo
         let o = pasosDeOctava * direccion.signo
         let pasos = 4 * q + 7 * o
@@ -94,7 +95,7 @@ public struct Intervalo: Hashable, Sendable {
     /// Devuelve `nil` si la combinación no existe: "5ª mayor", "3ª justa" o el unísono
     /// disminuido (de Do a Do♭ hay un unísono aumentado descendente, no un unísono disminuido:
     /// el unísono es la distancia cero y no se puede achicar).
-    public init?(numero: Int, calidad: CalidadDeIntervalo, direccion: Direccion = .ascendente) {
+    public init?(numero: Int, calidad: CalidadDeIntervalo, direccion: SentidoDelIntervalo = .ascendente) {
         guard numero >= 1 else { return nil }
         let pasos = numero - 1
         let clase = pasos % 7
@@ -127,7 +128,7 @@ public struct Intervalo: Hashable, Sendable {
     public init(leyendo texto: String) throws {
         var lector = Lector(texto)
         try lector.exigirContenido()
-        let direccion: Direccion = lector.consumir("-") ? .descendente : .ascendente
+        let direccion: SentidoDelIntervalo = lector.consumir("-") ? .descendente : .ascendente
 
         // Notación internacional: la calidad va delante (M3, P5, m7, A4, dd5).
         let posicionLetras = lector.posicion
@@ -153,7 +154,7 @@ public struct Intervalo: Hashable, Sendable {
     }
 
     /// Intervalo a partir de su número y las letras de su calidad (J/P, M, m, A…, d…).
-    private static func construir(numero: Int, letras: String, direccion: Direccion,
+    private static func construir(numero: Int, letras: String, direccion: SentidoDelIntervalo,
                                   texto: String, posicionLetras: Int) throws -> Intervalo {
         let calidad: CalidadDeIntervalo
         if letras == "J" || letras == "P" {
@@ -228,7 +229,7 @@ public struct Intervalo: Hashable, Sendable {
     /// Abreviatura en una notación: "3M", "5J" en español; "M3", "P5", "-A4" en inglés
     /// (la calidad va delante).
     public func abreviatura(en notacion: Notacion) -> String {
-        guard notacion.vocabulario == .ingles else { return abreviatura }
+        guard notacion.idiomaDeLasAbreviaturas == .ingles else { return abreviatura }
         return (direccion == .descendente ? "-" : "") + "\(calidad.abreviatura(en: notacion))\(numero)"
     }
 

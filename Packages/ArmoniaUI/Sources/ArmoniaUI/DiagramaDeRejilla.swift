@@ -5,14 +5,14 @@ import Hexagonos
 
 /// Un mapa de casillas hexagonales, que avisa de qué casilla se toca.
 ///
-///     DiagramaHexagonal(FormasDeMapa.hexagono(radio: 3), seleccionada: elegida) { elegida = $0 }
-///     DiagramaHexagonal(mapa, orientacion: .plana,
+///     DiagramaDeRejilla(FormasDeMapa.hexagono(radio: 3), seleccionada: elegida) { elegida = $0 }
+///     DiagramaDeRejilla(mapa, orientacion: .plana,
 ///                       relleno: { terreno[$0]?.color }, rotulo: { "\($0.q),\($0.r)" })
-///     DiagramaHexagonal(terreno, relleno: { $0.color })   // un MapaHexagonal<Terreno>
+///     DiagramaDeRejilla(terreno, relleno: { $0.color })   // un MapaHexagonal<Terreno>
 ///
 /// Los hexágonos se encajan lo más grandes posible en el espacio que se le dé, con la proporción del
 /// mapa. Un toque fuera del mapa (en el margen o entre casillas que faltan) no avisa.
-public struct DiagramaHexagonal: View {
+public struct DiagramaDeRejilla: View {
     public let casillas: [CoordenadaAxial]
     public let orientacion: Orientacion
     /// La casilla que se resalta con el color de énfasis.
@@ -55,7 +55,7 @@ public struct DiagramaHexagonal: View {
 
     public var body: some View {
         GeometryReader { geometria in
-            let trazado = PresentacionHexagonal.trazado(
+            let trazado = PresentacionDeRejilla.trazado(
                 para: casillas, orientacion: orientacion,
                 ancho: Double(geometria.size.width), alto: Double(geometria.size.height), margen: Self.margen)
             Canvas { contexto, _ in
@@ -66,17 +66,17 @@ public struct DiagramaHexagonal: View {
             .contentShape(Rectangle())
             .onTapGesture { punto in
                 guard let alTocar, let trazado,
-                      let casilla = PresentacionHexagonal.casilla(en: Punto(x: Double(punto.x), y: Double(punto.y)),
+                      let casilla = PresentacionDeRejilla.casilla(en: Punto(x: Double(punto.x), y: Double(punto.y)),
                                                                   trazado: trazado, mapa: Set(casillas))
                 else { return }
                 alTocar(casilla)
             }
         }
-        .aspectRatio(PresentacionHexagonal.proporcion(de: casillas, orientacion: orientacion).map { CGFloat($0) },
+        .aspectRatio(PresentacionDeRejilla.proporcion(de: casillas, orientacion: orientacion).map { CGFloat($0) },
                      contentMode: .fit)
         .accessibilityElement()
         .accessibilityLabel(Text(notacion.texto(.rejillaHexagonal)))
-        .accessibilityValue(Text(PresentacionHexagonal.descripcion(casillas: casillas.count, seleccionada: seleccionada,
+        .accessibilityValue(Text(PresentacionDeRejilla.descripcion(casillas: casillas.count, seleccionada: seleccionada,
                                                                   en: notacion)))
     }
 
@@ -103,7 +103,7 @@ public struct DiagramaHexagonal: View {
 
         // La elegida, encima de las demás para que su borde no quede tapado por el de las vecinas.
         if let seleccionada, casillas.contains(seleccionada) {
-            contexto.stroke(hexagono(seleccionada), with: .color(TemaHexaphonos.acento), lineWidth: grosor * 3)
+            contexto.stroke(hexagono(seleccionada), with: .color(TemaDeLasApps.acento), lineWidth: grosor * 3)
         }
     }
 }

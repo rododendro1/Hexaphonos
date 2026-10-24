@@ -6,7 +6,7 @@ import XCTest
 @testable import ArmoniaPartitura
 
 final class TonnetzTests: XCTestCase {
-    private func punto(_ a: Int, _ b: Int) -> PuntoDelTonnetz { PuntoDelTonnetz(quintas: a, terceras: b) }
+    private func punto(_ a: Int, _ b: Int) -> PuntoDeLaRed { PuntoDeLaRed(quintas: a, terceras: b) }
 
     func testPuntos() {
         XCTAssertEqual(punto(0, 1).nota, .mi)
@@ -65,11 +65,11 @@ final class TonnetzTests: XCTestCase {
 
     /// La colocación es la más compacta: nunca peor que la voraz, y mejor en muchas escalas.
     func testColocacionOptima() {
-        func suma(_ p: [PuntoDelTonnetz]) -> Int {
+        func suma(_ p: [PuntoDeLaRed]) -> Int {
             p.indices.reduce(0) { s, i in s + p.indices.filter { $0 > i }.reduce(0) { $0 + p[i].distancia(hasta: p[$1]) } }
         }
-        let candidatos: (Int, ClosedRange<Int>) -> [PuntoDelTonnetz] = { pasos, filas in
-            filas.map { PuntoDelTonnetz(quintas: pasos - 4 * $0, terceras: $0) }
+        let candidatos: (Int, ClosedRange<Int>) -> [PuntoDeLaRed] = { pasos, filas in
+            filas.map { PuntoDeLaRed(quintas: pasos - 4 * $0, terceras: $0) }
         }
         var mejoras = 0
         for tipo in TipoDeEscala.todos {
@@ -320,7 +320,7 @@ final class TonnetzTests: XCTestCase {
         // La banda, recta: siete triángulos y nueve puntos, el último Do otra vez.
         XCTAssertEqual(tonnetz.recorrido.count, 7)
         XCTAssertEqual(tonnetz.puntos.count, 9)
-        XCTAssertEqual(tonnetz.recorrido.last?.fundamental, PuntoDelTonnetz(quintas: 0, terceras: -3))
+        XCTAssertEqual(tonnetz.recorrido.last?.fundamental, PuntoDeLaRed(quintas: 0, terceras: -3))
         XCTAssertEqual(tonnetz.notas.map(\.description), ["Do", "Mi", "Sol", "Mi♭", "La♭", "Do♭", "Mi", "Sol", "Do"])
         let svg = tonnetz.svg()
         XCTAssertTrue(svg.contains("Do –P→ Dom –L→ La♭ –P→ La♭m –L→ Mi –P→ Mim –L→ Do"))

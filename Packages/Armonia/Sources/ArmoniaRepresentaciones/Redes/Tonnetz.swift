@@ -19,11 +19,11 @@ import Hexagonos
 
 import Foundation
 
-// MARK: - PuntoDelTonnetz
+// MARK: - PuntoDeLaRed
 
-/// Un punto del Tonnetz: `quintas` pasos de quinta justa (eje horizontal) y `terceras` de
-/// tercera mayor (eje diagonal) desde Do.
-public struct PuntoDelTonnetz: Hashable, Sendable, CustomStringConvertible {
+/// Un punto de las redes de notas (el Tonnetz y la tabla armónica): `quintas` pasos de quinta justa (eje
+/// horizontal) y `terceras` de tercera mayor (eje diagonal) desde Do.
+public struct PuntoDeLaRed: Hashable, Sendable, CustomStringConvertible {
     public let quintas: Int
     public let terceras: Int
 
@@ -40,12 +40,12 @@ public struct PuntoDelTonnetz: Hashable, Sendable, CustomStringConvertible {
     public var claseDeAltura: Int { modulo(7 * quintas + 4 * terceras, 12) }
 
     /// Los seis vecinos: una quinta justa, una tercera mayor o una tercera menor arriba o abajo.
-    public var vecinos: [PuntoDelTonnetz] {
-        PuntoDelTonnetz.pasos.map { PuntoDelTonnetz(quintas: quintas + $0.0, terceras: terceras + $0.1) }
+    public var vecinos: [PuntoDeLaRed] {
+        PuntoDeLaRed.pasos.map { PuntoDeLaRed(quintas: quintas + $0.0, terceras: terceras + $0.1) }
     }
 
     /// Pasos mínimos por la red hasta otro punto.
-    public func distancia(hasta otro: PuntoDelTonnetz) -> Int {
+    public func distancia(hasta otro: PuntoDeLaRed) -> Int {
         // La de la rejilla hexagonal: un paso de tercera menor, (1, −1), avanza en los dos ejes a la vez.
         coordenada.distancia(hasta: otro.coordenada)
     }
@@ -71,20 +71,20 @@ public struct Tonnetz: Hashable, Sendable {
     /// Una tríada completa: los tres vértices de un triángulo.
     public struct Triada: Hashable, Sendable, CustomStringConvertible {
         /// El punto de la fundamental.
-        public let fundamental: PuntoDelTonnetz
+        public let fundamental: PuntoDeLaRed
         /// Triángulo hacia arriba (mayor) o hacia abajo (menor).
         public let mayor: Bool
 
-        public init(fundamental: PuntoDelTonnetz, mayor: Bool) {
+        public init(fundamental: PuntoDeLaRed, mayor: Bool) {
             self.fundamental = fundamental
             self.mayor = mayor
         }
 
         /// Fundamental, quinta y tercera.
-        public var vertices: [PuntoDelTonnetz] {
-            let quinta = PuntoDelTonnetz(quintas: fundamental.quintas + 1, terceras: fundamental.terceras)
-            let tercera = mayor ? PuntoDelTonnetz(quintas: fundamental.quintas, terceras: fundamental.terceras + 1)
-                                : PuntoDelTonnetz(quintas: fundamental.quintas + 1, terceras: fundamental.terceras - 1)
+        public var vertices: [PuntoDeLaRed] {
+            let quinta = PuntoDeLaRed(quintas: fundamental.quintas + 1, terceras: fundamental.terceras)
+            let tercera = mayor ? PuntoDeLaRed(quintas: fundamental.quintas, terceras: fundamental.terceras + 1)
+                                : PuntoDeLaRed(quintas: fundamental.quintas + 1, terceras: fundamental.terceras - 1)
             return [fundamental, tercera, quinta]
         }
 
@@ -97,13 +97,13 @@ public struct Tonnetz: Hashable, Sendable {
     public struct Arista: Hashable, Sendable {
         /// El eje de la red que sigue la arista: quinta justa, tercera mayor o tercera menor.
         public enum Eje: Hashable, Sendable { case quintaJusta, terceraMayor, terceraMenor }
-        public let desde: PuntoDelTonnetz
-        public let hasta: PuntoDelTonnetz
+        public let desde: PuntoDeLaRed
+        public let hasta: PuntoDeLaRed
         public let eje: Eje
     }
 
     /// Los puntos de las notas, en el orden en que se dieron (sin repetir).
-    public let puntos: [PuntoDelTonnetz]
+    public let puntos: [PuntoDeLaRed]
     /// `true` si se colocaron notas con su ortografía; `false` para clases de altura.
     public let tieneOrtografia: Bool
     /// Las tríadas de un recorrido, en orden (`init(recorrido:)`); vacío si no lo es.
@@ -111,11 +111,11 @@ public struct Tonnetz: Hashable, Sendable {
     /// De dónde salen las notas, para el título del dibujo.
     package var origen: OrigenDelDibujo?
     /// En un ciclo, el nombre de cada punto, que no siempre es el de su posición (`init(ciclo:desde:)`).
-    package var nombres: [PuntoDelTonnetz: Nota] = [:]
+    package var nombres: [PuntoDeLaRed: Nota] = [:]
     /// En un ciclo, las tríadas con la ortografía con que se escriben.
     package var acordesDelRecorrido: [Acorde] = []
 
-    package init(puntos: [PuntoDelTonnetz], tieneOrtografia: Bool, recorrido: [Triada]) {
+    package init(puntos: [PuntoDeLaRed], tieneOrtografia: Bool, recorrido: [Triada]) {
         self.puntos = puntos
         self.tieneOrtografia = tieneOrtografia
         self.recorrido = recorrido
@@ -127,7 +127,7 @@ public struct Tonnetz: Hashable, Sendable {
         for nota in notas where !vistas.contains(nota) { vistas.append(nota) }
         puntos = Tonnetz.colocar(vistas.map(\.pasosDeQuinta)) { pasos, cerca in
             // Los puntos con a + 4b = pasos, con b cerca de los ya colocados.
-            cerca.map { b in PuntoDelTonnetz(quintas: pasos - 4 * b, terceras: b) }
+            cerca.map { b in PuntoDeLaRed(quintas: pasos - 4 * b, terceras: b) }
         }
         tieneOrtografia = true
         origen = .notas(vistas)
@@ -137,9 +137,9 @@ public struct Tonnetz: Hashable, Sendable {
     public init(_ conjunto: ConjuntoDeClases) {
         puntos = Tonnetz.colocar(conjunto.clases) { clase, cerca in
             // Los puntos con 7a + 4b ≡ clase (mod 12): para cada b, los a de 12 en 12 cerca de 0.
-            cerca.flatMap { b -> [PuntoDelTonnetz] in
+            cerca.flatMap { b -> [PuntoDeLaRed] in
                 (-12...12).compactMap { a in
-                    modulo(7 * a + 4 * b, 12) == clase ? PuntoDelTonnetz(quintas: a, terceras: b) : nil
+                    modulo(7 * a + 4 * b, 12) == clase ? PuntoDeLaRed(quintas: a, terceras: b) : nil
                 }
             }
         }
@@ -156,7 +156,7 @@ public struct Tonnetz: Hashable, Sendable {
     /// ¿Están todas las notas unidas por la red?
     public var esConexo: Bool {
         guard let primero = puntos.first else { return true }
-        var alcanzados: Set<PuntoDelTonnetz> = [primero]
+        var alcanzados: Set<PuntoDeLaRed> = [primero]
         var pendientes = [primero]
         while let punto = pendientes.popLast() {
             for vecino in punto.vecinos where puntos.contains(vecino) && !alcanzados.contains(vecino) {
@@ -187,7 +187,7 @@ public struct Tonnetz: Hashable, Sendable {
         var aristas: [Arista] = []
         for punto in puntos {
             for (paso, eje) in [((1, 0), Arista.Eje.quintaJusta), ((0, 1), .terceraMayor), ((1, -1), .terceraMenor)] {
-                let otro = PuntoDelTonnetz(quintas: punto.quintas + paso.0, terceras: punto.terceras + paso.1)
+                let otro = PuntoDeLaRed(quintas: punto.quintas + paso.0, terceras: punto.terceras + paso.1)
                 if conjunto.contains(otro) { aristas.append(Arista(desde: punto, hasta: otro, eje: eje)) }
             }
         }
@@ -204,14 +204,14 @@ public struct Tonnetz: Hashable, Sendable {
     /// Se buscan todas las disposiciones con ramificación y poda, partiendo de la colocación
     /// voraz como cota; si un conjunto grande agota el presupuesto de búsqueda, se queda la mejor
     /// encontrada. `candidatos` da, para un elemento y unas filas `b`, los puntos posibles en ellas.
-    package static func colocar(_ elementos: [Int], candidatos: (Int, ClosedRange<Int>) -> [PuntoDelTonnetz]) -> [PuntoDelTonnetz] {
+    package static func colocar(_ elementos: [Int], candidatos: (Int, ClosedRange<Int>) -> [PuntoDeLaRed]) -> [PuntoDeLaRed] {
         let voraz = colocarVoraz(elementos, candidatos: candidatos)
         guard elementos.count > 2 else { return voraz }
         let primero = voraz[0]
         // Para cada uno de los demás, los puntos cercanos al primero: hasta dos pasos más lejos
         // que el más cercano, que es donde puede estar la disposición más compacta.
         let filas = (primero.terceras - 4)...(primero.terceras + 4)
-        let opciones: [[PuntoDelTonnetz]] = elementos.dropFirst().map { elemento in
+        let opciones: [[PuntoDeLaRed]] = elementos.dropFirst().map { elemento in
             let puntos = candidatos(elemento, filas)
             let minimo = puntos.map { $0.distancia(hasta: primero) }.min() ?? 0
             return puntos.filter { $0.distancia(hasta: primero) <= minimo + 2 }
@@ -220,7 +220,7 @@ public struct Tonnetz: Hashable, Sendable {
         // Se recorren primero los elementos con menos opciones, para podar antes.
         let orden = opciones.indices.sorted { (opciones[$0].count, $0) < (opciones[$1].count, $1) }
 
-        func coste(_ puntos: [PuntoDelTonnetz]) -> (Int, Int, Int) {
+        func coste(_ puntos: [PuntoDeLaRed]) -> (Int, Int, Int) {
             var suma = 0, diametro = 0
             for i in puntos.indices {
                 for j in puntos.indices where j > i {
@@ -233,8 +233,8 @@ public struct Tonnetz: Hashable, Sendable {
         }
         var mejor = voraz
         var mejorCoste = coste(voraz)
-        var elegidos: [PuntoDelTonnetz] = [primero]
-        var asignacion = [PuntoDelTonnetz?](repeating: nil, count: opciones.count)
+        var elegidos: [PuntoDeLaRed] = [primero]
+        var asignacion = [PuntoDeLaRed?](repeating: nil, count: opciones.count)
         var presupuesto = 200_000
 
         func buscar(_ k: Int, _ parcial: Int) {
@@ -269,7 +269,7 @@ public struct Tonnetz: Hashable, Sendable {
     }
 
     /// Cuántos grupos de notas unidas por la red forman unos puntos.
-    package static func grupos(_ puntos: [PuntoDelTonnetz]) -> Int {
+    package static func grupos(_ puntos: [PuntoDeLaRed]) -> Int {
         var pendientes = Set(puntos)
         var grupos = 0
         while let inicio = pendientes.first {
@@ -288,18 +288,18 @@ public struct Tonnetz: Hashable, Sendable {
 
     /// La colocación voraz: en cada vuelta, el elemento que puede quedar más cerca de los ya
     /// colocados, en el punto que menos se aleja de todos.
-    package static func colocarVoraz(_ elementos: [Int], candidatos: (Int, ClosedRange<Int>) -> [PuntoDelTonnetz]) -> [PuntoDelTonnetz] {
+    package static func colocarVoraz(_ elementos: [Int], candidatos: (Int, ClosedRange<Int>) -> [PuntoDeLaRed]) -> [PuntoDeLaRed] {
         guard let primero = elementos.first else { return [] }
-        let origen = PuntoDelTonnetz(quintas: 0, terceras: 0)
+        let origen = PuntoDeLaRed(quintas: 0, terceras: 0)
         // El primero, en la fila 0 (con ortografía) o lo más cerca posible del origen.
         let inicial = candidatos(primero, 0...0).min { $0.distancia(hasta: origen) < $1.distancia(hasta: origen) }
             ?? candidatos(primero, -2...2).min { $0.distancia(hasta: origen) < $1.distancia(hasta: origen) }!
-        var colocados: [Int: PuntoDelTonnetz] = [primero: inicial]
+        var colocados: [Int: PuntoDeLaRed] = [primero: inicial]
         var pendientes = Array(elementos.dropFirst())
         while !pendientes.isEmpty {
             let filas = colocados.values.map(\.terceras)
             let cerca = (filas.min()! - 3)...(filas.max()! + 3)
-            var mejor: (indice: Int, punto: PuntoDelTonnetz, coste: (Int, Int, Int))?
+            var mejor: (indice: Int, punto: PuntoDeLaRed, coste: (Int, Int, Int))?
             for (i, elemento) in pendientes.enumerated() {
                 for punto in candidatos(elemento, cerca) {
                     let distancias = colocados.values.map { $0.distancia(hasta: punto) }
@@ -338,22 +338,22 @@ public struct Tonnetz: Hashable, Sendable {
         let margen = margen ?? (tieneOrtografia ? 1 : 2)
         let altura = paso * 0.8660254037844386   // √3/2, entre dos filas
         let trazado = Tonnetz.trazado(paso: paso)
-        func x(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: p.coordenada).x }
-        func y(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: p.coordenada).y }
+        func x(_ p: PuntoDeLaRed) -> Double { trazado.centro(de: p.coordenada).x }
+        func y(_ p: PuntoDeLaRed) -> Double { trazado.centro(de: p.coordenada).y }
 
         // La ventana: un rectángulo alrededor de las notas.
-        let base = puntos.isEmpty ? [PuntoDelTonnetz(quintas: 0, terceras: 0)] : puntos
+        let base = puntos.isEmpty ? [PuntoDeLaRed(quintas: 0, terceras: 0)] : puntos
         let filas = (base.map(\.terceras).min()! - margen)...(base.map(\.terceras).max()! + margen)
         // En unidades de `paso` y con la fórmula exacta (a + b/2), no con `x`: los bordes caen en
         // medios enteros y un error de redondeo cambiaría las columnas que se dibujan.
-        func columna(_ p: PuntoDelTonnetz) -> Double { Double(p.quintas) + Double(p.terceras) / 2 }
+        func columna(_ p: PuntoDeLaRed) -> Double { Double(p.quintas) + Double(p.terceras) / 2 }
         let minX = (base.map(columna).min()! - Double(margen) - 0.5) * paso
         let maxX = (base.map(columna).max()! + Double(margen) + 0.5) * paso
-        var red: [PuntoDelTonnetz] = []
+        var red: [PuntoDeLaRed] = []
         for b in filas {
             let desde = Int((minX / paso - Double(b) / 2).rounded(.up))
             let hasta = Int((maxX / paso - Double(b) / 2).rounded(.down))
-            if desde <= hasta { for a in desde...hasta { red.append(PuntoDelTonnetz(quintas: a, terceras: b)) } }
+            if desde <= hasta { for a in desde...hasta { red.append(PuntoDeLaRed(quintas: a, terceras: b)) } }
         }
         let enRed = Set(red)
         // Los puntos marcados: los de las notas o, sin ortografía, todos los de sus clases.
@@ -363,7 +363,7 @@ public struct Tonnetz: Hashable, Sendable {
         // El título de un recorrido: "Do –R→ Lam –L→ Fa".
         let pie = DibujoSVG.titulo(deRecorrido: recorrido, notacion, acordes: acordesDelRecorrido)
         let ancho = maxX - minX + 2 * borde
-        let arriba = y(PuntoDelTonnetz(quintas: 0, terceras: filas.upperBound)) - borde
+        let arriba = y(PuntoDeLaRed(quintas: 0, terceras: filas.upperBound)) - borde
         let alto = Double(filas.count - 1) * altura + 2 * borde
         let f = DibujoSVG.f
         let origenX = minX - borde
@@ -379,7 +379,7 @@ public struct Tonnetz: Hashable, Sendable {
         // Aristas: grises, y resaltadas entre notas marcadas.
         for punto in red {
             for paso in [(1, 0), (0, 1), (1, -1)] {
-                let otro = PuntoDelTonnetz(quintas: punto.quintas + paso.0, terceras: punto.terceras + paso.1)
+                let otro = PuntoDeLaRed(quintas: punto.quintas + paso.0, terceras: punto.terceras + paso.1)
                 guard enRed.contains(otro) else { continue }
                 let resaltada = marcados.contains(punto) && marcados.contains(otro)
                 if resaltada { hayLados = true }

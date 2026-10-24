@@ -31,8 +31,8 @@ public enum PuntoCardinal: String, CaseIterable, Hashable, Sendable, Codable {
 /// este.puntoCardinal(.plana)                             // .sureste
 /// ```
 ///
-/// Se llama así, y no `Direccion`, para no chocar con la `Direccion` de Armonia (ascendente o
-/// descendente) en un fichero que importe los dos paquetes.
+/// Se llama así, y no `Direccion`, para que el nombre diga de qué rejilla es en un fichero que importe
+/// también Armonia.
 public enum DireccionHexagonal: Int, CaseIterable, Hashable, Sendable, Codable {
     case qMasSMenos = 0
     case qMasRMenos = 1

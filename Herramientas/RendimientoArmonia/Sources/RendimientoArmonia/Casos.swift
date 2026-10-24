@@ -83,7 +83,7 @@ enum Casos {
 
         casos += [
             Caso(grupo: "Conducción", nombre: "Revisar un coral de 4 acordes") {
-                (try? Coral(leyendo: coral))?.problemas.count ?? 0
+                (try? Coral(leyendo: coral))?.faltas.count ?? 0
             },
             Caso(grupo: "Digitaciones", nombre: "Sol7/Si en la guitarra") {
                 guitarra.digitaciones(de: sol7).count

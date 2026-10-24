@@ -46,13 +46,13 @@ extension LineaDeComandos {
         case "--escala", "--scale":
             guard !resto.isEmpty else { return .error(uso(.faltaEscalaDelDibujo(orden: orden), notacion)) }
             dibujo = .escala(try Escala(leyendo: resto))
-        case "--clases", "--conjunto", "--pcs":
+        case "--clases", "--pcs":
             let numeros = resto.split(whereSeparator: { $0 == " " || $0 == "," }).map { Int($0) }
             guard !numeros.isEmpty, numeros.allSatisfy({ $0.map { (0...11).contains($0) } ?? false }) else {
                 return .error(uso(.clasesFueraDeRango(orden: orden), notacion))
             }
             dibujo = .clases(ConjuntoDeClases(numeros.map { $0! }))
-        case "--recorrido", "--sequence", "--progresion":
+        case "--recorrido", "--sequence":
             let acordes = try argumentos.dropFirst().map { try Acorde(leyendo: $0) }
             guard !acordes.isEmpty else { return .error(uso(.faltanTriadasDelRecorrido(orden: orden), notacion)) }
             dibujo = .recorrido(acordes)

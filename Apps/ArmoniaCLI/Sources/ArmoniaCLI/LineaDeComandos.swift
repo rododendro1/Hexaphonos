@@ -57,7 +57,7 @@ public enum LineaDeComandos {
         case .sinValor(let nombre):
             return uso(.faltaValor(nombre), notacion)
         case .valor(let texto):
-            guard let textos = notacionDelIdioma(texto)?.idioma else { return uso(.idiomaDesconocido(texto), notacion) }
+            guard let textos = notacionDelIdioma(texto)?.idiomaDeLasNotas else { return uso(.idiomaDesconocido(texto), notacion) }
             notacion = notacion.conTextos(en: textos)
         }
         let argumentos = opciones.restantes
@@ -93,19 +93,19 @@ public enum LineaDeComandos {
                 return try revisar(resto, notacion)
             case "tonnetz":
                 return try tonnetz(resto, notacion)
-            case "tabla", "tabla-armonica", "harmonic-table":
+            case "tabla", "harmonic-table":
                 return try tablaArmonica(resto, notacion)
             case "vecinos", "neighbors":
                 return try vecinos(resto, notacion)
             case "conduccion-parsimoniosa", "conducción-parsimoniosa", "smooth-path":
                 return try caminoParsimonioso(resto, notacion)
-            case "conduccion", "conducción", "voice-leading":
+            case "conduccion-minima", "conducción-mínima", "minimal-voice-leading":
                 guard resto.count == 2 else { return uso(.dosAcordesDeConduccion, notacion) }
                 let conduccion = try Acorde(leyendo: resto[0]).conduccionMinima(hasta: try Acorde(leyendo: resto[1]))
                 return bien(conduccion.texto(en: notacion))
             case "digitaciones", "digitacion", "digitación", "fingerings":
                 return try digitaciones(resto, notacion)
-            case "plr", "neorriemanniano", "neoriemannian":
+            case "plr", "neoriemannian":
                 return try plr(resto, notacion)
             case "musicxml":
                 return try partitura(resto, notacion, formato: .musicXML)
@@ -135,9 +135,9 @@ public enum LineaDeComandos {
         ResultadoDeOrden(salida: "", error: error.texto(en: notacion), codigo: 2)
     }
 
-    /// La ayuda en el idioma de los textos de la notación (`Notacion.idiomaDeLosTextos`).
+    /// La ayuda en el idioma de los textos de la notación (`Notacion.textos`).
     public static func ayuda(en notacion: Notacion) -> String {
-        switch notacion.idiomaDeLosTextos {
+        switch notacion.textos {
         case .ingles, .aleman, .occitano, .ruso, .griego: return help
         case .catalan: return ajuda
         case .gallego: return axuda

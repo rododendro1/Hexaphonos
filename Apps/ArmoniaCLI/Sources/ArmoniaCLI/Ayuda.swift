@@ -658,17 +658,17 @@ extension LineaDeComandos {
                 it: "da un accordo all'altro muovendo una\nvoce (o due) di un semitono a ogni\npasso"),
             ejemplo: ejemplo("armonia conduccion-parsimoniosa Sol7 Rem7",
                              "armonia smooth-path G7 Dm7")),
-        // conduccion <acorde> <acorde>
+        // conduccion-minima <acorde> <acorde>
         EntradaDeAyuda(
             sintaxis: Traduccion(
-                "conduccion <acorde> <acorde>",
-                "voice-leading <chord> <chord>",
-                ca: "conduccion <acord> <acord>",
-                gl: "conduccion <acorde> <acorde>",
-                eu: "conduccion <akordea> <akordea>",
-                pt: "conduccion <acorde> <acorde>",
-                fr: "conduccion <accord> <accord>",
-                it: "conduccion <accordo> <accordo>"),
+                "conduccion-minima <acorde> <acorde>",
+                "minimal-voice-leading <chord> <chord>",
+                ca: "conduccion-minima <acord> <acord>",
+                gl: "conduccion-minima <acorde> <acorde>",
+                eu: "conduccion-minima <akordea> <akordea>",
+                pt: "conduccion-minima <acorde> <acorde>",
+                fr: "conduccion-minima <accord> <accord>",
+                it: "conduccion-minima <accordo> <accordo>"),
             descripcion: Traduccion(
                 "la conducción con menos semitonos",
                 "the voice leading with fewest semitones",
@@ -678,8 +678,8 @@ extension LineaDeComandos {
                 pt: "a condução com menos meios-tons",
                 fr: "la conduite avec le moins de demi-\ntons",
                 it: "la condotta con meno semitoni"),
-            ejemplo: ejemplo("armonia conduccion Sol7 Do",
-                             "armonia voice-leading G7 C")),
+            ejemplo: ejemplo("armonia conduccion-minima Sol7 Do",
+                             "armonia minimal-voice-leading G7 C")),
         // plr <tríada> <P, L, R…>
         EntradaDeAyuda(
             sintaxis: Traduccion(
