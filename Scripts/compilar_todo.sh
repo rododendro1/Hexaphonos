@@ -78,15 +78,16 @@ else
     omitir "Motor: pruebas" "el motor no compila"
 fi
 
-# 3. Lo que depende del motor: la línea de comandos, el ejemplo y HexaphonosUI.
+# 3. Lo que depende del motor: la línea de comandos, el ejemplo, la medida del rendimiento y HexaphonosUI.
 if [ "$MOTOR_COMPILA" = 1 ]; then
     paso "Línea de comandos: compilar" Apps/ArmoniaCLI swift build &&
         paso "Línea de comandos: pruebas" Apps/ArmoniaCLI swift test --parallel
     paso "Ejemplo: ejecutar" Ejemplos/ArmoniaEjemplo swift run ArmoniaEjemplo
+    paso "Rendimiento: compilar" Herramientas/ArmoniaRendimiento swift build
     paso "HexaphonosUI: compilar" Packages/HexaphonosUI swift build &&
         paso "HexaphonosUI: pruebas" Packages/HexaphonosUI swift test --parallel
 else
-    omitir "Línea de comandos, ejemplo y HexaphonosUI" "el motor no compila"
+    omitir "Línea de comandos, ejemplo, rendimiento y HexaphonosUI" "el motor no compila"
 fi
 
 # 4. Las rejillas hexagonales: no dependen del motor.
