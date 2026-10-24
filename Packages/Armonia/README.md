@@ -197,7 +197,8 @@ Sources/
 
 Los nombres que dependen del idioma están en dos sitios. Los de los tipos del núcleo (letras y
 alteraciones en las nueve lenguas, y las calidades de intervalo, los intervalos y las consonancias
-en los cinco idiomas de los textos: español, inglés, catalán, gallego y euskera, con `Traduccion`)
+en los ocho idiomas de los textos: español, inglés, catalán, gallego, euskera, portugués, francés
+e italiano, con `Traduccion`)
 están en `Texto/Idiomas.swift`, y los mensajes de error, en `Texto/ErrorDeLectura.swift`. Los de los tipos de las demás capas
 (modos y tonalidades, papeles en el acorde, calidades de tríada, grados, claves, figuras,
 duraciones y colores) están junto a cada tipo, en un fichero `X+Idiomas.swift`
@@ -205,8 +206,8 @@ duraciones y colores) están junto a cada tipo, en un fichero `X+Idiomas.swift`
 en `Nomenclatura`, y corregir lo que el compilador señale: los `switch` sobre el idioma no tienen
 `default`. Tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano (`Altura(leyendo:en:)`,
 `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`). Los nombres que son datos de un catálogo (tipos
-de acorde y de escala, instrumentos) siguen junto a su catálogo, en los cinco idiomas (los de las
-escalas en catalán, gallego y euskera, en `TipoDeEscala+Peninsulares.swift`). Para que los
+de acorde y de escala, instrumentos) siguen junto a su catálogo, en los ocho idiomas (los de las
+escalas en los seis que no son español ni inglés, en `TipoDeEscala+Peninsulares.swift`). Para que los
 textos salgan también en un idioma nuevo, se añade un campo a `Traduccion` y su caso en
 `Idioma.deLosTextos`.
 

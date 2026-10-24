@@ -32,8 +32,8 @@ public struct Altura: Hashable, Sendable {
 
     /// Lee textos como "Do4", "Fa#3", "Sib-1", "C#5".
     /// Si no se puede leer, el error indica dónde y por qué.
-    /// También acepta los nombres en catalán, gallego, euskera y portugués: "re bemoll 4",
-    /// "fa sostido 3", "fá sustenido 3".
+    /// También acepta los nombres en catalán, gallego, euskera, portugués, occitano, ruso y griego:
+    /// "re bemoll 4", "fa sostido 3", "fá sustenido 3", "фа-диез 3", "σι ύφεση 4".
     public init(leyendo texto: String) throws {
         var lector = Lector(texto)
         try lector.exigirContenido()
@@ -45,7 +45,7 @@ public struct Altura: Hashable, Sendable {
             guard let octava = Int(textoOctava) else { throw lector.error(.octavaNoValida(textoOctava)) }
             leida = Altura(nombre, octava: octava)
         } catch {
-            let peninsulares = [Nomenclatura.catalan, .gallego, .euskera, .portugues].lazy.compactMap { try? Altura(leyendo: texto, en: $0) }
+            let peninsulares = Nomenclatura.deLecturaGenerica.lazy.compactMap { try? Altura(leyendo: texto, en: $0) }
             guard let nota = peninsulares.first else { throw error }
             leida = nota
         }
@@ -55,8 +55,9 @@ public struct Altura: Hashable, Sendable {
     /// Lee una nota escrita en una notación concreta: `Altura(leyendo: "Fis4", en: .aleman)`,
     /// `Altura(leyendo: "ré bémol 3", en: .frances)`. La octava es la científica (Do4 = do central).
     public init(leyendo texto: String, en notacion: Nomenclatura) throws {
+        let notacion = notacion.notas
         switch notacion {
-        case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues:
+        case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let limpio = texto.trimmingEspacios()
             let cifras = limpio.reversed().prefix(while: { $0.isNumber || $0 == "-" })
             let textoOctava = String(cifras.reversed())

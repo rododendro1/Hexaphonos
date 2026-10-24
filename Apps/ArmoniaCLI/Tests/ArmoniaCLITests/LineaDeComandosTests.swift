@@ -234,11 +234,18 @@ final class LineaDeComandosTests: XCTestCase {
         XCTAssertTrue(salida("tonalidad Mib mayor --idioma gl").contains("(3 bemois)"))
         XCTAssertEqual(salida("--idioma en acorde C/G"), salida("acorde C/G --ingles"))
         XCTAssertEqual(salida("acorde Do --language es"), salida("acorde Do"))
-        // La ayuda, en los cinco idiomas.
+        // La ayuda, en los ocho idiomas.
         XCTAssertTrue(salida("ayuda --idioma ca").hasPrefix("armonia: "))
         XCTAssertEqual(salida("ayuda --idioma ca"), LineaDeComandos.ajuda + "\n")
         XCTAssertEqual(salida("ayuda --idioma gl"), LineaDeComandos.axuda + "\n")
         XCTAssertEqual(salida("ayuda --idioma eu"), LineaDeComandos.laguntza + "\n")
+        XCTAssertEqual(salida("ayuda --idioma pt"), LineaDeComandos.ajudaEmPortugues + "\n")
+        XCTAssertEqual(salida("ayuda --idioma fr"), LineaDeComandos.aide + "\n")
+        XCTAssertEqual(salida("ayuda --idioma italiano"), LineaDeComandos.aiuto + "\n")
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma fr").hasPrefix("Sol7/Si: septième de dominante\n"))
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma it").contains("(basso si, primo rivolto)"))
+        XCTAssertTrue(salida("tonalidad Mib mayor --idioma pt").contains("(3 bemóis)"))
+        XCTAssertTrue(salida("escala Re dórico --idioma fr").hasPrefix("ré dorien"))
         XCTAssertTrue(salida("help --idioma en").hasPrefix("armonia: music theory"))
         XCTAssertTrue(salida("acorde Sol7/Si --idioma ca").hasPrefix("Sol7/Si: sèptima de dominant\n"))
         XCTAssertTrue(salida("escala Re dórico --idioma eu").hasPrefix("re doriarra"))
@@ -246,18 +253,25 @@ final class LineaDeComandosTests: XCTestCase {
         XCTAssertTrue(resultado("acorde", "Do7(b3)", "--idioma", "eu").error.hasPrefix("Ezin da «Do7(b3)» irakurri"))
         XCTAssertEqual(resultado("digitaciones", "C", "--limite", "0", "--idioma", "eu").error,
                        "armonia: muga 1etik 200era bitarteko zenbaki bat da: --limite 5\nProbatu «armonia ayuda».\n")
-        XCTAssertEqual(resultado("acorde", "Do", "--idioma", "fr").codigo, 2)
-        XCTAssertTrue(resultado("acorde", "Do", "--idioma", "fr").error
-                        .hasPrefix("armonia: idioma desconocido: «fr» (es, en, ca, gl o eu)"))
+        XCTAssertEqual(resultado("acorde", "Do", "--idioma", "de").codigo, 2)
+        XCTAssertTrue(resultado("acorde", "Do", "--idioma", "de").error
+                        .hasPrefix("armonia: idioma desconocido: «de» (es, en, ca, gl, eu, pt, fr o it)"))
         XCTAssertEqual(resultado("acorde", "Do", "--idioma").error,
                        "armonia: falta el valor de --idioma\nPrueba «armonia ayuda».\n")
+        // Notas y textos por separado.
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma en --textos es").hasPrefix("G7/B: séptima de dominante\n"))
+        XCTAssertTrue(salida("acorde Sol7/Si --textos fr").hasPrefix("Sol7/Si: septième de dominante\n"))
+        XCTAssertTrue(salida("ayuda --idioma fr --textos es").contains("--textos"))
+        XCTAssertEqual(resultado("acorde", "Do", "--textos", "xx").codigo, 2)
+        XCTAssertEqual(resultado("acorde", "Do", "--textos").codigo, 2)
     }
 
-    /// Con --idioma ca, gl o eu, los errores de uso no dejan nada en español.
+    /// Con --idioma ca, gl, eu, pt, fr o it, los errores de uso no dejan nada en español.
     func testErroresEnCatalanGallegoEuskera() {
         let enEspanol = ["Prueba", "hace falta", "hacen falta", "desconocid", " es un", " sin ", " las ", " los "]
         for (idioma, ayuda) in [("ca", "Prova «armonia ayuda».\n"), ("gl", "Proba «armonia ayuda».\n"),
-                                ("eu", "Probatu «armonia ayuda».\n")] {
+                                ("eu", "Probatu «armonia ayuda».\n"), ("pt", "Experimente «armonia ayuda».\n"),
+                                ("fr", "Essayez « armonia ayuda ».\n"), ("it", "Prova «armonia ayuda».\n")] {
             for orden in Self.ordenesMalEscritas {
                 let resultado = LineaDeComandos.ejecutar((orden + " --idioma " + idioma).split(separator: " ").map(String.init))
                 XCTAssertEqual(resultado.codigo, 2, "\(orden) \(idioma)")

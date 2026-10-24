@@ -17,6 +17,9 @@ extension Tonalidad.Modo {
         case .gallego: return self == .mayor ? "maior" : "menor"
         case .euskera: return self == .mayor ? "maiorra" : "minorra"
         case .portugues: return self == .mayor ? "maior" : "menor"
+        case .occitano: return self == .mayor ? "major" : "menor"
+        case .ruso: return self == .mayor ? "мажор" : "минор"
+        case .griego: return self == .mayor ? "μείζονα" : "ελάσσονα"
         }
     }
 }
@@ -25,22 +28,25 @@ extension Tonalidad.Modo {
 
 extension Tonalidad {
     /// "La menor" en español, "A minor" en inglés, "a-Moll" en alemán (con la tónica en minúscula
-    /// si es menor), "la mineur" en francés, "la minore" en italiano.
+    /// si es menor), "la mineur" en francés, "la minore" en italiano, "ля минор" en ruso, "λα ελάσσονα"
+    /// en griego.
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion == .aleman else { return "\(tonica.nombre(en: notacion)) \(modo.nombre(en: notacion))" }
+        guard notacion.idioma == .aleman else { return "\(tonica.nombre(en: notacion)) \(modo.nombre(en: notacion))" }
         let nombreTonica = tonica.nombre(en: .aleman)
         return (modo == .menor ? nombreTonica.lowercased() : nombreTonica) + "-" + modo.nombre(en: .aleman)
     }
 }
 
 extension Tonalidad {
-    /// La tonalidad como lugar, en los cinco idiomas de los textos: "en Do mayor", "in C major",
-    /// "en do major", "en do maior" y, en euskera, con el inesivo: "do maiorrean".
+    /// La tonalidad como lugar, en los idiomas de los textos: "en Do mayor", "in C major",
+    /// "en do major", "en do maior", "em dó maior", "en do majeur", "in do maggiore" y, en euskera,
+    /// con el inesivo: "do maiorrean".
     package func lugar(en notacion: Nomenclatura) -> String {
         let completo = self.nombre(en: notacion)
-        switch notacion.idioma {
-        case .espanol, .portugues, .catalan, .gallego: return "en " + completo
-        case .ingles, .aleman, .frances, .italiano: return "in " + completo
+        switch notacion.idiomaDeLosTextos {
+        case .espanol, .catalan, .gallego, .frances: return "en " + completo
+        case .portugues: return "em " + completo
+        case .ingles, .aleman, .italiano, .occitano, .ruso, .griego: return "in " + completo
         case .euskera: return Tonalidad.declinar(completo, "ean")
         }
     }

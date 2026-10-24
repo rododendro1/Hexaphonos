@@ -2,6 +2,40 @@
 
 ## Sin publicar
 
+### Notas y textos en idiomas distintos
+
+- `Nomenclatura.conTextos(en:)` combina los nombres de nota de una notación con los textos de otro
+  idioma: `Acorde("Sol7/Si").nombre(en: Nomenclatura.ruso.conTextos(en: .espanol))` es «соль séptima de
+  dominante, primera inversión». `Nomenclatura` gana el caso `.combinada(notas:textos:)` y la propiedad
+  `notas`; `allCases` sigue listando solo las notaciones simples. Los textos siguen `idiomaDeLosTextos`
+  en lugar de `idioma`.
+- Las apps eligen por separado las notas y los textos en el selector de notación (se guarda como
+  «ruso+espanol»), y la línea de comandos tiene `--textos`.
+
+### Escalas en francés, italiano, ruso y griego
+
+- `Escala(leyendo:)` acepta la tónica y el tipo en francés e italiano (`Escala("fa dièse lydien")`), y
+  en ruso y griego con los tipos más comunes o con su nombre inglés (`Escala("ре дорийский")`,
+  `Escala("до lydian dominant")`).
+
+### Nombres de nota en occitano, ruso y griego
+
+- `Nomenclatura` e `Idioma` tienen `.occitano`, `.ruso` y `.griego`: notas, alteraciones y tonalidades
+  se escriben y se leen en esas lenguas (`Nota("Fa#").nombre(en: .ruso)` es «фа-диез»;
+  `Tonalidad("Re mayor").nombre(en: .griego)`, «ρε μείζονα»; `Altura("sòl dièsi 2")`, Sol♯2). Las lecturas
+  genéricas también las aceptan, sin distinguir tildes griegas ni la ё rusa. Los demás textos salen en
+  inglés, como en alemán.
+
+### Textos en portugués, francés e italiano
+
+- Los textos del motor y los nombres de los catálogos salen también en portugués, francés e italiano con esas
+  notaciones: antes salían en español (portugués) o en inglés (francés e italiano). `Traduccion` pide ahora ocho
+  textos (`pt:`, `fr:`, `it:`), y `idiomaDeLosTextos` solo cambia el alemán, que sigue en inglés. El portugués es el europeo (tónica, meio-tom, traste).
+  `Intervalo.terceraMayor.nombre(en: .frances)` es «tierce majeure»; `Escala(.re, .dorico).nombre(en: .italiano)`,
+  «re dorico»; `Acorde("Sol7/Si").nombre(en: .portugues)`, «sol sétima de dominante, primeira inversão».
+- Las escalas se leen también con su nombre en portugués: `Escala("dó maior")`.
+- En la línea de comandos, `--idioma pt|fr|it` y la ayuda en esos idiomas.
+
 ### Textos en catalán, gallego y euskera
 
 - Los textos del motor salen en catalán, gallego y euskera con esas notaciones, además de en español e inglés:

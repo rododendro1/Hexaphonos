@@ -43,18 +43,21 @@ public struct ProblemaDeConduccion: Hashable, Sendable, CustomStringConvertible 
         let primera = nombres.first ?? ""
         let entre = Traduccion("entre " + nombres.joined(separator: " y "), "between " + nombres.joined(separator: " and "),
                                ca: "entre " + nombres.joined(separator: " i "), gl: "entre " + nombres.joined(separator: " e "),
-                               eu: nombres.joined(separator: " eta ")).en(notacion)
+                               eu: nombres.joined(separator: " eta "),
+                               pt: "entre " + nombres.joined(separator: " e "), fr: "entre " + nombres.joined(separator: " et "), it: "tra " + nombres.joined(separator: " e ")).en(notacion)
         let en = Traduccion("en \(primera)", "in the \(primera)", ca: "en \(primera)", gl: "en \(primera)",
-                            eu: primera).en(notacion)
+                            eu: primera, pt: "em \(primera)", fr: "(\(primera))", it: "in \(primera)").en(notacion)
         let lugar: String
         switch tipo {
         case .quintasParalelas, .octavasParalelas, .quintasDirectas, .octavasDirectas, .superposicion, .saltoNoMelodico:
             let pasos = "\(acorde + 1) → \(acorde + 2)"
             lugar = Traduccion("(acordes \(pasos))", "(chords \(pasos))", ca: "(acords \(pasos))",
-                               gl: "(acordes \(pasos))", eu: "(\(pasos) akordeak)").en(notacion)
+                               gl: "(acordes \(pasos))", eu: "(\(pasos) akordeak)",
+                               pt: "(acordes \(pasos))", fr: "(accords \(pasos))", it: "(accordi \(pasos))").en(notacion)
         case .cruceDeVoces, .separacionExcesiva, .fueraDeTesitura:
             lugar = Traduccion("(acorde \(acorde + 1))", "(chord \(acorde + 1))", ca: "(acord \(acorde + 1))",
-                               gl: "(acorde \(acorde + 1))", eu: "(\(acorde + 1). akordea)").en(notacion)
+                               gl: "(acorde \(acorde + 1))", eu: "(\(acorde + 1). akordea)",
+                               pt: "(acorde \(acorde + 1))", fr: "(accord \(acorde + 1))", it: "(accordo \(acorde + 1))").en(notacion)
         }
         switch tipo {
         case .saltoNoMelodico, .fueraDeTesitura:
@@ -72,31 +75,40 @@ extension ProblemaDeConduccion.Tipo: Nombrable, CustomStringConvertible {
         switch self {
         case .quintasParalelas:
             return Traduccion("Quintas paralelas", "Parallel fifths", ca: "Quintes paral·leles", gl: "Quintas paralelas",
-                              eu: "Bosgarren paraleloak").en(notacion)
+                              eu: "Bosgarren paraleloak",
+                              pt: "Quintas paralelas", fr: "Quintes parallèles", it: "Quinte parallele").en(notacion)
         case .octavasParalelas:
             return Traduccion("Octavas paralelas", "Parallel octaves", ca: "Octaves paral·leles", gl: "Oitavas paralelas",
-                              eu: "Zortzidun paraleloak").en(notacion)
+                              eu: "Zortzidun paraleloak",
+                              pt: "Oitavas paralelas", fr: "Octaves parallèles", it: "Ottave parallele").en(notacion)
         case .quintasDirectas:
             return Traduccion("Quintas directas", "Direct fifths", ca: "Quintes directes", gl: "Quintas directas",
-                              eu: "Bosgarren zuzenak").en(notacion)
+                              eu: "Bosgarren zuzenak",
+                              pt: "Quintas diretas", fr: "Quintes directes", it: "Quinte nascoste").en(notacion)
         case .octavasDirectas:
             return Traduccion("Octavas directas", "Direct octaves", ca: "Octaves directes", gl: "Oitavas directas",
-                              eu: "Zortzidun zuzenak").en(notacion)
+                              eu: "Zortzidun zuzenak",
+                              pt: "Oitavas diretas", fr: "Octaves directes", it: "Ottave nascoste").en(notacion)
         case .cruceDeVoces:
             return Traduccion("Cruce de voces", "Voice crossing", ca: "Encreuament de veus", gl: "Cruzamento de voces",
-                              eu: "Ahotsen gurutzatzea").en(notacion)
+                              eu: "Ahotsen gurutzatzea",
+                              pt: "Cruzamento de vozes", fr: "Croisement de voix", it: "Incrocio delle voci").en(notacion)
         case .superposicion:
             return Traduccion("Superposición", "Voice overlap", ca: "Superposició", gl: "Superposición",
-                              eu: "Gainjartzea").en(notacion)
+                              eu: "Gainjartzea",
+                              pt: "Sobreposição", fr: "Chevauchement", it: "Sovrapposizione").en(notacion)
         case .separacionExcesiva:
             return Traduccion("Más de una octava", "More than an octave", ca: "Més d'una octava", gl: "Máis dunha oitava",
-                              eu: "Zortzidun bat baino gehiago").en(notacion)
+                              eu: "Zortzidun bat baino gehiago",
+                              pt: "Mais de uma oitava", fr: "Plus d'une octave", it: "Più di un'ottava").en(notacion)
         case .saltoNoMelodico:
             return Traduccion("Salto no melódico", "Unmelodic leap", ca: "Salt no melòdic", gl: "Salto non melódico",
-                              eu: "Jauzi ez-melodikoa").en(notacion)
+                              eu: "Jauzi ez-melodikoa",
+                              pt: "Salto não melódico", fr: "Saut non mélodique", it: "Salto non melodico").en(notacion)
         case .fueraDeTesitura:
             return Traduccion("Fuera de tesitura", "Out of range", ca: "Fora de tessitura", gl: "Fóra de tesitura",
-                              eu: "Tesituratik kanpo").en(notacion)
+                              eu: "Tesituratik kanpo",
+                              pt: "Fora da tessitura", fr: "Hors tessiture", it: "Fuori tessitura").en(notacion)
         }
     }
 
@@ -273,12 +285,17 @@ public struct ConduccionDeVoces: Hashable, Sendable {
 
     package static func nombreDeVoz(_ voz: Int, de total: Int, en notacion: Nomenclatura) -> String {
         if total == 4 {
-            return [Traduccion("bajo", "bass", ca: "baix", gl: "baixo", eu: "baxua"),
-                    Traduccion("tenor", "tenor", ca: "tenor", gl: "tenor", eu: "tenorra"),
-                    Traduccion("contralto", "alto", ca: "contralt", gl: "contralto", eu: "altua"),
-                    Traduccion("soprano", "soprano", ca: "soprano", gl: "soprano", eu: "sopranoa")][voz].en(notacion)
+            return [Traduccion("bajo", "bass", ca: "baix", gl: "baixo", eu: "baxua",
+                               pt: "baixo", fr: "basse", it: "basso"),
+                    Traduccion("tenor", "tenor", ca: "tenor", gl: "tenor", eu: "tenorra",
+                               pt: "tenor", fr: "ténor", it: "tenore"),
+                    Traduccion("contralto", "alto", ca: "contralt", gl: "contralto", eu: "altua",
+                               pt: "contralto", fr: "alto", it: "contralto"),
+                    Traduccion("soprano", "soprano", ca: "soprano", gl: "soprano", eu: "sopranoa",
+                               pt: "soprano", fr: "soprano", it: "soprano")][voz].en(notacion)
         }
         let n = voz + 1
-        return Traduccion("voz \(n)", "voice \(n)", ca: "veu \(n)", gl: "voz \(n)", eu: "\(n). ahotsa").en(notacion)
+        return Traduccion("voz \(n)", "voice \(n)", ca: "veu \(n)", gl: "voz \(n)", eu: "\(n). ahotsa",
+                          pt: "voz \(n)", fr: "voix \(n)", it: "voce \(n)").en(notacion)
     }
 }

@@ -27,6 +27,23 @@ final class NotacionTests: XCTestCase {
         }
     }
 
+    func testNotasYTextosPorSeparado() {
+        let rusoEnEspanol = Nomenclatura.ruso.conTextos(en: .espanol)
+        XCTAssertEqual(rusoEnEspanol.clave, "ruso+espanol")
+        XCTAssertEqual(Nomenclatura.desde(clave: "ruso+espanol"), rusoEnEspanol)
+        XCTAssertEqual(rusoEnEspanol.titulo, "Русский (фа-диез) · Español")
+        XCTAssertEqual(rusoEnEspanol.idiomaElegidoParaLosTextos, .espanol)
+        XCTAssertNil(Nomenclatura.ruso.idiomaElegidoParaLosTextos)
+        // Cambiar las notas conserva los textos, y quitar los textos deja las notas.
+        XCTAssertEqual(rusoEnEspanol.conNotas(.griego), Nomenclatura.griego.conTextos(en: .espanol))
+        XCTAssertEqual(rusoEnEspanol.conTextosElegidos(nil), .ruso)
+        XCTAssertEqual(Nomenclatura.ingles.conTextosElegidos(.catalan).clave, "ingles+catalan")
+        // Una parte desconocida no rompe nada.
+        XCTAssertEqual(Nomenclatura.desde(clave: "ruso+klingon"), .ruso)
+        XCTAssertEqual(Nomenclatura.desde(clave: "klingon+espanol"), .espanol)
+        XCTAssertEqual(Set(Idioma.allCases.map(\.clave)).count, Idioma.allCases.count)
+    }
+
     func testUnaClaveDesconocidaDaElEspanol() {
         XCTAssertEqual(Nomenclatura.desde(clave: ""), .espanol)
         XCTAssertEqual(Nomenclatura.desde(clave: "klingon"), .espanol)

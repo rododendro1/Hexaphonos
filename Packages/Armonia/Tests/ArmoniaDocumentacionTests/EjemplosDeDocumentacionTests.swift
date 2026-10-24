@@ -405,70 +405,94 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
     }
 
     func testNotacionYPartitura1() throws {
-        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 39
-        comprobar(Nota("Sib").nombre(en: .aleman), #""B""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 39)
-        comprobar(Nota("Mibb").nombre(en: .aleman), #""Eses""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 40)
-        comprobar(Altura("Fa#3").nombre(en: .frances), #""fa dièse 3""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 41)
-        comprobar(Acorde("Sim7").cifrado(en: .aleman), #""Hm7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 42)
-        comprobar(Acorde("Rebmaj7").cifrado(en: .frances), #""Ré♭maj7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 43)
-        comprobar(try Nota(leyendo: "B", en: .aleman), #"Si♭"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 44)
-        comprobar(try Altura(leyendo: "re diesis 5", en: .italiano), #"Re♯5"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 45)
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 42
+        comprobar(Nota("Sib").nombre(en: .aleman), #""B""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 42)
+        comprobar(Nota("Mibb").nombre(en: .aleman), #""Eses""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 43)
+        comprobar(Altura("Fa#3").nombre(en: .frances), #""fa dièse 3""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 44)
+        comprobar(Acorde("Sim7").cifrado(en: .aleman), #""Hm7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 45)
+        comprobar(Acorde("Rebmaj7").cifrado(en: .frances), #""Ré♭maj7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 46)
+        comprobar(try Nota(leyendo: "B", en: .aleman), #"Si♭"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 47)
+        comprobar(try Altura(leyendo: "re diesis 5", en: .italiano), #"Re♯5"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 48)
         _ = (Tonalidad("Fis-Dur"), Tonalidad("ré bémol majeur"), Tonalidad("la minore"))
-        comprobar(Alteracion(-2).nombre(en: .frances), #""double bémol""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 47)
-        comprobar(Nota("Fa#").nombre(en: .portugues), #""fá sustenido""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 48)
-        comprobar(Alteracion(2).nombre(en: .portugues), #""duplo sustenido""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 49)
-        comprobar(Acorde("Rebmaj7").cifrado(en: .portugues), #""Ré♭maj7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 50)
-        comprobar(Altura("fá sustenido 3"), #"Fa♯3"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 51)
-        comprobar(Tonalidad("si bemol maior"), #"Si♭ mayor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 52)
-        comprobar(Escala("ré dórico"), #"Re dórico"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 53)
+        comprobar(Alteracion(-2).nombre(en: .frances), #""double bémol""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 50)
+        comprobar(Nota("Fa#").nombre(en: .portugues), #""fá sustenido""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 51)
+        comprobar(Alteracion(2).nombre(en: .portugues), #""duplo sustenido""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 52)
+        comprobar(Acorde("Rebmaj7").cifrado(en: .portugues), #""Ré♭maj7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 53)
+        comprobar(Altura("fá sustenido 3"), #"Fa♯3"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 54)
+        comprobar(Tonalidad("si bemol maior"), #"Si♭ mayor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 55)
+        comprobar(Escala("ré dórico"), #"Re dórico"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 56)
+        comprobar(Nota("Fa#").nombre(en: .ruso), #""фа-диез""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 57)
+        comprobar(Tonalidad("Re mayor").nombre(en: .griego), #""ρε μείζονα""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 58)
+        comprobar(Acorde("Sibm7").cifrado(en: .griego), #""Σι♭m7""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 59)
+        comprobar(Altura("sòl dièsi 2"), #"Sol♯2"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 60)
+        comprobar(Tonalidad("ля минор"), #"La menor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 61)
     }
 
     func testNotacionYPartitura2() throws {
-        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 80
-        comprobar(Intervalo.terceraMayor.nombre(en: .catalan), #""3a major""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 80)
-        comprobar(Intervalo.terceraMayor.nombre(en: .gallego), #""3ª maior""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 81)
-        comprobar(Intervalo.sextaMenor.nombre(en: .euskera), #""6. txikia""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 82)
-        comprobar(Cadencia.Tipo.rota.nombre(en: .catalan), #""cadència trencada""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 83)
-        comprobar(Escala(.re, .dorico).nombre(en: .euskera), #""re doriarra""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 84)
-        comprobar(Acorde("Sol7/Si").nombre(en: .catalan), #""sol sèptima de dominant, primera inversió""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 85)
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 89
+        comprobar(Intervalo.terceraMayor.nombre(en: .catalan), #""3a major""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 89)
+        comprobar(Intervalo.terceraMayor.nombre(en: .gallego), #""3ª maior""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 90)
+        comprobar(Intervalo.sextaMenor.nombre(en: .euskera), #""6. txikia""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 91)
+        comprobar(Cadencia.Tipo.rota.nombre(en: .catalan), #""cadència trencada""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 92)
+        comprobar(Escala(.re, .dorico).nombre(en: .euskera), #""re doriarra""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 93)
+        comprobar(Acorde("Sol7/Si").nombre(en: .catalan), #""sol sèptima de dominant, primera inversió""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 94)
+        comprobar(Intervalo.terceraMayor.nombre(en: .frances), #""tierce majeure""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 95)
+        comprobar(Cadencia.Tipo.rota.nombre(en: .italiano), #""cadenza d'inganno""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 96)
+        comprobar(Escala(.re, .dorico).nombre(en: .frances), #""ré dorien""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 97)
+        comprobar(Acorde("Sol7/Si").nombre(en: .portugues), #""sol sétima de dominante, primeira inversão""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 98)
     }
 
     func testNotacionYPartitura3() throws {
-        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 94
-        _ = Nota("Sibb").alteracion
-        comprobar(Alteracion(3).nombre, #""triple sostenido""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 95)
-        comprobar(Alteracion(-1).nombre(en: .ingles), #""flat""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 96)
-        comprobar(Alteracion(2).simbolo, #""♯♯""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 97)
-        comprobar(Alteracion(3).simboloCompacto, #""𝄪♯""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 98)
-        comprobar(Alteracion(-2).simboloASCII, #""bb""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 99)
-        _ = (Alteracion("x"), Alteracion("doble bemol"), Alteracion("♮"))
-        _ = Alteracion.sostenido + .sostenido
-        comprobar(Alteracion.sostenido.pasosDeQuinta, #"7"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 102)
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 107
+        let notacion = Nomenclatura.ruso.conTextos(en: .espanol)
+        comprobar(Acorde("Sol7/Si").nombre(en: notacion), #""соль séptima de dominante, primera inversión""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 108)
+        comprobar(Escala(.re, .dorico).nombre(en: Nomenclatura.ingles.conTextos(en: .euskera)), #""D doriarra""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 109)
     }
 
     func testNotacionYPartitura4() throws {
-        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 110
-        comprobar(Intervalo.sextaMenor.claseIntervalica, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 110)
-        comprobarIgual(Intervalo.segundaAumentada.consonancia(), .disonancia, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 111)
-        comprobar(Intervalo(numero: 1, calidad: .disminuida(1)), #"nil"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 112)
-        comprobar(Clave.sol.posicion(de: "Do4").descripcion, #""1.ª línea adicional inferior""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 114)
-        comprobar(Clave.doEnTercera.posicion(de: "Do4").lugar, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 115)
-        comprobar(Clave.fa.altura(lugar: 8), #"La3"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 116)
-        comprobarIgual(Clave.masAdecuada(para: ["Do2", "Mi2"]), .fa, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 117)
-        comprobar(Instrumento.clarineteEnSib.sonido(de: Altura("Do5")), #"Si♭4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 119)
-        comprobar(Instrumento.saxofonAlto.escritura(de: Escala("Si mayor")), #"La♭ mayor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 120)
-        comprobar(Instrumento.saxofonAlto.escritura(de: Acorde("Do7")), #"La7"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 121)
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 118
+        comprobar(Escala("fa dièse lydien"), #"Fa♯ lidio"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 118)
+        comprobar(Escala("si bemolle minore melodica"), #"Si♭ menor melódica"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 119)
+        comprobar(Escala("ре дорийский"), #"Re dórico"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 120)
+        comprobar(Escala("λα αρμονική ελάσσονα"), #"La menor armónica"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 121)
     }
 
     func testNotacionYPartitura5() throws {
-        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 139
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 130
+        _ = Nota("Sibb").alteracion
+        comprobar(Alteracion(3).nombre, #""triple sostenido""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 131)
+        comprobar(Alteracion(-1).nombre(en: .ingles), #""flat""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 132)
+        comprobar(Alteracion(2).simbolo, #""♯♯""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 133)
+        comprobar(Alteracion(3).simboloCompacto, #""𝄪♯""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 134)
+        comprobar(Alteracion(-2).simboloASCII, #""bb""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 135)
+        _ = (Alteracion("x"), Alteracion("doble bemol"), Alteracion("♮"))
+        _ = Alteracion.sostenido + .sostenido
+        comprobar(Alteracion.sostenido.pasosDeQuinta, #"7"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 138)
+    }
+
+    func testNotacionYPartitura6() throws {
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 146
+        comprobar(Intervalo.sextaMenor.claseIntervalica, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 146)
+        comprobarIgual(Intervalo.segundaAumentada.consonancia(), .disonancia, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 147)
+        comprobar(Intervalo(numero: 1, calidad: .disminuida(1)), #"nil"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 148)
+        comprobar(Clave.sol.posicion(de: "Do4").descripcion, #""1.ª línea adicional inferior""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 150)
+        comprobar(Clave.doEnTercera.posicion(de: "Do4").lugar, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 151)
+        comprobar(Clave.fa.altura(lugar: 8), #"La3"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 152)
+        comprobarIgual(Clave.masAdecuada(para: ["Do2", "Mi2"]), .fa, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 153)
+        comprobar(Instrumento.clarineteEnSib.sonido(de: Altura("Do5")), #"Si♭4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 155)
+        comprobar(Instrumento.saxofonAlto.escritura(de: Escala("Si mayor")), #"La♭ mayor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 156)
+        comprobar(Instrumento.saxofonAlto.escritura(de: Acorde("Do7")), #"La7"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 157)
+    }
+
+    func testNotacionYPartitura7() throws {
+        // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 175
         do {
             let acorde = try Acorde(leyendo: "Do7(b3)")
             print(acorde)
         } catch let error as ErrorDeLectura {
             print(error)
-            comprobarIgual(error.motivo, .tensionNoValida("b3"), #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 146)
-            comprobar(error.posicion, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 147)
+            comprobarIgual(error.motivo, .tensionNoValida("b3"), #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 182)
+            comprobar(error.posicion, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 183)
             print(error.descripcion(en: .ingles))
         }
         do { _ = try TipoDeAcorde(comprobandoPasosDeQuinta: [0, -3, 4]) } catch { print(error) }
