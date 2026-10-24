@@ -1,28 +1,32 @@
 import SwiftUI
 import Armonia
+import HexaphonosUI
 
 @main
 struct ArmoniaApp: App {
     var body: some Scene {
         WindowGroup {
             VistaRaiz()
+                .notacionGuardada()
         }
     }
 }
 
-/// Las cuatro vistas de la app. Cada una tiene en su barra el selector de notación, que comparten
-/// con el ajuste `notacion`.
+/// Las cuatro vistas de la app. Cada una tiene en su barra el selector de notación; la elegida está en el
+/// entorno (`notacionGuardada()`) y decide también el idioma de la interfaz.
 struct VistaRaiz: View {
+    @Environment(\.notacion) private var notacion
+
     var body: some View {
         TabView {
             NavigationStack { VistaAcordes() }
-                .tabItem { Label("Acordes", systemImage: "music.note.list") }
+                .tabItem { Label(notacion.texto(.acordes), systemImage: "music.note.list") }
             NavigationStack { VistaEscalas() }
-                .tabItem { Label("Escalas", systemImage: "chart.bar.xaxis") }
+                .tabItem { Label(notacion.texto(.escalas), systemImage: "chart.bar.xaxis") }
             NavigationStack { VistaAnalisis() }
-                .tabItem { Label("Análisis", systemImage: "waveform.path.ecg") }
+                .tabItem { Label(notacion.texto(.analisis), systemImage: "waveform.path.ecg") }
             NavigationStack { VistaCoral() }
-                .tabItem { Label("Coral", systemImage: "music.quarternote.3") }
+                .tabItem { Label(notacion.texto(.coral), systemImage: "music.quarternote.3") }
         }
     }
 }

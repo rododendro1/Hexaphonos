@@ -11,6 +11,17 @@ public enum RedDeNotas: String, CaseIterable, Identifiable, Hashable, Sendable {
 
     public var id: Self { self }
 
+    /// El nombre de la red en el idioma de los textos: «Tabla armónica», «Harmonic table»…
+    public func nombre(en notacion: Nomenclatura) -> String {
+        switch self {
+        case .tonnetz, .wickiHayden, .janko: return rawValue
+        case .tablaArmonica:
+            return Traduccion("Tabla armónica", "Harmonic table", ca: "Taula harmònica", gl: "Táboa harmónica",
+                              eu: "Taula harmonikoa", pt: "Tabela harmónica", fr: "Table harmonique",
+                              it: "Tavola armonica").en(notacion)
+        }
+    }
+
     /// El teclado isomorfo de la red; `nil` en el Tonnetz y la tabla, que tienen su propio dibujo.
     public var teclado: TecladoIsomorfico? {
         switch self {
@@ -83,6 +94,6 @@ public enum PresentacionDeRedes {
         case .escala(let escala): que = escala.nombre(en: notacion)
         case .recorrido(let acordes): que = acordes.map { $0.cifrado(en: notacion) }.joined(separator: " ")
         }
-        return red.rawValue + " · " + que
+        return red.nombre(en: notacion) + " · " + que
     }
 }

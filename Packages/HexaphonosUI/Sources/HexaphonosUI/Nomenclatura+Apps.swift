@@ -1,3 +1,4 @@
+import Foundation
 import Armonia
 
 /// Lo que comparten las apps al elegir y guardar la notación. No usa SwiftUI, así que se prueba en Linux.
@@ -11,6 +12,30 @@ extension Nomenclatura {
     /// Una notación combinada se guarda como «ruso+espanol».
     public var clave: String {
         esCombinada ? escritura.clave + "+" + textos.clave : escritura.clave
+    }
+
+    /// La notación del idioma del sistema, para cuando aún no se ha elegido ninguna: con el sistema en
+    /// catalán, `.catalan`; en un idioma sin notación propia, la española. `idiomas` son los códigos
+    /// de `Locale.preferredLanguages` («ca-ES», «en-GB»…), y manda el primero que se conozca.
+    public static func delSistema(idiomas: [String] = Locale.preferredLanguages) -> Nomenclatura {
+        for codigo in idiomas {
+            switch codigo.lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" }).first.map(String.init) {
+            case "es": return .espanol
+            case "en": return .ingles
+            case "de": return .aleman
+            case "fr": return .frances
+            case "it": return .italiano
+            case "ca": return .catalan
+            case "gl": return .gallego
+            case "eu": return .euskera
+            case "pt": return .portugues
+            case "oc": return .occitano
+            case "ru": return .ruso
+            case "el": return .griego
+            default: continue
+            }
+        }
+        return .espanol
     }
 
     /// La notación guardada con esa clave; si no existe, el español.

@@ -5,35 +5,34 @@ import HexaphonosUI
 /// Armoniza una melodía, escribe unos acordes a cuatro voces o revisa la conducción de unas voces, y
 /// exporta el coral como partitura o MIDI.
 struct VistaCoral: View {
-    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @Environment(\.notacion) private var notacion
     @State private var tarea = PresentacionDeCoral.Tarea.armonizar
     @State private var textos: [PresentacionDeCoral.Tarea: String] = Dictionary(
         uniqueKeysWithValues: PresentacionDeCoral.Tarea.allCases.map { ($0, $0.ejemplo) })
     @State private var tonalidad = ""
-    /// El resultado y para qué tarea, texto y tonalidad. Mientras no coincida con lo que hay escrito,
-    /// se muestra «Calculando…».
-    @State private var resultado: (clave: String, valor: Result<CoralPresentado, Error>)?
+    /// El resultado y para qué tarea, texto, tonalidad y notación. Mientras no coincida con lo que hay
+    /// escrito, se muestra «Calculando…».
+    @State private var resultado: Calculado<Result<CoralPresentado, Error>>?
 
-    private var notacion: Nomenclatura { .desde(clave: claveDeNotacion) }
     private var texto: String { textos[tarea] ?? "" }
-    private var claveActual: String { "\(tarea.rawValue)|\(texto)|\(tonalidad)|\(claveDeNotacion)" }
+    private var claveActual: String { "\(tarea.rawValue)|\(texto)|\(tonalidad)|\(notacion.clave)" }
 
     var body: some View {
         Form {
             Section {
-                Picker("Tarea", selection: $tarea) {
-                    ForEach(PresentacionDeCoral.Tarea.allCases) { Text($0.rawValue).tag($0) }
+                Picker(notacion.texto(.tarea), selection: $tarea) {
+                    ForEach(PresentacionDeCoral.Tarea.allCases) { Text($0.titulo(en: notacion)).tag($0) }
                 }
                 .pickerStyle(.segmented)
-                TextField(tarea.indicacion, text: Binding(get: { texto }, set: { textos[tarea] = $0 }), axis: .vertical)
+                TextField(tarea.indicacion(en: notacion), text: Binding(get: { texto }, set: { textos[tarea] = $0 }), axis: .vertical)
                     .comoCampoDeCifrado()
                 if tarea.usaTonalidad {
-                    TextField("Tonalidad (vacío: la que mejor encaje)", text: $tonalidad)
+                    TextField(notacion.texto(.campoDeTonalidad), text: $tonalidad)
                         .comoCampoDeCifrado()
                 }
             }
-            if let resultado, resultado.clave == claveActual {
-                switch resultado.valor {
+            if let valor = resultado?.valor(para: claveActual) {
+                switch valor {
                 case .success(let coral):
                     contenido(coral)
                 case .failure(let error):
@@ -43,44 +42,45 @@ struct VistaCoral: View {
                 }
             } else {
                 Section {
-                    HStack {
-                        ProgressView()
-                        Text("Calculando…").foregroundColor(.secondary)
-                    }
+                    FilaCalculando()
                 }
             }
         }
-        .navigationTitle("Coral")
-        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
+        .navigationTitle(notacion.texto(.coral))
+        .selectorDeNotacionEnLaBarra()
         .toolbar {
             ToolbarItem {
                 BotonDeExportar(ficheros)
             }
         }
-        .task(id: claveActual) { await calcular() }
+        // Armonizar a cuatro voces puede tardar: fuera del hilo principal, cuando se deja de escribir.
+        .calcularEnSegundoPlano(para: claveActual, esperando: 0.3, en: $resultado) {
+            [tarea = self.tarea, texto = self.texto, tonalidad = self.tonalidad, notacion = self.notacion] in
+            Result { try PresentacionDeCoral.presentar(tarea, texto, tonalidad: tonalidad, notacion: notacion) }
+        }
     }
 
     private var ficheros: [FicheroParaExportar] {
-        guard let resultado, resultado.clave == claveActual, case .success(let coral) = resultado.valor else { return [] }
+        guard case .success(let coral) = resultado?.valor(para: claveActual) else { return [] }
         return coral.ficheros
     }
 
     @ViewBuilder
     private func contenido(_ coral: CoralPresentado) -> some View {
         if !coral.titulo.isEmpty {
-            Section("Tonalidad") {
+            Section(notacion.texto(.tonalidad)) {
                 Text(coral.titulo).font(.headline)
             }
         }
         if !coral.propuestas.isEmpty {
-            Section("Armonizaciones, de mejor a peor") {
+            Section(notacion.texto(.armonizaciones)) {
                 ForEach(Array(coral.propuestas.enumerated()), id: \.offset) { n, propuesta in
                     Text("\(n + 1). \(propuesta)")
                 }
             }
         }
         if !coral.filas.isEmpty {
-            Section("A cuatro voces, de grave a agudo") {
+            Section(notacion.texto(.aCuatroVoces)) {
                 ForEach(Array(coral.filas.enumerated()), id: \.offset) { _, fila in
                     HStack {
                         Text(fila.cifrado)
@@ -95,24 +95,10 @@ struct VistaCoral: View {
             }
         }
         if !coral.avisos.isEmpty {
-            let titulo: String = tarea == .revisar ? "Conducción de las voces" : "Avisos"
+            let titulo = notacion.texto(tarea == .revisar ? .conduccionDeLasVoces : .avisos)
             Section(titulo) {
                 ForEach(coral.avisos, id: \.self) { Text($0.texto(en: notacion)) }
             }
         }
-    }
-
-    private func calcular() async {
-        let clave = claveActual
-        let (tarea, texto, tonalidad, notacion) = (self.tarea, self.texto, self.tonalidad, self.notacion)
-        // Espera a que se deje de escribir; si cambia el texto, la tarea se cancela aquí.
-        try? await Task.sleep(nanoseconds: 300_000_000)
-        guard !Task.isCancelled else { return }
-        // Armonizar a cuatro voces puede tardar: fuera del hilo principal.
-        let valor = await Task.detached(priority: .userInitiated) {
-            Result { try PresentacionDeCoral.presentar(tarea, texto, tonalidad: tonalidad, notacion: notacion) }
-        }.value
-        guard !Task.isCancelled else { return }
-        resultado = (clave, valor)
     }
 }

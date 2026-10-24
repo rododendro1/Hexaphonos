@@ -20,6 +20,19 @@ Componentes de SwiftUI para las apps de Hexaphonos, sobre `Armonia` y `Hexagonos
 En Linux solo compila la lógica que no usa SwiftUI. `MastilView`, `TonnetzView` y `SVGView` siguen aceptándose,
 marcados como obsoletos.
 
+### Apps traducidas y ayudantes comunes
+
+- `TextoDeLasApps` (en `HexaphonosPresentacion`): los textos de la interfaz de las dos apps en los ocho idiomas
+  de los textos del motor, con los ejemplos de las indicaciones escritos en la notación elegida. Siguen el
+  idioma de los textos de la notación, así que el selector cambia la app entera. También se traducen las
+  tareas del coral (`Tarea.titulo(en:)`, `indicacion(en:)`), los formatos para exportar
+  (`Formato.titulo(en:)`), las redes (`RedDeNotas.nombre(en:)`), el selector y el menú «Exportar».
+- La notación va en el entorno: `notacionGuardada()` en la raíz de cada app la lee de los ajustes, las vistas
+  usan `@Environment(\.notacion)` y `selectorDeNotacionEnLaBarra()` ya no necesita la clave.
+- Si aún no se ha elegido notación, se usa la del idioma del sistema (`Nomenclatura.delSistema()`).
+- `calcularEnSegundoPlano(para:esperando:en:_:)`, `Calculado` y `FilaCalculando`: el cálculo con espera
+  mientras se escribe, fuera del hilo principal y con «Calculando…», que repetían Acordes y Coral.
+
 ### Presentación compartida con la línea de comandos
 
 - `PresentacionDeAnalisis`, `PresentacionDeCoral` y `FicheroParaExportar` pasan al módulo `HexaphonosPresentacion`

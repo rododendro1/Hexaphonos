@@ -1,5 +1,6 @@
 #if canImport(SwiftUI)
 import SwiftUI
+import Armonia
 import HexaphonosPresentacion
 
 /// Un menú «Exportar» con una entrada por fichero, que abre la hoja de compartir del sistema
@@ -13,6 +14,7 @@ import HexaphonosPresentacion
 public struct BotonDeExportar: View {
     public let ficheros: [FicheroParaExportar]
     @State private var escritos: [Escrito] = []
+    @Environment(\.notacion) private var notacion
 
     struct Escrito: Identifiable {
         let fichero: FicheroParaExportar
@@ -28,12 +30,12 @@ public struct BotonDeExportar: View {
         Menu {
             ForEach(escritos) { escrito in
                 ShareLink(item: escrito.url) {
-                    Label("\(escrito.fichero.formato.titulo) · \(escrito.fichero.nombreDeFichero)",
+                    Label("\(escrito.fichero.formato.titulo(en: notacion)) · \(escrito.fichero.nombreDeFichero)",
                           systemImage: escrito.fichero.formato.icono)
                 }
             }
         } label: {
-            Label("Exportar", systemImage: "square.and.arrow.up")
+            Label(notacion.texto(.exportar), systemImage: "square.and.arrow.up")
         }
         .disabled(escritos.isEmpty)
         .task(id: ficheros) {
