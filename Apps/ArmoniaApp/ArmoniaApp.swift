@@ -10,7 +10,7 @@ struct ArmoniaApp: App {
     }
 }
 
-/// Las tres vistas de la app. Cada una tiene en su barra el selector de notación, que comparten
+/// Las cuatro vistas de la app. Cada una tiene en su barra el selector de notación, que comparten
 /// con el ajuste `notacion`.
 struct VistaRaiz: View {
     var body: some View {
@@ -21,6 +21,8 @@ struct VistaRaiz: View {
                 .tabItem { Label("Escalas", systemImage: "chart.bar.xaxis") }
             NavigationStack { VistaAnalisis() }
                 .tabItem { Label("Análisis", systemImage: "waveform.path.ecg") }
+            NavigationStack { VistaCoral() }
+                .tabItem { Label("Coral", systemImage: "music.quarternote.3") }
         }
     }
 }
