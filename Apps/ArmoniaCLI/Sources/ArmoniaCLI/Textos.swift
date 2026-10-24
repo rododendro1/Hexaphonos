@@ -52,7 +52,7 @@ enum Mensaje {
         case .relativa: return Traduccion("relativa", "relative", ca: "relativa", gl: "relativa", eu: "erlatiboa",
                                           pt: "relativa", fr: "relative", it: "relativa")
         case .homonima: return Traduccion("homónima", "parallel", ca: "homònima", gl: "homónima", eu: "homonimoa",
-                                          pt: "homônima", fr: "homonyme", it: "omonima")
+                                          pt: "homónima", fr: "homonyme", it: "omonima")
         case .bajo(let nota):
             return Traduccion("bajo \(nota)", "bass \(nota)", ca: "baix \(nota)", gl: "baixo \(nota)", eu: "baxua \(nota)",
                               pt: "baixo \(nota)", fr: "basse \(nota)", it: "basso \(nota)")
@@ -93,7 +93,7 @@ enum Mensaje {
                               pt: "sem \(notas)", fr: "sans \(notas)", it: "senza \(notas)")
         case .semitonos(let n):
             return Traduccion("\(n) semitonos", "\(n) semitones", ca: "\(n) semitons", gl: "\(n) semitons", eu: "\(n) tonuerdi",
-                              pt: "\(n) semitons", fr: "\(n) demi-tons", it: "\(n) semitoni")
+                              pt: "\(n) meios-tons", fr: "\(n) demi-tons", it: "\(n) semitoni")
         case .sinAlteraciones:
             return Traduccion("sin alteraciones", "no sharps or flats", ca: "sense alteracions", gl: "sen alteracións",
                               eu: "alteraziorik gabe",
@@ -136,7 +136,7 @@ enum Mensaje {
             return Traduccion("no hay digitaciones cómodas", "no comfortable fingerings found",
                               ca: "no hi ha digitacions còmodes", gl: "non hai dixitacións cómodas",
                               eu: "ez dago hatz-jarrera erosorik",
-                              pt: "não há digitações confortáveis", fr: "aucun doigté confortable", it: "nessuna diteggiatura comoda")
+                              pt: "não há dedilhações confortáveis", fr: "aucun doigté confortable", it: "nessuna diteggiatura comoda")
         case .dedos(let n):
             return Traduccion(n == 1 ? "1 dedo" : "\(n) dedos", n == 1 ? "1 finger" : "\(n) fingers",
                               ca: n == 1 ? "1 dit" : "\(n) dits", gl: n == 1 ? "1 dedo" : "\(n) dedos", eu: "\(n) hatz",
@@ -144,7 +144,7 @@ enum Mensaje {
         case .cejilla(let traste):
             return Traduccion("cejilla en el traste \(traste)", "barre at fret \(traste)", ca: "celleta al trast \(traste)",
                               gl: "pestana no traste \(traste)", eu: "zeja \(traste). trastean",
-                              pt: "pestana na casa \(traste)", fr: "barré à la case \(traste)", it: "barré al tasto \(traste)")
+                              pt: "pestana no traste \(traste)", fr: "barré à la case \(traste)", it: "barré al tasto \(traste)")
         case .pasos(let n):
             switch n {
             case 0: return Traduccion("ningún paso", "no steps", ca: "cap pas", gl: "ningún paso", eu: "urratsik ez",
@@ -364,7 +364,7 @@ enum ErrorDeUso {
             return Traduccion("falta el número de digitaciones: --limite 5", "missing the number of fingerings: --limit 5",
                               ca: "falta el nombre de digitacions: --limite 5", gl: "falta o número de dixitacións: --limite 5",
                               eu: "hatz-jarrera kopurua falta da: --limite 5",
-                              pt: "falta o número de digitações: --limite 5", fr: "il manque le nombre de doigtés : --limite 5", it: "manca il numero di diteggiature: --limite 5")
+                              pt: "falta o número de dedilhações: --limite 5", fr: "il manque le nombre de doigtés : --limite 5", it: "manca il numero di diteggiature: --limite 5")
         case .limiteFueraDeRango:
             return Traduccion("el límite es un número de 1 a 200: --limite 5", "the limit is a number from 1 to 200: --limit 5",
                               ca: "el límit és un nombre d'1 a 200: --limite 5", gl: "o límite é un número de 1 a 200: --limite 5",
@@ -384,14 +384,14 @@ enum ErrorDeUso {
             return Traduccion("falta el traste más alto: --traste 12", "missing the highest fret: --fret 12",
                               ca: "falta el trast més alt: --traste 12", gl: "falta o traste máis alto: --traste 12",
                               eu: "traste altuena falta da: --traste 12",
-                              pt: "falta a casa mais alta: --traste 12", fr: "il manque la case la plus haute : --traste 12", it: "manca il tasto più alto: --traste 12")
+                              pt: "falta o traste mais alto: --traste 12", fr: "il manque la case la plus haute : --traste 12", it: "manca il tasto più alto: --traste 12")
         case .trasteFueraDeRango:
             return Traduccion("el traste más alto es un número de 0 a 24: --traste 12",
                               "the highest fret is a number from 0 to 24: --fret 12",
                               ca: "el trast més alt és un nombre de 0 a 24: --traste 12",
                               gl: "o traste máis alto é un número de 0 a 24: --traste 12",
                               eu: "traste altuena 0tik 24ra bitarteko zenbaki bat da: --traste 12",
-                              pt: "a casa mais alta é um número de 0 a 24: --traste 12", fr: "la case la plus haute est un nombre de 0 à 24 : --traste 12", it: "il tasto più alto è un numero da 0 a 24: --traste 12")
+                              pt: "o traste mais alto é um número de 0 a 24: --traste 12", fr: "la case la plus haute est un nombre de 0 à 24 : --traste 12", it: "il tasto più alto è un numero da 0 a 24: --traste 12")
         case .faltaCifradoDeDigitaciones:
             return Traduccion("falta el cifrado: \(d)", "missing the chord symbol: \(digitaciones.1)",
                               ca: "falta el xifrat: \(d)", gl: "falta o cifrado: \(d)", eu: "zifratua falta da: \(d)",
@@ -427,7 +427,7 @@ enum ErrorDeUso {
                               ca: "els dos acords han de ser de la mateixa família (sèptimes, amb maj7 o sense, o tríades) i estar connectats",
                               gl: "os dous acordes teñen que ser da mesma familia (sétimas, con ou sen maj7, ou tríades) e estar conectados",
                               eu: "bi akordeek familia berekoak izan behar dute (zazpigarrenak, maj7rekin edo gabe, edo triadeak) eta lotuta egon",
-                              pt: "os dois acordes têm de ser da mesma família (sétimas, com ou sem maj7, ou tríades) e estar conectados", fr: "les deux accords doivent être de la même famille (septièmes, avec ou sans maj7, ou triades) et être reliés", it: "i due accordi devono essere della stessa famiglia (settime, con o senza maj7, o triadi) ed essere collegati")
+                              pt: "os dois acordes têm de ser da mesma família (sétimas, com ou sem maj7, ou tríades) e estar ligados", fr: "les deux accords doivent être de la même famille (septièmes, avec ou sans maj7, ou triades) et être reliés", it: "i due accordi devono essere della stessa famiglia (settime, con o senza maj7, o triadi) ed essere collegati")
         case .faltanPasosDePLR:
             let ejemplo = "armonia plr Do PLR"
             return Traduccion("hacen falta una tríada y unos pasos u otra tríada: " + ejemplo,
@@ -576,7 +576,7 @@ enum ErrorDeUso {
                               ca: "el cicle és hexatònic, octatònic o LR, des d'una tríada: " + ejemplo,
                               gl: "o ciclo é hexatónico, octatónico ou LR, desde unha tríade: " + ejemplo,
                               eu: "zikloa hexatonikoa, oktatonikoa edo LR da, triade batetik abiatuta: " + ejemplo,
-                              pt: "o ciclo é hexatônico, octatônico ou LR, a partir de uma tríade: " + ejemplo, fr: "le cycle est hexatonique, octatonique ou LR, depuis une triade : " + ejemplo, it: "il ciclo è esatonico, ottatonico o LR, da una triade: " + ejemplo)
+                              pt: "o ciclo é hexatónico, octatónico ou LR, a partir de uma tríade: " + ejemplo, fr: "le cycle est hexatonique, octatonique ou LR, depuis une triade : " + ejemplo, it: "il ciclo è esatonico, ottatonico o LR, da una triade: " + ejemplo)
         case .recorridoSoloTriadas(let orden):
             let ejemplo = "armonia \(orden) --recorrido Do Lam Fa Rem"
             return Traduccion("el recorrido es de tríadas mayores y menores: " + ejemplo,

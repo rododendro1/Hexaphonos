@@ -546,7 +546,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
         case .calidadesIncompatibles(.disminuidoYSemidisminuido):
             return "diminuto (°) e meio-diminuto (ø) não podem ser combinados"
         case .calidadesIncompatibles(.quintaConCalidad):
-            return "o acorde de quinta (5) não tem terça, por isso não admite m, °, ø nem +"
+            return "o acorde de quinta (5) não tem terceira, por isso não admite m, °, ø nem +"
         case .gradoNoOmitible(let grado):
             return grado == 1 ? "não se pode omitir a fundamental"
                 : "«omit\(grado)» não é válido (podem omitir-se 3, 5, 7, 9, 11 e 13)"
@@ -554,13 +554,13 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
             switch rechazo {
             case .faltaLaFundamental: return "falta a fundamental"
             case .intervaloSinPapel(let intervalo):
-                return "a \(intervalo.nombre(en: .portugues)) não tem papel num acorde por terças"
+                return "a \(intervalo.nombre(en: .portugues)) não tem papel num acorde por terceiras"
             case .terceraMayorYMenor:
-                return "tem terça maior e menor ao mesmo tempo (a ♯9 escreve-se como 9ª aumentada, não como 3ª menor)"
+                return "tem terceira maior e menor ao mesmo tempo (a ♯9 escreve-se como 9ª aumentada, não como 3ª menor)"
             case .variasSeptimas: return "tem mais de uma sétima"
             case .septimaDisminuidaFueraDelDisminuido:
                 return "a sétima diminuta só aparece no acorde diminuto (com 3ª menor e 5ª diminuta)"
-            case .noEsPorTerceras: return "não é um acorde por terças"
+            case .noEsPorTerceras: return "não é um acorde por terceiras"
             }
         case .bajoNoValido(let bajo):
             return "«\(bajo)» não é um nome de nota para o baixo"
@@ -581,7 +581,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
             return "«\(nombre)» não é o modo de uma tonalidade: uma tonalidade é maior ou menor "
                 + "(para os outros modos, use Escala)"
         case .tipoDeEscalaNoReconocido(let nombre):
-            return nombre.isEmpty ? "falta o tipo de escala (maior, dórico, menor harmônica…)"
+            return nombre.isEmpty ? "falta o tipo de escala (maior, dórico, menor harmónica…)"
                 : "«\(nombre)» não é um tipo de escala conhecido"
         }
     }

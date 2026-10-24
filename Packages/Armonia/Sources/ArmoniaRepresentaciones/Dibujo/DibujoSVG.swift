@@ -104,7 +104,7 @@ package enum DibujoSVG {
                 return Traduccion("quinta o tercera entre notas", "fifth or third between notes",
                                   ca: "quinta o tercera entre notes", gl: "quinta ou terceira entre notas",
                                   eu: "noten arteko bosgarrena edo hirugarrena",
-                                  pt: "quinta ou terça entre notas", fr: "quinte ou tierce entre notes", it: "quinta o terza tra note")
+                                  pt: "quinta ou terceira entre notas", fr: "quinte ou tierce entre notes", it: "quinta o terza tra note")
             case .contorno:
                 return Traduccion("contorno de la forma", "outline of the shape", ca: "contorn de la forma",
                                   gl: "contorno da forma", eu: "formaren ingerada",

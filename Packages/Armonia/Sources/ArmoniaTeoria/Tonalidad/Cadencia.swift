@@ -115,7 +115,7 @@ extension Cadencia.Tipo: Nombrable, CustomStringConvertible {
         case .rota:
             return Traduccion("cadencia rota", "deceptive cadence", ca: "cadència trencada", gl: "cadencia rota",
                               eu: "kadentzia hautsia",
-                              pt: "cadência de engano", fr: "cadence rompue", it: "cadenza d'inganno").en(notacion)
+                              pt: "cadência interrompida", fr: "cadence rompue", it: "cadenza d'inganno").en(notacion)
         case .semicadencia:
             return Traduccion("semicadencia", "half cadence", ca: "semicadència", gl: "semicadencia",
                               eu: "erdi-kadentzia",

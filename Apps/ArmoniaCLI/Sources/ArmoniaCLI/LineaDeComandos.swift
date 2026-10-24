@@ -514,33 +514,33 @@ public enum LineaDeComandos {
                                    um percurso de tríades, com setas,
                                    ou o caminho mais curto por P, L e R  armonia tonnetz --recorrido Do Lam Fa Rem > recorrido.svg
       tonnetz --ciclo <ciclo> <tríade>
-                                   um ciclo hexatônico, octatônico ou
+                                   um ciclo hexatónico, octatónico ou
                                    LR (--margen 2: mais rede em volta)   armonia tonnetz --ciclo hexatonico Do > ciclo.svg
-      tabla <notas ou alturas>     tabela harmônica em SVG (hexágonos)   armonia tabla Do3 Sol3 Mi4 > tabla.svg
+      tabla <notas ou alturas>     tabela harmónica em SVG (hexágonos)   armonia tabla Do3 Sol3 Mi4 > tabla.svg
       tabla --acorde | --escala | --clases | --recorrido | --camino | --ciclo
                                    como no Tonnetz (--margen 2: mais
                                    tabela em volta)                      armonia tabla --acorde Domaj7 > domaj7.svg
-      vecinos <acorde> [--voces 2] acordes a um semitom (sétimas:
+      vecinos <acorde> [--voces 2] acordes a um meio-tom (sétimas:
                                    dominante, menor, meio-diminuta e
                                    diminuta; tríades: maior, menor e
                                    aumentada; --ampliada: também com os
                                    maj7)                                 armonia vecinos Sol7
       conduccion-parsimoniosa <acorde> <acorde> [--voces 2] [--ampliada]
                                    de um acorde a outro movendo uma voz
-                                   (ou duas) um semitom em cada passo    armonia conduccion-parsimoniosa Sol7 Rem7
-      conduccion <acorde> <acorde> a condução com menos semitons         armonia conduccion Sol7 Do
+                                   (ou duas) um meio-tom em cada passo   armonia conduccion-parsimoniosa Sol7 Rem7
+      conduccion <acorde> <acorde> a condução com menos meios-tons       armonia conduccion Sol7 Do
       plr <tríade> <P, L, R…>      transformações neorriemannianas       armonia plr Do PLR
       plr <tríade> <tríade>        o caminho mais curto por P, L e R     armonia plr Do Mibm
       plr <tríade> <ciclo>         um ciclo: hexatonico (P, L),
                                    octatonico (P, R) ou "ciclo LR"       armonia plr Do hexatonico
       digitaciones <cifra>… [opções]
                                    formas de tocar um acorde, da mais
-                                   cômoda à menos, num instrumento de
+                                   cómoda à menos, num instrumento de
                                    cordas com trastes
                                    opções: --instrumento guitarra|bajo|ukelele|mandolina|… (também
                                    «guitarra de siete cuerdas», «bajo de 5 cuerdas», «drop D»),
-                                   --limite 5, --traste 12 (a casa mais alta usada), --dedos 4 (os
-                                   que se podem usar), --completo (com todas as notas: por padrão a
+                                   --limite 5, --traste 12 (o traste mais alto usado), --dedos 4 (os
+                                   que se podem usar), --completo (com todas as notas: por omissão a
                                    quinta pode faltar), --diagrama (uma linha por corda)
                                                                          armonia digitaciones Sol7/Si --instrumento ukelele
       ayuda                        esta ajuda

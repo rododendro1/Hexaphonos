@@ -11,9 +11,9 @@ extension NombreDeGrado {
     private var traduccion: Traduccion {
         switch self {
         case .tonica: return Traduccion("tónica", "tonic", ca: "tònica", gl: "tónica", eu: "tonika",
-                                        pt: "tônica", fr: "tonique", it: "tonica")
+                                        pt: "tónica", fr: "tonique", it: "tonica")
         case .supertonica: return Traduccion("supertónica", "supertonic", ca: "supertònica", gl: "supertónica", eu: "supertonika",
-                                             pt: "supertônica", fr: "sus-tonique", it: "sopratonica")
+                                             pt: "supertónica", fr: "sus-tonique", it: "sopratonica")
         case .mediante: return Traduccion("mediante", "mediant", ca: "mediant", gl: "mediante", eu: "mediantea",
                                           pt: "mediante", fr: "médiante", it: "mediante")
         case .subdominante:
@@ -23,11 +23,11 @@ extension NombreDeGrado {
                                            pt: "dominante", fr: "dominante", it: "dominante")
         case .superdominante:
             return Traduccion("superdominante", "submediant", ca: "superdominant", gl: "superdominante", eu: "superdominantea",
-                              pt: "superdominante", fr: "sus-dominante", it: "sopradominante")
+                              pt: "sobredominante", fr: "sus-dominante", it: "sopradominante")
         case .sensible: return Traduccion("sensible", "leading tone", ca: "sensible", gl: "sensible", eu: "sentsiblea",
                                           pt: "sensível", fr: "sensible", it: "sensibile")
         case .subtonica: return Traduccion("subtónica", "subtonic", ca: "subtònica", gl: "subtónica", eu: "subtonika",
-                                           pt: "subtônica", fr: "sous-tonique", it: "sottotonica")
+                                           pt: "subtónica", fr: "sous-tonique", it: "sottotonica")
         }
     }
 }

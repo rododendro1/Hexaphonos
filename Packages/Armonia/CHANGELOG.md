@@ -6,7 +6,7 @@
 
 - Los textos del motor y los nombres de los catálogos salen también en portugués, francés e italiano con esas
   notaciones: antes salían en español (portugués) o en inglés (francés e italiano). `Traduccion` pide ahora ocho
-  textos (`pt:`, `fr:`, `it:`), y `idiomaDeLosTextos` solo cambia el alemán, que sigue en inglés.
+  textos (`pt:`, `fr:`, `it:`), y `idiomaDeLosTextos` solo cambia el alemán, que sigue en inglés. El portugués es el europeo (tónica, meio-tom, traste).
   `Intervalo.terceraMayor.nombre(en: .frances)` es «tierce majeure»; `Escala(.re, .dorico).nombre(en: .italiano)`,
   «re dorico»; `Acorde("Sol7/Si").nombre(en: .portugues)`, «sol sétima de dominante, primeira inversão».
 - Las escalas se leen también con su nombre en portugués: `Escala("dó maior")`.

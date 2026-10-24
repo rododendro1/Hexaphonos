@@ -13,7 +13,7 @@ extension PapelEnAcorde {
         case .fundamental: return Traduccion("fundamental", "root", ca: "fonamental", gl: "fundamental", eu: "oinarria",
                                              pt: "fundamental", fr: "fondamentale", it: "fondamentale")
         case .tercera: return Traduccion("tercera", "third", ca: "tercera", gl: "terceira", eu: "hirugarrena",
-                                         pt: "terça", fr: "tierce", it: "terza")
+                                         pt: "terceira", fr: "tierce", it: "terza")
         case .suspension: return Traduccion("suspensión", "suspension", ca: "suspensió", gl: "suspensión", eu: "esekidura",
                                             pt: "suspensão", fr: "suspension", it: "sospensione")
         case .quinta: return Traduccion("quinta", "fifth", ca: "quinta", gl: "quinta", eu: "bosgarrena",
@@ -61,7 +61,7 @@ extension CalidadDeTriada {
                                           pt: "de quinta", fr: "de quinte", it: "di quinta")
         case .sinTercera:
             return Traduccion("sin tercera", "no third", ca: "sense tercera", gl: "sen terceira", eu: "hirugarrenik gabea",
-                              pt: "sem terça", fr: "sans tierce", it: "senza terza")
+                              pt: "sem terceira", fr: "sans tierce", it: "senza terza")
         }
     }
 }
