@@ -5,7 +5,7 @@ import Foundation
 
 extension LineaDeComandos {
     /// `vecinos Sol7`: los acordes de su familia a un semitono.
-    static func vecinos(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func vecinos(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var argumentos = Argumentos(argumentos)
         guard let voces = argumentos.quitarNumero("--voces", "--voices", en: 1...2, porDefecto: 1) else {
             return uso(.vocesFueraDeRango, notacion)
@@ -20,11 +20,11 @@ extension LineaDeComandos {
         guard !pasos.isEmpty else {
             return uso(.vecinosSinFamilia, notacion)
         }
-        return bien(pasos.map { $0.texto(notacion) }.joined(separator: "\n"))
+        return bien(pasos.map { $0.texto(en: notacion) }.joined(separator: "\n"))
     }
 
     /// `camino Sol7 Rem7`: Sol7 –Si→Do→ … paso a paso.
-    static func caminoParsimonioso(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func caminoParsimonioso(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var argumentos = Argumentos(argumentos)
         guard let voces = argumentos.quitarNumero("--voces", "--voices", en: 1...2, porDefecto: 1) else {
             return uso(.vocesFueraDeRango, notacion)
@@ -39,13 +39,13 @@ extension LineaDeComandos {
         }
         var texto = Acorde(origen.fundamental, origen.tipo).cifrado(en: notacion)
         for paso in camino {
-            texto += " –" + paso.movimientos.map { $0.texto(notacion) }.joined(separator: ", ") + "→ " + paso.acorde.cifrado(en: notacion)
+            texto += " –" + paso.movimientos.map { $0.texto(en: notacion) }.joined(separator: ", ") + "→ " + paso.acorde.cifrado(en: notacion)
         }
         return bien(texto + "\n" + Mensaje.pasos(camino.count).texto(en: notacion))
     }
 
     /// `plr Do PLR`: la tríada tras cada paso. `plr Do Mibm`: el camino más corto.
-    static func plr(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func plr(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         guard argumentos.count >= 2 else { return uso(.faltanPasosDePLR, notacion) }
         let origen = try Acorde(leyendo: argumentos[0])
         guard Tonnetz.Triada(origen) != nil else { return uso(.plrSoloTriadas(camino: false), notacion) }

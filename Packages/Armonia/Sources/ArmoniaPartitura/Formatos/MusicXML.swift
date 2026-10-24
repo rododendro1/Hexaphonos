@@ -35,13 +35,13 @@ extension Voz {
     }
 }
 
-extension ConduccionDeVoces {
+extension Coral {
     /// Los acordes como coral en dos pentagramas: las voces agudas (soprano y contralto) en
     /// clave de sol y las graves (tenor y bajo) en clave de fa, con las plicas de la voz de
     /// arriba hacia arriba y las de la de abajo hacia abajo. El último acorde se alarga hasta la
     /// barra si no llega a ella.
     ///
-    ///     let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+    ///     let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
     ///     let xml = coral.musicXML(duracion: .blanca, compas: "3/2", titulo: "Cadencia")
     ///
     /// Con `cifrados`, cada acorde lleva su cifrado americano encima del soprano; con `analisis`,
@@ -58,7 +58,7 @@ extension ConduccionDeVoces {
                          tonalidad: Tonalidad? = nil, tempo: Tempo? = nil,
                          titulo: String? = nil, parte: String = "Coro",
                          cifrados: Bool = false, analisis: Bool = false,
-                         notacion: Nomenclatura = .espanol) -> String {
+                         notacion: Notacion = .espanol) -> String {
         let todas = acordes.flatMap { $0 }
         // Los acordes que se pueden identificar, con su posición en el coral.
         var identificados: [(indice: Int, acorde: Acorde)] = []
@@ -122,7 +122,7 @@ extension AnalisisArmonico {
     ///   - notacion: la de los cifrados americanos y la tonalidad.
     public func musicXML(duracion: Duracion = .blanca, compas: Compas = .compasillo, tempo: Tempo? = nil,
                          titulo: String? = nil, parte: String = "Piano", cifrados: Bool = true,
-                         analisis: Bool = true, notacion: Nomenclatura = .espanol) -> String {
+                         analisis: Bool = true, notacion: Notacion = .espanol) -> String {
         let (superior, grave) = Exportacion.progresion(acordes.map(\.acorde), duracion: duracion,
                                                        final: Exportacion.hastaLaBarra(duracion, acordes.count, compas))
         var arriba: [Duracion: EscritorMusicXML.Anotacion] = [:]
@@ -507,7 +507,7 @@ package struct EscritorMusicXML {
 
     /// El cifrado de un acorde como elemento `<harmony>`: fundamental, especie (con el texto del
     /// cifrado en `notacion`), bajo y los grados que se añaden o se quitan respecto a la especie.
-    package static func armonia(_ acorde: Acorde, _ notacion: Nomenclatura, pentagrama: Int?) -> String {
+    package static func armonia(_ acorde: Acorde, _ notacion: Notacion, pentagrama: Int?) -> String {
         let intervalos = acorde.tipo.intervalos.filter { $0.numero != 1 }
         let clave = { (i: Intervalo) in (i.numeroSimple, modulo(i.semitonos, 12)) }
         // La especie que más intervalos comparte con el acorde, penalizando los que le sobran.

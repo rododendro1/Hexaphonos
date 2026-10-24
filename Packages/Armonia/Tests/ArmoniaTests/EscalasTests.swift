@@ -726,7 +726,7 @@ final class EscalasTradicionalesTests: XCTestCase {
         XCTAssertEqual(TipoDeEscala.buscar(nombre: "souzinak")?.nombre, "Nikríz")
         // Los nombres propios no se traducen…
         XCTAssertEqual(Escala(.re, .hitzaz).nombre(en: .ingles), "D Hitzáz")
-        XCTAssertEqual(Escala(.re, .hitzaz).texto(.ingles), "D Hitzáz")
+        XCTAssertEqual(Escala(.re, .hitzaz).texto(en: .ingles), "D Hitzáz")
         // …y las escalas habituales siguen igual: los nombres de siempre van primero.
         XCTAssertEqual(TipoDeEscala.buscar(nombre: "mayor")?.nombre, "mayor")
         XCTAssertEqual(TipoDeEscala.frigioDominante.nombre(en: .ingles), "phrygian dominant")

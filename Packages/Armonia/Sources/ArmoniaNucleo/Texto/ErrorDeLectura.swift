@@ -77,7 +77,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
 
     /// Explicación del motivo en el idioma de los textos de la notación: en inglés para el alemán
     /// (`notacion.idiomaDeLosTextos`).
-    public func explicacion(en notacion: Nomenclatura) -> String {
+    public func explicacion(en notacion: Notacion) -> String {
         explicacionTraducida(notacion).en(notacion)
     }
 
@@ -85,7 +85,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
     public var description: String { descripcion(en: .espanol) }
 
     /// Mensaje completo en el idioma de los textos de la notación.
-    public func descripcion(en notacion: Nomenclatura) -> String {
+    public func descripcion(en notacion: Notacion) -> String {
         var inicio = texto.isEmpty
             ? Traduccion("Valor no válido", "Invalid value",
                          ca: "Valor no vàlid", gl: "Valor non válido", eu: "Balio baliogabea",
@@ -106,7 +106,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
 
     /// La explicación en los ocho idiomas de los textos. La notación solo hace falta para los
     /// nombres de calidades e intervalos en inglés, que siguen su vocabulario.
-    private func explicacionTraducida(_ notacion: Nomenclatura) -> Traduccion {
+    private func explicacionTraducida(_ notacion: Notacion) -> Traduccion {
         switch motivo {
         case .textoVacio:
             return Traduccion("el texto está vacío",

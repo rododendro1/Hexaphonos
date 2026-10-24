@@ -172,7 +172,7 @@ print("  Clave para Do2–Mi2–Sol2:", Clave.masAdecuada(para: ["Do2", "Mi2", "
 
 titulo("Instrumentos transpositores")
 let concierto = Escala("Mib mayor")
-for instrumento in [Instrumento.clarineteEnSib, .saxofonAlto, .trompaEnFa, .saxofonTenor] {
+for instrumento in [InstrumentoDePartitura.clarineteEnSib, .saxofonAlto, .trompaEnFa, .saxofonTenor] {
     print("  \(instrumento): Mi♭ mayor de concierto se escribe en \(instrumento.escritura(de: concierto)),",
           "Do5 escrito suena \(instrumento.sonido(de: Altura("Do5")))")
 }
@@ -205,7 +205,7 @@ for correspondencia in CorrespondenciaDeColores.allCases {
 }
 
 titulo("Otras lenguas")
-for notacion in [Nomenclatura.aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues] {
+for notacion in [Notacion.aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues] {
     let notas = ["Do#", "Mib", "Sib", "Si"].map { Nota(texto: $0)!.nombre(en: notacion) }
     print("  \(notacion):", notas.joined(separator: ", "), "·", Tonalidad("Fa# mayor").nombre(en: notacion),
           "·", Acorde("Sim7").cifrado(en: notacion))
@@ -246,12 +246,12 @@ print("  Una quinta más arriba:", subirQuinta(Nota.do), "·", subirQuinta(Acord
       subirQuinta(Escala(.re, .dorico)), "·", subirQuinta(Melodia(["Do4", "Mi4", "Sol4"])))
 print("  Secuencia de quintas:", Nota.do.secuencia(.quintaJusta, veces: 11).map(\.nombre).joined(separator: " "))
 let nombrables: [any Nombrable] = [Intervalo.cuartaAumentada, TipoDeAcorde.semidisminuido, Escala("Mi frigio dominante"),
-                                   NombreDeGrado.sensible, Clave.doEnTercera, Instrumento.saxofonAlto]
+                                   NombreDeGrado.sensible, Clave.doEnTercera, InstrumentoDePartitura.saxofonAlto]
 for valor in nombrables {
     print("  \(valor.nombre(en: .espanol)) — \(valor.nombre(en: .ingles))")
 }
 let textos: [any RepresentableComoTexto] = [Nota("Fa#"), Intervalo.septimaMenor, Acorde("Sib7(b9)/Re")]
-print("  En notación internacional:", textos.map { $0.texto(.ingles) }.joined(separator: " · "))
+print("  En notación internacional:", textos.map { $0.texto(en: .ingles) }.joined(separator: " · "))
 print("  Misma clase de conjuntos:", Acorde("Sol7").esDeLaMismaClase(que: Acorde("Sim7b5")))
 
 titulo("Tonalidad")
@@ -273,7 +273,7 @@ for progresion in ["Do Lam Re7 Sol7 Do", "Sim7(b5) Mi7 Lam", "Do Fa/La Sol7/Si D
 titulo("Conducción de voces")
 for coral in ["Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5",
               "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5 | Fa3 Do4 La4 Fa5"] {
-    let conduccion = try! ConduccionDeVoces(leyendo: coral)
+    let conduccion = try! Coral(leyendo: coral)
     print("  \(coral)")
     if conduccion.esCorrecta { print("    correcta") }
     for problema in conduccion.problemas { print("    \(problema)") }

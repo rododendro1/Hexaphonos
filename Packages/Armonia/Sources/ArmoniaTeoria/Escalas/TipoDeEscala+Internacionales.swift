@@ -111,7 +111,7 @@ extension TipoDeEscala {
     /// Nombre en español ("dórico"), inglés ("dorian"), catalán ("dòric"), gallego ("dórico"),
     /// euskera ("doriarra"), portugués ("dórico"), francés ("dorien") o italiano ("dorico"). Un tipo
     /// sin nombre conocido en ese idioma (como un modo de una escala propia) usa su nombre español.
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         // Los nombres propios de otras tradiciones (Kafi, Hitzaz…) son los mismos en todos los idiomas.
         guard !TipoDeEscala.nombresTradicionales.contains(nombre) else { return nombre }
         switch notacion.idiomaDeLosTextos {

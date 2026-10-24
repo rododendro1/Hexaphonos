@@ -251,7 +251,7 @@ final class EstilosTests: XCTestCase {
     }
 
     func testLaFundamentalFNoSeConfundeConFa() {
-        let estilo = EstiloDeCifrado(nomenclatura: .ingles, aumentado: .aug)
+        let estilo = EstiloDeCifrado(notacion: .ingles, aumentado: .aug)
         let acorde = Acorde(.fa, .aumentado)
         XCTAssertEqual(acorde.cifrado(estilo: estilo), "Faug")
         XCTAssertEqual(Acorde("Faug"), acorde)

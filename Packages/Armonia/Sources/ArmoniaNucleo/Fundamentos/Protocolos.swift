@@ -5,7 +5,7 @@ import Foundation
 // Lo que antes se repetía tipo por tipo (lectura de texto, literales, Codable, nombres en
 // dos idiomas, transposición, clases de altura) se declara aquí una sola vez:
 //
-//  · RepresentableComoTexto: se lee con `init(leyendo:)` y se escribe con `texto(_:)`.
+//  · RepresentableComoTexto: se lee con `init(leyendo:)` y se escribe con `texto(en:)`.
 //    A cambio recibe `init?(_:)`, el literal de texto y Codable.
 //  · Nombrable: nombre para personas en español o inglés (`nombre(en:)`).
 //  · Transponible: `transponer(_:)`, y con ello los operadores + y − y las secuencias.
@@ -13,18 +13,21 @@ import Foundation
 
 // MARK: - RepresentableComoTexto
 
-/// Un valor que se lee y se escribe como texto, sin pérdida: `T(leyendo: x.texto(n)) == x`
+/// Un valor que se lee y se escribe como texto, sin pérdida: `T(leyendo: x.texto(en: n)) == x`
 /// para cualquier notación `n`.
 public protocol RepresentableComoTexto: Codable, ExpressibleByStringLiteral where StringLiteralType == String {
     /// Lee un texto. Si no se puede, lanza `ErrorDeLectura` con la posición y el motivo.
     init(leyendo texto: String) throws
     /// Escribe el valor en una notación; `init(leyendo:)` lo vuelve a leer igual.
-    func texto(_ notacion: Nomenclatura) -> String
+    func texto(en notacion: Notacion) -> String
 }
 
 extension RepresentableComoTexto {
     /// Texto en la notación española (la que se usa al codificar).
-    public var texto: String { texto(.espanol) }
+    public var texto: String { texto(en: .espanol) }
+
+    @available(*, deprecated, renamed: "texto(en:)")
+    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
 
     /// Como `init(leyendo:)`, devolviendo `nil` en lugar de un error: `Acorde(texto: entrada)`.
     ///
@@ -56,7 +59,7 @@ extension RepresentableComoTexto {
     /// Se codifica como su texto en notación española ("Fa♯4", "-5d", "Sol7(♭9)/Si").
     public func encode(to encoder: Encoder) throws {
         var contenedor = encoder.singleValueContainer()
-        try contenedor.encode(texto(.espanol))
+        try contenedor.encode(texto(en: .espanol))
     }
 }
 
@@ -65,7 +68,7 @@ extension RepresentableComoTexto {
 /// Un valor con nombre para personas, en la notación que se pida:
 /// `nombre(en: .espanol)` → "Re dórico", `nombre(en: .ingles)` → "D dorian".
 public protocol Nombrable {
-    func nombre(en notacion: Nomenclatura) -> String
+    func nombre(en notacion: Notacion) -> String
 }
 
 // MARK: - Transponible

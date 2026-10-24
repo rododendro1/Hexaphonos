@@ -45,7 +45,7 @@ public struct Altura: Hashable, Sendable {
             guard let octava = Int(textoOctava) else { throw lector.error(.octavaNoValida(textoOctava)) }
             leida = Altura(nombre, octava: octava)
         } catch {
-            let peninsulares = Nomenclatura.deLecturaGenerica.lazy.compactMap { try? Altura(leyendo: texto, en: $0) }
+            let peninsulares = Notacion.deLecturaGenerica.lazy.compactMap { try? Altura(leyendo: texto, en: $0) }
             guard let nota = peninsulares.first else { throw error }
             leida = nota
         }
@@ -54,7 +54,7 @@ public struct Altura: Hashable, Sendable {
 
     /// Lee una nota escrita en una notación concreta: `Altura(leyendo: "Fis4", en: .aleman)`,
     /// `Altura(leyendo: "ré bémol 3", en: .frances)`. La octava es la científica (Do4 = do central).
-    public init(leyendo texto: String, en notacion: Nomenclatura) throws {
+    public init(leyendo texto: String, en notacion: Notacion) throws {
         let notacion = notacion.notas
         switch notacion.escritura {
         case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
@@ -114,7 +114,7 @@ public struct Altura: Hashable, Sendable {
 
     /// Nombre con octava (científica en todas las notaciones): "Fa♯4", "F#4", "Fis4",
     /// "fa dièse 4" (con espacio cuando el nombre tiene varias palabras).
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         let nombre = nota.nombre(en: notacion)
         return nombre + (nombre.contains(" ") ? " " : "") + "\(octava)"
     }
@@ -168,5 +168,5 @@ extension Altura {
 }
 
 extension Altura: RepresentableComoTexto, Nombrable, Transponible {
-    public func texto(_ notacion: Nomenclatura) -> String { nombre(en: notacion) }
+    public func texto(en notacion: Notacion) -> String { nombre(en: notacion) }
 }

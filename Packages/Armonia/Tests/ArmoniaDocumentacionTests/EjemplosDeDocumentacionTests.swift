@@ -59,31 +59,31 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
     }
 
     func testAcordes5() throws {
-        // Sources/Armonia/Armonia.docc/Acordes.md, línea 100
+        // Sources/Armonia/Armonia.docc/Acordes.md, línea 101
         let a: Acorde = "Sol13(b9)"
-        comprobar(a.componentes.map { "\($0.nota) \($0.papel)" }, #"["Sol fundamental", "Si tercera", "Re quinta", "Fa séptima", "La♭ novena", "Mi decimotercera"]"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 101)
+        comprobar(a.componentes.map { "\($0.nota) \($0.papel)" }, #"["Sol fundamental", "Si tercera", "Re quinta", "Fa séptima", "La♭ novena", "Mi decimotercera"]"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 102)
         _ = (a.tercera, a.quinta, a.septima)
-        comprobar(a.tensiones, #"[La♭, Mi]"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 104)
-        comprobarIgual(a.papel(de: "Lab"), .tension(9), #"Sources/Armonia/Armonia.docc/Acordes.md"#, 105)
-        comprobarIgual(a.estructura.calidadDeTriada, .mayor, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 106)
-        comprobar(TipoDeAcorde("7sus4").estructura.suspension, #"4ª justa"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 107)
+        comprobar(a.tensiones, #"[La♭, Mi]"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 105)
+        comprobarIgual(a.papel(de: "Lab"), .tension(9), #"Sources/Armonia/Armonia.docc/Acordes.md"#, 106)
+        comprobarIgual(a.estructura.calidadDeTriada, .mayor, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 107)
+        comprobar(TipoDeAcorde("7sus4").estructura.suspension, #"4ª justa"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 108)
     }
 
     func testAcordes6() throws {
-        // Sources/Armonia/Armonia.docc/Acordes.md, línea 126
-        comprobar(Acorde("Sol7").vecinosParsimoniosos().map(\.description) == ["Sol♯°7 (Sol→Sol♯)", "Solm7 (Si→Si♭)", "Mim7 (Fa→Mi)"], #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 126)
-        comprobar(Acorde("Sol7").vecinosParsimoniosos(voces: 2).contains { $0.acorde == Acorde("Reb7") }, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 127)
-        comprobar(Tonnetz.caminoParsimonioso(desde: "Sol7", hasta: "Rem7")?.map(\.acorde.cifrado) == ["Sol♯°7", "Sim7(♭5)", "Rem7"], #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 128)
-        comprobar(Tonnetz.caminoParsimonioso(desde: "Sol7", hasta: "Reb7", voces: 2)?.count == 1, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 129)
-        comprobar(Acorde("Domaj7").vecinosParsimoniosos().map(\.description) == ["Do♯m7(♭5) (Do→Do♯)", "Do7 (Si→Si♭)"], #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 130)
-        comprobar(Tonnetz.caminoParsimonioso(desde: "Domaj7", hasta: "Sol7")?.count == 3, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 131)
+        // Sources/Armonia/Armonia.docc/Acordes.md, línea 127
+        comprobar(Acorde("Sol7").vecinosParsimoniosos().map(\.description) == ["Sol♯°7 (Sol→Sol♯)", "Solm7 (Si→Si♭)", "Mim7 (Fa→Mi)"], #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 127)
+        comprobar(Acorde("Sol7").vecinosParsimoniosos(voces: 2).contains { $0.acorde == Acorde("Reb7") }, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 128)
+        comprobar(Tonnetz.caminoParsimonioso(desde: "Sol7", hasta: "Rem7")?.map(\.acorde.cifrado) == ["Sol♯°7", "Sim7(♭5)", "Rem7"], #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 129)
+        comprobar(Tonnetz.caminoParsimonioso(desde: "Sol7", hasta: "Reb7", voces: 2)?.count == 1, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 130)
+        comprobar(Acorde("Domaj7").vecinosParsimoniosos().map(\.description) == ["Do♯m7(♭5) (Do→Do♯)", "Do7 (Si→Si♭)"], #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 131)
+        comprobar(Tonnetz.caminoParsimonioso(desde: "Domaj7", hasta: "Sol7")?.count == 3, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 132)
     }
 
     func testAcordes7() throws {
-        // Sources/Armonia/Armonia.docc/Acordes.md, línea 145
-        comprobar("\(Acorde("Sol7").conduccionMinima(hasta: "Do"))", #""Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos""#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 145)
-        comprobar(Acorde("Rem7").conduccionMinima(hasta: "Sol7").total == 3, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 146)
-        comprobar(Acorde("Do").conduccionMinima(hasta: "Lam").total == 2, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 147)
+        // Sources/Armonia/Armonia.docc/Acordes.md, línea 146
+        comprobar("\(Acorde("Sol7").conduccionMinima(hasta: "Do"))", #""Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos""#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 146)
+        comprobar(Acorde("Rem7").conduccionMinima(hasta: "Sol7").total == 3, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 147)
+        comprobar(Acorde("Do").conduccionMinima(hasta: "Lam").total == 2, #"true"#, #"Sources/Armonia/Armonia.docc/Acordes.md"#, 148)
     }
 
     func testAfinacionYRepresentaciones1() throws {
@@ -227,7 +227,7 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
         comprobar(subirQuinta(Escala(.do)), #"Sol mayor"#, #"Sources/Armonia/Armonia.docc/Convenciones.md"#, 19)
         comprobar(Nota.do.secuencia(.quintaJusta, veces: 3), #"Do, Sol, Re, La"#, #"Sources/Armonia/Armonia.docc/Convenciones.md"#, 20)
         comprobar(Acorde("Do").esDeLaMismaClase(que: Acorde("Lam")), #"true"#, #"Sources/Armonia/Armonia.docc/Convenciones.md"#, 21)
-        comprobar(Acorde("Sib7(b9)/Re").texto(.ingles), #""Bb7(b9)/D""#, #"Sources/Armonia/Armonia.docc/Convenciones.md"#, 22)
+        comprobar(Acorde("Sib7(b9)/Re").texto(en: .ingles), #""Bb7(b9)/D""#, #"Sources/Armonia/Armonia.docc/Convenciones.md"#, 22)
         comprobar(Escala("Re dórico").nombre(en: .ingles), #""D dorian""#, #"Sources/Armonia/Armonia.docc/Convenciones.md"#, 23)
     }
 
@@ -444,10 +444,10 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
 
     func testNotacionYPartitura3() throws {
         // Sources/Armonia/Armonia.docc/NotacionYPartitura.md, línea 110
-        let notacion = Nomenclatura.ruso.conTextos(en: .espanol)
+        let notacion = Notacion.ruso.conTextos(en: .espanol)
         comprobar(Acorde("Sol7/Si").nombre(en: notacion), #""соль séptima de dominante, primera inversión""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 111)
-        comprobar(Escala(.re, .dorico).nombre(en: Nomenclatura.ingles.conTextos(en: .euskera)), #""D doriarra""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 112)
-        comprobar(Nomenclatura(escritura: .ruso, textos: .espanol) == notacion, #"true"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 113)
+        comprobar(Escala(.re, .dorico).nombre(en: Notacion.ingles.conTextos(en: .euskera)), #""D doriarra""#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 112)
+        comprobar(Notacion(escritura: .ruso, textos: .espanol) == notacion, #"true"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 113)
     }
 
     func testNotacionYPartitura4() throws {
@@ -480,9 +480,9 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
         comprobar(Clave.doEnTercera.posicion(de: "Do4").lugar, #"4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 155)
         comprobar(Clave.fa.altura(lugar: 8), #"La3"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 156)
         comprobarIgual(Clave.masAdecuada(para: ["Do2", "Mi2"]), .fa, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 157)
-        comprobar(Instrumento.clarineteEnSib.sonido(de: Altura("Do5")), #"Si♭4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 159)
-        comprobar(Instrumento.saxofonAlto.escritura(de: Escala("Si mayor")), #"La♭ mayor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 160)
-        comprobar(Instrumento.saxofonAlto.escritura(de: Acorde("Do7")), #"La7"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 161)
+        comprobar(InstrumentoDePartitura.clarineteEnSib.sonido(de: Altura("Do5")), #"Si♭4"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 159)
+        comprobar(InstrumentoDePartitura.saxofonAlto.escritura(de: Escala("Si mayor")), #"La♭ mayor"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 160)
+        comprobar(InstrumentoDePartitura.saxofonAlto.escritura(de: Acorde("Do7")), #"La7"#, #"Sources/Armonia/Armonia.docc/NotacionYPartitura.md"#, 161)
     }
 
     func testNotacionYPartitura7() throws {
@@ -605,36 +605,36 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
 
     func testTonalidad10() throws {
         // Sources/Armonia/Armonia.docc/Tonalidad.md, línea 179
-        let c = try ConduccionDeVoces(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
+        let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
         comprobar(c.problemas.map(\.tipo) == [.quintasParalelas, .octavasParalelas], #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 180)
         comprobar(c.problemas[0].voces, #"[0, 1]"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 181)
         comprobar(c.problemas[0].description, #""Quintas paralelas entre bajo y tenor (acordes 1 → 2)""#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 182)
         comprobar(c.problemas[0].descripcion(en: .ingles), #""Parallel fifths between bass and tenor (chords 1 → 2)""#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 183)
-        comprobar(try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5").esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 185)
-        comprobar(ConduccionDeVoces(voces: [["Do3", "Sol2"], ["Mi4", "Re4"], ["Sol4", "Sol4"], ["Do5", "Si4"]])?.esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 186)
+        comprobar(try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5").esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 185)
+        comprobar(Coral(voces: [["Do3", "Sol2"], ["Mi4", "Re4"], ["Sol4", "Sol4"], ["Do5", "Si4"]])?.esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 186)
     }
 
     func testTonalidad11() throws {
         // Sources/Armonia/Armonia.docc/Tonalidad.md, línea 209
-        let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+        let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
         let partitura = coral.musicXML(duracion: .blanca, titulo: "Cadencia")
         comprobar(partitura.contains("<staves>2</staves>"), #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 211)
     }
 
     func testTonalidad12() throws {
         // Sources/Armonia/Armonia.docc/Tonalidad.md, línea 220
-        let cadencia = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+        let cadencia = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
         comprobar(cadencia.musicXML(cifrados: true, analisis: true).contains("<text>V</text>"), #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 221)
     }
 
     func testTonalidad13() throws {
         // Sources/Armonia/Armonia.docc/Tonalidad.md, línea 234
-        let coral = ConduccionDeVoces.realizar(["Do", "Fa", "Sol7", "Do"])!
+        let coral = Coral.realizar(["Do", "Fa", "Sol7", "Do"])!
         comprobar(coral.esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 235)
         comprobar(coral.voz(0).map(\.nota), #"[Do, Fa, Sol, Do]"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 236)
-        let conSoprano = ConduccionDeVoces.realizar(["Do", "Fa", "Sol", "Do"], soprano: ["Mi4", "Fa4", "Re4", "Do4"])!
+        let conSoprano = Coral.realizar(["Do", "Fa", "Sol", "Do"], soprano: ["Mi4", "Fa4", "Re4", "Do4"])!
         comprobar(conSoprano.voz(3), #"[Mi4, Fa4, Re4, Do4]"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 239)
-        comprobar(ConduccionDeVoces.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"]), #"nil"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 240)
+        comprobar(Coral.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"]), #"nil"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 240)
     }
 
     func testTonalidad14() throws {
@@ -650,8 +650,8 @@ final class EjemplosDeDocumentacionTests: XCTestCase {
         // Sources/Armonia/Armonia.docc/Tonalidad.md, línea 265
         let armonizada = Tonalidad(.do).armonizarACuatroVoces(["Mi4", "Fa4", "Re4", "Do4"])!
         comprobar(armonizada.armonizacion.cifrados, #"["I", "IV", "V", "I"]"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 266)
-        comprobar(armonizada.voces.voz(3), #"[Mi4, Fa4, Re4, Do4]"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 267)
-        comprobar(armonizada.voces.esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 268)
+        comprobar(armonizada.coral.voz(3), #"[Mi4, Fa4, Re4, Do4]"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 267)
+        comprobar(armonizada.coral.esCorrecta, #"true"#, #"Sources/Armonia/Armonia.docc/Tonalidad.md"#, 268)
     }
 
     func testTrastes1() throws {

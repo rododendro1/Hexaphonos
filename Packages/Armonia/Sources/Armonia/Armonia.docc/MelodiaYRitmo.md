@@ -113,7 +113,7 @@ xml.contains("<actual-notes>3</actual-notes>") // true
 - La armadura es la de la tonalidad (`Tonalidad.armadura`); si no se da, se estima a partir de
   las notas. La clave, si no se da, es la de sol o la de fa según el registro.
 - MusicXML solo admite las octavas de 0 a 9.
-- Un coral a cuatro voces se exporta en dos pentagramas con `ConduccionDeVoces.musicXML`, y
+- Un coral a cuatro voces se exporta en dos pentagramas con `Coral.musicXML`, y
   una progresión con sus cifrados y su análisis con `AnalisisArmonico.musicXML` (ver
   <doc:Tonalidad>).
 - Desde la terminal: `armonia musicxml melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4 > escala.musicxml`.
@@ -133,7 +133,7 @@ datos.prefix(4) == Data("MThd".utf8)   // true
 
 - Para guardarlo: `try datos.write(to: URL(fileURLWithPath: "escala.mid"))`.
 - `instrumento` es el programa General MIDI (0 = piano de cola, 40 = violín, 52 = coro…).
-- `ConduccionDeVoces.midi` escribe una pista por voz (soprano, contralto, tenor y bajo), con el
+- `Coral.midi` escribe una pista por voz (soprano, contralto, tenor y bajo), con el
   coro como instrumento; `AnalisisArmonico.midi`, los acordes en posición cerrada y el bajo, con
   un marcador por acorde («Re7 · V7/V») que los secuenciadores muestran al sonar.
 - Las alturas fuera del rango MIDI (0…127) se omiten. Los textos van en Latin-1, con las

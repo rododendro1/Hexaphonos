@@ -5,7 +5,7 @@ import HexaphonosPresentacion
 //
 // Lo que escribe la herramienta por su cuenta, en los ocho idiomas de los textos: las
 // etiquetas de la salida (`Mensaje`) y los errores de uso (`ErrorDeUso`). Lo musical (notas,
-// acordes, escalas…) no está aquí: lo traduce el motor con `Nomenclatura`.
+// acordes, escalas…) no está aquí: lo traduce el motor con `Notacion`.
 //
 // Cada caso da sus textos con una `Traduccion` del motor, que pide los ocho: un caso nuevo no
 // compila hasta que los tiene todos. El idioma es el de la notación (`--ingles`, `--idioma eu`…).
@@ -37,7 +37,7 @@ enum Mensaje {
     case ciclo(CicloNeorriemanniano)
     case instrumento(Encordado)
 
-    func texto(en notacion: Nomenclatura) -> String {
+    func texto(en notacion: Notacion) -> String {
         traduccion.en(notacion)
     }
 
@@ -224,7 +224,7 @@ enum ErrorDeUso {
     case cicloSoloTriadas(orden: String)
 
     /// El mensaje completo, con la línea que remite a la ayuda.
-    func texto(en notacion: Nomenclatura) -> String {
+    func texto(en notacion: Notacion) -> String {
         "armonia: " + traduccion.en(notacion) + "\n"
             + Traduccion("Prueba «armonia ayuda».", "Try \"armonia help\".", ca: "Prova «armonia ayuda».",
                          gl: "Proba «armonia ayuda».", eu: "Probatu «armonia ayuda».",

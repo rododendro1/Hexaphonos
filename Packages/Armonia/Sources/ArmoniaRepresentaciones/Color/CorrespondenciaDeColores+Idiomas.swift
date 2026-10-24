@@ -7,7 +7,7 @@ import ArmoniaTeoria
 extension CorrespondenciaDeColores {
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .newton: return "Newton (1704)"
         case .castel: return "Castel (1734)"

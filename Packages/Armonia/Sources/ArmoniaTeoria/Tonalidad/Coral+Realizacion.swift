@@ -2,11 +2,11 @@ import ArmoniaNucleo
 // Realización a cuatro voces: escribir una sucesión de acordes como coral (bajo, tenor, contralto y
 // soprano) sin faltas de conducción.
 
-extension ConduccionDeVoces {
+extension Coral {
     /// Escribe los acordes a cuatro voces, con el bajo del cifrado (Sol7/Si lleva Si en el bajo) y
     /// sin ninguna falta de las que comprueba ``problemas``: el resultado siempre ``esCorrecta``.
     ///
-    ///     let coral = ConduccionDeVoces.realizar(["Do", "Fa", "Sol7", "Do"])!
+    ///     let coral = Coral.realizar(["Do", "Fa", "Sol7", "Do"])!
     ///     coral.esCorrecta                // true
     ///     coral.voz(0).map(\.nota)        // [Do, Fa, Sol, Do]
     ///
@@ -26,7 +26,7 @@ extension ConduccionDeVoces {
     /// - Returns: `nil` si no hay acordes, si el soprano no encaja (otro número de notas, una nota
     ///   ajena al acorde o fuera de tesitura), si un acorde tiene más de cuatro notas obligatorias o si
     ///   no hay ninguna realización sin faltas.
-    public static func realizar(_ acordes: [Acorde], soprano: [Altura]? = nil, en tonalidad: Tonalidad? = nil) -> ConduccionDeVoces? {
+    public static func realizar(_ acordes: [Acorde], soprano: [Altura]? = nil, en tonalidad: Tonalidad? = nil) -> Coral? {
         guard !acordes.isEmpty, soprano == nil || soprano!.count == acordes.count else { return nil }
         let tonalidad = tonalidad ?? AnalisisArmonico.analizar(acordes)?.tonalidad
         let sensible = tonalidad?.escalaDeReferencia.grado(7)
@@ -64,7 +64,7 @@ extension ConduccionDeVoces {
             resultado.insert(opciones[i][indice].alturas, at: 0)
             indice = previos[i][indice]
         }
-        return ConduccionDeVoces(resultado)
+        return Coral(resultado)
     }
 
     // MARK: Auxiliares

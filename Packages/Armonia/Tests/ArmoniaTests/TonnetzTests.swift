@@ -92,7 +92,7 @@ final class TonnetzTests: XCTestCase {
 
     func testClasesDeAltura() {
         let triada = Tonnetz(ConjuntoDeClases([0, 4, 7]))
-        XCTAssertFalse(triada.conOrtografia)
+        XCTAssertFalse(triada.tieneOrtografia)
         XCTAssertEqual(triada.puntos.map(\.claseDeAltura), [0, 4, 7])
         XCTAssertEqual(triada.triadas.count, 1)
         // Sin ortografía, el acorde de séptima disminuida es una línea de terceras menores.

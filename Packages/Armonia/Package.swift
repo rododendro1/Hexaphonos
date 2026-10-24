@@ -7,7 +7,7 @@ import PackageDescription
 //
 //     ArmoniaNucleo            Fundamentos, Texto, Postonal
 //     ArmoniaTeoria            Acordes, Escalas, Tonalidad
-//     ArmoniaRepresentaciones  Afinacion, Color, Dibujo, Reticulos
+//     ArmoniaRepresentaciones  Afinacion, Color, Dibujo, Redes
 //     ArmoniaPartitura         Modelo, Formatos
 //     ArmoniaTrastes           Encordado, Mastil, Digitacion (instrumentos de cuerda con trastes)
 //

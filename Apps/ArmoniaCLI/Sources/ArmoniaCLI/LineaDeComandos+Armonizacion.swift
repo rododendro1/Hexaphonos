@@ -6,7 +6,7 @@ import HexaphonosPresentacion
 extension LineaDeComandos {
     /// `armonizar Mi4 Re4 Do4`: las mejores armonizaciones y, si las notas llevan octava, el coral a
     /// cuatro voces con la melodía en el soprano.
-    static func armonizar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func armonizar(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var argumentos = Argumentos(argumentos)
         guard let propuestas = argumentos.quitarNumero("--propuestas", "--proposals", en: 1...20, porDefecto: 3) else {
             return uso(.propuestasFueraDeRango, notacion)
@@ -33,7 +33,7 @@ extension LineaDeComandos {
     }
 
     /// `realizar Do Fa Sol7 Do`: los acordes escritos a cuatro voces, sin faltas.
-    static func realizar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func realizar(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var argumentos = Argumentos(argumentos)
         guard let tonalidad = try argumentos.quitarTonalidad() else { return uso(.faltaTonalidadTrasEn, notacion) }
         guard !argumentos.restantes.isEmpty else { return uso(.faltanAcordesDeLaRealizacion, notacion) }
@@ -43,7 +43,7 @@ extension LineaDeComandos {
     }
 
     /// `revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4`: las faltas de conducción, una por línea.
-    static func revisar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+    static func revisar(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         guard !argumentos.isEmpty else { return uso(.faltanAcordesDeLasVoces, notacion) }
         let coral = try PresentacionDeCoral.revisar(argumentos.joined(separator: " "), notacion: notacion)
         return bien(coral.avisos.map { $0.texto(en: notacion) }.joined(separator: "\n"))

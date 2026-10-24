@@ -174,7 +174,7 @@ extension Tonnetz {
         }
         var puntos: [PuntoDelTonnetz] = []
         for vertice in triadas.flatMap(\.vertices) where !puntos.contains(vertice) { puntos.append(vertice) }
-        self.init(puntos: puntos, conOrtografia: true, recorrido: triadas)
+        self.init(puntos: puntos, tieneOrtografia: true, recorrido: triadas)
     }
 
     /// El recorrido por el camino más corto entre dos tríadas: `Tonnetz(caminoDesde: "Do", hasta: "Mibm")`.

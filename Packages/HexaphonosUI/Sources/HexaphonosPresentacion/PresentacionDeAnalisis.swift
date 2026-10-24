@@ -36,7 +36,7 @@ public enum PresentacionDeAnalisis {
     /// La partitura y el MIDI se escriben en una sola tonalidad, la que mejor explica toda la
     /// progresión, porque los dos formatos solo anotan una.
     public static func analizar(_ texto: String, en tonalidad: Tonalidad? = nil,
-                                notacion: Nomenclatura) throws -> AnalisisPresentado {
+                                notacion: Notacion) throws -> AnalisisPresentado {
         let titulo: String
         let tramos: [AnalisisPresentado.Tramo]
         let cadencias: [Cadencia]
@@ -69,7 +69,7 @@ public enum PresentacionDeAnalisis {
             sonido: .acordes(analisis.acordes.map(\.acorde)))
     }
 
-    static func fila(_ analizado: AcordeAnalizado, _ notacion: Nomenclatura) -> AnalisisPresentado.Fila {
+    static func fila(_ analizado: AcordeAnalizado, _ notacion: Notacion) -> AnalisisPresentado.Fila {
         AnalisisPresentado.Fila(cifrado: analizado.acorde.cifrado(en: notacion), grado: analizado.cifrado,
                                 funcion: analizado.funcion?.nombre(en: notacion) ?? "")
     }

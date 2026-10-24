@@ -171,22 +171,22 @@ tramo es el mismo análisis que da `AnalisisArmonico.analizar`.
 
 ## Conducción de voces
 
-`ConduccionDeVoces` comprueba las reglas de la armonía escrita voz por voz. Cada acorde lleva
+`Coral` comprueba las reglas de la armonía escrita voz por voz. Cada acorde lleva
 sus alturas de grave a agudo (a cuatro voces: bajo, tenor, contralto y soprano), separados
 por barras o comas:
 
 ```swift
-let c = try ConduccionDeVoces(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
+let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
 c.problemas.map(\.tipo) == [.quintasParalelas, .octavasParalelas]   // true
 c.problemas[0].voces                  // [0, 1]
 c.problemas[0].description            // "Quintas paralelas entre bajo y tenor (acordes 1 → 2)"
 c.problemas[0].descripcion(en: .ingles)   // "Parallel fifths between bass and tenor (chords 1 → 2)"
 
-try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5").esCorrecta   // true
-ConduccionDeVoces(voces: [["Do3", "Sol2"], ["Mi4", "Re4"], ["Sol4", "Sol4"], ["Do5", "Si4"]])?.esCorrecta          // true
+try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5").esCorrecta   // true
+Coral(voces: [["Do3", "Sol2"], ["Mi4", "Re4"], ["Sol4", "Sol4"], ["Do5", "Si4"]])?.esCorrecta          // true
 ```
 
-Las faltas que encuentra (`ProblemaDeConduccion.Tipo`):
+Las faltas que encuentra (`FaltaDeConduccion.Tipo`):
 
 - **Quintas y octavas paralelas**: dos voces a distancia de quinta justa, u octava justa o
   unísono, que se mueven a otra igual, también por movimiento contrario. Una quinta justa que
@@ -206,7 +206,7 @@ plicas. Todos los acordes duran lo mismo (negras si no se dice otra cosa) y el �
 alarga hasta la barra:
 
 ```swift
-let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
 let partitura = coral.musicXML(duracion: .blanca, titulo: "Cadencia")
 partitura.contains("<staves>2</staves>")        // true
 ```
@@ -217,13 +217,13 @@ por sus notas; los que no son de ningún tipo del catálogo (por una nota de pas
 se quedan sin cifrar:
 
 ```swift
-let cadencia = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+let cadencia = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
 cadencia.musicXML(cifrados: true, analisis: true).contains("<text>V</text>")   // true
 ```
 
 ## Realización a cuatro voces
 
-`ConduccionDeVoces.realizar(_:soprano:en:)` escribe unos acordes a cuatro voces sin ninguna de
+`Coral.realizar(_:soprano:en:)` escribe unos acordes a cuatro voces sin ninguna de
 las faltas anteriores, con el bajo del cifrado y moviendo las voces lo menos posible (en
 semitonos, como `conduccionMinima(hasta:)`, pero con alturas). Duplica antes la fundamental que
 la quinta y esta antes que la tercera, nunca la sensible ni la séptima; puede omitir la quinta
@@ -231,13 +231,13 @@ justa; hace subir la sensible a la tónica y bajar la séptima por grado conjunt
 la melodía del soprano queda fijada:
 
 ```swift
-let coral = ConduccionDeVoces.realizar(["Do", "Fa", "Sol7", "Do"])!
+let coral = Coral.realizar(["Do", "Fa", "Sol7", "Do"])!
 coral.esCorrecta                      // true
 coral.voz(0).map(\.nota)              // [Do, Fa, Sol, Do]
 
-let conSoprano = ConduccionDeVoces.realizar(["Do", "Fa", "Sol", "Do"], soprano: ["Mi4", "Fa4", "Re4", "Do4"])!
+let conSoprano = Coral.realizar(["Do", "Fa", "Sol", "Do"], soprano: ["Mi4", "Fa4", "Re4", "Do4"])!
 conSoprano.voz(3)                     // [Mi4, Fa4, Re4, Do4]
-ConduccionDeVoces.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"])   // nil: quintas paralelas con el bajo
+Coral.realizar(["Do", "Rem"], soprano: ["Sol4", "La4"])   // nil: quintas paralelas con el bajo
 ```
 
 ## Armonización de melodías
@@ -264,6 +264,6 @@ soprano: de las armonizaciones que se pueden realizar sin faltas, la de menos co
 ```swift
 let armonizada = Tonalidad(.do).armonizarACuatroVoces(["Mi4", "Fa4", "Re4", "Do4"])!
 armonizada.armonizacion.cifrados      // ["I", "IV", "V", "I"]
-armonizada.voces.voz(3)               // [Mi4, Fa4, Re4, Do4]
-armonizada.voces.esCorrecta           // true
+armonizada.coral.voz(3)               // [Mi4, Fa4, Re4, Do4]
+armonizada.coral.esCorrecta           // true
 ```

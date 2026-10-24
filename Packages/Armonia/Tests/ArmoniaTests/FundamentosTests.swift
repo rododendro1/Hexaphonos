@@ -90,8 +90,8 @@ final class AlteracionTests: XCTestCase {
         XCTAssertEqual(literal, -2)
         for n in -4...4 {
             let a = Alteracion(n)
-            for notacion in Nomenclatura.allCases {
-                XCTAssertEqual(Alteracion(texto: a.texto(notacion)), a, "\(n) \(notacion)")
+            for notacion in Notacion.allCases {
+                XCTAssertEqual(Alteracion(texto: a.texto(en: notacion)), a, "\(n) \(notacion)")
             }
         }
     }
@@ -275,14 +275,14 @@ final class IntervalosYConsonanciaTests: XCTestCase {
 
 /// Pruebas de los protocolos comunes: cada una recorre varios tipos con el mismo código genérico.
 final class ProtocolosTests: XCTestCase {
-    private static let notaciones: [Nomenclatura] = [.espanol, .espanolASCII, .ingles, .inglesUnicode]
+    private static let notaciones: [Notacion] = [.espanol, .espanolASCII, .ingles, .inglesUnicode]
 
     private func comprobarIdaYVuelta<T: RepresentableComoTexto & Equatable>(
         _ valores: [T], file: StaticString = #filePath, line: UInt = #line
     ) {
         for valor in valores {
             for notacion in Self.notaciones {
-                let texto = valor.texto(notacion)
+                let texto = valor.texto(en: notacion)
                 XCTAssertEqual(try? T(leyendo: texto), valor, "«\(texto)»", file: file, line: line)
             }
         }
@@ -296,11 +296,11 @@ final class ProtocolosTests: XCTestCase {
         comprobarIdaYVuelta(["Sol7(b9)/Si", "Fa#m7b5", "Do/Re", "Mib6/9", "Faug", "Sibmaj7#11"] as [Acorde])
         comprobarIdaYVuelta(TipoDeEscala.todos.map { Escala("Fa#", $0) })
 
-        XCTAssertEqual(Acorde("Sib7(b9)/Re").texto(.ingles), "Bb7(b9)/D")
-        XCTAssertEqual(Intervalo.terceraMayor.texto(.ingles), "M3")
+        XCTAssertEqual(Acorde("Sib7(b9)/Re").texto(en: .ingles), "Bb7(b9)/D")
+        XCTAssertEqual(Intervalo.terceraMayor.texto(en: .ingles), "M3")
         XCTAssertEqual(Intervalo.terceraMayor.texto, "3M")
         XCTAssertEqual(Altura("Fa#3").texto, "Fa♯3")
-        XCTAssertEqual(Escala("Re dórico").texto(.inglesUnicode), "D dorian")
+        XCTAssertEqual(Escala("Re dórico").texto(en: .inglesUnicode), "D dorian")
     }
 
     func testLoQueAportaElProtocolo() throws {
@@ -333,7 +333,7 @@ final class ProtocolosTests: XCTestCase {
             (Escala("Re dórico"), "Re dórico", "D dorian"),
             (NombreDeGrado.dominante, "dominante", "dominant"),
             (Clave.fa, "clave de fa", "bass clef"),
-            (Instrumento.trompaEnFa, "trompa en fa", "horn in F"),
+            (InstrumentoDePartitura.trompaEnFa, "trompa en fa", "horn in F"),
             (PapelEnAcorde.tension(9), "novena", "ninth"),
             (CalidadDeTriada.aumentada, "aumentada", "augmented"),
         ]

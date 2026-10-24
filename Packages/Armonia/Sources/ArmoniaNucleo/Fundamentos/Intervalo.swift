@@ -32,7 +32,7 @@ public enum CalidadDeIntervalo: Hashable, Sendable, CustomStringConvertible {
     public var description: String { nombre }
 
     /// Abreviatura en una notación: "J" en español y "P" (perfect) en inglés; las demás coinciden.
-    public func abreviatura(en notacion: Nomenclatura) -> String {
+    public func abreviatura(en notacion: Notacion) -> String {
         notacion.vocabulario == .ingles && self == .justa ? "P" : abreviatura
     }
 }
@@ -227,7 +227,7 @@ public struct Intervalo: Hashable, Sendable {
 
     /// Abreviatura en una notación: "3M", "5J" en español; "M3", "P5", "-A4" en inglés
     /// (la calidad va delante).
-    public func abreviatura(en notacion: Nomenclatura) -> String {
+    public func abreviatura(en notacion: Notacion) -> String {
         guard notacion.vocabulario == .ingles else { return abreviatura }
         return (direccion == .descendente ? "-" : "") + "\(calidad.abreviatura(en: notacion))\(numero)"
     }
@@ -354,7 +354,7 @@ extension Intervalo: Comparable {
 
 extension Intervalo: RepresentableComoTexto, Nombrable {
     /// "3M" en español, "M3" en inglés.
-    public func texto(_ notacion: Nomenclatura) -> String { abreviatura(en: notacion) }
+    public func texto(en notacion: Notacion) -> String { abreviatura(en: notacion) }
 }
 
 // MARK: - Consonancia

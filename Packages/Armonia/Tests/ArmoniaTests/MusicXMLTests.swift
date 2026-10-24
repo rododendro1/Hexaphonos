@@ -209,7 +209,7 @@ final class MusicXMLTests: XCTestCase {
     }
 
     func testCoral() throws {
-        let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+        let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
         let raiz = leer(coral.musicXML(duracion: .blanca, titulo: "Cadencia"))
         XCTAssertEqual(raiz.buscar("staves").first?.entero, 2)
         XCTAssertEqual(raiz.buscar("clef").map { $0["sign"]?.texto }, ["G", "F"])
@@ -232,23 +232,23 @@ final class MusicXMLTests: XCTestCase {
 
     func testCoralAcabaEnLaBarra() throws {
         // Cinco negras en 4/4: el último acorde, solo en el segundo compás, se alarga a redonda.
-        let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5, La2 Mi4 La4 Do5, Re3 Fa4 La4 Re5, Sol2 Re4 Sol4 Si4, Do3 Mi4 Sol4 Do5")
+        let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5, La2 Mi4 La4 Do5, Re3 Fa4 La4 Re5, Sol2 Re4 Sol4 Si4, Do3 Mi4 Sol4 Do5")
         let raiz = leer(coral.musicXML())
         XCTAssertEqual(duraciones(raiz, voz: "1"), [4, 4])
         XCTAssertEqual(raiz.buscar("measure").last?.todos("note").map { $0["type"]?.texto }, Array(repeating: "whole", count: 4))
-        let seis = leer(try ConduccionDeVoces(leyendo: "Do3 Do5, Sol2 Si4, Do3 Do5, Do3 Do5, Sol2 Si4, Do3 Do5")
+        let seis = leer(try Coral(leyendo: "Do3 Do5, Sol2 Si4, Do3 Do5, Do3 Do5, Sol2 Si4, Do3 Do5")
             .musicXML(compas: "4/4"))
         XCTAssertEqual(seis.buscar("measure").last?.todos("note").map { $0["type"]?.texto },
                        ["quarter", "quarter", "half", "quarter", "quarter", "half"])
         // En 6/8, de corchea en corchea: el último se completa con figuras ligadas si hace falta.
-        let seisPorOcho = leer(try ConduccionDeVoces(leyendo: "Do3 Do5, Sol2 Si4, Do3 Do5, Do3 Do5")
+        let seisPorOcho = leer(try Coral(leyendo: "Do3 Do5, Sol2 Si4, Do3 Do5, Do3 Do5")
             .musicXML(duracion: .corchea, compas: "6/8"))
         XCTAssertEqual(duraciones(seisPorOcho, voz: "1"), [6])
         XCTAssertEqual(leer(coral.musicXML(compas: "5/4")).buscar("measure").count, 1)
     }
 
     func testCoralDeDosVoces() throws {
-        let raiz = leer(try ConduccionDeVoces(leyendo: "Do3 Do5, Si2 Re5, Do3 Mi5").musicXML(compas: "3/4"))
+        let raiz = leer(try Coral(leyendo: "Do3 Do5, Si2 Re5, Do3 Mi5").musicXML(compas: "3/4"))
         let notas = raiz.buscar("note")
         XCTAssertEqual(notas.filter { $0["staff"]?.texto == "1" }.compactMap(altura), ["Do5", "Re5", "Mi5"])
         XCTAssertEqual(notas.filter { $0["staff"]?.texto == "2" }.compactMap(altura), ["Do3", "Si2", "Do3"])
@@ -359,7 +359,7 @@ final class MusicXMLTests: XCTestCase {
     }
 
     func testCoralConAnalisis() throws {
-        let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Reb4 Re4 Mib4 | Do3 Mi4 Sol4 Do5")
+        let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Reb4 Re4 Mib4 | Do3 Mi4 Sol4 Do5")
         XCTAssertTrue(leer(coral.musicXML()).buscar("harmony").isEmpty)
         let raiz = leer(coral.musicXML(cifrados: true, analisis: true))
         // Do Re♭ Re Mi♭ no es un acorde conocido: se queda sin cifrar.

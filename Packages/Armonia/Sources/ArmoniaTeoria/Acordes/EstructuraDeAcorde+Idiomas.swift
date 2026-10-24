@@ -6,7 +6,7 @@ import ArmoniaNucleo
 extension PapelEnAcorde {
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String { traduccion.en(notacion) }
+    public func nombre(en notacion: Notacion) -> String { traduccion.en(notacion) }
 
     private var traduccion: Traduccion {
         switch self {
@@ -43,7 +43,7 @@ extension PapelEnAcorde {
 extension CalidadDeTriada {
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String { traduccion.en(notacion) }
+    public func nombre(en notacion: Notacion) -> String { traduccion.en(notacion) }
 
     private var traduccion: Traduccion {
         switch self {

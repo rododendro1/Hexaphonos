@@ -7,7 +7,7 @@ import ArmoniaTeoria
 extension Clave {
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String { traduccion.en(notacion) }
+    public func nombre(en notacion: Notacion) -> String { traduccion.en(notacion) }
 
     private var traduccion: Traduccion {
         switch self {
@@ -49,9 +49,9 @@ extension Clave {
     }
 }
 
-// MARK: - Instrumento
+// MARK: - InstrumentoDePartitura
 
-extension Instrumento {
+extension InstrumentoDePartitura {
     /// Catalán, gallego y euskera de los instrumentos predefinidos, por su nombre en español. Un
     /// instrumento que no está aquí usa su nombre español.
     package static let nombresPeninsulares: [String: (catalan: String, gallego: String, euskera: String)] = [

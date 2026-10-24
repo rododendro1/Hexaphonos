@@ -7,13 +7,13 @@ import HexaphonosPresentacion
 // fuera del hilo principal mientras se escribe.
 
 private struct ClaveDeEntornoDeNotacion: EnvironmentKey {
-    static let defaultValue = Nomenclatura.espanol
+    static let defaultValue = Notacion.espanol
 }
 
 extension EnvironmentValues {
     /// La notación elegida en las apps. La pone `notacionGuardada()` en la raíz de cada app; cada vista la
     /// lee con `@Environment(\.notacion)`.
-    public var notacion: Nomenclatura {
+    public var notacion: Notacion {
         get { self[ClaveDeEntornoDeNotacion.self] }
         set { self[ClaveDeEntornoDeNotacion.self] = newValue }
     }
@@ -22,7 +22,7 @@ extension EnvironmentValues {
 /// Lee la notación guardada en los ajustes (o, si no se ha elegido ninguna, la del idioma del sistema) y la
 /// pone en el entorno. El selector de la barra escribe en el mismo ajuste.
 struct NotacionGuardada: ViewModifier {
-    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var clave = Nomenclatura.delSistema().clave
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var clave = Notacion.delSistema().clave
 
     func body(content: Content) -> some View {
         content.environment(\.notacion, .desde(clave: clave))

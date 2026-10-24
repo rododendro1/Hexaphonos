@@ -12,17 +12,17 @@ Notación española e inglesa, alteraciones, intervalos, pentagrama, instrumento
 | Acorde | `.cifrado` → Si♭7(♭9)/Re | `.cifrado(en: .ingles)` → Bb7(b9)/D |
 | Nombre de acorde | Sol séptima de dominante, primera inversión | G dominant seventh, first inversion |
 
-`Nomenclatura` reúne el idioma y los caracteres: `.espanol` (Fa♯), `.espanolASCII` (Fa#),
-`.ingles` (F#) y `.inglesUnicode` (F♯). Se usa en `nombre(en:)`, `texto(_:)`, `abreviatura(en:)`,
+`Notacion` reúne el idioma y los caracteres: `.espanol` (Fa♯), `.espanolASCII` (Fa#),
+`.ingles` (F#) y `.inglesUnicode` (F♯). Se usa en `nombre(en:)`, `texto(en:)`, `abreviatura(en:)`,
 `cifrado(en:)` y `EstiloDeCifrado(notacion:)`.
 
 Todo se lee en ambas notaciones (`Intervalo("P5")`, `Escala("Bb harmonic minor")`,
-`Acorde("B♭7(♭9)/D")`), y `Nomenclatura` (`.espanol`, `.espanolASCII`, `.ingles`,
+`Acorde("B♭7(♭9)/D")`), y `Notacion` (`.espanol`, `.espanolASCII`, `.ingles`,
 `.inglesUnicode`) elige la forma.
 
 ## Otras lenguas
 
-Además del español y el inglés, `Nomenclatura` tiene `.aleman`, `.frances`, `.italiano`, `.catalan`,
+Además del español y el inglés, `Notacion` tiene `.aleman`, `.frances`, `.italiano`, `.catalan`,
 `.gallego`, `.euskera`, `.portugues`, `.occitano`, `.ruso` y `.griego`:
 
 | | Do♯ | Mi♭ | Si♭ | Si | Fa♯ mayor | La menor |
@@ -100,17 +100,17 @@ Acorde("Sol7/Si").nombre(en: .portugues)         // "sol sétima de dominante, p
 
 ### Notas y textos en idiomas distintos
 
-Una `Nomenclatura` son dos elecciones: `escritura` (``EscrituraDeNotas``, cómo se escriben las notas)
+Una `Notacion` son dos elecciones: `escritura` (``EscrituraDeNotas``, cómo se escriben las notas)
 y `textos` (el ``Idioma`` de los intervalos, acordes y mensajes). Las notaciones con nombre (`.ruso`…)
 llevan los textos en el idioma de sus notas, y `conTextos(en:)` los cambia; también se puede crear
-directamente con `Nomenclatura(escritura:textos:)`. Las apps lo ofrecen en el selector de notación, y la
+directamente con `Notacion(escritura:textos:)`. Las apps lo ofrecen en el selector de notación, y la
 línea de comandos con `--textos`.
 
 ```swift
-let notacion = Nomenclatura.ruso.conTextos(en: .espanol)
+let notacion = Notacion.ruso.conTextos(en: .espanol)
 Acorde("Sol7/Si").nombre(en: notacion)              // "соль séptima de dominante, primera inversión"
-Escala(.re, .dorico).nombre(en: Nomenclatura.ingles.conTextos(en: .euskera))   // "D doriarra"
-Nomenclatura(escritura: .ruso, textos: .espanol) == notacion   // true
+Escala(.re, .dorico).nombre(en: Notacion.ingles.conTextos(en: .euskera))   // "D doriarra"
+Notacion(escritura: .ruso, textos: .espanol) == notacion   // true
 ```
 
 ### Escalas en otras lenguas
@@ -156,9 +156,9 @@ Clave.doEnTercera.posicion(de: "Do4").lugar   // 4 (3.ª línea)
 Clave.fa.altura(lugar: 8)                   // La3
 Clave.masAdecuada(para: ["Do2", "Mi2"])        // .fa
 
-Instrumento.clarineteEnSib.sonido(de: Altura("Do5"))     // Si♭4
-Instrumento.saxofonAlto.escritura(de: Escala("Si mayor"))   // La♭ mayor (simplificada)
-Instrumento.saxofonAlto.escritura(de: Acorde("Do7"))   // La7
+InstrumentoDePartitura.clarineteEnSib.sonido(de: Altura("Do5"))     // Si♭4
+InstrumentoDePartitura.saxofonAlto.escritura(de: Escala("Si mayor"))   // La♭ mayor (simplificada)
+InstrumentoDePartitura.saxofonAlto.escritura(de: Acorde("Do7"))   // La7
 ```
 
 Hay 30 instrumentos predefinidos con su transposición y su clave habitual, y nueve claves

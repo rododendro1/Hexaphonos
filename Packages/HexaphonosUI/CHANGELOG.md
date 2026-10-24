@@ -2,6 +2,9 @@
 
 ## Sin publicar
 
+- Usa los nombres nuevos del motor: `Notacion` (antes `Nomenclatura`), `Coral` (antes `ConduccionDeVoces`) y
+  `texto(en:)`. `Nomenclatura+Apps.swift` pasa a ser `Notacion+Apps.swift`; la API no cambia.
+
 Componentes de SwiftUI para las apps de Hexaphonos, sobre `Armonia` y `Hexagonos`:
 
 - `DiagramaDeMastil`: el mástil con una escala o una digitación, y `PresentacionDeMastil`, la parte que no es

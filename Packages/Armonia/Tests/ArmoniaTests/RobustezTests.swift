@@ -22,7 +22,7 @@ struct GeneradorConSemilla: RandomNumberGenerator {
 
 /// Ida y vuelta al azar: cualquier valor se escribe en cualquier notación y se vuelve a leer igual.
 final class IdaYVueltaAlAzarTests: XCTestCase {
-    private static let notaciones: [Nomenclatura] = [.espanol, .espanolASCII, .ingles, .inglesUnicode]
+    private static let notaciones: [Notacion] = [.espanol, .espanolASCII, .ingles, .inglesUnicode]
     private static let casos = 500
 
     private func comprobar<T: RepresentableComoTexto & Equatable>(
@@ -32,7 +32,7 @@ final class IdaYVueltaAlAzarTests: XCTestCase {
         for _ in 0..<Self.casos {
             let valor = generar(&azar)
             for notacion in Self.notaciones {
-                let texto = valor.texto(notacion)
+                let texto = valor.texto(en: notacion)
                 XCTAssertEqual(T(texto: texto), valor, "«\(texto)» (\(notacion))", file: file, line: line)
             }
         }

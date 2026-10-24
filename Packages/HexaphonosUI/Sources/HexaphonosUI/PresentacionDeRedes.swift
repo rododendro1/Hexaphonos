@@ -12,7 +12,7 @@ public enum RedDeNotas: String, CaseIterable, Identifiable, Hashable, Sendable {
     public var id: Self { self }
 
     /// El nombre de la red en el idioma de los textos: «Tabla armónica», «Harmonic table»…
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .tonnetz, .wickiHayden, .janko: return rawValue
         case .tablaArmonica:
@@ -72,7 +72,7 @@ public enum PresentacionDeRedes {
     }
 
     /// El dibujo SVG del contenido en la red; `nil` si un recorrido está vacío.
-    public static func svg(_ contenido: ContenidoDeRed, en red: RedDeNotas, notacion: Nomenclatura) -> String? {
+    public static func svg(_ contenido: ContenidoDeRed, en red: RedDeNotas, notacion: Notacion) -> String? {
         let paso = Self.paso(contenido, en: red)
         if let teclado = red.teclado {
             let clases = Set(contenido.notas.map(\.claseDeAltura))
@@ -126,7 +126,7 @@ public enum PresentacionDeRedes {
     }
 
     /// El nombre del fichero al exportar el dibujo: «Tonnetz · Dom7».
-    public static func nombre(_ contenido: ContenidoDeRed, en red: RedDeNotas, notacion: Nomenclatura) -> String {
+    public static func nombre(_ contenido: ContenidoDeRed, en red: RedDeNotas, notacion: Notacion) -> String {
         let que: String
         switch contenido {
         case .acorde(let acorde): que = acorde.cifrado(en: notacion)

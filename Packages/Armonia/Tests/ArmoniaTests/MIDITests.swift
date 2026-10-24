@@ -111,7 +111,7 @@ final class MIDITests: XCTestCase {
     }
 
     func testCoral() throws {
-        let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+        let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
         let leido = try leer(coral.midi(duracion: .blanca, tempo: Tempo(60), titulo: "Cadencia"))
         XCTAssertEqual(leido.pistas.count, 5)
         XCTAssertEqual(leido.pistas.dropFirst().map { $0.texto(0x03).first }, ["soprano", "contralto", "tenor", "bajo"])

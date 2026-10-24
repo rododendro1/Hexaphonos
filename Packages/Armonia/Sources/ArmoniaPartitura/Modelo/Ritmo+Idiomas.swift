@@ -8,7 +8,7 @@ extension Figura {
     public var nombre: String { nombre(en: .espanol) }
 
     /// En español, "negra"; en inglés, el nombre estadounidense ("quarter note").
-    public func nombre(en notacion: Nomenclatura) -> String { Figura.nombres[rawValue + 1].en(notacion) }
+    public func nombre(en notacion: Notacion) -> String { Figura.nombres[rawValue + 1].en(notacion) }
 
     private static let nombres = [
         Traduccion("cuadrada", "double whole note", ca: "quadrada", gl: "cadrada", eu: "karratua",
@@ -39,7 +39,7 @@ extension Duracion {
     /// la fracción: "5/8 de redonda". La duración nula es "cero".
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         if esCero { return Traduccion("cero", "zero", ca: "zero", gl: "cero", eu: "zero",
                                       pt: "zero", fr: "zéro", it: "zero").en(notacion) }
         guard let escritura = figuraYPuntillos else {

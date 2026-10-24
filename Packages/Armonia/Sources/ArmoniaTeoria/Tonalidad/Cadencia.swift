@@ -41,7 +41,7 @@ public struct Cadencia: Hashable, Sendable, CustomStringConvertible {
     /// "Cadencia auténtica V7–I (acordes 3 → 4)". Los acordes se cuentan desde 1.
     public var description: String { descripcion(en: .espanol) }
 
-    public func descripcion(en notacion: Nomenclatura) -> String {
+    public func descripcion(en notacion: Notacion) -> String {
         let pasos = "\(acorde + 1) → \(acorde + 2)"
         let lugar = Traduccion("acordes \(pasos)", "chords \(pasos)", ca: "acords \(pasos)", gl: "acordes \(pasos)",
                                eu: "\(pasos) akordeak",
@@ -102,7 +102,7 @@ extension Cadencia.Tipo: Nombrable, CustomStringConvertible {
     /// "cadencia auténtica", "semicadencia".
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .autentica:
             return Traduccion("cadencia auténtica", "authentic cadence", ca: "cadència autèntica",

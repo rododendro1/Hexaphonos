@@ -50,7 +50,7 @@ public struct TablaArmonica: Hashable, Sendable {
 
     /// Las notas como en el Tonnetz, con los nombres de un ciclo si lo es.
     private var comoTonnetz: Tonnetz {
-        var tonnetz = Tonnetz(puntos: puntos, conOrtografia: colocacion == .notas, recorrido: [])
+        var tonnetz = Tonnetz(puntos: puntos, tieneOrtografia: colocacion == .notas, recorrido: [])
         tonnetz.nombres = nombres
         return tonnetz
     }
@@ -158,7 +158,7 @@ public struct TablaArmonica: Hashable, Sendable {
     ///     56, o 72 en un recorrido, para que quepan las flechas.
     ///   - titulo: el título; si es `nil`, el que corresponda, y si es "", ninguno.
     ///   - leyenda: si se dibuja la leyenda.
-    public func svg(notacion: Nomenclatura = .espanol, margen: Int? = nil, paso: Double? = nil,
+    public func svg(notacion: Notacion = .espanol, margen: Int? = nil, paso: Double? = nil,
                     titulo: String? = nil, leyenda: Bool = true) -> String {
         let paso = paso ?? (recorrido.isEmpty ? 56 : 72)
         let margen = margen ?? (colocacion == .notas ? 1 : 2)

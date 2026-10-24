@@ -2,6 +2,31 @@
 
 ## Sin publicar
 
+### Nombres
+
+Los nombres antiguos siguen funcionando, marcados como obsoletos con `renamed:`, así que Xcode propone el
+cambio. Se quitarán antes de la primera versión.
+
+- `Nomenclatura` pasa a llamarse `Notacion`, como la llaman ya los parámetros, el entorno de las apps y
+  `SelectorDeNotacion`. `EstiloDeCifrado(nomenclatura:…)` y su propiedad `nomenclatura` pasan a ser
+  `EstiloDeCifrado(notacion:…)` y `notacion`. Si no se da `alteracionesASCII`, ahora sigue a la notación
+  (`Notacion.usaASCII`): `EstiloDeCifrado(notacion:)`, el estilo básico de cada notación, es el mismo
+  inicializador con los valores por omisión. El obsoleto `EstiloDeCifrado(nomenclatura:)` mantiene `false`.
+- `ConduccionDeVoces` pasa a llamarse `Coral` (un valor es un coral; la conducción es lo que se revisa), y
+  `ProblemaDeConduccion`, `FaltaDeConduccion`, como las «faltas» de las apps.
+- `Instrumento` pasa a llamarse `InstrumentoDePartitura`: es el instrumento tal como se escribe (clave y
+  transposición). En las apps y en la línea de comandos, «instrumento» es un `Encordado`.
+- `RepresentableComoTexto.texto(_:)` pasa a ser `texto(en:)`, como `nombre(en:)` y `cifrado(en:)`; lo mismo en
+  `Armonizacion`, `Voz`, `MovimientoDeVoz`, `PasoParsimonioso` y `ConduccionMinima`. Un tipo propio que
+  cumpla `RepresentableComoTexto` tiene que implementar `texto(en:)`.
+- `Tonnetz.conOrtografia` pasa a llamarse `tieneOrtografia`, como los demás booleanos (`esCorrecta`…).
+- **Cambio incompatible:** `Tonalidad.armonizarACuatroVoces(_:)` devuelve `(armonizacion:, coral:)` en lugar de
+  `(armonizacion:, voces:)`. Una etiqueta de tupla no admite alias: `resultado.voces` pasa a ser
+  `resultado.coral`.
+- Las carpetas `Reticulos` y `Reticulos/Neorriemann` de `ArmoniaRepresentaciones` pasan a ser `Redes` y
+  `Redes/Neorriemanniana`, y las pruebas `RejillaHexagonalTests`, `RedesSobreHexagonosTests`; las de
+  `ConduccionDeVoces`, `CoralTests`. No cambia ningún módulo.
+
 - El ejemplo vuelve a llamarse `EjemploArmonia` (`Ejemplos/EjemploArmonia`, `swift run EjemploArmonia`), como el
   nuevo `EjemploHexagonos`.
 

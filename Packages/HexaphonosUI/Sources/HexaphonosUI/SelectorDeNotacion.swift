@@ -4,7 +4,7 @@ import Armonia
 import HexaphonosPresentacion
 
 /// El menú para elegir la notación de las notas y, aparte, el idioma de los textos. Guarda la `clave`
-/// de la `Nomenclatura` (combinada si los textos van en otro idioma). Lo habitual es ponerlo en la barra
+/// de la `Notacion` (combinada si los textos van en otro idioma). Lo habitual es ponerlo en la barra
 /// con `selectorDeNotacionEnLaBarra()`, que lo guarda en los ajustes que lee `notacionGuardada()`.
 public struct SelectorDeNotacion: View {
     @Binding var clave: String
@@ -16,7 +16,7 @@ public struct SelectorDeNotacion: View {
     public var body: some View {
         Menu {
             Picker(notacion.texto(.notas), selection: notas) {
-                ForEach(Nomenclatura.allCases, id: \.self) { notacion in
+                ForEach(Notacion.allCases, id: \.self) { notacion in
                     Text(notacion.titulo).tag(notacion.clave)
                 }
             }
@@ -31,27 +31,27 @@ public struct SelectorDeNotacion: View {
         }
     }
 
-    private var notacion: Nomenclatura { .desde(clave: clave) }
+    private var notacion: Notacion { .desde(clave: clave) }
 
     /// La notación de las notas; al cambiarla se conserva el idioma de los textos.
     private var notas: Binding<String> {
-        Binding(get: { Nomenclatura.desde(clave: clave).notas.clave },
-                set: { clave = Nomenclatura.desde(clave: clave).conNotas(Nomenclatura.desde(clave: $0)).clave })
+        Binding(get: { Notacion.desde(clave: clave).notas.clave },
+                set: { clave = Notacion.desde(clave: clave).conNotas(Notacion.desde(clave: $0)).clave })
     }
 
     /// El idioma de los textos, o "" si van en el de las notas.
     private var textos: Binding<String> {
-        Binding(get: { Nomenclatura.desde(clave: clave).idiomaElegidoParaLosTextos?.clave ?? "" },
+        Binding(get: { Notacion.desde(clave: clave).idiomaElegidoParaLosTextos?.clave ?? "" },
                 set: { nuevo in
                     let idioma = Idioma.allCases.first { $0.clave == nuevo }
-                    clave = Nomenclatura.desde(clave: clave).conTextosElegidos(idioma).clave
+                    clave = Notacion.desde(clave: clave).conTextosElegidos(idioma).clave
                 })
     }
 }
 
 /// El selector, guardando la notación en los ajustes de las apps.
 struct SelectorDeNotacionGuardada: View {
-    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var clave = Nomenclatura.delSistema().clave
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var clave = Notacion.delSistema().clave
 
     var body: some View {
         SelectorDeNotacion(clave: $clave)

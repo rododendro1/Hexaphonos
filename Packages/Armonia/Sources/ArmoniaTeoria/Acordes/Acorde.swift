@@ -97,13 +97,13 @@ public struct Acorde: Hashable, Sendable {
     }
 
     /// Cifrado en el estilo básico de una notación: `.ingles` → "Bb7(b9)/D".
-    public func cifrado(en notacion: Nomenclatura) -> String { cifrado(estilo: EstiloDeCifrado(notacion: notacion)) }
+    public func cifrado(en notacion: Notacion) -> String { cifrado(estilo: EstiloDeCifrado(notacion: notacion)) }
 
     /// "Do séptima de dominante, primera inversión", "C dominant seventh, first inversion",
     /// "C major over D", "do sèptima de dominant, primera inversió", "do dominanteko zazpigarrena,
     /// lehen inbertsioa", "dó sétima de dominante, primeira inversão", "sol septième de dominante,
     /// premier renversement", "sol settima di dominante, primo rivolto".
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         let raiz = fundamental.nombre(en: notacion)
         let bajo = self.bajo.nombre(en: notacion)
         let tipo = self.tipo.nombre(en: notacion)
@@ -202,7 +202,7 @@ extension Acorde: CustomStringConvertible {
 }
 
 extension Acorde: RepresentableComoTexto, Nombrable, Transponible, ConClasesDeAltura {
-    public func texto(_ notacion: Nomenclatura) -> String { cifrado(en: notacion) }
+    public func texto(en notacion: Notacion) -> String { cifrado(en: notacion) }
 
     /// Clases de altura del acorde (incluye un bajo ajeno): Do7 → [0, 4, 7, 10], clase 4-27.
     public var conjuntoDeClases: ConjuntoDeClases { ConjuntoDeClases(notas: notas + [bajo]) }

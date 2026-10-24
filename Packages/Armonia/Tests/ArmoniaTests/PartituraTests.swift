@@ -195,7 +195,7 @@ final class RitmoTests: XCTestCase {
         XCTAssertEqual(voz.transponer(.segundaMayor).melodia.alturas.first, Altura("Re4"))
         XCTAssertEqual(voz.melodia.alturas.count, 2)
         let unida = Voz(melodia: ["Do4", "Mi4", "Sol4"], ritmo: [.negra, .negra, .blanca], compas: "3/4")
-        XCTAssertEqual(unida?.texto(.ingles), "C4:4 E4:4 G4:2")
+        XCTAssertEqual(unida?.texto(en: .ingles), "C4:4 E4:4 G4:2")
         XCTAssertNil(Voz(melodia: ["Do4", "Mi4"], ritmo: [.negra]))
         // Se codifica en JSON y vuelve igual.
         let datos = try JSONEncoder().encode(voz)
@@ -388,37 +388,37 @@ final class PentagramaTests: XCTestCase {
 
 final class InstrumentosTests: XCTestCase {
     func testTransposicion() {
-        XCTAssertEqual(Instrumento.clarineteEnSib.sonido(de: Altura("Do5")), Altura("Sib4"))
-        XCTAssertEqual(Instrumento.clarineteEnSib.escritura(de: Altura("Sib4")), Altura("Do5"))
-        XCTAssertEqual(Instrumento.clarineteEnLa.sonido(de: Altura("Do5")), Altura("La4"))
-        XCTAssertEqual(Instrumento.clarineteEnMib.sonido(de: Altura("Do5")), Altura("Mib5"))
-        XCTAssertEqual(Instrumento.trompaEnFa.sonido(de: Altura("Do5")), Altura("Fa4"))
-        XCTAssertEqual(Instrumento.saxofonAlto.sonido(de: Altura("Do5")), Altura("Mib4"))
-        XCTAssertEqual(Instrumento.saxofonTenor.sonido(de: Altura("Do5")), Altura("Sib3"))
-        XCTAssertEqual(Instrumento.saxofonBaritono.sonido(de: Altura("Do5")), Altura("Mib3"))
-        XCTAssertEqual(Instrumento.contrabajo.sonido(de: Altura("Do3")), Altura("Do2"))
-        XCTAssertEqual(Instrumento.guitarra.sonido(de: Altura("Mi4")), Altura("Mi3"))
-        XCTAssertEqual(Instrumento.flautin.sonido(de: Altura("Do5")), Altura("Do6"))
-        XCTAssertEqual(Instrumento.glockenspiel.sonido(de: Altura("Do5")), Altura("Do7"))
-        XCTAssertFalse(Instrumento.piano.esTranspositor)
-        XCTAssertTrue(Instrumento.trompetaEnSib.esTranspositor)
-        XCTAssertEqual(Instrumento.todos.count, 30)
-        XCTAssertEqual(Instrumento.viola.clave, .doEnTercera)
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnSib.sonido(de: Altura("Do5")), Altura("Sib4"))
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnSib.escritura(de: Altura("Sib4")), Altura("Do5"))
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnLa.sonido(de: Altura("Do5")), Altura("La4"))
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnMib.sonido(de: Altura("Do5")), Altura("Mib5"))
+        XCTAssertEqual(InstrumentoDePartitura.trompaEnFa.sonido(de: Altura("Do5")), Altura("Fa4"))
+        XCTAssertEqual(InstrumentoDePartitura.saxofonAlto.sonido(de: Altura("Do5")), Altura("Mib4"))
+        XCTAssertEqual(InstrumentoDePartitura.saxofonTenor.sonido(de: Altura("Do5")), Altura("Sib3"))
+        XCTAssertEqual(InstrumentoDePartitura.saxofonBaritono.sonido(de: Altura("Do5")), Altura("Mib3"))
+        XCTAssertEqual(InstrumentoDePartitura.contrabajo.sonido(de: Altura("Do3")), Altura("Do2"))
+        XCTAssertEqual(InstrumentoDePartitura.guitarra.sonido(de: Altura("Mi4")), Altura("Mi3"))
+        XCTAssertEqual(InstrumentoDePartitura.flautin.sonido(de: Altura("Do5")), Altura("Do6"))
+        XCTAssertEqual(InstrumentoDePartitura.glockenspiel.sonido(de: Altura("Do5")), Altura("Do7"))
+        XCTAssertFalse(InstrumentoDePartitura.piano.esTranspositor)
+        XCTAssertTrue(InstrumentoDePartitura.trompetaEnSib.esTranspositor)
+        XCTAssertEqual(InstrumentoDePartitura.todos.count, 30)
+        XCTAssertEqual(InstrumentoDePartitura.viola.clave, .doEnTercera)
     }
 
     func testTonalidadesYAcordesEscritos() {
-        XCTAssertEqual(Instrumento.clarineteEnSib.escritura(de: Escala("Mib mayor")), Escala(.fa))
-        XCTAssertEqual(Instrumento.saxofonAlto.escritura(de: Acorde("Do7")).cifrado, "La7")
-        XCTAssertEqual(Instrumento.saxofonAlto.escritura(de: Escala("Si mayor")).nombre, "La♭ mayor")
-        XCTAssertEqual(Instrumento.saxofonAlto.escritura(de: Escala("Si mayor"), simplificar: false).nombre,
+        XCTAssertEqual(InstrumentoDePartitura.clarineteEnSib.escritura(de: Escala("Mib mayor")), Escala(.fa))
+        XCTAssertEqual(InstrumentoDePartitura.saxofonAlto.escritura(de: Acorde("Do7")).cifrado, "La7")
+        XCTAssertEqual(InstrumentoDePartitura.saxofonAlto.escritura(de: Escala("Si mayor")).nombre, "La♭ mayor")
+        XCTAssertEqual(InstrumentoDePartitura.saxofonAlto.escritura(de: Escala("Si mayor"), simplificar: false).nombre,
                        "Sol♯ mayor")
-        XCTAssertEqual(Instrumento.trompaEnFa.escritura(de: Nota.fa), .do)
+        XCTAssertEqual(InstrumentoDePartitura.trompaEnFa.escritura(de: Nota.fa), .do)
 
         let melodia: Melodia = ["Do4", "Mi4", "Sol4"]
-        let escrita = Instrumento.trompetaEnSib.escritura(de: melodia)
+        let escrita = InstrumentoDePartitura.trompetaEnSib.escritura(de: melodia)
         XCTAssertEqual(escrita.description, "Re4 Fa♯4 La4")
-        XCTAssertEqual(Instrumento.trompetaEnSib.sonido(de: escrita), melodia)
-        for instrumento in Instrumento.todos {
+        XCTAssertEqual(InstrumentoDePartitura.trompetaEnSib.sonido(de: escrita), melodia)
+        for instrumento in InstrumentoDePartitura.todos {
             for nota in ["Do4", "Fa#3", "Sib5"] as [Altura] {
                 XCTAssertEqual(instrumento.sonido(de: instrumento.escritura(de: nota)), nota, instrumento.nombre)
             }

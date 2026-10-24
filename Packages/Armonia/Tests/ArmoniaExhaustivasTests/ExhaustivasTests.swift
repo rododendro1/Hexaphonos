@@ -48,7 +48,7 @@ final class IdaYVueltaTests: XCTestCase {
 
     static let estilos: [EstiloDeCifrado] = [
         .predeterminado, .ascii, .ingles, .inglesUnicode, .jazz, .palabras,
-        EstiloDeCifrado(nomenclatura: .ingles, menor: .min, disminuido: .dim, aumentado: .aug,
+        EstiloDeCifrado(notacion: .ingles, alteracionesASCII: false, menor: .min, disminuido: .dim, aumentado: .aug,
                       septimaMayor: .mayuscula, semidisminuido: .barrado),
     ]
 

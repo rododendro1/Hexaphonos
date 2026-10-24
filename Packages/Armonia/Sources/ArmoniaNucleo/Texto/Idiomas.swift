@@ -1,7 +1,7 @@
 // MARK: - Idiomas
 //
 // Los nombres que dependen del idioma de los tipos del núcleo: las letras y las alteraciones en
-// las doce lenguas de `Nomenclatura` (español, inglés, alemán, francés, italiano, catalán,
+// las doce lenguas de `Notacion` (español, inglés, alemán, francés, italiano, catalán,
 // gallego, euskera, portugués, occitano, ruso y griego), y los nombres de las calidades de intervalo, los intervalos y
 // las consonancias en los ocho idiomas de los textos (`Traduccion`).
 //
@@ -9,7 +9,7 @@
 // (`Tonalidad+Idiomas`, `EstructuraDeAcorde+Idiomas`, `Escala+Idiomas`, `Pentagrama+Idiomas`,
 // `Ritmo+Idiomas` y `CorrespondenciaDeColores+Idiomas`): así el núcleo no depende de ellas.
 //
-// Para añadir un idioma: un caso en `Idioma` y en `EscrituraDeNotas` (con su constante en `Nomenclatura`), y sus palabras en esos
+// Para añadir un idioma: un caso en `Idioma` y en `EscrituraDeNotas` (con su constante en `Notacion`), y sus palabras en esos
 // ficheros. Para que el motor escriba también sus textos en él: un campo en `Traduccion`, y su
 // caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idiomaDeLosTextos` de los textos.
 // Ningún `switch` sobre `Idioma` o `EscrituraDeNotas` tiene `default`, así que el compilador señala los
@@ -24,7 +24,7 @@ extension NotaNatural {
     /// Nombre en cada idioma: Do (español), C (inglés), H para el Si en alemán, ré (francés),
     /// re (italiano), sòl (occitano), соль (ruso), σολ (griego). En las lenguas que usan sílabas,
     /// salvo el español, en minúscula, como se escriben en el texto.
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch notacion.idioma {
         case .espanol: return nombre
         case .ingles: return ["C", "D", "E", "F", "G", "A", "B"][rawValue]
@@ -56,7 +56,7 @@ extension Alteracion {
     }
 
     /// Nombre en cada idioma: "double sharp", "Doppelkreuz", "double dièse", "doppio diesis"…
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         // (natural, sostenido, bemol, prefijos de 2, 3 y 4, plural de sostenido y de bemol)
         let palabras: (String, String, String, [String], String, String)
         switch notacion.idioma {
@@ -112,7 +112,7 @@ extension Nota {
     /// Nombre en la notación indicada: `.espanol` → "Fa♯", `.espanolASCII` → "Fa#",
     /// `.ingles` → "F#", `.inglesUnicode` → "F♯", `.aleman` → "Fis", `.frances` → "fa dièse",
     /// `.italiano` → "fa diesis", `.ruso` → "фа-диез", `.griego` → "φα δίεση".
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch notacion.escritura {
         case .espanol: return nombre
         case .espanolASCII: return nombreASCII
@@ -149,7 +149,7 @@ extension Nota {
 
     /// Nombre compacto para cifrados: igual que `nombre(en:)` salvo en las notaciones que escriben
     /// las alteraciones con palabras, que usan la sílaba con mayúscula y el símbolo (Fa♯, Ré♭, Фа♯, Φα♯).
-    public func nombreCompacto(en notacion: Nomenclatura) -> String {
+    public func nombreCompacto(en notacion: Notacion) -> String {
         let notacion = notacion.notas
         switch notacion.escritura {
         case .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
@@ -170,7 +170,7 @@ extension CalidadDeIntervalo {
     /// "major" en catalán; "xusta", "maior" en gallego; "justua", "handia", "bi aldiz gehitua" en
     /// euskera; "justa", "diminuta" en portugués; "juste", "majeure" en francés; "giusta",
     /// "maggiore" en italiano.
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .justa: return Traduccion("justa", "perfect", ca: "justa", gl: "xusta", eu: "justua",
                                        pt: "justa", fr: "juste", it: "giusta").en(notacion)
@@ -211,7 +211,7 @@ extension Intervalo {
     /// "3ª mayor" en español; "major third", "descending minor sixth" en inglés; "3a major" en
     /// catalán; "3ª maior" en gallego y en portugués; "3. handia", "beheranzko 6. txikia" en
     /// euskera; "tierce majeure" en francés; "terza maggiore" en italiano.
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         let calidad = self.calidad.nombre(en: notacion)
         let descendente = direccion == .descendente
         switch notacion.idiomaDeLosTextos {
@@ -276,7 +276,7 @@ extension Intervalo {
 extension Consonancia {
     public var nombre: String { nombre(en: .espanol) }
 
-    public func nombre(en notacion: Nomenclatura) -> String {
+    public func nombre(en notacion: Notacion) -> String {
         switch self {
         case .perfecta:
             return Traduccion("consonancia perfecta", "perfect consonance", ca: "consonància perfecta",

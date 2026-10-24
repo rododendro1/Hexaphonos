@@ -32,11 +32,11 @@ extension Voz {
     }
 }
 
-extension ConduccionDeVoces {
+extension Coral {
     /// El coral como fichero MIDI estándar, con una pista por voz (de agudo a grave: soprano,
     /// contralto, tenor y bajo si son cuatro).
     ///
-    ///     let coral = try ConduccionDeVoces(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
+    ///     let coral = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
     ///     let datos = coral.midi(duracion: .blanca, tempo: Tempo(72))
     ///
     /// - Parameters:
@@ -45,12 +45,12 @@ extension ConduccionDeVoces {
     ///   - instrumento: el programa General MIDI de todas las voces (52 = coro «aahs»).
     public func midi(duracion: Duracion = .negra, compas: Compas = .compasillo, tonalidad: Tonalidad? = nil,
                      tempo: Tempo? = nil, titulo: String? = nil, instrumento: Int = 52,
-                     notacion: Nomenclatura = .espanol) -> Data {
+                     notacion: Notacion = .espanol) -> Data {
         let tonalidad = tonalidad ?? Tonalidad.identificar(alturas: acordes.flatMap { $0 }).first
         var archivo = ArchivoMIDI(compas: compas, tonalidad: tonalidad, tempo: tempo, titulo: titulo)
         for v in (0..<numeroDeVoces).reversed() {
             let eventos = Exportacion.eventos(de: voz(v), duracion: duracion, final: duracion)
-            archivo.anadir(eventos, nombre: ConduccionDeVoces.nombreDeVoz(v, de: numeroDeVoces, en: notacion),
+            archivo.anadir(eventos, nombre: Coral.nombreDeVoz(v, de: numeroDeVoces, en: notacion),
                            instrumento: instrumento)
         }
         return archivo.datos
@@ -70,7 +70,7 @@ extension AnalisisArmonico {
     ///   - instrumento: el programa General MIDI (0 = piano de cola).
     ///   - notacion: la de los cifrados americanos de los marcadores.
     public func midi(duracion: Duracion = .blanca, compas: Compas = .compasillo, tempo: Tempo? = nil,
-                     titulo: String? = nil, instrumento: Int = 0, notacion: Nomenclatura = .espanol) -> Data {
+                     titulo: String? = nil, instrumento: Int = 0, notacion: Notacion = .espanol) -> Data {
         var archivo = ArchivoMIDI(compas: compas, tonalidad: tonalidad, tempo: tempo, titulo: titulo)
         let (superior, grave) = Exportacion.progresion(acordes.map(\.acorde), duracion: duracion, final: duracion)
         let marcas = acordes.map { $0.acorde.cifrado(en: notacion) + " · " + $0.cifrado }
