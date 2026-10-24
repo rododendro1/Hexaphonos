@@ -1,6 +1,6 @@
 import XCTest
 import Armonia
-@testable import HexaphonosUI
+@testable import ArmoniaUI
 
 #if canImport(SwiftUI) && canImport(WebKit)
 final class VistaSVGTests: XCTestCase {

@@ -2,8 +2,8 @@ import XCTest
 import Foundation
 import Armonia
 import Hexagonos
-@testable import HexaphonosUI
-@testable import HexaphonosPresentacion
+@testable import ArmoniaUI
+@testable import ArmoniaPresentacion
 
 // Las presentaciones de las vistas de análisis, coral y redes, y los ficheros que exportan. No usan
 // SwiftUI: se ejecutan también en Linux.

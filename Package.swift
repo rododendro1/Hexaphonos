@@ -23,9 +23,9 @@ let package = Package(
         .library(name: "ArmoniaRepresentaciones", targets: ["ArmoniaRepresentaciones"]),
         .library(name: "ArmoniaPartitura", targets: ["ArmoniaPartitura"]),
         .library(name: "ArmoniaTrastes", targets: ["ArmoniaTrastes"]),
-        // Packages/HexaphonosUI
-        .library(name: "HexaphonosUI", targets: ["HexaphonosUI"]),
-        .library(name: "HexaphonosPresentacion", targets: ["HexaphonosPresentacion"]),
+        // Packages/ArmoniaUI
+        .library(name: "ArmoniaUI", targets: ["ArmoniaUI"]),
+        .library(name: "ArmoniaPresentacion", targets: ["ArmoniaPresentacion"]),
     ],
     targets: [
         .target(name: "Hexagonos", path: "Packages/Hexagonos/Sources/Hexagonos"),
@@ -50,12 +50,12 @@ let package = Package(
             path: "Packages/Armonia/Sources/Armonia"),
 
         .target(
-            name: "HexaphonosPresentacion",
+            name: "ArmoniaPresentacion",
             dependencies: ["Armonia"],
-            path: "Packages/HexaphonosUI/Sources/HexaphonosPresentacion"),
+            path: "Packages/ArmoniaUI/Sources/ArmoniaPresentacion"),
         .target(
-            name: "HexaphonosUI",
-            dependencies: ["HexaphonosPresentacion", "Armonia", "Hexagonos"],
-            path: "Packages/HexaphonosUI/Sources/HexaphonosUI"),
+            name: "ArmoniaUI",
+            dependencies: ["ArmoniaPresentacion", "Armonia", "Hexagonos"],
+            path: "Packages/ArmoniaUI/Sources/ArmoniaUI"),
     ]
 )

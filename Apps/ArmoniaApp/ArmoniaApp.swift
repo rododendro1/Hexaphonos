@@ -1,6 +1,6 @@
 import SwiftUI
 import Armonia
-import HexaphonosUI
+import ArmoniaUI
 
 @main
 struct ArmoniaApp: App {

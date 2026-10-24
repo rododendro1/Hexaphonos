@@ -1,7 +1,7 @@
 #if canImport(SwiftUI)
 import SwiftUI
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 // Lo que comparten las vistas de las apps: la notación elegida, en el entorno, y los cálculos que se hacen
 // fuera del hilo principal mientras se escribe.

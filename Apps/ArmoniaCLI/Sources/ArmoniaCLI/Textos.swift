@@ -1,5 +1,5 @@
 import Armonia
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 // MARK: - Textos
 //
@@ -11,7 +11,7 @@ import HexaphonosPresentacion
 // compila hasta que los tiene todos. El idioma es el de la notación (`--ingles`, `--idioma eu`…).
 // La ayuda (`LineaDeComandos.ayuda(en:)`) también está en los ocho idiomas.
 // Los avisos del coral (sin armonización, sin faltas…) los comparte con las apps: son
-// `CoralPresentado.Aviso`, en `HexaphonosPresentacion`.
+// `CoralPresentado.Aviso`, en `ArmoniaPresentacion`.
 
 /// Las piezas de texto de la salida de las órdenes.
 enum Mensaje {

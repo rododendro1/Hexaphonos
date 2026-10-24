@@ -1,6 +1,6 @@
 import SwiftUI
 import Armonia
-import HexaphonosUI
+import ArmoniaUI
 
 /// Escribe una progresión (Do Fa Sol7 Do Lam Re7 Sol) y muestra sus tonalidades, los grados, las funciones,
 /// las modulaciones y las cadencias, y la exporta como partitura o MIDI.

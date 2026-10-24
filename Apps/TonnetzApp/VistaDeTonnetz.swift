@@ -1,6 +1,6 @@
 import SwiftUI
 import Armonia
-import HexaphonosUI
+import ArmoniaUI
 
 /// Un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R, en el Tonnetz, en la
 /// tabla armónica o en un teclado isomorfo (Wicki-Hayden o Jankó), y su dibujo para exportar. Al tocar una

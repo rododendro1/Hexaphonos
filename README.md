@@ -20,10 +20,10 @@ Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
-├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
+├── ArmoniaUI/      Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
 │                   el selector de notación y su ajuste (en el entorno), los textos de la interfaz en ocho
 │                   idiomas, lo que enseña cada vista, el cálculo en segundo plano y el menú para exportar.
-│                   El análisis y el coral están en el módulo `HexaphonosPresentacion`, sin SwiftUI, que
+│                   El análisis y el coral están en el módulo `ArmoniaPresentacion`, sin SwiftUI, que
 │                   también usa la línea de comandos
 └── Hexagonos/      Rejillas hexagonales: coordenadas axiales, cúbicas, desplazadas y dobladas, vecinos, distancias,
                     líneas, regiones, rotaciones y el paso a píxeles; el motor la usa para el Tonnetz,
@@ -37,10 +37,10 @@ Package.swift       Los tres paquetes juntos, para usarlos desde otro proyecto p
 ## Dependencias
 
 ```
-ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia ──► Hexagonos
-TonnetzApp ──┘                  └──► Hexagonos
+ArmoniaApp ──┬──► ArmoniaUI ──┬──► Armonia ──► Hexagonos
+TonnetzApp ──┘               └──► Hexagonos
 ArmoniaApp, TonnetzApp, ArmoniaCLI, EjemploArmonia, RendimientoArmonia ──► Armonia
-ArmoniaCLI ──► HexaphonosPresentacion (en el paquete HexaphonosUI, sin SwiftUI) ──► Armonia
+ArmoniaCLI ──► ArmoniaPresentacion (en el paquete ArmoniaUI, sin SwiftUI) ──► Armonia
 EjemploHexagonos ──► Hexagonos
 ```
 
@@ -60,7 +60,7 @@ dependencies: [
 ],
 targets: [
     .target(name: "MiApp", dependencies: [
-        .product(name: "Armonia", package: "Hexaphonos"),     // o ArmoniaTeoria, Hexagonos, HexaphonosUI…
+        .product(name: "Armonia", package: "Hexaphonos"),     // o ArmoniaTeoria, Hexagonos, ArmoniaUI…
     ]),
 ]
 ```
@@ -88,7 +88,7 @@ cp Config/Local.xcconfig.ejemplo Config/Local.xcconfig   # tu equipo de firma y 
 open Hexaphonos.xcodeproj     # elige el esquema ArmoniaApp o TonnetzApp
 ```
 
-`HexaphonosUI` usa SwiftUI para dibujar, pero su lógica (notación, qué trastes y qué notas enseña el mástil,
+`ArmoniaUI` usa SwiftUI para dibujar, pero su lógica (notación, qué trastes y qué notas enseña el mástil,
 qué muestran el análisis, el coral y las redes, y los ficheros que se exportan) no: esa parte
 compila y se prueba también en Linux, y la de interfaz queda tras `#if canImport(SwiftUI)`. El dibujo y las apps se
 construyen en macOS.
@@ -122,7 +122,7 @@ El CI la ejecuta en cada cambio y deja la tabla en el resumen de la ejecución y
 
 ## Estado
 
-Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `HexaphonosUI`, `Hexagonos`, la línea de
+Todo compila y pasa las pruebas en el CI: el motor en Linux (Swift 5.9 y 6.2) y en macOS, `ArmoniaUI`, `Hexagonos`, la línea de
 comandos, el ejemplo, las dos apps en macOS y en el simulador de iOS, y la documentación de DocC, sin enlaces sin
 resolver. `./Scripts/compilar_todo.sh` hace lo mismo en una máquina con Swift, por capas y con un log por paso.
 

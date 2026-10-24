@@ -1,6 +1,6 @@
 import Armonia
 import Hexagonos
-import HexaphonosPresentacion
+import ArmoniaPresentacion
 
 /// La parte de `DiagramaHexagonal` que no es dibujo: cómo se encaja un mapa en el espacio que hay, qué
 /// casilla se ha tocado y cómo se describe a VoiceOver. No usa SwiftUI, así que se prueba también en Linux.

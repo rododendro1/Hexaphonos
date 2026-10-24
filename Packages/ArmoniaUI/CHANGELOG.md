@@ -2,6 +2,11 @@
 
 ## Sin publicar
 
+- El paquete pasa a llamarse `ArmoniaUI` (`Packages/ArmoniaUI`), y sus módulos `ArmoniaUI` y
+  `ArmoniaPresentacion` (antes `HexaphonosUI` y `HexaphonosPresentacion`). En el código es `import ArmoniaUI`, y
+  en un `Package.swift`, `.product(name: "ArmoniaUI", package: "ArmoniaUI")` (o `package: "Hexaphonos"` desde la
+  raíz). `TemaHexaphonos` y `AjustesHexaphonos` no cambian, y los ajustes guardados se conservan.
+
 - Nombres más claros, sin alias porque son recientes: `Sonido.Evento` pasa a ser `Sonido.NotaMIDI` (ya no
   tapa el `Evento` del ritmo), `Sonido.alturas(_:)` y `alturas(_:conElRitmoDe:)` pasan a ser `Sonido.coral(_:)` y
   `coral(_:conElRitmoDe:)`, `AnalisisPresentado.Tramo` pasa a ser `TramoPresentado` (como `AnalisisPresentado`

@@ -1,7 +1,7 @@
 import XCTest
 import Armonia
 import Hexagonos
-@testable import HexaphonosUI
+@testable import ArmoniaUI
 
 // Qué nota suena al tocar el dibujo de una red en la app Tonnetz. No usa SwiftUI: se ejecuta también en Linux.
 
