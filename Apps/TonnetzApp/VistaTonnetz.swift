@@ -2,7 +2,8 @@ import SwiftUI
 import Armonia
 import HexaphonosUI
 
-/// El Tonnetz de un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R.
+/// Un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R, en el Tonnetz, en la
+/// tabla armónica o en un teclado isomorfo (Wicki-Hayden o Jankó), y su dibujo para exportar.
 struct VistaTonnetz: View {
     enum Contenido: String, CaseIterable, Identifiable {
         case recorrido = "Recorrido P·L·R"
@@ -13,6 +14,7 @@ struct VistaTonnetz: View {
 
     @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
     @State private var contenido = Contenido.recorrido
+    @State private var red = RedDeNotas.tonnetz
     @State private var textoInicial = "Do"
     @State private var textoAcorde = "Dom7"
     @State private var textoEscala = "Re dórico"
@@ -28,10 +30,16 @@ struct VistaTonnetz: View {
             }
             .pickerStyle(.segmented)
 
+            Picker("Red", selection: $red) {
+                ForEach(RedDeNotas.allCases) { Text($0.rawValue).tag($0) }
+            }
+
             controles
 
-            if let tonnetz {
-                DiagramaDeTonnetz(tonnetz, notacion: notacion)
+            if let dibujado, let svg = PresentacionDeRedes.svg(dibujado, en: red, notacion: notacion) {
+                VistaSVG(svg: svg)
+                    .clipShape(RoundedRectangle(cornerRadius: TemaHexaphonos.radioDeEsquina))
+                    .accessibilityLabel(Text(PresentacionDeRedes.nombre(dibujado, en: red, notacion: notacion)))
             } else {
                 Spacer()
                 Text("No se puede dibujar: revisa el texto.").foregroundColor(.secondary)
@@ -39,8 +47,13 @@ struct VistaTonnetz: View {
             }
         }
         .padding(TemaHexaphonos.margen)
-        .navigationTitle("Tonnetz")
+        .navigationTitle(red.rawValue)
         .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
+        .toolbar {
+            ToolbarItem {
+                BotonDeExportar(ficheros)
+            }
+        }
         .onAppear { if recorrido.isEmpty { reiniciar() } }
     }
 
@@ -81,15 +94,21 @@ struct VistaTonnetz: View {
 
     // MARK: El dibujo
 
-    private var tonnetz: Tonnetz? {
+    /// Lo que se dibuja; `nil` si el texto no se puede leer.
+    private var dibujado: ContenidoDeRed? {
         switch contenido {
         case .recorrido:
-            return recorrido.count >= 2 ? Tonnetz(recorrido: recorrido) : recorrido.first.map { Tonnetz($0) }
+            return recorrido.isEmpty ? nil : .recorrido(recorrido)
         case .acorde:
-            return (try? Acorde(leyendo: textoAcorde)).map { Tonnetz($0) }
+            return (try? Acorde(leyendo: textoAcorde)).map { .acorde($0) }
         case .escala:
-            return (try? Escala(leyendo: textoEscala)).map { Tonnetz($0) }
+            return (try? Escala(leyendo: textoEscala)).map { .escala($0) }
         }
+    }
+
+    private var ficheros: [FicheroParaExportar] {
+        guard let dibujado, let svg = PresentacionDeRedes.svg(dibujado, en: red, notacion: notacion) else { return [] }
+        return [.svg(svg, nombre: PresentacionDeRedes.nombre(dibujado, en: red, notacion: notacion))]
     }
 
     // MARK: Acciones

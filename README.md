@@ -6,8 +6,10 @@ SwiftUI para iOS y macOS.
 
 ```
 Apps/
-├── ArmoniaApp/       Acordes (con digitaciones), escalas (con el mástil) y análisis armónico
-├── TonnetzApp/       El Tonnetz de un acorde o una escala, y recorridos con P, L y R
+├── ArmoniaApp/       Acordes (con digitaciones), escalas (con el mástil), análisis armónico (con modulaciones y
+│                     cadencias) y corales: armonizar, realizar a cuatro voces y revisar; exporta MusicXML y MIDI
+├── TonnetzApp/       Un acorde, una escala o un recorrido con P, L y R en el Tonnetz, la tabla armónica o un
+│                     teclado isomorfo (Wicki-Hayden, Jankó); exporta el dibujo en SVG
 └── ArmoniaCLI/       La herramienta `armonia`, con sus pruebas (SwiftPM)
 Ejemplos/
 └── ArmoniaEjemplo/   Un recorrido por la API del motor, ejecutable (SwiftPM)
@@ -16,7 +18,7 @@ Packages/
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
 ├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
-│                   el selector de notación y su ajuste
+│                   el selector de notación y su ajuste, lo que enseña cada vista y el menú para exportar
 └── Hexagonos/      Rejillas hexagonales: coordenadas axiales, cúbicas, desplazadas y dobladas, vecinos, distancias,
                     líneas, regiones, rotaciones y el paso a píxeles; el motor la usa para el Tonnetz,
                     la tabla armónica y los teclados isomórficos
@@ -76,7 +78,8 @@ cp Config/Local.xcconfig.ejemplo Config/Local.xcconfig   # tu equipo de firma y 
 open Hexaphonos.xcodeproj     # elige el esquema ArmoniaApp o TonnetzApp
 ```
 
-`HexaphonosUI` usa SwiftUI para dibujar, pero su lógica (notación, qué trastes y qué notas enseña el mástil) no: esa parte
+`HexaphonosUI` usa SwiftUI para dibujar, pero su lógica (notación, qué trastes y qué notas enseña el mástil,
+qué muestran el análisis, el coral y las redes, y los ficheros que se exportan) no: esa parte
 compila y se prueba también en Linux, y la de interfaz queda tras `#if canImport(SwiftUI)`. El dibujo y las apps se
 construyen en macOS.
 
