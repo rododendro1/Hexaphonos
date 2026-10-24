@@ -48,10 +48,9 @@ extension ConduccionDeVoces {
                      notacion: Nomenclatura = .espanol) -> Data {
         let tonalidad = tonalidad ?? Tonalidad.identificar(alturas: acordes.flatMap { $0 }).first
         var archivo = ArchivoMIDI(compas: compas, tonalidad: tonalidad, tempo: tempo, titulo: titulo)
-        let ingles = notacion.vocabulario == .ingles
         for v in (0..<numeroDeVoces).reversed() {
             let eventos = Exportacion.eventos(de: voz(v), duracion: duracion, final: duracion)
-            archivo.anadir(eventos, nombre: ConduccionDeVoces.nombreDeVoz(v, de: numeroDeVoces, ingles: ingles),
+            archivo.anadir(eventos, nombre: ConduccionDeVoces.nombreDeVoz(v, de: numeroDeVoces, en: notacion),
                            instrumento: instrumento)
         }
         return archivo.datos
@@ -73,11 +72,12 @@ extension AnalisisArmonico {
     public func midi(duracion: Duracion = .blanca, compas: Compas = .compasillo, tempo: Tempo? = nil,
                      titulo: String? = nil, instrumento: Int = 0, notacion: Nomenclatura = .espanol) -> Data {
         var archivo = ArchivoMIDI(compas: compas, tonalidad: tonalidad, tempo: tempo, titulo: titulo)
-        let ingles = notacion.vocabulario == .ingles
         let (superior, grave) = Exportacion.progresion(acordes.map(\.acorde), duracion: duracion, final: duracion)
         let marcas = acordes.map { $0.acorde.cifrado(en: notacion) + " · " + $0.cifrado }
-        archivo.anadir(superior, nombre: ingles ? "chords" : "acordes", instrumento: instrumento, marcadores: marcas)
-        archivo.anadir(grave, nombre: ingles ? "bass" : "bajo", instrumento: instrumento)
+        let pistaDeAcordes = Traduccion("acordes", "chords", ca: "acords", gl: "acordes", eu: "akordeak").en(notacion)
+        let pistaDelBajo = Traduccion("bajo", "bass", ca: "baix", gl: "baixo", eu: "baxua").en(notacion)
+        archivo.anadir(superior, nombre: pistaDeAcordes, instrumento: instrumento, marcadores: marcas)
+        archivo.anadir(grave, nombre: pistaDelBajo, instrumento: instrumento)
         return archivo.datos
     }
 }

@@ -39,10 +39,9 @@ public struct AcordePivote: Hashable, Sendable, CustomStringConvertible {
     public var description: String { descripcion(en: .espanol) }
 
     public func descripcion(en notacion: Nomenclatura) -> String {
-        let en = notacion.vocabulario == .ingles ? "in" : "en"
-        return acorde.cifrado(en: notacion)
-            + " = \(antes.cifrado) \(en) " + tonalidadDePartida.nombre(en: notacion)
-            + " = \(despues.cifrado) \(en) " + tonalidadDeLlegada.nombre(en: notacion)
+        acorde.cifrado(en: notacion)
+            + " = \(antes.cifrado) " + tonalidadDePartida.lugar(en: notacion)
+            + " = \(despues.cifrado) " + tonalidadDeLlegada.lugar(en: notacion)
     }
 }
 
@@ -62,14 +61,19 @@ public struct Modulacion: Hashable, Sendable, CustomStringConvertible {
     public var description: String { descripcion(en: .espanol) }
 
     public func descripcion(en notacion: Nomenclatura) -> String {
-        let ingles = notacion.vocabulario == .ingles
-        var texto = ingles
-            ? "From \(desde.nombre(en: notacion)) to \(hasta.nombre(en: notacion)) at chord \(acorde + 1)"
-            : "De \(desde.nombre(en: notacion)) a \(hasta.nombre(en: notacion)) en el acorde \(acorde + 1)"
+        let de = self.desde.nombre(en: notacion), a = self.hasta.nombre(en: notacion), n = acorde + 1
+        // En euskera, con el ablativo y el adlativo: "Do maiorretik sol maiorrera, 5. akordean".
+        let deEnEuskera = Tonalidad.declinar(de, "etik")
+        let enEuskera = deEnEuskera.prefix(1).uppercased() + String(deEnEuskera.dropFirst())
+            + " " + Tonalidad.declinar(a, "era") + ", \(n). akordean"
+        var texto = Traduccion("De \(de) a \(a) en el acorde \(n)", "From \(de) to \(a) at chord \(n)",
+                               ca: "De \(de) a \(a) a l'acord \(n)", gl: "De \(de) a \(a) no acorde \(n)",
+                               eu: enEuskera).en(notacion)
         if let pivote {
-            texto += " (" + (ingles ? "pivot" : "pivote") + ": " + pivote.descripcion(en: notacion) + ")"
+            texto += " (" + Traduccion("pivote", "pivot", ca: "pivot", gl: "pivote", eu: "pibota").en(notacion)
+                + ": " + pivote.descripcion(en: notacion) + ")"
         } else {
-            texto += ingles ? " (direct)" : " (directa)"
+            texto += Traduccion(" (directa)", " (direct)", ca: " (directa)", gl: " (directa)", eu: " (zuzena)").en(notacion)
         }
         return texto
     }

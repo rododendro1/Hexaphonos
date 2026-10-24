@@ -42,10 +42,12 @@ public struct Cadencia: Hashable, Sendable, CustomStringConvertible {
     public var description: String { descripcion(en: .espanol) }
 
     public func descripcion(en notacion: Nomenclatura) -> String {
-        let lugar = notacion.vocabulario == .ingles ? "chords" : "acordes"
+        let pasos = "\(acorde + 1) → \(acorde + 2)"
+        let lugar = Traduccion("acordes \(pasos)", "chords \(pasos)", ca: "acords \(pasos)", gl: "acordes \(pasos)",
+                               eu: "\(pasos) akordeak").en(notacion)
         let nombre = tipo.nombre(en: notacion)
         return nombre.prefix(1).uppercased() + nombre.dropFirst()
-            + " " + acordes.map(\.cifrado).joined(separator: "–") + " (\(lugar) \(acorde + 1) → \(acorde + 2))"
+            + " " + acordes.map(\.cifrado).joined(separator: "–") + " (\(lugar))"
     }
 
     // MARK: Reconocimiento
@@ -97,22 +99,22 @@ public struct Cadencia: Hashable, Sendable, CustomStringConvertible {
 
 extension Cadencia.Tipo: Nombrable, CustomStringConvertible {
     /// "cadencia auténtica", "semicadencia".
-    public var nombre: String {
-        switch self {
-        case .autentica: return "cadencia auténtica"
-        case .plagal: return "cadencia plagal"
-        case .rota: return "cadencia rota"
-        case .semicadencia: return "semicadencia"
-        }
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
         switch self {
-        case .autentica: return "authentic cadence"
-        case .plagal: return "plagal cadence"
-        case .rota: return "deceptive cadence"
-        case .semicadencia: return "half cadence"
+        case .autentica:
+            return Traduccion("cadencia auténtica", "authentic cadence", ca: "cadència autèntica",
+                              gl: "cadencia auténtica", eu: "kadentzia autentikoa").en(notacion)
+        case .plagal:
+            return Traduccion("cadencia plagal", "plagal cadence", ca: "cadència plagal", gl: "cadencia plagal",
+                              eu: "kadentzia plagala").en(notacion)
+        case .rota:
+            return Traduccion("cadencia rota", "deceptive cadence", ca: "cadència trencada", gl: "cadencia rota",
+                              eu: "kadentzia hautsia").en(notacion)
+        case .semicadencia:
+            return Traduccion("semicadencia", "half cadence", ca: "semicadència", gl: "semicadencia",
+                              eu: "erdi-kadentzia").en(notacion)
         }
     }
 

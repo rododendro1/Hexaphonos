@@ -24,7 +24,7 @@ public enum LineaDeComandos {
     public static let ayuda = """
     armonia: teoría musical desde la línea de comandos.
 
-    Uso: armonia <orden> <argumentos> [--ingles]
+    Uso: armonia <orden> <argumentos> [--ingles | --idioma es|en|ca|gl|eu]
 
     Órdenes:
       acorde <cifrado>…            notas, tipo y papel de cada nota      armonia acorde Sol7/Si
@@ -100,14 +100,15 @@ public enum LineaDeComandos {
       ayuda                        esta ayuda
 
     Se aceptan nombres en español o en inglés (Do, C, Sib, Bb). Con --ingles, la respuesta
-    usa la notación inglesa.
+    usa la notación inglesa. Con --idioma ca, gl o eu, las notas y los mensajes salen en catalán,
+    gallego o euskera (los nombres de acordes y escalas, en español, y esta ayuda también).
     """
 
     /// La ayuda en inglés (`armonia help --ingles`).
     public static let help = """
     armonia: music theory from the command line.
 
-    Usage: armonia <command> <arguments> [--ingles]
+    Usage: armonia <command> <arguments> [--ingles | --language es|en|ca|gl|eu]
 
     Commands:
       chord <symbol>…              notes, type and role of each note     armonia chord G7/B
@@ -187,7 +188,8 @@ public enum LineaDeComandos {
       help                         this help
 
     Note names are accepted in Spanish or English (Do, C, Sib, Bb). With --ingles, the answer
-    uses English notation, and so do messages and this help.
+    uses English notation, and so do messages and this help. With --language ca, gl or eu, notes
+    and messages are in Catalan, Galician or Basque (chord and scale names, and this help, in Spanish).
     """
 
     /// Ejecuta una orden con sus argumentos (sin el nombre del programa).
@@ -195,7 +197,15 @@ public enum LineaDeComandos {
         var argumentos = argumentos
         let ingles = argumentos.contains("--ingles") || argumentos.contains("--english")
         argumentos.removeAll { $0 == "--ingles" || $0 == "--english" }
-        let notacion: Nomenclatura = ingles ? .ingles : .espanol
+        var notacion: Nomenclatura = ingles ? .ingles : .espanol
+        if let i = argumentos.firstIndex(where: { $0 == "--idioma" || $0 == "--language" }) {
+            guard i + 1 < argumentos.count else { return uso(.faltaValor(String(argumentos[i].dropFirst(2))), notacion) }
+            guard let elegida = notacionDelIdioma(argumentos[i + 1]) else {
+                return uso(.idiomaDesconocido(argumentos[i + 1]), notacion)
+            }
+            notacion = elegida
+            argumentos.removeSubrange(i...(i + 1))
+        }
 
         guard let orden = argumentos.first?.lowercased() else { return bien(ayuda(en: notacion)) }
         let resto = Array(argumentos.dropFirst())
@@ -271,8 +281,20 @@ public enum LineaDeComandos {
         ResultadoDeOrden(salida: "", error: error.texto(en: notacion), codigo: 2)
     }
 
-    /// La ayuda en el idioma de la notación.
+    /// La ayuda en el idioma de la notación: en inglés si los textos salen en inglés; si no, en español.
     public static func ayuda(en notacion: Nomenclatura) -> String {
-        elegir((ayuda, help), notacion)
+        notacion.idiomaDeLosTextos == .ingles ? help : ayuda
+    }
+
+    /// La notación de `--idioma`: es, en, ca, gl o eu, o el nombre del idioma.
+    static func notacionDelIdioma(_ texto: String) -> Nomenclatura? {
+        switch texto.lowercased() {
+        case "es", "espanol", "español", "castellano": return .espanol
+        case "en", "ingles", "inglés", "english": return .ingles
+        case "ca", "catalan", "catalán", "català": return .catalan
+        case "gl", "gallego", "galego": return .gallego
+        case "eu", "euskera", "euskara": return .euskera
+        default: return nil
+        }
     }
 }

@@ -32,3 +32,22 @@ extension Tonalidad {
         return (modo == .menor ? nombreTonica.lowercased() : nombreTonica) + "-" + modo.nombre(en: .aleman)
     }
 }
+
+extension Tonalidad {
+    /// La tonalidad como lugar, en los cinco idiomas de los textos: "en Do mayor", "in C major",
+    /// "en do major", "en do maior" y, en euskera, con el inesivo: "do maiorrean".
+    package func lugar(en notacion: Nomenclatura) -> String {
+        let completo = self.nombre(en: notacion)
+        switch notacion.idioma {
+        case .espanol, .portugues, .catalan, .gallego: return "en " + completo
+        case .ingles, .aleman, .frances, .italiano: return "in " + completo
+        case .euskera: return Tonalidad.declinar(completo, "ean")
+        }
+    }
+
+    /// En euskera los nombres acaban en "maiorra" o "minorra": el caso sustituye a la "a" del artículo
+    /// ("do maiorra" → "do maiorrean", "do maiorretik", "do maiorrera").
+    package static func declinar(_ nombre: String, _ sufijo: String) -> String {
+        nombre.hasSuffix("a") ? String(nombre.dropLast()) + sufijo : nombre + sufijo
+    }
+}

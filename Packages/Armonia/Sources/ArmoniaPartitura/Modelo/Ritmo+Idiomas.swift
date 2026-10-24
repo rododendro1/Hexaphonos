@@ -1,22 +1,26 @@
 import ArmoniaNucleo
 import ArmoniaTeoria
-// Nombres de las figuras y de las duraciones (español e inglés). El resto de nombres que dependen del idioma, en `Texto/Idiomas.swift`.
+// Nombres de las figuras y de las duraciones en los cinco idiomas de los textos (`Traduccion`). El resto de nombres que dependen del idioma, en `Texto/Idiomas.swift`.
 
 // MARK: - Figura
 
 extension Figura {
-    public var nombre: String {
-        ["cuadrada", "redonda", "blanca", "negra", "corchea", "semicorchea", "fusa", "semifusa",
-         "garrapatea"][rawValue + 1]
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
-    /// En español, `nombre`; en inglés, el nombre estadounidense ("quarter note").
-    public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
-        return ["double whole note", "whole note", "half note", "quarter note", "eighth note",
-                "sixteenth note", "thirty-second note", "sixty-fourth note",
-                "hundred twenty-eighth note"][rawValue + 1]
-    }
+    /// En español, "negra"; en inglés, el nombre estadounidense ("quarter note").
+    public func nombre(en notacion: Nomenclatura) -> String { Figura.nombres[rawValue + 1].en(notacion) }
+
+    private static let nombres = [
+        Traduccion("cuadrada", "double whole note", ca: "quadrada", gl: "cadrada", eu: "karratua"),
+        Traduccion("redonda", "whole note", ca: "rodona", gl: "redonda", eu: "biribila"),
+        Traduccion("blanca", "half note", ca: "blanca", gl: "branca", eu: "zuria"),
+        Traduccion("negra", "quarter note", ca: "negra", gl: "negra", eu: "beltza"),
+        Traduccion("corchea", "eighth note", ca: "corxera", gl: "corchea", eu: "kortxea"),
+        Traduccion("semicorchea", "sixteenth note", ca: "semicorxera", gl: "semicorchea", eu: "semikortxea"),
+        Traduccion("fusa", "thirty-second note", ca: "fusa", gl: "fusa", eu: "fusa"),
+        Traduccion("semifusa", "sixty-fourth note", ca: "semifusa", gl: "semifusa", eu: "semifusa"),
+        Traduccion("garrapatea", "hundred twenty-eighth note", ca: "garrapatea", gl: "garrapatea", eu: "garrapatea"),
+    ]
 }
 
 // MARK: - Duracion
@@ -24,18 +28,32 @@ extension Figura {
 extension Duracion {
     /// "negra", "corchea con puntillo", "blanca con doble puntillo"; si no es una figura,
     /// la fracción: "5/8 de redonda". La duración nula es "cero".
-    public var nombre: String {
-        if esCero { return "cero" }
-        guard let escritura = figuraYPuntillos else { return "\(numerador)/\(denominador) de redonda" }
-        let sufijos = ["", " con puntillo", " con doble puntillo", " con triple puntillo", " con cuádruple puntillo"]
-        return escritura.figura.nombre + sufijos[escritura.puntillos]
-    }
+    public var nombre: String { nombre(en: .espanol) }
 
     public func nombre(en notacion: Nomenclatura) -> String {
-        guard notacion.vocabulario == .ingles else { return nombre }
-        if esCero { return "zero" }
-        guard let escritura = figuraYPuntillos else { return "\(numerador)/\(denominador) of a whole note" }
-        let prefijos = ["", "dotted ", "double-dotted ", "triple-dotted ", "quadruple-dotted "]
-        return prefijos[escritura.puntillos] + escritura.figura.nombre(en: .ingles)
+        if esCero { return Traduccion("cero", "zero", ca: "zero", gl: "cero", eu: "zero").en(notacion) }
+        guard let escritura = figuraYPuntillos else {
+            let fraccion = "\(numerador)/\(denominador)"
+            return Traduccion("\(fraccion) de redonda", "\(fraccion) of a whole note", ca: "\(fraccion) de rodona",
+                              gl: "\(fraccion) de redonda", eu: "biribilaren \(fraccion)").en(notacion)
+        }
+        let figura = escritura.figura.nombre(en: notacion)
+        let puntillos = escritura.puntillos
+        guard puntillos > 0 else { return figura }
+        switch notacion.idioma {
+        case .espanol, .portugues:
+            return figura + ["", " con puntillo", " con doble puntillo", " con triple puntillo",
+                             " con cuádruple puntillo"][puntillos]
+        case .ingles, .aleman, .frances, .italiano:
+            return ["", "dotted ", "double-dotted ", "triple-dotted ", "quadruple-dotted "][puntillos] + figura
+        case .catalan:
+            return figura + ["", " amb punt", " amb doble punt", " amb triple punt", " amb quàdruple punt"][puntillos]
+        case .gallego:
+            return figura + ["", " con puntiño", " con dobre puntiño", " con triplo puntiño",
+                             " con cuádruplo puntiño"][puntillos]
+        case .euskera:
+            return figura + ["", " puntuduna", " puntu bikoitzarekin", " puntu hirukoitzarekin",
+                             " puntu laukoitzarekin"][puntillos]
+        }
     }
 }

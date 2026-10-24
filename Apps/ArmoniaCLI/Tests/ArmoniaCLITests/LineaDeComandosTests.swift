@@ -175,6 +175,17 @@ final class LineaDeComandosTests: XCTestCase {
         XCTAssertTrue(salida("tonalidad D major --ingles").contains("key signature: F# C# (2 sharps)"))
     }
 
+    /// Órdenes que terminan en un error de uso.
+    private static let ordenesMalEscritas = [
+        "foo", "acorde", "identificar", "intervalo C", "escala", "tonalidad", "analizar", "analizar C --en",
+        "armonizar", "armonizar C --en", "armonizar C --propuestas 0", "realizar", "realizar C --en",
+        "voces", "conduccion G7", "digitaciones", "digitaciones C --instrumento arpa", "digitaciones C --limite 0",
+        "digitaciones C --dedos 9", "digitaciones C --traste 99", "digitaciones C --capo", "vecinos",
+        "vecinos C7 --voces 3", "camino G7", "plr", "plr G7 P", "musicxml", "musicxml coral",
+        "musicxml melodia C4:4 --foo 1", "midi acordes C --cifrados", "tonnetz", "tonnetz --clases 13",
+        "tonnetz --camino C", "tabla --ciclo C", "tabla --margen 9 C",
+    ]
+
     /// Con --ingles no se cuela nada en español: ni en la salida, ni en los errores, ni en la ayuda.
     func testConInglesNadaEnEspanol() {
         let enEspanol = ["«", "»", "á", "é", "í", "ó", "ú", "ñ", "notas", "acordes", "paso", "dedo", "cejilla",
@@ -195,13 +206,7 @@ final class LineaDeComandosTests: XCTestCase {
             XCTAssertEqual(resultado.codigo, 0, "\(orden): \(resultado.error)")
             comprobar(resultado.salida, orden)
         }
-        for orden in ["foo", "acorde", "identificar", "intervalo C", "escala", "tonalidad", "analizar", "analizar C --en",
-                      "armonizar", "armonizar C --en", "armonizar C --propuestas 0", "realizar", "realizar C --en",
-                      "voces", "conduccion G7", "digitaciones", "digitaciones C --instrumento arpa", "digitaciones C --limite 0",
-                      "digitaciones C --dedos 9", "digitaciones C --traste 99", "digitaciones C --capo", "vecinos",
-                      "vecinos C7 --voces 3", "camino G7", "plr", "plr G7 P", "musicxml", "musicxml coral",
-                      "musicxml melodia C4:4 --foo 1", "midi acordes C --cifrados", "tonnetz", "tonnetz --clases 13",
-                      "tonnetz --camino C", "tabla --ciclo C", "tabla --margen 9 C"] {
+        for orden in Self.ordenesMalEscritas {
             let resultado = LineaDeComandos.ejecutar((orden + " --ingles").split(separator: " ").map(String.init))
             XCTAssertEqual(resultado.codigo, 2, orden)
             XCTAssertTrue(resultado.error.hasSuffix("Try \"armonia help\".\n"), "\(orden): \(resultado.error)")
@@ -215,6 +220,48 @@ final class LineaDeComandosTests: XCTestCase {
         }
         XCTAssertTrue(salida("help --ingles").contains("fingerings <symbol>"))
         XCTAssertTrue(LineaDeComandos.ayuda(en: .espanol).hasPrefix("armonia: teoría musical"))
+    }
+
+    func testIdiomas() {
+        XCTAssertEqual(salida("acorde Sol7/Si --idioma eu"), """
+            Sol7/Si: séptima de dominante
+              notak: sol si re fa  (baxua si, lehen inbertsioa)
+              sol oinarria · si hirugarrena · re bosgarrena · fa zazpigarrena
+
+            """)
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma ca").contains("notes: sol si re fa  (baix si, primera inversió)"))
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma galego").contains("sol fundamental · si terceira"))
+        XCTAssertTrue(salida("tonalidad Mib mayor --idioma gl").contains("(3 bemois)"))
+        XCTAssertEqual(salida("--idioma en acorde C/G"), salida("acorde C/G --ingles"))
+        XCTAssertEqual(salida("acorde Do --language es"), salida("acorde Do"))
+        // La ayuda solo está en español y en inglés.
+        XCTAssertTrue(salida("ayuda --idioma ca").hasPrefix("armonia: teoría musical"))
+        XCTAssertTrue(salida("help --idioma en").hasPrefix("armonia: music theory"))
+        // Los errores de lectura los traduce el motor.
+        XCTAssertTrue(resultado("acorde", "Do7(b3)", "--idioma", "eu").error.hasPrefix("Ezin da «Do7(b3)» irakurri"))
+        XCTAssertEqual(resultado("digitaciones", "C", "--limite", "0", "--idioma", "eu").error,
+                       "armonia: muga 1etik 200era bitarteko zenbaki bat da: --limite 5\nProbatu «armonia ayuda».\n")
+        XCTAssertEqual(resultado("acorde", "Do", "--idioma", "fr").codigo, 2)
+        XCTAssertTrue(resultado("acorde", "Do", "--idioma", "fr").error
+                        .hasPrefix("armonia: idioma desconocido: «fr» (es, en, ca, gl o eu)"))
+        XCTAssertEqual(resultado("acorde", "Do", "--idioma").error,
+                       "armonia: falta el valor de --idioma\nPrueba «armonia ayuda».\n")
+    }
+
+    /// Con --idioma ca, gl o eu, los errores de uso no dejan nada en español.
+    func testErroresEnCatalanGallegoEuskera() {
+        let enEspanol = ["Prueba", "hace falta", "hacen falta", "desconocid", " es un", " sin ", " las ", " los "]
+        for (idioma, ayuda) in [("ca", "Prova «armonia ayuda».\n"), ("gl", "Proba «armonia ayuda».\n"),
+                                ("eu", "Probatu «armonia ayuda».\n")] {
+            for orden in Self.ordenesMalEscritas {
+                let resultado = LineaDeComandos.ejecutar((orden + " --idioma " + idioma).split(separator: " ").map(String.init))
+                XCTAssertEqual(resultado.codigo, 2, "\(orden) \(idioma)")
+                XCTAssertTrue(resultado.error.hasSuffix(ayuda), "\(orden) \(idioma): \(resultado.error)")
+                for palabra in enEspanol where resultado.error.contains(palabra) {
+                    XCTFail("«\(palabra)» en «\(orden) --idioma \(idioma)»: \(resultado.error)")
+                }
+            }
+        }
     }
 
     func testErroresEnIngles() {

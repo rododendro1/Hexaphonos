@@ -67,10 +67,21 @@ Escala("ré dórico")                                 // Re dórico
   va en español (`Escala("Re dórico")`, `Escala("D dorian")`, pero no «Re dorian»), y el bajo de
   un acorde se escribe como su fundamental (`Acorde("Sol7/Si")`, `Acorde("G7/B")`, pero no
   «Sol7/B», que da el error `.idiomasMezclados`).
-- Solo están traducidos los nombres de nota, de alteración y los modos de las tonalidades. El
-  resto del vocabulario (intervalos, acordes, escalas) sale en inglés en alemán, francés e
-  italiano, y en español en catalán, gallego, euskera y portugués: es lo que indica
-  `notacion.vocabulario`.
+- Los textos del motor (mensajes de error, intervalos, calidades, papeles en el acorde, grados,
+  claves, figuras, cadencias y faltas de conducción) están en español, inglés, catalán, gallego y
+  euskera; en alemán, francés e italiano salen en inglés, y en portugués, en español. Es lo que
+  indica `notacion.idiomaDeLosTextos`, y cada texto es una `Traduccion` con los cinco idiomas.
+- Los nombres de los catálogos (tipos de acorde y de escala, instrumentos) solo están en español e
+  inglés: salen en inglés en alemán, francés e italiano, y en español en las demás (es lo que
+  indica `notacion.vocabulario`).
+
+```swift
+Intervalo.terceraMayor.nombre(en: .catalan)        // "3a major"
+Intervalo.terceraMayor.nombre(en: .gallego)        // "3ª maior"
+Intervalo.sextaMenor.nombre(en: .euskera)          // "6. txikia"
+Cadencia.Tipo.rota.nombre(en: .catalan)            // "cadència trencada"
+Escala(.re, .dorico).nombre(en: .euskera)          // "re dórico"
+```
 
 ## Alteraciones
 
@@ -117,10 +128,10 @@ Cada tipo tiene un inicializador `init(leyendo:)` que lanza `ErrorDeLectura` con
 texto, el carácter donde se detuvo y el motivo. Los inicializadores opcionales
 (`Acorde(texto: …)`) siguen existiendo y devuelven `nil`.
 
-El mensaje está en español (`description`, `explicacion`) y también en inglés:
-`descripcion(en:)` y `explicacion(en:)` usan el idioma del vocabulario de la notación, como los
-nombres de intervalos y acordes (inglés para `.ingles`, `.aleman`, `.frances` e `.italiano`;
-español para las demás).
+El mensaje está en español (`description`, `explicacion`) y también en inglés, catalán, gallego y
+euskera: `descripcion(en:)` y `explicacion(en:)` usan el idioma de los textos de la notación
+(`notacion.idiomaDeLosTextos`), como los nombres de intervalos: inglés para `.ingles`, `.aleman`,
+`.frances` e `.italiano`; español para `.espanol` y `.portugues`.
 
 ```swift
 do {
