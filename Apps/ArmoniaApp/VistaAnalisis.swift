@@ -20,6 +20,7 @@ struct VistaAnalisis: View {
             case .some(.success(let analisis)):
                 Section(notacion.texto(.resultado)) {
                     Text(analisis.titulo).font(.headline)
+                    BotonDeEscuchar(analisis.sonido)
                 }
                 ForEach(Array(analisis.tramos.enumerated()), id: \.offset) { _, tramo in
                     Section(tramo.cabecera ?? notacion.texto(.acordeAAcorde)) {

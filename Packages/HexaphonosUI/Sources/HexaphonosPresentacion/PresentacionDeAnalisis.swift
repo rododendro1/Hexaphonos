@@ -23,6 +23,8 @@ public struct AnalisisPresentado: Hashable, Sendable {
     public let tramos: [Tramo]
     public let cadencias: [String]
     public let ficheros: [FicheroParaExportar]
+    /// Los acordes uno detrás de otro, para «Escuchar».
+    public internal(set) var sonido: Sonido = .silencio
 }
 
 /// La parte de la vista de análisis que no es dibujo, y la salida de `armonia analizar`. No usa SwiftUI,
@@ -63,7 +65,8 @@ public enum PresentacionDeAnalisis {
             ficheros: [
                 .musicXML(analisis.musicXML(titulo: nombre, notacion: notacion), nombre: nombre),
                 .midi(analisis.midi(titulo: nombre, notacion: notacion), nombre: nombre),
-            ])
+            ],
+            sonido: .acordes(analisis.acordes.map(\.acorde)))
     }
 
     static func fila(_ analizado: AcordeAnalizado, _ notacion: Nomenclatura) -> AnalisisPresentado.Fila {

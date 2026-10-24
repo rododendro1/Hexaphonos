@@ -45,6 +45,7 @@ struct VistaEscalas: View {
                 Text(escala.nombre(en: notacion)).font(.headline)
                 Text(escala.notas.map { $0.nombre(en: notacion) }.joined(separator: "  "))
                     .font(.system(.body, design: .monospaced))
+                BotonDeEscuchar(.escala(escala))
             }
             let acordes = escala.armonizar().compactMap { $0 }
             if !acordes.isEmpty {

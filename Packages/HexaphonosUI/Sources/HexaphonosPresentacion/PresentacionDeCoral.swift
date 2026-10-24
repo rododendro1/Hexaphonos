@@ -22,6 +22,8 @@ public struct CoralPresentado: Hashable, Sendable {
     /// Las faltas de conducción, o por qué no hay coral.
     public let avisos: [Aviso]
     public let ficheros: [FicheroParaExportar]
+    /// El coral a cuatro voces, para «Escuchar»; en silencio si no hay coral.
+    public internal(set) var sonido: Sonido = .silencio
 
     /// Por qué no hay coral, o cómo ha ido la revisión. `texto(en:)` lo escribe en el idioma de la notación.
     public enum Aviso: Hashable, Sendable {
@@ -157,17 +159,19 @@ public enum PresentacionDeCoral {
 
         var filas: [CoralPresentado.Fila] = []
         var ficheros: [FicheroParaExportar] = []
+        var sonido = Sonido.silencio
         if !conOctavas {
             avisos.append(.faltanOctavas)
         } else if let coral = tonalidad.armonizarACuatroVoces(alturas) {
             filas = self.filas(coral.armonizacion.analisis, coral.voces, notacion)
             ficheros = self.ficheros(coral.voces, tonalidad, notacion, nombre: "Armonización")
+            sonido = .alturas(coral.voces.acordes)
         } else {
             avisos.append(.sinCoralParaLaMelodia)
         }
         return CoralPresentado(titulo: tonalidad.nombre(en: notacion),
                                propuestas: candidatos.map { $0.valor.texto(notacion) },
-                               filas: filas, avisos: avisos, ficheros: ficheros)
+                               filas: filas, avisos: avisos, ficheros: ficheros, sonido: sonido)
     }
 
     /// Los acordes escritos a cuatro voces, sin faltas de conducción.
@@ -180,7 +184,8 @@ public enum PresentacionDeCoral {
                                    ficheros: [])
         }
         return CoralPresentado(titulo: titulo, propuestas: [], filas: filas(analisis, voces, notacion), avisos: [],
-                               ficheros: ficheros(voces, analisis.tonalidad, notacion, nombre: "Coral"))
+                               ficheros: ficheros(voces, analisis.tonalidad, notacion, nombre: "Coral"),
+                               sonido: .alturas(voces.acordes))
     }
 
     /// Las faltas de conducción (quintas y octavas paralelas, cruzamientos…) de unas voces escritas a mano.
@@ -193,7 +198,7 @@ public enum PresentacionDeCoral {
         let problemas = coral.problemas.map(CoralPresentado.Aviso.falta)
         return CoralPresentado(titulo: "", propuestas: [], filas: filas,
                                avisos: problemas.isEmpty ? [.sinFaltasDeConduccion] : problemas,
-                               ficheros: ficheros(coral, nil, notacion, nombre: "Coral"))
+                               ficheros: ficheros(coral, nil, notacion, nombre: "Coral"), sonido: .alturas(coral.acordes))
     }
 
     static func filas(_ analisis: AnalisisArmonico, _ coral: ConduccionDeVoces,

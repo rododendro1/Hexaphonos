@@ -86,16 +86,11 @@ extension LineaDeComandos {
     }
 
     static func analizar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        var acordes = argumentos
-        var tonalidad: Tonalidad?
-        if let i = acordes.firstIndex(where: { $0 == "--en" || $0 == "--in" }) {
-            guard i + 1 < acordes.count else { return uso(.faltaTonalidadTrasEn, notacion) }
-            tonalidad = try Tonalidad(leyendo: acordes[(i + 1)...].joined(separator: " "))
-            acordes = Array(acordes[..<i])
-        }
-        guard !acordes.isEmpty else { return uso(.faltanAcordesDelAnalisis, notacion) }
+        var acordes = Argumentos(argumentos)
+        guard let tonalidad = try acordes.quitarTonalidad() else { return uso(.faltaTonalidadTrasEn, notacion) }
+        guard !acordes.restantes.isEmpty else { return uso(.faltanAcordesDelAnalisis, notacion) }
         // Con la tonalidad dada, sin modulaciones; si no, en tramos.
-        let analisis = try PresentacionDeAnalisis.analizar(acordes.joined(separator: " "), en: tonalidad, notacion: notacion)
+        let analisis = try PresentacionDeAnalisis.analizar(acordes.unidos, en: tonalidad, notacion: notacion)
         var lineas = [analisis.titulo]
         let todas = analisis.tramos.flatMap(\.filas)
         // Columnas de al menos 10 caracteres, más anchas si un cifrado no cabe.

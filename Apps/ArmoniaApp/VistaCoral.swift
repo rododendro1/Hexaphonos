@@ -81,6 +81,7 @@ struct VistaCoral: View {
         }
         if !coral.filas.isEmpty {
             Section(notacion.texto(.aCuatroVoces)) {
+                BotonDeEscuchar(coral.sonido)
                 ForEach(Array(coral.filas.enumerated()), id: \.offset) { _, fila in
                     HStack {
                         Text(fila.cifrado)

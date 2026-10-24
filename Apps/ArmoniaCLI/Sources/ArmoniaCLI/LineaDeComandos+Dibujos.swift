@@ -24,15 +24,18 @@ extension LineaDeComandos {
     /// Lee los argumentos comunes de `tonnetz` y `tabla`: `--margen N` y lo que se dibuja
     /// (notas, `--acorde`, `--escala`, `--clases`, `--recorrido`, `--camino` o `--ciclo`).
     static func leerDibujo(_ argumentos: [String], orden: String, _ notacion: Nomenclatura) throws -> Lectura {
-        var argumentos = argumentos
+        var lectura = Argumentos(argumentos)
         var margen: Int?
-        if let i = argumentos.firstIndex(of: "--margen") {
-            guard i + 1 < argumentos.count, let n = Int(argumentos[i + 1]), (0...6).contains(n) else {
-                return .error(uso(.margenFueraDeRango, notacion))
-            }
+        switch lectura.quitarOpcion("--margen") {
+        case .ausente:
+            break
+        case .sinValor:
+            return .error(uso(.margenFueraDeRango, notacion))
+        case .valor(let texto):
+            guard let n = Int(texto), (0...6).contains(n) else { return .error(uso(.margenFueraDeRango, notacion)) }
             margen = n
-            argumentos.removeSubrange(i...(i + 1))
         }
+        let argumentos = lectura.restantes
         guard let primero = argumentos.first else { return .error(uso(.faltanNotasDelDibujo(orden: orden), notacion)) }
         let resto = argumentos.dropFirst().joined(separator: " ")
         let dibujo: Dibujo
