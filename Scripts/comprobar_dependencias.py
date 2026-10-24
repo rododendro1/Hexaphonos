@@ -6,8 +6,8 @@ Reglas:
      por el nombre de la carpeta, y `.product(package:)` debe coincidir).
   2. Un paquete solo depende de los que están en PERMITIDO, y de ninguna app.
   3. Los paquetes y las apps nombran en `project.yml` solo paquetes que existen; las apps de SwiftPM
-     (`Apps/*/Package.swift`) y los ejemplos (`Ejemplos/*/Package.swift`) dependen solo de paquetes
-     de `Packages/`.
+     (`Apps/*/Package.swift`), los ejemplos (`Ejemplos/*/Package.swift`) y las herramientas
+     (`Herramientas/*/Package.swift`) dependen solo de paquetes de `Packages/`.
   4. No hay ciclos (se deduce de 2: PERMITIDO es un orden).
 
 Uso:  python3 Scripts/comprobar_dependencias.py     (sale con 1 si hay un problema)
@@ -122,10 +122,10 @@ for u in sorted(usados - {n for n, _ in declarados}):
     errores.append(f"project.yml: una app usa el paquete {u}, que no está declarado")
 
 # Las apps son de dos clases: las de Xcode (SwiftUI, en project.yml) y las de SwiftPM (con Package.swift:
-# la línea de comandos). Las de SwiftPM, y los ejemplos de `Ejemplos/`, pueden depender de cualquier paquete
-# de Packages/.
+# la línea de comandos). Las de SwiftPM, los ejemplos de `Ejemplos/` y las herramientas de `Herramientas/`
+# pueden depender de cualquier paquete de Packages/.
 apps_swiftpm = []
-for app in sorted([*(RAIZ / "Apps").iterdir(), *(RAIZ / "Ejemplos").iterdir()]):
+for app in sorted([*(RAIZ / "Apps").iterdir(), *(RAIZ / "Ejemplos").iterdir(), *(RAIZ / "Herramientas").iterdir()]):
     if not app.is_dir():
         continue
     lugar = f"{app.parent.name}/{app.name}"
@@ -145,11 +145,11 @@ for app in sorted([*(RAIZ / "Apps").iterdir(), *(RAIZ / "Ejemplos").iterdir()]):
                 dependencias.add(destino.name)
         for p in sorted(set(re.findall(r'\.product\(\s*name:\s*"[^"]+",\s*package:\s*"([^"]+)"', texto)) - dependencias):
             errores.append(f"{lugar}: usa un producto de {p} sin declarar la dependencia")
-    elif app.parent.name == "Ejemplos" or not re.search(rf"path: Apps/{app.name}\b", proyecto):
+    elif app.parent.name != "Apps" or not re.search(rf"path: Apps/{app.name}\b", proyecto):
         errores.append(f"{lugar} no tiene Package.swift ni está en project.yml")
 
 print("Paquetes:", ", ".join(carpetas))
-print("Apps y ejemplos de SwiftPM:", ", ".join(apps_swiftpm))
+print("Apps, ejemplos y herramientas de SwiftPM:", ", ".join(apps_swiftpm))
 if errores:
     print(f"{len(errores)} problema(s):")
     for e in errores:

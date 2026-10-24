@@ -91,6 +91,7 @@ jobs:
         paquete:
           - { nombre: ArmoniaCLI, ruta: Apps/ArmoniaCLI }
           - { nombre: ArmoniaEjemplo, ruta: Ejemplos/ArmoniaEjemplo }
+          - { nombre: ArmoniaRendimiento, ruta: Herramientas/ArmoniaRendimiento }
     defaults:
       run:
         working-directory: ${{ matrix.paquete.ruta }}
@@ -107,6 +108,32 @@ jobs:
       - name: Concurrencia estricta
         if: matrix.paquete.nombre == 'ArmoniaCLI' && startsWith(matrix.swift, '6')
         run: swift build --target ArmoniaCLI -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
+
+  # Los tiempos del motor, compilado con optimización, en el resumen de la ejecución y como artefacto
+  # (`rendimiento.json`), para compararlos con `--comparar`. No falla por lentitud: las máquinas del CI
+  # varían demasiado para fijar límites; sirve para ver el orden de magnitud y cómo crece cada caso.
+  rendimiento:
+    name: Rendimiento del motor · Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container: swift:6.2
+    defaults:
+      run:
+        working-directory: Herramientas/ArmoniaRendimiento
+        shell: bash
+    steps:
+      - uses: actions/checkout@v5
+      - name: Compilar con optimización
+        run: swift build -c release
+      - name: Medir
+        run: |
+          set -o pipefail
+          echo "## Rendimiento del motor" >> "$GITHUB_STEP_SUMMARY"
+          swift run -c release ArmoniaRendimiento --json "$GITHUB_WORKSPACE/rendimiento.json" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rendimiento
+          path: rendimiento.json
 
   paquetes:
     name: ${{ matrix.paquete }} · Linux · Swift ${{ matrix.swift }}
