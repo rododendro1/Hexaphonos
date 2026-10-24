@@ -109,7 +109,9 @@ final class CasosNegativosTests: XCTestCase {
 
     /// La tónica en español va con el tipo en español; con letra se acepta el inglés.
     func testNoSeMezclanIdiomas() {
-        rechaza(Escala.self, ["Re dorian", "Do major", "La harmonic minor", "Fa# lydian"])
+        rechaza(Escala.self, ["Re dorian", "La harmonic minor", "Fa# lydian"])
+        // «Do major» sí vale, como en las tonalidades: es catalán.
+        XCTAssertEqual(Escala(texto: "Do major"), Escala(.do, .mayor))
         XCTAssertEqual(Escala(texto: "D dorian"), Escala(.re, .dorico))
         XCTAssertEqual(Escala(texto: "Re dórico"), Escala(.re, .dorico))
         XCTAssertEqual(Escala(texto: "F# lydian"), Escala(Nota(.fa, .sostenido), .lidio))
