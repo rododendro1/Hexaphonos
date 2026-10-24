@@ -57,7 +57,7 @@ struct VistaAcordes: View {
     private func digitaciones(de acorde: Acorde) -> some View {
         Section(notacion.texto(.digitaciones)) {
             Picker(notacion.texto(.instrumentoYAfinacion), selection: $encordado) {
-                ForEach(Encordado.todos, id: \.self) { Text($0.nombre.capitalized).tag($0) }
+                ForEach(Encordado.todos, id: \.self) { Text($0.titulo(en: notacion)).tag($0) }
             }
             if let formas = digitaciones?.valor(para: claveActual) {
                 if formas.isEmpty {

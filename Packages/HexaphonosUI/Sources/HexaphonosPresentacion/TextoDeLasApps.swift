@@ -72,6 +72,22 @@ public enum TextoDeLasApps: Hashable, Sendable {
     case exportar
     case escuchar
 
+    // Accesibilidad (lo que lee VoiceOver)
+    case rejillaHexagonal
+    /// «19 casillas».
+    case casillas(Int)
+    /// «elegida q 2, r -1».
+    case casillaElegida(q: Int, r: Int)
+    /// «Mástil de guitarra, trastes 0 a 5», con el nombre del instrumento de `Encordado.nombre(en:)`.
+    case mastilDe(String, desde: Int, hasta: Int)
+    /// «cuerda 1, traste 0», con las cuerdas contadas desde 1.
+    case posicion(cuerda: Int, traste: Int)
+    /// «13 marcas».
+    case marcas(Int)
+    /// «cuerdas apagadas: 1, 6».
+    case cuerdasApagadas(String)
+    case sinMarcas
+
     public func texto(en notacion: Nomenclatura) -> String {
         traduccion(notacion).en(notacion)
     }
@@ -257,6 +273,48 @@ public enum TextoDeLasApps: Hashable, Sendable {
         case .exportar:
             return Traduccion("Exportar", "Export", ca: "Exporta", gl: "Exportar", eu: "Esportatu",
                               pt: "Exportar", fr: "Exporter", it: "Esporta")
+        case .rejillaHexagonal:
+            return Traduccion("Rejilla hexagonal", "Hexagonal grid", ca: "Graella hexagonal", gl: "Grade hexagonal",
+                              eu: "Sare hexagonala", pt: "Grelha hexagonal", fr: "Grille hexagonale",
+                              it: "Griglia esagonale")
+        case .casillas(let n):
+            let una = n == 1
+            return Traduccion("\(n) \(una ? "casilla" : "casillas")", "\(n) \(una ? "cell" : "cells")",
+                              ca: "\(n) \(una ? "casella" : "caselles")", gl: "\(n) \(una ? "cela" : "celas")",
+                              eu: una ? "gelaxka 1" : "\(n) gelaxka", pt: "\(n) \(una ? "casa" : "casas")",
+                              fr: "\(n) \(una ? "case" : "cases")", it: "\(n) \(una ? "casella" : "caselle")")
+        case .casillaElegida(let q, let r):
+            return Traduccion("elegida", "selected", ca: "escollida", gl: "escollida", eu: "hautatua",
+                              pt: "escolhida", fr: "choisie", it: "scelta")
+                .aplicando { "\($0) q \(q), r \(r)" }
+        case .mastilDe(let instrumento, let desde, let hasta):
+            return Traduccion("Mástil de \(instrumento), trastes \(desde) a \(hasta)",
+                              "\(instrumento.capitalizandoLaPrimera) neck, frets \(desde) to \(hasta)",
+                              ca: "Mànec de \(instrumento), trasts \(desde) a \(hasta)",
+                              gl: "Mástil de \(instrumento), trastes \(desde) a \(hasta)",
+                              eu: "Mastila (\(instrumento)), trasteak \(desde)-\(hasta)",
+                              pt: "Braço de \(instrumento), trastes \(desde) a \(hasta)",
+                              fr: "Manche de \(instrumento), cases \(desde) à \(hasta)",
+                              it: "Manico di \(instrumento), tasti da \(desde) a \(hasta)")
+        case .posicion(let cuerda, let traste):
+            return Traduccion("cuerda \(cuerda), traste \(traste)", "string \(cuerda), fret \(traste)",
+                              ca: "corda \(cuerda), trast \(traste)", gl: "corda \(cuerda), traste \(traste)",
+                              eu: "soka \(cuerda), trastea \(traste)", pt: "corda \(cuerda), traste \(traste)",
+                              fr: "corde \(cuerda), case \(traste)", it: "corda \(cuerda), tasto \(traste)")
+        case .marcas(let n):
+            let una = n == 1
+            return Traduccion("\(n) \(una ? "marca" : "marcas")", "\(n) \(una ? "mark" : "marks")",
+                              ca: "\(n) \(una ? "marca" : "marques")", gl: "\(n) \(una ? "marca" : "marcas")",
+                              eu: una ? "marka 1" : "\(n) marka", pt: "\(n) \(una ? "marca" : "marcas")",
+                              fr: "\(n) \(una ? "marque" : "marques")", it: "\(n) \(una ? "segno" : "segni")")
+        case .cuerdasApagadas(let lista):
+            return Traduccion("cuerdas apagadas: \(lista)", "muted strings: \(lista)",
+                              ca: "cordes apagades: \(lista)", gl: "cordas apagadas: \(lista)",
+                              eu: "isilarazitako sokak: \(lista)", pt: "cordas abafadas: \(lista)",
+                              fr: "cordes étouffées : \(lista)", it: "corde smorzate: \(lista)")
+        case .sinMarcas:
+            return Traduccion("Sin marcas", "No marks", ca: "Sense marques", gl: "Sen marcas", eu: "Markarik ez",
+                              pt: "Sem marcas", fr: "Aucune marque", it: "Nessun segno")
         }
     }
 
@@ -314,10 +372,17 @@ extension PresentacionDeCoral.Tarea {
         switch self {
         case .armonizar:
             let e = TextoDeLasApps.alturas("Mi4 Fa4 Re4 Do4", notacion)
-            traduccion = Traduccion("Melodía (\(e), o sin octavas)", "Melody (\(e), or without octaves)",
-                                    ca: "Melodia (\(e), o sense octaves)", gl: "Melodía (\(e), ou sen oitavas)",
-                                    eu: "Melodia (\(e), edo zortzidunik gabe)", pt: "Melodia (\(e), ou sem oitavas)",
-                                    fr: "Mélodie (\(e), ou sans octaves)", it: "Melodia (\(e), o senza ottave)")
+            // Con ritmo: «Mi4:4 Re4:8», con las notas en la notación.
+            let r = [("Mi4", 4), ("Re4", 8)].map { TextoDeLasApps.alturas($0.0, notacion) + ":\($0.1)" }
+                .joined(separator: " ")
+            traduccion = Traduccion("Melodía (\(e), sin octavas o con ritmo: \(r))",
+                                    "Melody (\(e), without octaves or with rhythm: \(r))",
+                                    ca: "Melodia (\(e), sense octaves o amb ritme: \(r))",
+                                    gl: "Melodía (\(e), sen oitavas ou con ritmo: \(r))",
+                                    eu: "Melodia (\(e), zortzidunik gabe edo erritmoarekin: \(r))",
+                                    pt: "Melodia (\(e), sem oitavas ou com ritmo: \(r))",
+                                    fr: "Mélodie (\(e), sans octaves ou avec rythme : \(r))",
+                                    it: "Melodia (\(e), senza ottave o con ritmo: \(r))")
         case .realizar:
             let e = ["Do", "Fa", "Sol7", "Do"].map { TextoDeLasApps.cifrado($0, notacion) }.joined(separator: " ")
             traduccion = TextoDeLasApps.acordes.traduccion(notacion).aplicando { "\($0) (\(e))" }
@@ -346,6 +411,75 @@ extension FicheroParaExportar.Formato {
         case .svg:
             traduccion = Traduccion("Dibujo SVG", "SVG drawing", ca: "Dibuix SVG", gl: "Debuxo SVG", eu: "SVG marrazkia",
                                     pt: "Desenho SVG", fr: "Dessin SVG", it: "Disegno SVG")
+        }
+        return traduccion.en(notacion)
+    }
+}
+
+extension String {
+    /// «guitarra» → «Guitarra».
+    var capitalizandoLaPrimera: String { prefix(1).uppercased() + dropFirst() }
+}
+
+extension Encordado {
+    /// El nombre del instrumento en el idioma de los textos, en minúscula para ir dentro de una frase:
+    /// «guitarra de siete cuerdas», «seven-string guitar». Un encordado que no es de los de `todos` conserva
+    /// su nombre.
+    public func nombre(en notacion: Nomenclatura) -> String {
+        let traduccion: Traduccion
+        switch self {
+        case .guitarra:
+            traduccion = Traduccion("guitarra", "guitar", ca: "guitarra", gl: "guitarra", eu: "gitarra",
+                                    pt: "guitarra", fr: "guitare", it: "chitarra")
+        case .guitarraEnReGrave:
+            traduccion = Traduccion("guitarra en re grave", "drop D guitar", ca: "guitarra en re greu",
+                                    gl: "guitarra en re grave", eu: "gitarra re baxuan", pt: "guitarra em ré grave",
+                                    fr: "guitare en ré grave", it: "chitarra in re basso")
+        case .guitarraDeSieteCuerdas:
+            traduccion = Traduccion("guitarra de siete cuerdas", "seven-string guitar", ca: "guitarra de set cordes",
+                                    gl: "guitarra de sete cordas", eu: "zazpi sokako gitarra",
+                                    pt: "guitarra de sete cordas", fr: "guitare à sept cordes",
+                                    it: "chitarra a sette corde")
+        case .bajo:
+            traduccion = Traduccion("bajo", "bass", ca: "baix", gl: "baixo", eu: "baxua",
+                                    pt: "baixo", fr: "basse", it: "basso")
+        case .bajoDeCincoCuerdas:
+            traduccion = Traduccion("bajo de cinco cuerdas", "five-string bass", ca: "baix de cinc cordes",
+                                    gl: "baixo de cinco cordas", eu: "bost sokako baxua", pt: "baixo de cinco cordas",
+                                    fr: "basse à cinq cordes", it: "basso a cinque corde")
+        case .ukelele:
+            traduccion = Traduccion("ukelele", "ukulele", ca: "ukulele", gl: "ukelele", eu: "ukelelea",
+                                    pt: "ukulele", fr: "ukulélé", it: "ukulele")
+        case .mandolina:
+            traduccion = Traduccion("mandolina", "mandolin", ca: "mandolina", gl: "mandolina", eu: "mandolina",
+                                    pt: "bandolim", fr: "mandoline", it: "mandolino")
+        default:
+            return nombre
+        }
+        return traduccion.en(notacion)
+    }
+
+    /// El nombre para un menú, con mayúscula: «Guitarra de siete cuerdas».
+    public func titulo(en notacion: Nomenclatura) -> String {
+        nombre(en: notacion).capitalizandoLaPrimera
+    }
+}
+
+extension TransformacionNeorriemanniana {
+    /// El nombre de la transformación en el idioma de los textos: «relativa», «relative».
+    public func nombre(en notacion: Nomenclatura) -> String {
+        let traduccion: Traduccion
+        switch self {
+        case .p:
+            traduccion = Traduccion("homónima", "parallel", ca: "homònima", gl: "homónima", eu: "homonimoa",
+                                    pt: "homónima", fr: "homonyme", it: "omonima")
+        case .l:
+            traduccion = Traduccion("cambio de sensible", "leading-tone exchange", ca: "canvi de sensible",
+                                    gl: "cambio de sensible", eu: "sentikorraren aldaketa", pt: "troca de sensível",
+                                    fr: "échange de sensible", it: "scambio della sensibile")
+        case .r:
+            traduccion = Traduccion("relativa", "relative", ca: "relativa", gl: "relativa", eu: "erlatiboa",
+                                    pt: "relativa", fr: "relative", it: "relativa")
         }
         return traduccion.en(notacion)
     }

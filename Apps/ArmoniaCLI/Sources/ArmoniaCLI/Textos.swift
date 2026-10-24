@@ -1,4 +1,5 @@
 import Armonia
+import HexaphonosPresentacion
 
 // MARK: - Textos
 //
@@ -146,19 +147,9 @@ enum Mensaje {
                               gl: ciclo.nombre(en: .gallego), eu: ciclo.nombre(en: .euskera),
                               pt: ciclo.nombre(en: .portugues), fr: ciclo.nombre(en: .frances), it: ciclo.nombre(en: .italiano))
         case .instrumento(let encordado):
-            // El catálogo del motor solo tiene el nombre en español, que es también el que se escribe en
-            // `--instrumento`: en los demás idiomas se deja así para que se pueda copiar.
-            let ingles: String
-            switch encordado.nombre {
-            case "guitarra": ingles = "guitar"
-            case "guitarra de siete cuerdas": ingles = "seven-string guitar"
-            case "guitarra en re grave": ingles = "drop D guitar"
-            case "bajo": ingles = "bass"
-            case "bajo de cinco cuerdas": ingles = "five-string bass"
-            case "ukelele": ingles = "ukulele"
-            case "mandolina": ingles = "mandolin"
-            default: ingles = encordado.nombre
-            }
+            // El nombre que se escribe en `--instrumento` es el español (o el inglés): en los demás idiomas se
+            // deja en español para que se pueda copiar.
+            let ingles = encordado.nombre(en: .ingles)
             return Traduccion(encordado.nombre, ingles, ca: encordado.nombre, gl: encordado.nombre, eu: encordado.nombre,
                               pt: encordado.nombre, fr: encordado.nombre, it: encordado.nombre)
         }

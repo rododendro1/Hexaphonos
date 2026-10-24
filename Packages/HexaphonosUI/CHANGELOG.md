@@ -28,6 +28,20 @@ marcados como obsoletos.
 - `Reproductor` y `BotonDeEscuchar`: lo tocan con el sintetizador del sistema (`AVAudioUnitSampler`; en macOS
   con el piano General MIDI del sistema). Las apps tienen «Escuchar» en Acordes, Escalas, Análisis, Coral y
   Tonnetz.
+- `Sonido.voz(_:tempo:)` toca una `Voz` con su ritmo (los silencios callan y las ligadas no vuelven a empezar),
+  y `Sonido.alturas(_:conElRitmoDe:)`, un coral con el ritmo de una voz. Al armonizar, la melodía puede llevar
+  ritmo («Mi4:2 Re4:4 Do4:4»): se armonizan sus notas y el coral suena con ese ritmo. `Sonido.nota(_:)`, una
+  nota sola.
+- `alTocarElSVG(_:_:)` avisa de dónde se toca una `VistaSVG`, en las coordenadas del dibujo, y
+  `PresentacionDeRedes.midi(en:de:en:)` dice qué nota hay ahí: en la app Tonnetz, tocar una nota del Tonnetz, de
+  la tabla armónica o de un teclado isomorfo la hace sonar.
+
+### Textos
+
+- `Encordado.nombre(en:)` y `titulo(en:)`, y `TransformacionNeorriemanniana.nombre(en:)`: los instrumentos y las
+  transformaciones P, L y R en los ocho idiomas de los textos.
+- Lo que lee VoiceOver en `DiagramaDeMastil`, `DiagramaHexagonal` (con la notación del entorno) y
+  `DiagramaDeTonnetz` va en el idioma de los textos.
 
 ### Apps traducidas y ayudantes comunes
 

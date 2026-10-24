@@ -1,4 +1,6 @@
+import Armonia
 import Hexagonos
+import HexaphonosPresentacion
 
 /// La parte de `DiagramaHexagonal` que no es dibujo: cómo se encaja un mapa en el espacio que hay, qué
 /// casilla se ha tocado y cómo se describe a VoiceOver. No usa SwiftUI, así que se prueba también en Linux.
@@ -30,10 +32,10 @@ enum PresentacionHexagonal {
         return mapa.contains(casilla) ? casilla : nil
     }
 
-    /// Una descripción corta para VoiceOver: cuántas casillas hay y cuál está elegida.
-    static func descripcion(casillas: Int, seleccionada: CoordenadaAxial?) -> String {
-        let cuantas = casillas == 1 ? "1 casilla" : "\(casillas) casillas"
+    /// Una descripción corta para VoiceOver, en el idioma de los textos: cuántas casillas hay y cuál está elegida.
+    static func descripcion(casillas: Int, seleccionada: CoordenadaAxial?, en notacion: Nomenclatura = .espanol) -> String {
+        let cuantas = notacion.texto(.casillas(casillas))
         guard let seleccionada else { return cuantas }
-        return "\(cuantas); elegida q \(seleccionada.q), r \(seleccionada.r)"
+        return cuantas + "; " + notacion.texto(.casillaElegida(q: seleccionada.q, r: seleccionada.r))
     }
 }
