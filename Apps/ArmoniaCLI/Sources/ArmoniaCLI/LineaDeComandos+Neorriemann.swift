@@ -23,7 +23,7 @@ extension LineaDeComandos {
         return bien(pasos.map { $0.texto(en: notacion) }.joined(separator: "\n"))
     }
 
-    /// `camino Sol7 Rem7`: Sol7 –Si→Do→ … paso a paso.
+    /// `conduccion-parsimoniosa Sol7 Rem7`: Sol7 –Si→Do→ … paso a paso.
     static func caminoParsimonioso(_ argumentos: [String], _ notacion: Notacion) throws -> ResultadoDeOrden {
         var argumentos = Argumentos(argumentos)
         guard let voces = argumentos.quitarNumero("--voces", "--voices", en: 1...2, porDefecto: 1) else {

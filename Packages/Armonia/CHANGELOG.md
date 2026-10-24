@@ -10,6 +10,9 @@
   `EstiloDeCifrado(nomenclatura:…)` y `nomenclatura`, `Tonnetz.conOrtografia`, `Tonnetz.Arista.Intervalo` e
   `intervalo`, `TablaArmonica.Modo` y `modo`, `Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)`, y
   `Digitacion.cifra`. Cada uno tenía ya su nombre nuevo, el que proponía Xcode.
+- La línea de comandos deja de aceptar los nombres antiguos de órdenes y opciones: `voces` y `voices` (son
+  `revisar` y `check`), `camino` y `path` (son `conduccion-parsimoniosa` y `smooth-path`), `--path` en `tonnetz` y
+  `tabla` (es `--sequence`, o `--recorrido`) y `--instrumento` en `midi` (es `--programa`, o `--program`).
 
 ### Nombres
 
