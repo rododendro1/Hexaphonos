@@ -51,7 +51,7 @@ extension Duracion {
         let figura = escritura.figura.nombre(en: notacion)
         let puntillos = escritura.puntillos
         guard puntillos > 0 else { return figura }
-        switch notacion.idioma {
+        switch notacion.idiomaDeLosTextos {
         case .espanol:
             return figura + ["", " con puntillo", " con doble puntillo", " con triple puntillo",
                              " con cuádruple puntillo"][puntillos]

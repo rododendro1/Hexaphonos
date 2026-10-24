@@ -626,6 +626,78 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Escala(.re, .dorico).nombre(en: .occitano), "re dorian")
     }
 
+    /// Las notas en una notación y los textos en otro idioma.
+    func testNotasYTextosPorSeparado() {
+        let rusoEnEspanol = Nomenclatura.ruso.conTextos(en: .espanol)
+        XCTAssertEqual(rusoEnEspanol, .combinada(notas: .ruso, textos: .espanol))
+        XCTAssertEqual(rusoEnEspanol.idioma, .ruso)
+        XCTAssertEqual(rusoEnEspanol.idiomaDeLosTextos, .espanol)
+        XCTAssertEqual(rusoEnEspanol.notas, .ruso)
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: rusoEnEspanol), "соль séptima de dominante, primera inversión")
+        XCTAssertEqual(Acorde("Sol7/La").nombre(en: rusoEnEspanol), "соль séptima de dominante, con bajo en ля")
+        XCTAssertEqual(Acorde("Fa#m7").cifrado(en: rusoEnEspanol), "Фа♯m7")
+        XCTAssertEqual(Tonalidad("Fa# mayor").nombre(en: rusoEnEspanol), "фа-диез мажор")
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: rusoEnEspanol), "3ª mayor")
+        XCTAssertEqual(Intervalo.quintaJusta.abreviatura(en: rusoEnEspanol), "5J")
+        XCTAssertEqual(try Nota(leyendo: "фа-диез", en: rusoEnEspanol), Nota("Fa#"))
+        XCTAssertEqual(try Altura(leyendo: "фа-диез3", en: rusoEnEspanol), Altura("Fa#3"))
+        // Letras inglesas con textos en euskera; sílabas con textos en inglés.
+        let inglesEnEuskera = Nomenclatura.ingles.conTextos(en: .euskera)
+        XCTAssertEqual(Acorde("Sol7").nombre(en: inglesEnEuskera), "G dominanteko zazpigarrena, oinarrizko egoera")
+        XCTAssertEqual(Escala(.re, .dorico).nombre(en: inglesEnEuskera), "D doriarra")
+        XCTAssertEqual(Acorde("Sol7").nombre(en: Nomenclatura.espanol.conTextos(en: .ingles)),
+                       "Sol dominant seventh, root position")
+        XCTAssertEqual(Tonalidad("Fa# mayor").nombre(en: Nomenclatura.aleman.conTextos(en: .frances)), "Fis-Dur")
+        XCTAssertEqual(Acorde("Sib7").cifrado(en: Nomenclatura.aleman.conTextos(en: .frances)), "B7")
+        // Si el idioma ya es el de los textos, la notación queda simple; no se anidan.
+        XCTAssertEqual(Nomenclatura.catalan.conTextos(en: .catalan), .catalan)
+        XCTAssertEqual(Nomenclatura.aleman.conTextos(en: .aleman), .aleman)
+        XCTAssertEqual(Nomenclatura.griego.conTextos(en: .ingles), .griego)
+        XCTAssertEqual(rusoEnEspanol.conTextos(en: .frances), .combinada(notas: .ruso, textos: .frances))
+        XCTAssertEqual(rusoEnEspanol.conTextos(en: .ingles), .ruso)
+        XCTAssertFalse(Nomenclatura.allCases.contains(rusoEnEspanol))
+        // Los mensajes de error.
+        do {
+            _ = try Acorde(leyendo: "Do7(b3)")
+            XCTFail("Do7(b3) no es un cifrado válido")
+        } catch let error as ErrorDeLectura {
+            XCTAssertEqual(error.descripcion(en: Nomenclatura.ingles.conTextos(en: .espanol)), error.description)
+        } catch {
+            XCTFail("\(error)")
+        }
+    }
+
+    /// Las escalas se leen también con la tónica y el tipo en francés, italiano, ruso o griego.
+    func testEscalasEnOtrasLenguas() {
+        XCTAssertEqual(Escala(texto: "ré dorien"), Escala(.re, .dorico))
+        XCTAssertEqual(Escala(texto: "fa dièse lydien"), Escala(Nota("Fa#"), .lidio))
+        XCTAssertEqual(Escala(texto: "si bémol mineur harmonique"), Escala(Nota("Sib"), .menorArmonica))
+        XCTAssertEqual(Escala(texto: "fa diesis lidio"), Escala(Nota("Fa#"), .lidio))
+        XCTAssertEqual(Escala(texto: "si bemolle minore melodica"), Escala(Nota("Sib"), .menorMelodica))
+        XCTAssertEqual(Escala(texto: "ре дорийский"), Escala(.re, .dorico))
+        XCTAssertEqual(Escala(texto: "ля гармонический минор"), Escala(.la, .menorArmonica))
+        XCTAssertEqual(Escala(texto: "фа-диез минорная пентатоника"), Escala(Nota("Fa#"), .pentatonicaMenor))
+        XCTAssertEqual(Escala(texto: "λα αρμονική ελάσσονα"), Escala(.la, .menorArmonica))
+        XCTAssertEqual(Escala(texto: "ρε δωριος"), Escala(.re, .dorico))
+        XCTAssertEqual(Escala(texto: "σι ύφεση μιξολύδιος"), Escala(Nota("Sib"), .mixolidio))
+        // Con la tónica en ruso o griego, el tipo puede ir en inglés.
+        XCTAssertEqual(Escala(texto: "до lydian dominant"), Escala(.do, .lidioDominante))
+        XCTAssertEqual(Escala(texto: "ντο altered"), Escala(.do, .alterada))
+        // Todos los nombres franceses e italianos del catálogo se leen.
+        for tipo in TipoDeEscala.todos {
+            for notacion in [Nomenclatura.frances, .italiano] {
+                let escala = Escala(Nota("Fa#"), tipo)
+                XCTAssertEqual(Escala(texto: escala.nombre(en: notacion)), escala, escala.nombre(en: notacion))
+            }
+        }
+        for fila in TipoDeEscala.nombresRusosYGriegos {
+            for nombre in fila.ruso { XCTAssertEqual(Escala(texto: "ре " + nombre), Escala(.re, fila.tipo), nombre) }
+            for nombre in fila.griego { XCTAssertEqual(Escala(texto: "ρε " + nombre), Escala(.re, fila.tipo), nombre) }
+        }
+        // El español no cambia: no se mezclan idiomas.
+        XCTAssertNil(Escala(texto: "Re dorian"))
+    }
+
     func testVocabularioEIdas() {
         XCTAssertEqual(Nomenclatura.aleman.idioma, .aleman)
         XCTAssertEqual(Nomenclatura.frances.vocabulario, .ingles)

@@ -258,6 +258,12 @@ final class LineaDeComandosTests: XCTestCase {
                         .hasPrefix("armonia: idioma desconocido: «de» (es, en, ca, gl, eu, pt, fr o it)"))
         XCTAssertEqual(resultado("acorde", "Do", "--idioma").error,
                        "armonia: falta el valor de --idioma\nPrueba «armonia ayuda».\n")
+        // Notas y textos por separado.
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma en --textos es").hasPrefix("G7/B: séptima de dominante\n"))
+        XCTAssertTrue(salida("acorde Sol7/Si --textos fr").hasPrefix("Sol7/Si: septième de dominante\n"))
+        XCTAssertTrue(salida("ayuda --idioma fr --textos es").contains("--textos"))
+        XCTAssertEqual(resultado("acorde", "Do", "--textos", "xx").codigo, 2)
+        XCTAssertEqual(resultado("acorde", "Do", "--textos").codigo, 2)
     }
 
     /// Con --idioma ca, gl, eu, pt, fr o it, los errores de uso no dejan nada en español.

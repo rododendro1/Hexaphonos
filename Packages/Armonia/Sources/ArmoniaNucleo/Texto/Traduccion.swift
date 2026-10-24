@@ -41,7 +41,7 @@ public struct Traduccion: Hashable, Sendable {
     }
 
     /// El texto en el idioma de los textos de la notación (`Nomenclatura.idiomaDeLosTextos`).
-    public func en(_ notacion: Nomenclatura) -> String { texto(en: notacion.idioma) }
+    public func en(_ notacion: Nomenclatura) -> String { texto(en: notacion.idiomaDeLosTextos) }
 
     /// El texto en un idioma, o en inglés si es el alemán, el occitano, el ruso o el griego
     /// (`Idioma.deLosTextos`).
@@ -76,6 +76,10 @@ extension Idioma {
 
 extension Nomenclatura {
     /// Idioma de los textos que no son nombres de nota (mensajes, intervalos, cadencias…):
-    /// el de la notación, salvo en alemán, occitano, ruso y griego, que es el inglés.
-    public var idiomaDeLosTextos: Idioma { idioma.deLosTextos }
+    /// el de la notación, salvo en alemán, occitano, ruso y griego, que es el inglés. En una
+    /// notación combinada (`conTextos(en:)`), el idioma elegido para los textos.
+    public var idiomaDeLosTextos: Idioma {
+        if case .combinada(_, let textos) = self { return textos.deLosTextos }
+        return idioma.deLosTextos
+    }
 }

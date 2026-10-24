@@ -197,6 +197,7 @@ public struct Nota: Hashable, Sendable {
     /// `Nota(leyendo: "B", en: .aleman)` → Si♭, `Nota(leyendo: "ré bémol", en: .frances)`.
     /// No distingue mayúsculas ni tildes. En español e inglés, igual que `init(leyendo:)`.
     public init(leyendo texto: String, en notacion: Nomenclatura) throws {
+        let notacion = notacion.notas
         switch notacion {
         case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let clave = texto.claveDeBusqueda

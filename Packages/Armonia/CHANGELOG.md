@@ -2,6 +2,22 @@
 
 ## Sin publicar
 
+### Notas y textos en idiomas distintos
+
+- `Nomenclatura.conTextos(en:)` combina los nombres de nota de una notación con los textos de otro
+  idioma: `Acorde("Sol7/Si").nombre(en: Nomenclatura.ruso.conTextos(en: .espanol))` es «соль séptima de
+  dominante, primera inversión». `Nomenclatura` gana el caso `.combinada(notas:textos:)` y la propiedad
+  `notas`; `allCases` sigue listando solo las notaciones simples. Los textos siguen `idiomaDeLosTextos`
+  en lugar de `idioma`.
+- Las apps eligen por separado las notas y los textos en el selector de notación (se guarda como
+  «ruso+espanol»), y la línea de comandos tiene `--textos`.
+
+### Escalas en francés, italiano, ruso y griego
+
+- `Escala(leyendo:)` acepta la tónica y el tipo en francés e italiano (`Escala("fa dièse lydien")`), y
+  en ruso y griego con los tipos más comunes o con su nombre inglés (`Escala("ре дорийский")`,
+  `Escala("до lydian dominant")`).
+
 ### Nombres de nota en occitano, ruso y griego
 
 - `Nomenclatura` e `Idioma` tienen `.occitano`, `.ruso` y `.griego`: notas, alteraciones y tonalidades

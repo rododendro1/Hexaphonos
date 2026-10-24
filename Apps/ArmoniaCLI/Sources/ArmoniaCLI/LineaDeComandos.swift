@@ -102,6 +102,7 @@ public enum LineaDeComandos {
     Se aceptan nombres en español o en inglés (Do, C, Sib, Bb). Con --ingles, la respuesta
     usa la notación inglesa. Con --idioma ca, gl, eu, pt, fr o it, las notas, los nombres, los
     mensajes y esta ayuda salen en catalán, gallego, euskera, portugués, francés o italiano.
+    Con --textos, los textos van en otro idioma que las notas: --idioma en --textos es.
     """
 
     /// La ayuda en inglés (`armonia help --ingles`).
@@ -191,6 +192,7 @@ public enum LineaDeComandos {
     uses English notation, and so do messages and this help. With --language ca, gl, eu, pt, fr or
     it, notes, names, messages and this help are in Catalan, Galician, Basque, Portuguese, French or
     Italian.
+    With --texts, the texts use another language than the notes: --language es --texts en.
     """
 
     /// La ayuda en catalán (`armonia ayuda --idioma ca`).
@@ -279,6 +281,7 @@ public enum LineaDeComandos {
     S'accepten noms de nota en castellà, català, gallec, basc o anglès (Do, C, Sib, Bb, si
     bemoll). Amb --idioma ca, la resposta fa servir la notació catalana i els missatges en
     català; amb --ingles, en anglès.
+    Amb --textos, els textos van en un altre idioma que les notes: --idioma en --textos ca.
     """
 
     /// La ayuda en gallego (`armonia ayuda --idioma gl`).
@@ -367,6 +370,7 @@ public enum LineaDeComandos {
     Acéptanse nomes de nota en castelán, catalán, galego, éuscaro ou inglés (Do, C, Sib, Bb, si
     bemol). Con --idioma gl, a resposta usa a notación galega e as mensaxes en galego; con
     --ingles, en inglés.
+    Con --textos, os textos van noutro idioma ca as notas: --idioma en --textos gl.
     """
 
     /// La ayuda en euskera (`armonia ayuda --idioma eu`).
@@ -462,6 +466,7 @@ public enum LineaDeComandos {
     Nota-izenak gaztelaniaz, katalanez, galegoz, euskaraz edo ingelesez onartzen dira (Do, C,
     Sib, Bb, si bemol). --idioma eu erabiliz, erantzunak euskal notazioa eta euskarazko mezuak
     ditu; --ingles erabiliz, ingelesez.
+    --textos erabiliz, testuak notak ez bezalako hizkuntzan daude: --idioma en --textos eu.
     """
 
     /// La ayuda en portugués (`armonia ayuda --idioma pt`).
@@ -548,6 +553,7 @@ public enum LineaDeComandos {
     Aceitam-se nomes de nota em espanhol, catalão, galego, basco, português ou inglês (Do, C,
     Sib, Bb, si bemol, ré). Com --idioma pt, a resposta usa a notação portuguesa e as mensagens
     em português; com --ingles, em inglês.
+    Com --textos, os textos saem noutra língua que as notas: --idioma en --textos pt.
     """
 
     /// La ayuda en francés (`armonia ayuda --idioma fr`).
@@ -643,6 +649,7 @@ public enum LineaDeComandos {
     Les noms de note s'écrivent en espagnol, catalan, galicien, basque, portugais ou anglais
     (Do, C, Sib, Bb, si bemol, ré). Avec --idioma fr, la réponse utilise la notation française
     et les messages en français ; avec --ingles, en anglais.
+    Avec --textos, les textes sont dans une autre langue que les notes : --idioma en --textos fr.
     """
 
     /// La ayuda en italiano (`armonia ayuda --idioma it`).
@@ -734,6 +741,7 @@ public enum LineaDeComandos {
     I nomi delle note si scrivono in spagnolo, catalano, galiziano, basco, portoghese o inglese
     (Do, C, Sib, Bb, si bemol, ré). Con --idioma it, la risposta usa la notazione italiana e i
     messaggi in italiano; con --ingles, in inglese.
+    Con --textos, i testi sono in un'altra lingua rispetto alle note: --idioma en --textos it.
     """
 
     /// Ejecuta una orden con sus argumentos (sin el nombre del programa).
@@ -748,6 +756,14 @@ public enum LineaDeComandos {
                 return uso(.idiomaDesconocido(argumentos[i + 1]), notacion)
             }
             notacion = elegida
+            argumentos.removeSubrange(i...(i + 1))
+        }
+        if let i = argumentos.firstIndex(where: { $0 == "--textos" || $0 == "--texts" }) {
+            guard i + 1 < argumentos.count else { return uso(.faltaValor(String(argumentos[i].dropFirst(2))), notacion) }
+            guard let textos = notacionDelIdioma(argumentos[i + 1])?.idioma else {
+                return uso(.idiomaDesconocido(argumentos[i + 1]), notacion)
+            }
+            notacion = notacion.conTextos(en: textos)
             argumentos.removeSubrange(i...(i + 1))
         }
 

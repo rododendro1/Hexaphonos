@@ -234,8 +234,9 @@ extension TipoDeEscala {
         return tabla
     }()
 
-    /// Nombres en catalán, gallego, euskera y portugués, normalizados → tipo, para leerlos con la
-    /// tónica en esas lenguas ("re dòric", "re doriarra", "ré dórico").
+    /// Nombres en catalán, gallego, euskera, portugués, francés e italiano, normalizados → tipo, para
+    /// leerlos con la tónica en esas lenguas ("re dòric", "re doriarra", "ré dórico", "ré dorien",
+    /// "re dorico").
     package static let indicePeninsular: [String: TipoDeEscala] = {
         var indice: [String: TipoDeEscala] = [:]
         for fila in nombresPeninsulares {
@@ -243,8 +244,47 @@ extension TipoDeEscala {
                 indice[normalizar(nombre)] = fila.tipo
             }
         }
-        for fila in nombresRomanicos where indice[normalizar(fila.portugues)] == nil {
-            indice[normalizar(fila.portugues)] = fila.tipo
+        for fila in nombresRomanicos {
+            for nombre in [fila.portugues, fila.frances, fila.italiano] where indice[normalizar(nombre)] == nil {
+                indice[normalizar(nombre)] = fila.tipo
+            }
+        }
+        return indice
+    }()
+
+    /// Los tipos más comunes en ruso y en griego, para leerlos con la tónica en esas lenguas
+    /// ("ре дорийский", "λα αρμονική ελάσσονα"). Los demás se leen con su nombre en inglés
+    /// ("ре lydian dominant").
+    package static let nombresRusosYGriegos: [(tipo: TipoDeEscala, ruso: [String], griego: [String])] = [
+        (.mayor, ["мажор", "натуральный мажор", "ионийский"], ["μείζονα", "ιωνικός"]),
+        (.menorNatural, ["минор", "натуральный минор", "эолийский"], ["ελάσσονα", "φυσική ελάσσονα", "αιολικός"]),
+        (.menorArmonica, ["гармонический минор"], ["αρμονική ελάσσονα"]),
+        (.menorMelodica, ["мелодический минор"], ["μελωδική ελάσσονα"]),
+        (.mayorArmonica, ["гармонический мажор"], ["αρμονική μείζονα"]),
+        (.dorico, ["дорийский"], ["δώριος"]),
+        (.frigio, ["фригийский"], ["φρύγιος"]),
+        (.lidio, ["лидийский"], ["λύδιος"]),
+        (.mixolidio, ["миксолидийский"], ["μιξολύδιος"]),
+        (.locrio, ["локрийский"], ["λόκριος"]),
+        (.pentatonicaMayor, ["мажорная пентатоника"], ["μείζονα πεντατονική"]),
+        (.pentatonicaMenor, ["минорная пентатоника"], ["ελάσσονα πεντατονική"]),
+        (.blues, ["блюзовая", "блюз"], ["μπλουζ"]),
+        (.tonosEnteros, ["целотонная"], ["ολοτονική"]),
+        (.cromatica, ["хроматическая"], ["χρωματική"]),
+        (.dobleArmonica, ["двойная гармоническая"], ["διπλή αρμονική"]),
+        (.menorHungara, ["венгерский минор"], ["ουγγρική ελάσσονα"]),
+        (.frigioDominante, ["фригийский доминантовый"], ["φρύγιος δεσπόζουσας"]),
+        (.lidioDominante, ["лидийский доминантовый"], ["λύδιος δεσπόζουσας"]),
+        (.alterada, ["альтерированная"], ["αλλοιωμένη"]),
+    ]
+
+    /// Nombres rusos y griegos normalizados → tipo.
+    package static let indiceRusoGriego: [String: TipoDeEscala] = {
+        var indice: [String: TipoDeEscala] = [:]
+        for fila in nombresRusosYGriegos {
+            for nombre in fila.ruso + fila.griego where indice[normalizar(nombre)] == nil {
+                indice[normalizar(nombre)] = fila.tipo
+            }
         }
         return indice
     }()

@@ -14,8 +14,11 @@ public struct Escala: Hashable, Sendable {
     /// Lee textos como "Re dórico", "Fa# menor armónica", "Sib mayor", "La menor",
     /// o en inglés: "D dorian", "F# harmonic minor", "Bb major".
     /// Si no se puede leer, el error indica dónde y por qué.
-    /// También lee la tónica en catalán, gallego, euskera o portugués, con el tipo en español o en
-    /// esos idiomas: "re bemoll dòric", "fa sostido menor", "re doriarra", "fá sustenido dórico".
+    /// También lee la tónica en catalán, gallego, euskera, portugués, occitano, francés o italiano,
+    /// con el tipo en español o en esas lenguas: "re bemoll dòric", "fa sostido menor", "re doriarra",
+    /// "fá sustenido dórico", "ré bémol dorien", "fa diesis lidio". Con la tónica en ruso o en griego,
+    /// el tipo va en esa lengua (los más comunes) o en inglés: "ре дорийский", "λα αρμονική ελάσσονα",
+    /// "до lydian dominant".
     public init(leyendo texto: String) throws {
         self = try Escala.leer(texto)
     }
@@ -39,14 +42,24 @@ public struct Escala: Hashable, Sendable {
             for cuantas in stride(from: min(3, palabras.count - 1), through: 1, by: -1) {
                 let tonica = palabras[..<cuantas].joined(separator: " ")
                 let tipo = palabras[cuantas...].joined(separator: " ")
-                if let nombre = Nota.leerEnLenguasPeninsulares(tonica),
-                   let encontrado = TipoDeEscala.indicePeninsular[TipoDeEscala.normalizar(tipo)]
-                    ?? TipoDeEscala.buscar(nombre: tipo, aceptarIngles: false) {
-                    return Escala(nombre, encontrado)
-                }
+                guard let (nombre, notacion) = Escala.leerTonica(tonica) else { continue }
+                let normalizado = TipoDeEscala.normalizar(tipo)
+                let encontrado = notacion == .ruso || notacion == .griego
+                    ? TipoDeEscala.indiceRusoGriego[normalizado] ?? TipoDeEscala.buscar(nombre: tipo, aceptarIngles: true)
+                    : TipoDeEscala.indicePeninsular[normalizado] ?? TipoDeEscala.buscar(nombre: tipo, aceptarIngles: false)
+                if let encontrado { return Escala(nombre, encontrado) }
             }
             throw error
         }
+    }
+
+    /// Tónica en una de las lenguas que se leen sin indicar la notación, o en francés o italiano.
+    private static func leerTonica(_ texto: String) -> (Nota, Nomenclatura)? {
+        let clave = texto.claveDeBusqueda
+        for notacion in Nomenclatura.deLecturaGenerica + [.frances, .italiano] {
+            if let nombre = Nota.porNombre[notacion]?[clave] { return (nombre, notacion) }
+        }
+        return nil
     }
 
     /// Como `init(leyendo:)`, devolviendo `nil` en lugar de un error.

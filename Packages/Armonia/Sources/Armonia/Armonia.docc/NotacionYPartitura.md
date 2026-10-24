@@ -98,6 +98,29 @@ Escala(.re, .dorico).nombre(en: .frances)          // "ré dorien"
 Acorde("Sol7/Si").nombre(en: .portugues)         // "sol sétima de dominante, primeira inversão"
 ```
 
+### Notas y textos en idiomas distintos
+
+`conTextos(en:)` combina los nombres de nota de una notación con los textos de otro idioma. Las
+apps lo ofrecen en el selector de notación, y la línea de comandos con `--textos`.
+
+```swift
+let notacion = Nomenclatura.ruso.conTextos(en: .espanol)
+Acorde("Sol7/Si").nombre(en: notacion)              // "соль séptima de dominante, primera inversión"
+Escala(.re, .dorico).nombre(en: Nomenclatura.ingles.conTextos(en: .euskera))   // "D doriarra"
+```
+
+### Escalas en otras lenguas
+
+Una escala se lee también con la tónica y el tipo en francés o italiano, y en ruso o griego con los
+tipos más comunes (o con el nombre inglés del tipo):
+
+```swift
+Escala("fa dièse lydien")                           // Fa♯ lidio
+Escala("si bemolle minore melodica")                // Si♭ menor melódica
+Escala("ре дорийский")                              // Re dórico
+Escala("λα αρμονική ελάσσονα")                      // La menor armónica
+```
+
 ## Alteraciones
 
 `Alteracion` es el número de semitonos que sube o baja una nota respecto a la natural. Se

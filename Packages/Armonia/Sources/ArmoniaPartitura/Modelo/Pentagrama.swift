@@ -159,7 +159,7 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
     /// "clarinete en si♭", "B♭ clarinet", "clarinet en si♭", "clarinete en si♭", "si♭ klarinetea",
     /// "clarinete em si♭", "clarinette en si♭", "clarinetto in si♭".
     public func nombre(en notacion: Nomenclatura) -> String {
-        switch notacion.idioma {
+        switch notacion.idiomaDeLosTextos {
         case .espanol: return nombre
         case .ingles, .aleman, .occitano, .ruso, .griego: return nombreEnIngles
         case .catalan: return Instrumento.nombresPeninsulares[nombre]?.catalan ?? nombre

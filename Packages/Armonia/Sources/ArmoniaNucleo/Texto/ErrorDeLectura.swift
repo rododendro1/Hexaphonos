@@ -78,7 +78,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
     /// Explicación del motivo en el idioma de los textos de la notación: en inglés para el alemán
     /// (`notacion.idiomaDeLosTextos`).
     public func explicacion(en notacion: Nomenclatura) -> String {
-        switch notacion.idioma {
+        switch notacion.idiomaDeLosTextos {
         case .espanol: return explicacionEnEspanol
         case .ingles, .aleman, .occitano, .ruso, .griego: return explicacionEnIngles(notacion)
         case .catalan: return explicacionEnCatalan

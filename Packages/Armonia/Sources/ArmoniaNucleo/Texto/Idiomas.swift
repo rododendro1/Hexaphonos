@@ -11,7 +11,7 @@
 //
 // Para añadir un idioma: un caso en `Idioma` y en `Nomenclatura`, y sus palabras en esos
 // ficheros. Para que el motor escriba también sus textos en él: un campo en `Traduccion`, y su
-// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idioma` de los textos. Los `switch` sobre `idioma` no tienen `default`, así que el compilador señala los que
+// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idiomaDeLosTextos` de los textos. Los `switch` sobre `idioma` no tienen `default`, así que el compilador señala los que
 // faltan; tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano: `Altura(leyendo:en:)`,
 // `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`. Los nombres que son datos de un catálogo
 // (tipos de acorde y de escala, instrumentos) siguen junto a su catálogo.
@@ -114,6 +114,7 @@ extension Nota {
     /// `.italiano` → "fa diesis", `.ruso` → "фа-диез", `.griego` → "φα δίεση".
     public func nombre(en notacion: Nomenclatura) -> String {
         switch notacion {
+        case .combinada(let notas, _): return nombre(en: notas)
         case .espanol: return nombre
         case .espanolASCII: return nombreASCII
         case .ingles:
@@ -150,6 +151,7 @@ extension Nota {
     /// Nombre compacto para cifrados: igual que `nombre(en:)` salvo en las notaciones que escriben
     /// las alteraciones con palabras, que usan la sílaba con mayúscula y el símbolo (Fa♯, Ré♭, Фа♯, Φα♯).
     public func nombreCompacto(en notacion: Nomenclatura) -> String {
+        let notacion = notacion.notas
         switch notacion {
         case .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let silaba = natural.nombre(en: notacion)
@@ -213,7 +215,7 @@ extension Intervalo {
     public func nombre(en notacion: Nomenclatura) -> String {
         let calidad = self.calidad.nombre(en: notacion)
         let descendente = direccion == .descendente
-        switch notacion.idioma {
+        switch notacion.idiomaDeLosTextos {
         case .espanol, .portugues:
             return "\(numero)ª \(calidad)" + (descendente ? " descendente" : "")
         case .ingles, .aleman, .occitano, .ruso, .griego:

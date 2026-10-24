@@ -5,6 +5,7 @@ extension Nomenclatura {
     /// Cómo se llama cada notación en el selector.
     public var titulo: String {
         switch self {
+        case .combinada(let notas, let textos): return "\(notas.titulo) · \(textos.titulo)"
         case .espanol: return "Español (Fa♯)"
         case .espanolASCII: return "Español ASCII (Fa#)"
         case .ingles: return "English (F#)"
@@ -23,8 +24,10 @@ extension Nomenclatura {
     }
 
     /// El nombre con que se guarda en los ajustes. Es estable: no depende del orden de `allCases`.
+    /// Una notación combinada se guarda como «ruso+espanol».
     public var clave: String {
         switch self {
+        case .combinada(let notas, let textos): return notas.clave + "+" + textos.clave
         case .espanol: return "espanol"
         case .espanolASCII: return "espanolASCII"
         case .ingles: return "ingles"
@@ -44,11 +47,68 @@ extension Nomenclatura {
 
     /// La notación guardada con esa clave; si no existe, el español.
     public static func desde(clave: String) -> Nomenclatura {
-        allCases.first { $0.clave == clave } ?? .espanol
+        let partes = clave.split(separator: "+", maxSplits: 1).map(String.init)
+        let notas = allCases.first { $0.clave == partes.first } ?? .espanol
+        guard partes.count == 2, let textos = Idioma.allCases.first(where: { $0.clave == partes[1] }) else { return notas }
+        return notas.conTextos(en: textos)
+    }
+
+    /// El idioma elegido para los textos, o `nil` si van en el de las notas.
+    public var idiomaElegidoParaLosTextos: Idioma? {
+        if case .combinada(_, let textos) = self { return textos }
+        return nil
+    }
+
+    /// Otras notas, conservando el idioma elegido para los textos.
+    public func conNotas(_ notas: Nomenclatura) -> Nomenclatura {
+        idiomaElegidoParaLosTextos.map { notas.conTextos(en: $0) } ?? notas.notas
+    }
+
+    /// Los mismos nombres de nota con los textos en otro idioma, o en el de las notas si es `nil`.
+    public func conTextosElegidos(_ idioma: Idioma?) -> Nomenclatura {
+        idioma.map { conTextos(en: $0) } ?? notas
     }
 
     /// Mensaje legible de un error del motor, en el idioma de esta notación.
     public func mensaje(de error: Error) -> String {
         (error as? ErrorDeLectura)?.descripcion(en: self) ?? error.localizedDescription
+    }
+}
+
+extension Idioma {
+    /// Cómo se llama cada idioma en el selector de los textos.
+    public var titulo: String {
+        switch self {
+        case .espanol: return "Español"
+        case .ingles: return "English"
+        case .aleman: return "Deutsch"
+        case .frances: return "Français"
+        case .italiano: return "Italiano"
+        case .catalan: return "Català"
+        case .gallego: return "Galego"
+        case .euskera: return "Euskara"
+        case .portugues: return "Português"
+        case .occitano: return "Occitan"
+        case .ruso: return "Русский"
+        case .griego: return "Ελληνικά"
+        }
+    }
+
+    /// El nombre con que se guarda en los ajustes.
+    public var clave: String {
+        switch self {
+        case .espanol: return "espanol"
+        case .ingles: return "ingles"
+        case .aleman: return "aleman"
+        case .frances: return "frances"
+        case .italiano: return "italiano"
+        case .catalan: return "catalan"
+        case .gallego: return "gallego"
+        case .euskera: return "euskera"
+        case .portugues: return "portugues"
+        case .occitano: return "occitano"
+        case .ruso: return "ruso"
+        case .griego: return "griego"
+        }
     }
 }

@@ -55,6 +55,7 @@ public struct Altura: Hashable, Sendable {
     /// Lee una nota escrita en una notación concreta: `Altura(leyendo: "Fis4", en: .aleman)`,
     /// `Altura(leyendo: "ré bémol 3", en: .frances)`. La octava es la científica (Do4 = do central).
     public init(leyendo texto: String, en notacion: Nomenclatura) throws {
+        let notacion = notacion.notas
         switch notacion {
         case .aleman, .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let limpio = texto.trimmingEspacios()

@@ -26,6 +26,9 @@
 /// φα δίεση μείζονα). Los textos del motor (mensajes de error, intervalos, cadencias…) y los
 /// nombres de los catálogos (acordes, escalas, instrumentos) están además en todos esos idiomas
 /// salvo el alemán, el occitano, el ruso y el griego, en los que salen en inglés (`idiomaDeLosTextos`).
+///
+/// Las notas y los textos pueden ir en idiomas distintos con `conTextos(en:)`:
+/// `Nomenclatura.ruso.conTextos(en: .espanol)` escribe «соль séptima de dominante, primera inversión».
 public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     /// Español con símbolos tipográficos: Do, Fa♯, Si♭.
     case espanol
@@ -55,6 +58,28 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     case ruso
     /// Griego: ντο, ρε, φα δίεση, σι ύφεση; en los cifrados, Φα♯7, Σι♭m.
     case griego
+    /// Las notas de una notación con los textos (intervalos, acordes, mensajes…) en otro idioma.
+    /// Se crea con `conTextos(en:)`, que nunca anida una combinación dentro de otra.
+    indirect case combinada(notas: Nomenclatura, textos: Idioma)
+
+    /// Las notaciones simples, sin combinar.
+    public static let allCases: [Nomenclatura] = [.espanol, .espanolASCII, .ingles, .inglesUnicode, .aleman,
+                                                  .frances, .italiano, .catalan, .gallego, .euskera,
+                                                  .portugues, .occitano, .ruso, .griego]
+
+    /// La misma notación de las notas con los textos en otro idioma: `Nomenclatura.ruso.conTextos(en:
+    /// .espanol)`. Un idioma sin textos propios (el alemán…) cuenta como el inglés. Si el idioma ya es el de
+    /// los textos de la notación, devuelve la notación simple.
+    public func conTextos(en idioma: Idioma) -> Nomenclatura {
+        let notas = self.notas, textos = idioma.deLosTextos
+        return notas.idiomaDeLosTextos == textos ? notas : .combinada(notas: notas, textos: textos)
+    }
+
+    /// La notación de las notas, sin el idioma de los textos (la propia si no es combinada).
+    public var notas: Nomenclatura {
+        if case .combinada(let notas, _) = self { return notas.notas }
+        return self
+    }
 
     public init(idioma: Idioma, ascii: Bool) {
         switch (idioma, ascii) {
@@ -75,8 +100,10 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
         }
     }
 
+    /// El idioma de los nombres de nota (en una combinada, el de sus notas).
     public var idioma: Idioma {
         switch self {
+        case .combinada(let notas, _): return notas.idioma
         case .espanol, .espanolASCII: return .espanol
         case .ingles, .inglesUnicode: return .ingles
         case .aleman: return .aleman
@@ -96,6 +123,8 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     /// español en español, catalán, gallego, euskera, portugués y occitano; inglés en las demás. Los demás
     /// textos siguen `idiomaDeLosTextos`.
     public var vocabulario: Idioma {
+        let idioma: Idioma
+        if case .combinada(_, let textos) = self { idioma = textos } else { idioma = self.idioma }
         switch idioma {
         case .espanol, .catalan, .gallego, .euskera, .portugues, .occitano: return .espanol
         case .ingles, .aleman, .frances, .italiano, .ruso, .griego: return .ingles
@@ -104,7 +133,7 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
 
     /// Alteraciones como # y b en lugar de ♯ y ♭ (en alemán, francés e italiano las alteraciones
     /// de las notas van en palabras o sufijos; esto afecta a las tensiones de los cifrados).
-    public var usaASCII: Bool { self == .espanolASCII || self == .ingles || self == .aleman }
+    public var usaASCII: Bool { [.espanolASCII, .ingles, .aleman].contains(notas) }
 }
 
 // MARK: - Idioma
@@ -175,6 +204,9 @@ public struct EstiloDeCifrado: Hashable, Sendable {
     /// `.ingles` → `.ingles`, `.inglesUnicode` → `.inglesUnicode`.
     public init(notacion: Nomenclatura) {
         switch notacion {
+        case .combinada(let notas, _):
+            self.init(notacion: notas)
+            nomenclatura = notacion
         case .espanol: self.init()
         case .espanolASCII: self.init(nomenclatura: .espanolASCII, alteracionesASCII: true)
         case .ingles: self.init(nomenclatura: .ingles, alteracionesASCII: true)
