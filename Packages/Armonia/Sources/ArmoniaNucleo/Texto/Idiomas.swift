@@ -11,10 +11,10 @@
 //
 // Para añadir un idioma: un caso en `Idioma` y en `Nomenclatura`, y sus palabras en esos
 // ficheros. Para que el motor escriba también sus textos en él: un campo en `Traduccion`, y su
-// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idiomaDeLosTextos` de los textos. Los `switch` sobre `idioma` no tienen `default`, así que el compilador señala los que
-// faltan; tres `switch` sobre `Nomenclatura` sí lo tienen y se revisan a mano: `Altura(leyendo:en:)`,
-// `Nota(leyendo:en:)` y `Nota.nombreCompacto(en:)`. Los nombres que son datos de un catálogo
-// (tipos de acorde y de escala, instrumentos) siguen junto a su catálogo.
+// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idiomaDeLosTextos` de los textos.
+// Ningún `switch` sobre `Idioma` o `Nomenclatura` tiene `default`, así que el compilador señala los
+// que faltan. Los nombres que son datos de un catálogo (tipos de acorde y de escala, instrumentos)
+// siguen junto a su catálogo.
 
 // MARK: - NotaNatural
 
@@ -156,7 +156,8 @@ extension Nota {
         case .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let silaba = natural.nombre(en: notacion)
             return silaba.prefix(1).uppercased() + String(silaba.dropFirst()) + alteracion.simbolo
-        default:
+        // `notas` nunca es combinada; el caso está para que el `switch` no tenga `default`.
+        case .espanol, .espanolASCII, .ingles, .inglesUnicode, .aleman, .combinada:
             return nombre(en: notacion)
         }
     }

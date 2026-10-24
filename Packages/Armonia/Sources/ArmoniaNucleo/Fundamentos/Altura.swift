@@ -70,7 +70,8 @@ public struct Altura: Hashable, Sendable {
             } catch let error as ErrorDeLectura {
                 throw ErrorDeLectura(texto: texto, posicion: 0, motivo: error.motivo)
             }
-        default:
+        // `notas` nunca es combinada; el caso está para que el `switch` no tenga `default`.
+        case .espanol, .espanolASCII, .ingles, .inglesUnicode, .combinada:
             try self.init(leyendo: texto)
         }
     }
