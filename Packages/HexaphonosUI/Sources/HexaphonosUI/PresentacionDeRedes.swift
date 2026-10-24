@@ -57,32 +57,71 @@ public enum PresentacionDeRedes {
         .rectangulo(columnas: 12, filas: 7, .filasImpares)
         .map { $0 + CoordenadaAxial(q: -4, r: -4) }
 
+    /// El lado de las casillas de los teclados en el dibujo.
+    static let tamanoDelTeclado = 24.0
+
+    /// La distancia entre dos notas vecinas en el dibujo del Tonnetz o de la tabla: la que usan sus `svg`
+    /// por defecto, con más sitio en un recorrido para las flechas. Se fija aquí para saber qué nota se toca.
+    static func paso(_ contenido: ContenidoDeRed, en red: RedDeNotas) -> Double {
+        var esRecorrido = false
+        if case .recorrido(let acordes) = contenido { esRecorrido = acordes.count >= 2 }
+        switch red {
+        case .tablaArmonica: return esRecorrido ? 72 : 56
+        case .tonnetz, .wickiHayden, .janko: return esRecorrido ? 88 : 64
+        }
+    }
+
     /// El dibujo SVG del contenido en la red; `nil` si un recorrido está vacío.
     public static func svg(_ contenido: ContenidoDeRed, en red: RedDeNotas, notacion: Nomenclatura) -> String? {
+        let paso = Self.paso(contenido, en: red)
         if let teclado = red.teclado {
             let clases = Set(contenido.notas.map(\.claseDeAltura))
             let marcadas = Set((0...127).filter { clases.contains($0 % 12) })
             // Con bemoles si alguna nota lleva bemol (Si♭ está a menos de una quinta por debajo de Fa).
             let bemoles = contenido.notas.contains { $0.pasosDeQuinta < -1 }
-            return teclado.svg(casillasDelTeclado, marcadas: marcadas, notacion: notacion, preferirBemoles: bemoles)
+            return teclado.svg(casillasDelTeclado, marcadas: marcadas, tamano: tamanoDelTeclado, notacion: notacion,
+                               preferirBemoles: bemoles)
         }
         switch (red, contenido) {
         case (.tablaArmonica, .acorde(let acorde)):
-            return TablaArmonica(acorde).svg(notacion: notacion)
+            return TablaArmonica(acorde).svg(notacion: notacion, paso: paso)
         case (.tablaArmonica, .escala(let escala)):
-            return TablaArmonica(escala).svg(notacion: notacion)
+            return TablaArmonica(escala).svg(notacion: notacion, paso: paso)
         case (.tablaArmonica, .recorrido(let acordes)):
             guard let primero = acordes.first else { return nil }
-            return (acordes.count >= 2 ? TablaArmonica(recorrido: acordes) : nil)?.svg(notacion: notacion)
-                ?? TablaArmonica(primero).svg(notacion: notacion)
+            return (acordes.count >= 2 ? TablaArmonica(recorrido: acordes) : nil)?.svg(notacion: notacion, paso: paso)
+                ?? TablaArmonica(primero).svg(notacion: notacion, paso: paso)
         case (_, .acorde(let acorde)):
-            return Tonnetz(acorde).svg(notacion: notacion)
+            return Tonnetz(acorde).svg(notacion: notacion, paso: paso)
         case (_, .escala(let escala)):
-            return Tonnetz(escala).svg(notacion: notacion)
+            return Tonnetz(escala).svg(notacion: notacion, paso: paso)
         case (_, .recorrido(let acordes)):
             guard let primero = acordes.first else { return nil }
-            return (acordes.count >= 2 ? Tonnetz(recorrido: acordes) : nil)?.svg(notacion: notacion)
-                ?? Tonnetz(primero).svg(notacion: notacion)
+            return (acordes.count >= 2 ? Tonnetz(recorrido: acordes) : nil)?.svg(notacion: notacion, paso: paso)
+                ?? Tonnetz(primero).svg(notacion: notacion, paso: paso)
+        }
+    }
+
+    /// La nota que se toca en el dibujo de `svg(_:en:notacion:)`, como número MIDI, o `nil` si el toque no
+    /// cae en una nota. `punto` va en las coordenadas del SVG (las de su `viewBox`).
+    ///
+    /// En el Tonnetz y en la tabla cada nota es una clase de altura, y suena en la octava 4 (de Do4 a Si4);
+    /// en un teclado suena la altura de la casilla.
+    public static func midi(en punto: Punto, de contenido: ContenidoDeRed, en red: RedDeNotas) -> Int? {
+        if let teclado = red.teclado {
+            let casilla = Trazado(orientacion: teclado.orientacion, tamano: tamanoDelTeclado).casilla(en: punto)
+            return casillasDelTeclado.contains(casilla) ? teclado.midi(en: casilla) : nil
+        }
+        let paso = Self.paso(contenido, en: red)
+        switch red {
+        case .tablaArmonica:
+            return 60 + TablaArmonica.punto(en: punto, paso: paso).claseDeAltura
+        case .tonnetz, .wickiHayden, .janko:
+            // Solo cerca del círculo de la nota: entre dos notas no suena nada.
+            let nota = Tonnetz.punto(en: punto, paso: paso)
+            let centro = Tonnetz.trazado(paso: paso).centro(de: nota.coordenada)
+            let distancia = ((punto.x - centro.x) * (punto.x - centro.x) + (punto.y - centro.y) * (punto.y - centro.y)).squareRoot()
+            return distancia <= paso * 0.4 ? 60 + nota.claseDeAltura : nil
         }
     }
 

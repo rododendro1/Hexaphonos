@@ -3,7 +3,8 @@ import Armonia
 import HexaphonosUI
 
 /// Un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R, en el Tonnetz, en la
-/// tabla armónica o en un teclado isomorfo (Wicki-Hayden o Jankó), y su dibujo para exportar.
+/// tabla armónica o en un teclado isomorfo (Wicki-Hayden o Jankó), y su dibujo para exportar. Al tocar una
+/// nota del dibujo, suena.
 struct VistaTonnetz: View {
     enum Contenido: CaseIterable, Identifiable {
         case recorrido
@@ -45,6 +46,12 @@ struct VistaTonnetz: View {
 
             if let dibujado, let svg = PresentacionDeRedes.svg(dibujado, en: red, notacion: notacion) {
                 VistaSVG(svg: svg)
+                    // Tocar una nota la hace sonar.
+                    .alTocarElSVG(svg) { punto in
+                        if let midi = PresentacionDeRedes.midi(en: punto, de: dibujado, en: red) {
+                            Reproductor.compartido.tocar(.nota(midi))
+                        }
+                    }
                     .clipShape(RoundedRectangle(cornerRadius: TemaHexaphonos.radioDeEsquina))
                     .accessibilityLabel(Text(PresentacionDeRedes.nombre(dibujado, en: red, notacion: notacion)))
             } else {
@@ -81,7 +88,7 @@ struct VistaTonnetz: View {
                 ForEach(TransformacionNeorriemanniana.allCases, id: \.self) { transformacion in
                     Button(transformacion.rawValue.uppercased()) { aplicar(transformacion) }
                         .buttonStyle(.borderedProminent)
-                        .help(transformacion.nombre)
+                        .help(transformacion.nombre(en: notacion))
                 }
                 Button(notacion.texto(.deshacer)) { deshacer() }
                     .disabled(recorrido.count < 2)

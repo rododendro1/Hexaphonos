@@ -110,7 +110,7 @@ public enum PresentacionDeCoral {
         /// Qué se escribe en el campo de texto.
         public var indicacion: String {
             switch self {
-            case .armonizar: return "Melodía (Mi4 Fa4 Re4 Do4, o sin octavas)"
+            case .armonizar: return "Melodía (Mi4 Fa4 Re4 Do4, sin octavas o con ritmo: Mi4:4 Re4:8)"
             case .realizar: return "Acordes (Do Fa Sol7 Do)"
             case .revisar: return "Voces de grave a agudo (Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4)"
             }
@@ -147,8 +147,14 @@ public enum PresentacionDeCoral {
                           notacion: Nomenclatura) throws -> CoralPresentado {
         let partes = texto.split(whereSeparator: \.isWhitespace).map(String.init)
         guard !partes.isEmpty else { throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .textoVacio) }
-        let alturas = partes.compactMap { Altura(texto: $0) }
-        let conOctavas = alturas.count == partes.count
+        // Con ritmo («Mi4:4 Re4:8»), la voz: se armonizan sus notas (la más aguda si una es un acorde) y el
+        // coral suena con su ritmo.
+        let voz = try partes.contains { $0.contains(":") } ? Voz(leyendo: partes.joined(separator: " ")) : nil
+        let alturas = voz.map { voz in
+            Sonido.notas(de: voz, tempo: Sonido.tempo).compactMap { $0.alturas.max { $0.midi < $1.midi } }
+        } ?? partes.compactMap { Altura(texto: $0) }
+        guard !alturas.isEmpty || voz == nil else { throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .textoVacio) }
+        let conOctavas = voz != nil || alturas.count == partes.count
         let notas = try conOctavas ? alturas.map(\.nota) : partes.map { try Nota(leyendo: $0) }
         guard let tonalidad = tonalidad ?? Tonalidad.candidatos(notas: notas).first?.valor else {
             throw ErrorDeLectura(texto: texto, posicion: nil, motivo: .textoVacio)
@@ -165,7 +171,7 @@ public enum PresentacionDeCoral {
         } else if let coral = tonalidad.armonizarACuatroVoces(alturas) {
             filas = self.filas(coral.armonizacion.analisis, coral.voces, notacion)
             ficheros = self.ficheros(coral.voces, tonalidad, notacion, nombre: "Armonización")
-            sonido = .alturas(coral.voces.acordes)
+            sonido = voz.map { .alturas(coral.voces.acordes, conElRitmoDe: $0) } ?? .alturas(coral.voces.acordes)
         } else {
             avisos.append(.sinCoralParaLaMelodia)
         }

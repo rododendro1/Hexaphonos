@@ -47,6 +47,11 @@ public struct Sonido: Hashable, Sendable {
 
     // MARK: Lo que tocan las apps
 
+    /// Una nota sola: la que se toca en un dibujo.
+    public static func nota(_ midi: Int, duracion: Double = 0.8) -> Sonido {
+        Sonido(eventos: [Evento(midi: midi, inicio: 0, duracion: duracion)])
+    }
+
     /// Un acorde desde su bajo, en posición cerrada a partir de Do3: primero arpegiado y luego junto.
     public static func acorde(_ acorde: Acorde) -> Sonido {
         let midis = cerrada(acorde.notasDesdeElBajo, desde: 48)
@@ -76,6 +81,45 @@ public struct Sonido: Hashable, Sendable {
     /// Acordes con sus alturas escritas (un coral a cuatro voces), uno detrás de otro.
     public static func alturas(_ acordes: [[Altura]], duracion: Double = 1) -> Sonido {
         grupos(acordes.map { $0.map(\.midi) }, duracion: duracion)
+    }
+
+    /// El tempo de lo que tiene ritmo, si no se da otro: negra a 72.
+    public static let tempo = Tempo(72)
+
+    /// Una voz con su ritmo: los silencios callan y las notas ligadas suenan como una sola.
+    ///
+    ///     Sonido.voz(try Voz(leyendo: "Do4:4 Re4:8 -:8 Mi4:2")).eventos.map(\.inicio)   // [0, 0.83, 1.67]
+    public static func voz(_ voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
+        Sonido(eventos: notas(de: voz, tempo: tempo).flatMap { nota in
+            nota.alturas.map { Evento(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
+        })
+    }
+
+    /// Acordes con sus alturas escritas que empiezan y duran lo que las notas de una voz: el coral de una
+    /// melodía con ritmo. Si hay más acordes que notas, los que sobran no suenan.
+    public static func alturas(_ acordes: [[Altura]], conElRitmoDe voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
+        Sonido(eventos: zip(acordes, notas(de: voz, tempo: tempo)).flatMap { acorde, nota in
+            acorde.map { Evento(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
+        })
+    }
+
+    /// Las notas de una voz con su comienzo y su duración en segundos, sin los silencios; una nota ligada
+    /// se alarga con la siguiente en lugar de volver a empezar.
+    static func notas(de voz: Voz, tempo: Tempo) -> [(alturas: [Altura], inicio: Double, duracion: Double)] {
+        var notas: [(alturas: [Altura], inicio: Double, duracion: Double)] = []
+        var tiempo = 0.0
+        var ligadaALaAnterior = false
+        for evento in voz.eventos {
+            let segundos = tempo.segundos(de: evento.duracion)
+            if ligadaALaAnterior, !notas.isEmpty {
+                notas[notas.count - 1].duracion += segundos
+            } else if !evento.alturas.isEmpty {
+                notas.append((evento.alturas, tiempo, segundos))
+            }
+            tiempo += segundos
+            ligadaALaAnterior = evento.ligada
+        }
+        return notas
     }
 
     static func grupos(_ grupos: [[Int]], duracion: Double) -> Sonido {

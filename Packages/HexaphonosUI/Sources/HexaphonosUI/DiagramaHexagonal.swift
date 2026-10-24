@@ -1,5 +1,6 @@
 #if canImport(SwiftUI)
 import SwiftUI
+import Armonia
 import Hexagonos
 
 /// Un mapa de casillas hexagonales, que avisa de qué casilla se toca.
@@ -19,6 +20,8 @@ public struct DiagramaHexagonal: View {
     private let relleno: (CoordenadaAxial) -> Color?
     private let rotulo: (CoordenadaAxial) -> String?
     private let alTocar: ((CoordenadaAxial) -> Void)?
+    /// La de la app, para lo que lee VoiceOver.
+    @Environment(\.notacion) private var notacion
 
     /// - Parameters:
     ///   - relleno: el color de cada casilla (`nil`, el gris por defecto).
@@ -72,8 +75,9 @@ public struct DiagramaHexagonal: View {
         .aspectRatio(PresentacionHexagonal.proporcion(de: casillas, orientacion: orientacion).map { CGFloat($0) },
                      contentMode: .fit)
         .accessibilityElement()
-        .accessibilityLabel(Text("Rejilla hexagonal"))
-        .accessibilityValue(Text(PresentacionHexagonal.descripcion(casillas: casillas.count, seleccionada: seleccionada)))
+        .accessibilityLabel(Text(notacion.texto(.rejillaHexagonal)))
+        .accessibilityValue(Text(PresentacionHexagonal.descripcion(casillas: casillas.count, seleccionada: seleccionada,
+                                                                  en: notacion)))
     }
 
     private func dibujar(en contexto: inout GraphicsContext, trazado: Trazado) {

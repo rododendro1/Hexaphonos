@@ -1,4 +1,5 @@
 import Armonia
+import HexaphonosPresentacion
 
 /// La parte de `DiagramaDeMastil` que no es dibujo: qué trastes se enseñan, qué cuerdas se apagan, cómo se
 /// escriben las notas y cómo se describe el mástil a VoiceOver. No usa SwiftUI, así que se prueba
@@ -32,17 +33,23 @@ enum PresentacionDeMastil {
         Dictionary(notas.map { ($0.claseDeAltura, $0) }, uniquingKeysWith: { primera, _ in primera })
     }
 
-    /// Una descripción corta para VoiceOver.
-    static func descripcion(marcas: [Posicion], apagadas: Set<Int>) -> String {
+    /// Una descripción corta para VoiceOver, en el idioma de los textos.
+    static func descripcion(marcas: [Posicion], apagadas: Set<Int>, en notacion: Nomenclatura = .espanol) -> String {
         var partes: [String] = []
         if marcas.count > 12 {
-            partes.append("\(marcas.count) marcas")
+            partes.append(notacion.texto(.marcas(marcas.count)))
         } else {
-            partes += marcas.sorted { ($0.cuerda, $0.traste) < ($1.cuerda, $1.traste) }.map(\.description)
+            partes += marcas.sorted { ($0.cuerda, $0.traste) < ($1.cuerda, $1.traste) }
+                .map { notacion.texto(.posicion(cuerda: $0.cuerda + 1, traste: $0.traste)) }
         }
         if !apagadas.isEmpty {
-            partes.append("cuerdas apagadas: " + apagadas.sorted().map { String($0 + 1) }.joined(separator: ", "))
+            partes.append(notacion.texto(.cuerdasApagadas(apagadas.sorted().map { String($0 + 1) }.joined(separator: ", "))))
         }
-        return partes.isEmpty ? "Sin marcas" : partes.joined(separator: "; ")
+        return partes.isEmpty ? notacion.texto(.sinMarcas) : partes.joined(separator: "; ")
+    }
+
+    /// Lo que es el diagrama, para VoiceOver: «Mástil de guitarra, trastes 0 a 5».
+    static func etiqueta(de mastil: Mastil, rango: ClosedRange<Int>, en notacion: Nomenclatura = .espanol) -> String {
+        notacion.texto(.mastilDe(mastil.encordado.nombre(en: notacion), desde: rango.lowerBound, hasta: rango.upperBound))
     }
 }

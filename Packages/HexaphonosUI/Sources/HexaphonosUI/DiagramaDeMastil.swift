@@ -72,8 +72,8 @@ public struct DiagramaDeMastil: View {
         .aspectRatio(Double(rango.count + (hayCanal ? 1 : 0)) / Double(max(mastil.encordado.numeroDeCuerdas + 1, 3)) * 0.8,
                      contentMode: .fit)
         .accessibilityElement()
-        .accessibilityLabel(Text("Mástil de \(mastil.encordado.nombre), trastes \(rango.lowerBound) a \(rango.upperBound)"))
-        .accessibilityValue(Text(PresentacionDeMastil.descripcion(marcas: marcas, apagadas: apagadas)))
+        .accessibilityLabel(Text(PresentacionDeMastil.etiqueta(de: mastil, rango: rango, en: notacion)))
+        .accessibilityValue(Text(PresentacionDeMastil.descripcion(marcas: marcas, apagadas: apagadas, en: notacion)))
     }
 
     private func dibujar(en contexto: inout GraphicsContext, tamano: CGSize) {
