@@ -205,7 +205,9 @@ public struct Nota: Hashable, Sendable {
                 throw ErrorDeLectura(texto: texto, posicion: 0, motivo: .notaNoReconocida)
             }
             self = nombre
-        default:
+        // `notas` nunca es combinada; el caso está para que el `switch` no tenga `default` y el
+        // compilador avise al añadir una notación.
+        case .espanol, .espanolASCII, .ingles, .inglesUnicode, .combinada:
             try self.init(leyendo: texto)
         }
     }

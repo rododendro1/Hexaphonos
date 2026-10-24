@@ -2,6 +2,13 @@
 
 ## Sin publicar
 
+### Código
+
+- `ErrorDeLectura` explica sus motivos con un solo `switch` que devuelve una `Traduccion`, en lugar de uno
+  por idioma (de 765 a 458 líneas). Los textos no cambian, y un motivo nuevo no compila sin sus ocho idiomas.
+- Los `switch` sobre `Nomenclatura` de `Nota(leyendo:en:)`, `Altura(leyendo:en:)` y `Nota.nombreCompacto(en:)`
+  ya no tienen `default`: el compilador avisa al añadir una notación.
+
 ### Notas y textos en idiomas distintos
 
 - `Nomenclatura.conTextos(en:)` combina los nombres de nota de una notación con los textos de otro
