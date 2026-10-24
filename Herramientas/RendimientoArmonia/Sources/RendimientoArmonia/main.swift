@@ -3,7 +3,7 @@ import Foundation
 let ayuda = """
     Mide cuánto tarda el motor. Compílalo con optimización, o los tiempos no dicen nada:
 
-        swift run -c release ArmoniaRendimiento [opciones]
+        swift run -c release RendimientoArmonia [opciones]
 
     Opciones:
         --filtro <texto>      solo los casos cuyo nombre contiene el texto («armonizar», «digitaciones»…)
@@ -15,7 +15,7 @@ let ayuda = """
     """
 
 func fallar(_ mensaje: String) -> Never {
-    FileHandle.standardError.write(Data("\(mensaje)\n\nUso: swift run -c release ArmoniaRendimiento --ayuda\n".utf8))
+    FileHandle.standardError.write(Data("\(mensaje)\n\nUso: swift run -c release RendimientoArmonia --ayuda\n".utf8))
     exit(2)
 }
 

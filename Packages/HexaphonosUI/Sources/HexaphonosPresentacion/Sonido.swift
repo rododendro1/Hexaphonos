@@ -6,7 +6,7 @@ import Armonia
 ///     Sonido.acorde(Acorde("Sol7/Si")).eventos.map(\.midi)   // [59, 62, 65, 67]: Si3 Re4 Fa4 Sol4
 public struct Sonido: Hashable, Sendable {
     /// Una nota que suena: su número MIDI, cuándo empieza y cuánto dura.
-    public struct Evento: Hashable, Sendable {
+    public struct NotaMIDI: Hashable, Sendable {
         public let midi: Int
         public let inicio: Double
         public let duracion: Double
@@ -25,9 +25,9 @@ public struct Sonido: Hashable, Sendable {
         public let empieza: Bool
     }
 
-    public let eventos: [Evento]
+    public let eventos: [NotaMIDI]
 
-    public init(eventos: [Evento]) {
+    public init(eventos: [NotaMIDI]) {
         self.eventos = eventos.filter { (0...127).contains($0.midi) && $0.duracion > 0 }
     }
 
@@ -49,7 +49,7 @@ public struct Sonido: Hashable, Sendable {
 
     /// Una nota sola: la que se toca en un dibujo.
     public static func nota(_ midi: Int, duracion: Double = 0.8) -> Sonido {
-        Sonido(eventos: [Evento(midi: midi, inicio: 0, duracion: duracion)])
+        Sonido(eventos: [NotaMIDI(midi: midi, inicio: 0, duracion: duracion)])
     }
 
     /// Un acorde desde su bajo, en posición cerrada a partir de Do3: primero arpegiado y luego junto.
@@ -58,7 +58,7 @@ public struct Sonido: Hashable, Sendable {
         let paso = 0.12
         let final = paso * Double(midis.count)
         return Sonido(eventos: midis.enumerated().map { i, midi in
-            Evento(midi: midi, inicio: paso * Double(i), duracion: final - paso * Double(i) + 1.2)
+            NotaMIDI(midi: midi, inicio: paso * Double(i), duracion: final - paso * Double(i) + 1.2)
         })
     }
 
@@ -69,7 +69,7 @@ public struct Sonido: Hashable, Sendable {
         let midis = subida + [tonica + 12]
         let paso = 0.3
         return Sonido(eventos: midis.enumerated().map { i, midi in
-            Evento(midi: midi, inicio: paso * Double(i), duracion: paso * 0.9)
+            NotaMIDI(midi: midi, inicio: paso * Double(i), duracion: paso * 0.9)
         })
     }
 
@@ -79,7 +79,7 @@ public struct Sonido: Hashable, Sendable {
     }
 
     /// Acordes con sus alturas escritas (un coral a cuatro voces), uno detrás de otro.
-    public static func alturas(_ acordes: [[Altura]], duracion: Double = 1) -> Sonido {
+    public static func coral(_ acordes: [[Altura]], duracion: Double = 1) -> Sonido {
         grupos(acordes.map { $0.map(\.midi) }, duracion: duracion)
     }
 
@@ -91,15 +91,15 @@ public struct Sonido: Hashable, Sendable {
     ///     Sonido.voz(try Voz(leyendo: "Do4:4 Re4:8 -:8 Mi4:2")).eventos.map(\.inicio)   // [0, 0.83, 1.67]
     public static func voz(_ voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
         Sonido(eventos: notas(de: voz, tempo: tempo).flatMap { nota in
-            nota.alturas.map { Evento(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
+            nota.alturas.map { NotaMIDI(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
         })
     }
 
     /// Acordes con sus alturas escritas que empiezan y duran lo que las notas de una voz: el coral de una
     /// melodía con ritmo. Si hay más acordes que notas, los que sobran no suenan.
-    public static func alturas(_ acordes: [[Altura]], conElRitmoDe voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
+    public static func coral(_ acordes: [[Altura]], conElRitmoDe voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
         Sonido(eventos: zip(acordes, notas(de: voz, tempo: tempo)).flatMap { acorde, nota in
-            acorde.map { Evento(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
+            acorde.map { NotaMIDI(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
         })
     }
 
@@ -124,7 +124,7 @@ public struct Sonido: Hashable, Sendable {
 
     static func grupos(_ grupos: [[Int]], duracion: Double) -> Sonido {
         Sonido(eventos: grupos.enumerated().flatMap { i, midis in
-            midis.map { Evento(midi: $0, inicio: duracion * Double(i), duracion: duracion * 0.92) }
+            midis.map { NotaMIDI(midi: $0, inicio: duracion * Double(i), duracion: duracion * 0.92) }
         })
     }
 

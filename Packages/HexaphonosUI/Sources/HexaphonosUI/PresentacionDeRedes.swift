@@ -107,7 +107,7 @@ public enum PresentacionDeRedes {
     ///
     /// En el Tonnetz y en la tabla cada nota es una clase de altura, y suena en la octava 4 (de Do4 a Si4);
     /// en un teclado suena la altura de la casilla.
-    public static func midi(en punto: Punto, de contenido: ContenidoDeRed, en red: RedDeNotas) -> Int? {
+    public static func midi(en punto: Punto, de contenido: ContenidoDeRed, enLaRed red: RedDeNotas) -> Int? {
         if let teclado = red.teclado {
             let casilla = Trazado(orientacion: teclado.orientacion, tamano: tamanoDelTeclado).casilla(en: punto)
             return casillasDelTeclado.contains(casilla) ? teclado.midi(en: casilla) : nil

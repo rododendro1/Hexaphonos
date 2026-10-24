@@ -92,7 +92,7 @@ jobs:
           - { nombre: ArmoniaCLI, ruta: Apps/ArmoniaCLI }
           - { nombre: EjemploArmonia, ruta: Ejemplos/EjemploArmonia }
           - { nombre: EjemploHexagonos, ruta: Ejemplos/EjemploHexagonos }
-          - { nombre: ArmoniaRendimiento, ruta: Herramientas/ArmoniaRendimiento }
+          - { nombre: RendimientoArmonia, ruta: Herramientas/RendimientoArmonia }
     defaults:
       run:
         working-directory: ${{ matrix.paquete.ruta }}
@@ -120,7 +120,7 @@ jobs:
     container: swift:6.2
     defaults:
       run:
-        working-directory: Herramientas/ArmoniaRendimiento
+        working-directory: Herramientas/RendimientoArmonia
         shell: bash
     steps:
       - uses: actions/checkout@v5
@@ -130,7 +130,7 @@ jobs:
         run: |
           set -o pipefail
           echo "## Rendimiento del motor" >> "$GITHUB_STEP_SUMMARY"
-          swift run -c release ArmoniaRendimiento --json "$GITHUB_WORKSPACE/rendimiento.json" | tee -a "$GITHUB_STEP_SUMMARY"
+          swift run -c release RendimientoArmonia --json "$GITHUB_WORKSPACE/rendimiento.json" | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: rendimiento

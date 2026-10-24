@@ -4,7 +4,7 @@ import HexaphonosUI
 
 /// Escribe una progresión (Do Fa Sol7 Do Lam Re7 Sol) y muestra sus tonalidades, los grados, las funciones,
 /// las modulaciones y las cadencias, y la exporta como partitura o MIDI.
-struct VistaAnalisis: View {
+struct VistaDeAnalisis: View {
     @Environment(\.notacion) private var notacion
     @State private var texto = "Do Fa Sol7 Do Lam Re7 Sol"
     /// El análisis de `texto`, que se rehace al cambiar el texto o la notación, no en cada redibujado.

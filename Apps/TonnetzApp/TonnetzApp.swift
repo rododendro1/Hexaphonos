@@ -6,7 +6,7 @@ import HexaphonosUI
 struct TonnetzApp: App {
     var body: some Scene {
         WindowGroup {
-            NavigationStack { VistaTonnetz() }
+            NavigationStack { VistaDeTonnetz() }
                 .notacionGuardada()
         }
     }

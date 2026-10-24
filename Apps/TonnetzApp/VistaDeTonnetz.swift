@@ -5,7 +5,7 @@ import HexaphonosUI
 /// Un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R, en el Tonnetz, en la
 /// tabla armónica o en un teclado isomorfo (Wicki-Hayden o Jankó), y su dibujo para exportar. Al tocar una
 /// nota del dibujo, suena.
-struct VistaTonnetz: View {
+struct VistaDeTonnetz: View {
     enum Contenido: CaseIterable, Identifiable {
         case recorrido
         case acorde
@@ -48,7 +48,7 @@ struct VistaTonnetz: View {
                 VistaSVG(svg: svg)
                     // Tocar una nota la hace sonar.
                     .alTocarElSVG(svg) { punto in
-                        if let midi = PresentacionDeRedes.midi(en: punto, de: dibujado, en: red) {
+                        if let midi = PresentacionDeRedes.midi(en: punto, de: dibujado, enLaRed: red) {
                             Reproductor.compartido.tocar(.nota(midi))
                         }
                     }
