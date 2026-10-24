@@ -2,6 +2,14 @@
 
 ## Sin publicar
 
+- Nombres más claros, sin alias porque son recientes: `Sonido.Evento` pasa a ser `Sonido.NotaMIDI` (ya no
+  tapa el `Evento` del ritmo), `Sonido.alturas(_:)` y `alturas(_:conElRitmoDe:)` pasan a ser `Sonido.coral(_:)` y
+  `coral(_:conElRitmoDe:)`, `AnalisisPresentado.Tramo` pasa a ser `TramoPresentado` (como `AnalisisPresentado`
+  y `CoralPresentado`, y para no confundirlo con `TramoTonal`) y `PresentacionDeRedes.midi(en:de:en:)` pasa a
+  ser `midi(en:de:enLaRed:)`.
+- Las vistas de las apps llevan «De» como el resto de tipos: `VistaDeAcordes`, `VistaDeEscalas`,
+  `VistaDeAnalisis`, `VistaDeCoral` y `VistaDeTonnetz`. La herramienta de rendimiento pasa a llamarse
+  `RendimientoArmonia` (`Herramientas/RendimientoArmonia`), en el mismo orden que `EjemploArmonia`.
 - Usa los nombres nuevos del motor: `Notacion` (antes `Nomenclatura`), `Coral` (antes `ConduccionDeVoces`) y
   `texto(en:)`. `Nomenclatura+Apps.swift` pasa a ser `Notacion+Apps.swift`; la API no cambia.
 

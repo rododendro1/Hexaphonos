@@ -171,7 +171,7 @@ public enum PresentacionDeCoral {
         } else if let armonizada = tonalidad.armonizarACuatroVoces(alturas) {
             filas = self.filas(armonizada.armonizacion.analisis, armonizada.coral, notacion)
             ficheros = self.ficheros(armonizada.coral, tonalidad, notacion, nombre: "Armonización")
-            sonido = voz.map { .alturas(armonizada.coral.acordes, conElRitmoDe: $0) } ?? .alturas(armonizada.coral.acordes)
+            sonido = voz.map { .coral(armonizada.coral.acordes, conElRitmoDe: $0) } ?? .coral(armonizada.coral.acordes)
         } else {
             avisos.append(.sinCoralParaLaMelodia)
         }
@@ -191,7 +191,7 @@ public enum PresentacionDeCoral {
         }
         return CoralPresentado(titulo: titulo, propuestas: [], filas: filas(analisis, voces, notacion), avisos: [],
                                ficheros: ficheros(voces, analisis.tonalidad, notacion, nombre: "Coral"),
-                               sonido: .alturas(voces.acordes))
+                               sonido: .coral(voces.acordes))
     }
 
     /// Las faltas de conducción (quintas y octavas paralelas, cruzamientos…) de unas voces escritas a mano.
@@ -204,7 +204,7 @@ public enum PresentacionDeCoral {
         let problemas = coral.problemas.map(CoralPresentado.Aviso.falta)
         return CoralPresentado(titulo: "", propuestas: [], filas: filas,
                                avisos: problemas.isEmpty ? [.sinFaltasDeConduccion] : problemas,
-                               ficheros: ficheros(coral, nil, notacion, nombre: "Coral"), sonido: .alturas(coral.acordes))
+                               ficheros: ficheros(coral, nil, notacion, nombre: "Coral"), sonido: .coral(coral.acordes))
     }
 
     static func filas(_ analisis: AnalisisArmonico, _ coral: Coral,

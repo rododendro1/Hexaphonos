@@ -83,7 +83,7 @@ if [ "$MOTOR_COMPILA" = 1 ]; then
     paso "Línea de comandos: compilar" Apps/ArmoniaCLI swift build &&
         paso "Línea de comandos: pruebas" Apps/ArmoniaCLI swift test --parallel
     paso "Ejemplo: ejecutar" Ejemplos/EjemploArmonia swift run EjemploArmonia
-    paso "Rendimiento: compilar" Herramientas/ArmoniaRendimiento swift build
+    paso "Rendimiento: compilar" Herramientas/RendimientoArmonia swift build
     paso "HexaphonosUI: compilar" Packages/HexaphonosUI swift build &&
         paso "HexaphonosUI: pruebas" Packages/HexaphonosUI swift test --parallel
 else

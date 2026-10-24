@@ -3,11 +3,11 @@ import Armonia
 import HexaphonosUI
 
 /// Escribe un cifrado (Sol7/Si, Dom, Fa#m7b5…) y muestra el acorde con sus digitaciones.
-struct VistaAcordes: View {
+struct VistaDeAcordes: View {
     @Environment(\.notacion) private var notacion
     @State private var texto = "Sol7/Si"
     /// El acorde leído de `texto`. Se lee una vez por cambio del texto, no en cada redibujado.
-    @State private var lectura = VistaAcordes.leer("Sol7/Si")
+    @State private var lectura = VistaDeAcordes.leer("Sol7/Si")
     @State private var encordado = Encordado.guitarra
     /// Las digitaciones y para qué texto e instrumento se calcularon. Mientras no coincidan con lo que hay
     /// escrito, se muestra «Calculando…» y no las de otro acorde.

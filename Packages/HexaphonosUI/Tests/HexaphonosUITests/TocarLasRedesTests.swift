@@ -31,7 +31,7 @@ final class TocarLasRedesTests: XCTestCase {
         let trazado = Tonnetz.trazado(paso: PresentacionDeRedes.paso(doMayor, en: .tonnetz))
         func midi(_ quintas: Int, _ terceras: Int) -> Int? {
             PresentacionDeRedes.midi(en: trazado.centro(de: CoordenadaAxial(q: quintas, r: terceras)), de: doMayor,
-                                     en: .tonnetz)
+                                     enLaRed: .tonnetz)
         }
         XCTAssertEqual(midi(0, 0), 60)    // Do
         XCTAssertEqual(midi(1, 0), 67)    // Sol
@@ -39,24 +39,24 @@ final class TocarLasRedesTests: XCTestCase {
         XCTAssertEqual(midi(-1, 0), 65)   // Fa
         // Entre Do y Sol no hay nota.
         let entre = trazado.centro(de: CoordenadaAxial(q: 0, r: 0)).x / 2 + trazado.centro(de: CoordenadaAxial(q: 1, r: 0)).x / 2
-        XCTAssertNil(PresentacionDeRedes.midi(en: Punto(x: entre, y: 0), de: doMayor, en: .tonnetz))
+        XCTAssertNil(PresentacionDeRedes.midi(en: Punto(x: entre, y: 0), de: doMayor, enLaRed: .tonnetz))
     }
 
     func testEnLaTablaYEnLosTecladosTambien() throws {
         let doMayor = ContenidoDeRed.acorde(try Acorde(leyendo: "Do"))
         let tabla = TablaArmonica.trazado(paso: PresentacionDeRedes.paso(doMayor, en: .tablaArmonica))
         let sol = tabla.centro(de: TablaArmonica.coordenada(de: PuntoDelTonnetz(quintas: 1, terceras: 0)))
-        XCTAssertEqual(PresentacionDeRedes.midi(en: sol, de: doMayor, en: .tablaArmonica), 67)
+        XCTAssertEqual(PresentacionDeRedes.midi(en: sol, de: doMayor, enLaRed: .tablaArmonica), 67)
 
         for red in [RedDeNotas.wickiHayden, .janko] {
             let teclado = try XCTUnwrap(red.teclado)
             let trazado = Trazado(orientacion: teclado.orientacion, tamano: PresentacionDeRedes.tamanoDelTeclado)
             for casilla in PresentacionDeRedes.casillasDelTeclado.prefix(20) {
-                XCTAssertEqual(PresentacionDeRedes.midi(en: trazado.centro(de: casilla), de: doMayor, en: red),
+                XCTAssertEqual(PresentacionDeRedes.midi(en: trazado.centro(de: casilla), de: doMayor, enLaRed: red),
                                teclado.midi(en: casilla), "\(red) \(casilla)")
             }
             // Fuera del teclado, nada.
-            XCTAssertNil(PresentacionDeRedes.midi(en: Punto(x: 10_000, y: 0), de: doMayor, en: red))
+            XCTAssertNil(PresentacionDeRedes.midi(en: Punto(x: 10_000, y: 0), de: doMayor, enLaRed: red))
         }
     }
 

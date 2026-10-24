@@ -15,7 +15,7 @@ Ejemplos/
 ├── EjemploArmonia/     Un recorrido por la API del motor, ejecutable (SwiftPM)
 └── EjemploHexagonos/   Un recorrido por las rejillas hexagonales, con mapas dibujados en el terminal (SwiftPM)
 Herramientas/
-└── ArmoniaRendimiento/  Cuánto tarda el motor en lo que hacen las apps (SwiftPM; el CI lo mide en cada cambio)
+└── RendimientoArmonia/  Cuánto tarda el motor en lo que hacen las apps (SwiftPM; el CI lo mide en cada cambio)
 Packages/
 ├── Armonia/        El motor de armonía, en cinco módulos (Nucleo, Teoria, Representaciones, Partitura, Trastes)
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
@@ -39,13 +39,13 @@ Package.swift       Los tres paquetes juntos, para usarlos desde otro proyecto p
 ```
 ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia ──► Hexagonos
 TonnetzApp ──┘                  └──► Hexagonos
-ArmoniaApp, TonnetzApp, ArmoniaCLI, EjemploArmonia, ArmoniaRendimiento ──► Armonia
+ArmoniaApp, TonnetzApp, ArmoniaCLI, EjemploArmonia, RendimientoArmonia ──► Armonia
 ArmoniaCLI ──► HexaphonosPresentacion (en el paquete HexaphonosUI, sin SwiftUI) ──► Armonia
 EjemploHexagonos ──► Hexagonos
 ```
 
 Un paquete solo depende de los que tiene debajo, y nunca de una app. La línea de comandos (`ArmoniaCLI`),
-los ejemplos (`EjemploArmonia` y `EjemploHexagonos`) y la medida del rendimiento (`ArmoniaRendimiento`) se construyen con SwiftPM; las apps de SwiftUI, con Xcode (`project.yml`).
+los ejemplos (`EjemploArmonia` y `EjemploHexagonos`) y la medida del rendimiento (`RendimientoArmonia`) se construyen con SwiftPM; las apps de SwiftUI, con Xcode (`project.yml`).
 `Scripts/comprobar_dependencias.py` lo comprueba (también en el CI).
 
 El paquete, su producto principal y su módulo paraguas se llaman `Armonia`: en el código es
@@ -79,7 +79,7 @@ swift run --package-path Apps/ArmoniaCLI armonia acorde Sol7/Si  # la herramient
 swift run --package-path Apps/ArmoniaCLI armonia digitaciones Sol7/Si --instrumento ukelele --diagrama
 swift run --package-path Ejemplos/EjemploArmonia EjemploArmonia       # el ejemplo del motor
 swift run --package-path Ejemplos/EjemploHexagonos EjemploHexagonos   # el de las rejillas hexagonales
-swift run -c release --package-path Herramientas/ArmoniaRendimiento ArmoniaRendimiento   # los tiempos del motor
+swift run -c release --package-path Herramientas/RendimientoArmonia RendimientoArmonia   # los tiempos del motor
 
 # Las apps (macOS, con XcodeGen)
 brew install xcodegen
@@ -95,17 +95,17 @@ construyen en macOS.
 
 ## Rendimiento
 
-`Herramientas/ArmoniaRendimiento` mide, compilado con optimización, lo que hacen las apps y la línea de comandos:
+`Herramientas/RendimientoArmonia` mide, compilado con optimización, lo que hacen las apps y la línea de comandos:
 leer y escribir cifrados, identificar acordes y escalas, analizar, armonizar y realizar a cuatro voces (con
 sucesiones de varias longitudes, para ver cómo crece el tiempo), digitaciones, dibujos y partituras. Escribe una
 tabla en Markdown con la primera vez (que paga lo que el motor prepara una sola vez), la mediana y el mínimo.
 
 ```sh
-cd Herramientas/ArmoniaRendimiento
-swift run -c release ArmoniaRendimiento --json antes.json        # guarda los tiempos
+cd Herramientas/RendimientoArmonia
+swift run -c release RendimientoArmonia --json antes.json        # guarda los tiempos
 # … un cambio en el motor …
-swift run -c release ArmoniaRendimiento --comparar antes.json    # y los compara
-swift run -c release ArmoniaRendimiento --filtro armonizar       # solo unos casos
+swift run -c release RendimientoArmonia --comparar antes.json    # y los compara
+swift run -c release RendimientoArmonia --filtro armonizar       # solo unos casos
 ```
 
 El CI la ejecuta en cada cambio y deja la tabla en el resumen de la ejecución y los tiempos en el artefacto

@@ -21,14 +21,14 @@ final class SonidoTests: XCTestCase {
     }
 
     func testLosCambiosVanEnOrdenYTerminanAntesDeEmpezar() {
-        let sonido = Sonido(eventos: [Sonido.Evento(midi: 60, inicio: 0, duracion: 1),
-                                      Sonido.Evento(midi: 60, inicio: 1, duracion: 1)])
+        let sonido = Sonido(eventos: [Sonido.NotaMIDI(midi: 60, inicio: 0, duracion: 1),
+                                      Sonido.NotaMIDI(midi: 60, inicio: 1, duracion: 1)])
         XCTAssertEqual(sonido.cambios.map(\.tiempo), [0, 1, 1, 2])
         XCTAssertEqual(sonido.cambios.map(\.empieza), [true, false, true, false])
         XCTAssertEqual(sonido.duracion, 2)
         // Fuera del rango MIDI o sin duración, no suena.
-        XCTAssertTrue(Sonido(eventos: [Sonido.Evento(midi: 200, inicio: 0, duracion: 1),
-                                       Sonido.Evento(midi: 60, inicio: 0, duracion: 0)]).eventos.isEmpty)
+        XCTAssertTrue(Sonido(eventos: [Sonido.NotaMIDI(midi: 200, inicio: 0, duracion: 1),
+                                       Sonido.NotaMIDI(midi: 60, inicio: 0, duracion: 0)]).eventos.isEmpty)
     }
 
     func testElAnalisisYElCoralSuenan() throws {

@@ -4,7 +4,7 @@ import HexaphonosUI
 
 /// Armoniza una melodía, escribe unos acordes a cuatro voces o revisa la conducción de unas voces, y
 /// exporta el coral como partitura o MIDI.
-struct VistaCoral: View {
+struct VistaDeCoral: View {
     @Environment(\.notacion) private var notacion
     @State private var tarea = PresentacionDeCoral.Tarea.armonizar
     @State private var textos: [PresentacionDeCoral.Tarea: String] = Dictionary(

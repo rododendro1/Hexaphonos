@@ -19,13 +19,13 @@ struct VistaRaiz: View {
 
     var body: some View {
         TabView {
-            NavigationStack { VistaAcordes() }
+            NavigationStack { VistaDeAcordes() }
                 .tabItem { Label(notacion.texto(.acordes), systemImage: "music.note.list") }
-            NavigationStack { VistaEscalas() }
+            NavigationStack { VistaDeEscalas() }
                 .tabItem { Label(notacion.texto(.escalas), systemImage: "chart.bar.xaxis") }
-            NavigationStack { VistaAnalisis() }
+            NavigationStack { VistaDeAnalisis() }
                 .tabItem { Label(notacion.texto(.analisis), systemImage: "waveform.path.ecg") }
-            NavigationStack { VistaCoral() }
+            NavigationStack { VistaDeCoral() }
                 .tabItem { Label(notacion.texto(.coral), systemImage: "music.quarternote.3") }
         }
     }

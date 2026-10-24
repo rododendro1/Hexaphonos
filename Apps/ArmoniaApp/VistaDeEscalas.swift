@@ -4,7 +4,7 @@ import HexaphonosUI
 
 /// Elige una tónica y una escala del catálogo (occidentales y de otras tradiciones) y muestra sus notas,
 /// sus acordes y dónde caen en el mástil.
-struct VistaEscalas: View {
+struct VistaDeEscalas: View {
     @Environment(\.notacion) private var notacion
     @State private var tonica = 0          // índice en `tonicas`
     @State private var tipo = 0            // índice en `catalogo`
@@ -19,8 +19,8 @@ struct VistaEscalas: View {
     private static let tonicas: [Nota] = [0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5].map { Nota(pasosDeQuinta: $0) }
 
     private var escala: Escala {
-        let nota = VistaEscalas.tonicas[min(tonica, VistaEscalas.tonicas.count - 1)]
-        return Escala(nota, VistaEscalas.catalogo[min(tipo, VistaEscalas.catalogo.count - 1)])
+        let nota = VistaDeEscalas.tonicas[min(tonica, VistaDeEscalas.tonicas.count - 1)]
+        return Escala(nota, VistaDeEscalas.catalogo[min(tipo, VistaDeEscalas.catalogo.count - 1)])
     }
 
     var body: some View {
@@ -28,14 +28,14 @@ struct VistaEscalas: View {
         Form {
             Section(notacion.texto(.escala)) {
                 Picker(notacion.texto(.tonica), selection: $tonica) {
-                    ForEach(VistaEscalas.tonicas.indices, id: \.self) { Text(VistaEscalas.tonicas[$0].nombre(en: notacion)).tag($0) }
+                    ForEach(VistaDeEscalas.tonicas.indices, id: \.self) { Text(VistaDeEscalas.tonicas[$0].nombre(en: notacion)).tag($0) }
                 }
                 Picker(notacion.texto(.tipo), selection: $tipo) {
                     Section(notacion.texto(.habituales)) {
                         ForEach(0..<TipoDeEscala.todos.count, id: \.self) { Text(nombre($0)).tag($0) }
                     }
                     Section(notacion.texto(.otrasTradiciones)) {
-                        ForEach(TipoDeEscala.todos.count..<VistaEscalas.catalogo.count, id: \.self) {
+                        ForEach(TipoDeEscala.todos.count..<VistaDeEscalas.catalogo.count, id: \.self) {
                             Text(nombre($0)).tag($0)
                         }
                     }
@@ -62,6 +62,6 @@ struct VistaEscalas: View {
     }
 
     private func nombre(_ indice: Int) -> String {
-        VistaEscalas.catalogo[indice].nombre(en: notacion)
+        VistaDeEscalas.catalogo[indice].nombre(en: notacion)
     }
 }
