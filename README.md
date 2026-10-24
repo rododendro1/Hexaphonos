@@ -18,7 +18,9 @@ Packages/
 │                   y el paraguas `Armonia`: notas, acordes, escalas, tonalidad, Tonnetz, MusicXML, MIDI,
 │                   y los mástiles, afinaciones y digitaciones de acordes (guitarra, bajo, ukelele…)
 ├── HexaphonosUI/   Componentes SwiftUI (DiagramaDeMastil, DiagramaDeTonnetz, DiagramaHexagonal, VistaSVG, tema) y lo que comparten las apps:
-│                   el selector de notación y su ajuste, lo que enseña cada vista y el menú para exportar
+│                   el selector de notación y su ajuste, lo que enseña cada vista y el menú para exportar.
+│                   El análisis y el coral están en el módulo `HexaphonosPresentacion`, sin SwiftUI, que
+│                   también usa la línea de comandos
 └── Hexagonos/      Rejillas hexagonales: coordenadas axiales, cúbicas, desplazadas y dobladas, vecinos, distancias,
                     líneas, regiones, rotaciones y el paso a píxeles; el motor la usa para el Tonnetz,
                     la tabla armónica y los teclados isomórficos
@@ -34,6 +36,7 @@ Package.swift       Los tres paquetes juntos, para usarlos desde otro proyecto p
 ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia ──► Hexagonos
 TonnetzApp ──┘                  └──► Hexagonos
 ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo ──► Armonia
+ArmoniaCLI ──► HexaphonosPresentacion (en el paquete HexaphonosUI, sin SwiftUI) ──► Armonia
 ```
 
 Un paquete solo depende de los que tiene debajo, y nunca de una app. La línea de comandos (`ArmoniaCLI`) y

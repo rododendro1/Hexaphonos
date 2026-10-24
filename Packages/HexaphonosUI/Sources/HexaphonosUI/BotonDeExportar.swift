@@ -1,5 +1,6 @@
 #if canImport(SwiftUI)
 import SwiftUI
+import HexaphonosPresentacion
 
 /// Un menú «Exportar» con una entrada por fichero, que abre la hoja de compartir del sistema
 /// (guardar en Archivos, AirDrop, Mail…):

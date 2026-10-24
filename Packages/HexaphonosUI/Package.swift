@@ -9,6 +9,8 @@ let package = Package(
     platforms: [.iOS(.v16), .macOS(.v13)],
     products: [
         .library(name: "HexaphonosUI", targets: ["HexaphonosUI"]),
+        // Sin SwiftUI: las presentaciones del análisis y del coral, que comparten las apps y la línea de comandos.
+        .library(name: "HexaphonosPresentacion", targets: ["HexaphonosPresentacion"]),
     ],
     dependencies: [
         .package(path: "../Armonia"),
@@ -16,8 +18,14 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "HexaphonosPresentacion",
+            dependencies: [
+                .product(name: "Armonia", package: "Armonia"),
+            ]),
+        .target(
             name: "HexaphonosUI",
             dependencies: [
+                "HexaphonosPresentacion",
                 .product(name: "Armonia", package: "Armonia"),
                 .product(name: "Hexagonos", package: "Hexagonos"),
             ]),
@@ -25,6 +33,7 @@ let package = Package(
             name: "HexaphonosUITests",
             dependencies: [
                 "HexaphonosUI",
+                "HexaphonosPresentacion",
                 .product(name: "Armonia", package: "Armonia"),
                 .product(name: "Hexagonos", package: "Hexagonos"),
             ]),

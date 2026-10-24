@@ -89,8 +89,7 @@ public enum LineaDeComandos {
             case "realizar", "realize", "realise":
                 return try realizar(resto, notacion)
             case "revisar", "check", "voces", "voices":
-                guard !resto.isEmpty else { return uso(.faltanAcordesDeLasVoces, notacion) }
-                return bien(describir(conduccion: try ConduccionDeVoces(leyendo: resto.joined(separator: " ")), notacion))
+                return try revisar(resto, notacion)
             case "tonnetz":
                 return try tonnetz(resto, notacion)
             case "tabla", "tabla-armonica", "harmonic-table":
