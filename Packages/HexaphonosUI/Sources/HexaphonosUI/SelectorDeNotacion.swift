@@ -1,13 +1,11 @@
 #if canImport(SwiftUI)
 import SwiftUI
 import Armonia
+import HexaphonosPresentacion
 
 /// El menú para elegir la notación de las notas y, aparte, el idioma de los textos. Guarda la `clave`
-/// de la `Nomenclatura` (combinada si los textos van en otro idioma):
-///
-///     @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
-///     …
-///     .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
+/// de la `Nomenclatura` (combinada si los textos van en otro idioma). Lo habitual es ponerlo en la barra
+/// con `selectorDeNotacionEnLaBarra()`, que lo guarda en los ajustes que lee `notacionGuardada()`.
 public struct SelectorDeNotacion: View {
     @Binding var clave: String
 
@@ -17,21 +15,23 @@ public struct SelectorDeNotacion: View {
 
     public var body: some View {
         Menu {
-            Picker("Notas", selection: notas) {
+            Picker(notacion.texto(.notas), selection: notas) {
                 ForEach(Nomenclatura.allCases, id: \.self) { notacion in
                     Text(notacion.titulo).tag(notacion.clave)
                 }
             }
-            Picker("Textos", selection: textos) {
-                Text("Como las notas").tag("")
+            Picker(notacion.texto(.textos), selection: textos) {
+                Text(notacion.texto(.comoLasNotas)).tag("")
                 ForEach(Idioma.traducidos, id: \.self) { idioma in
                     Text(idioma.titulo).tag(idioma.clave)
                 }
             }
         } label: {
-            Text(Nomenclatura.desde(clave: clave).titulo)
+            Text(notacion.titulo)
         }
     }
+
+    private var notacion: Nomenclatura { .desde(clave: clave) }
 
     /// La notación de las notas; al cambiarla se conserva el idioma de los textos.
     private var notas: Binding<String> {
@@ -49,8 +49,27 @@ public struct SelectorDeNotacion: View {
     }
 }
 
+/// El selector, guardando la notación en los ajustes de las apps.
+struct SelectorDeNotacionGuardada: View {
+    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var clave = Nomenclatura.delSistema().clave
+
+    var body: some View {
+        SelectorDeNotacion(clave: $clave)
+    }
+}
+
 extension View {
-    /// Pone el selector de notación en la barra de herramientas.
+    /// Pone en la barra de herramientas el selector de notación, que guarda la elegida en los ajustes
+    /// (`notacionGuardada()` la pone en el entorno).
+    public func selectorDeNotacionEnLaBarra() -> some View {
+        toolbar {
+            ToolbarItem {
+                SelectorDeNotacionGuardada()
+            }
+        }
+    }
+
+    /// Pone el selector de notación en la barra de herramientas, guardando la clave en `clave`.
     public func selectorDeNotacionEnLaBarra(clave: Binding<String>) -> some View {
         toolbar {
             ToolbarItem {

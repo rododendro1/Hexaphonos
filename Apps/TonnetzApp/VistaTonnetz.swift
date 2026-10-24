@@ -5,14 +5,22 @@ import HexaphonosUI
 /// Un acorde, una escala o un recorrido de tríadas con las transformaciones P, L y R, en el Tonnetz, en la
 /// tabla armónica o en un teclado isomorfo (Wicki-Hayden o Jankó), y su dibujo para exportar.
 struct VistaTonnetz: View {
-    enum Contenido: String, CaseIterable, Identifiable {
-        case recorrido = "Recorrido P·L·R"
-        case acorde = "Acorde"
-        case escala = "Escala"
+    enum Contenido: CaseIterable, Identifiable {
+        case recorrido
+        case acorde
+        case escala
         var id: Self { self }
+
+        var texto: TextoDeLasApps {
+            switch self {
+            case .recorrido: return .recorridoPLR
+            case .acorde: return .acorde
+            case .escala: return .escala
+            }
+        }
     }
 
-    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @Environment(\.notacion) private var notacion
     @State private var contenido = Contenido.recorrido
     @State private var red = RedDeNotas.tonnetz
     @State private var textoInicial = "Do"
@@ -21,17 +29,15 @@ struct VistaTonnetz: View {
     @State private var recorrido: [Acorde] = []
     @State private var transformaciones: [TransformacionNeorriemanniana] = []
 
-    private var notacion: Nomenclatura { .desde(clave: claveDeNotacion) }
-
     var body: some View {
         VStack(spacing: 12) {
-            Picker("Modo", selection: $contenido) {
-                ForEach(Contenido.allCases) { Text($0.rawValue).tag($0) }
+            Picker(notacion.texto(.modo), selection: $contenido) {
+                ForEach(Contenido.allCases) { Text(notacion.texto($0.texto)).tag($0) }
             }
             .pickerStyle(.segmented)
 
-            Picker("Red", selection: $red) {
-                ForEach(RedDeNotas.allCases) { Text($0.rawValue).tag($0) }
+            Picker(notacion.texto(.red), selection: $red) {
+                ForEach(RedDeNotas.allCases) { Text($0.nombre(en: notacion)).tag($0) }
             }
 
             controles
@@ -42,13 +48,13 @@ struct VistaTonnetz: View {
                     .accessibilityLabel(Text(PresentacionDeRedes.nombre(dibujado, en: red, notacion: notacion)))
             } else {
                 Spacer()
-                Text("No se puede dibujar: revisa el texto.").foregroundColor(.secondary)
+                Text(notacion.texto(.noSeDibuja)).foregroundColor(.secondary)
                 Spacer()
             }
         }
         .padding(TemaHexaphonos.margen)
-        .navigationTitle(red.rawValue)
-        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
+        .navigationTitle(red.nombre(en: notacion))
+        .selectorDeNotacionEnLaBarra()
         .toolbar {
             ToolbarItem {
                 BotonDeExportar(ficheros)
@@ -64,11 +70,11 @@ struct VistaTonnetz: View {
         switch contenido {
         case .recorrido:
             HStack {
-                TextField("Tríada inicial (Do, Lam…)", text: $textoInicial)
+                TextField(notacion.texto(.campoDeTriadaInicial), text: $textoInicial)
                     .textFieldStyle(.roundedBorder)
                     .comoCampoDeCifrado()
                     .onSubmit(reiniciar)
-                Button("Reiniciar", action: reiniciar)
+                Button(notacion.texto(.reiniciar), action: reiniciar)
             }
             HStack {
                 ForEach(TransformacionNeorriemanniana.allCases, id: \.self) { transformacion in
@@ -76,17 +82,17 @@ struct VistaTonnetz: View {
                         .buttonStyle(.borderedProminent)
                         .help(transformacion.nombre)
                 }
-                Button("Deshacer") { deshacer() }
+                Button(notacion.texto(.deshacer)) { deshacer() }
                     .disabled(recorrido.count < 2)
             }
             Text(recorrido.map { $0.cifrado(en: notacion) }.joined(separator: " → "))
                 .font(.system(.callout, design: .monospaced))
         case .acorde:
-            TextField("Cifrado (Dom7, Fa#m7b5…)", text: $textoAcorde)
+            TextField(notacion.texto(.campoDeAcorde), text: $textoAcorde)
                 .textFieldStyle(.roundedBorder)
                 .comoCampoDeCifrado()
         case .escala:
-            TextField("Escala (Re dórico, La menor armónica…)", text: $textoEscala)
+            TextField(notacion.texto(.campoDeEscala), text: $textoEscala)
                 .textFieldStyle(.roundedBorder)
                 .comoCampoDeCifrado()
         }

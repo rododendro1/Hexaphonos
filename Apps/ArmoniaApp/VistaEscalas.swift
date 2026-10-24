@@ -5,11 +5,9 @@ import HexaphonosUI
 /// Elige una tónica y una escala del catálogo (occidentales y de otras tradiciones) y muestra sus notas,
 /// sus acordes y dónde caen en el mástil.
 struct VistaEscalas: View {
-    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
+    @Environment(\.notacion) private var notacion
     @State private var tonica = 0          // índice en `tonicas`
     @State private var tipo = 0            // índice en `catalogo`
-
-    private var notacion: Nomenclatura { .desde(clave: claveDeNotacion) }
 
     /// Las escalas habituales y, después, las de otras tradiciones. Se elige por índice porque dos
     /// escalas con las mismas notas son iguales (`==`) aunque se llamen distinto.
@@ -28,38 +26,38 @@ struct VistaEscalas: View {
     var body: some View {
         let escala = self.escala
         Form {
-            Section("Escala") {
-                Picker("Tónica", selection: $tonica) {
+            Section(notacion.texto(.escala)) {
+                Picker(notacion.texto(.tonica), selection: $tonica) {
                     ForEach(VistaEscalas.tonicas.indices, id: \.self) { Text(VistaEscalas.tonicas[$0].nombre(en: notacion)).tag($0) }
                 }
-                Picker("Tipo", selection: $tipo) {
-                    Section("Habituales") {
+                Picker(notacion.texto(.tipo), selection: $tipo) {
+                    Section(notacion.texto(.habituales)) {
                         ForEach(0..<TipoDeEscala.todos.count, id: \.self) { Text(nombre($0)).tag($0) }
                     }
-                    Section("Otras tradiciones") {
+                    Section(notacion.texto(.otrasTradiciones)) {
                         ForEach(TipoDeEscala.todos.count..<VistaEscalas.catalogo.count, id: \.self) {
                             Text(nombre($0)).tag($0)
                         }
                     }
                 }
             }
-            Section("Notas") {
+            Section(notacion.texto(.notas)) {
                 Text(escala.nombre(en: notacion)).font(.headline)
                 Text(escala.notas.map { $0.nombre(en: notacion) }.joined(separator: "  "))
                     .font(.system(.body, design: .monospaced))
             }
             let acordes = escala.armonizar().compactMap { $0 }
             if !acordes.isEmpty {
-                Section("Acordes de la escala") {
+                Section(notacion.texto(.acordesDeLaEscala)) {
                     Text(acordes.map { $0.cifrado(en: notacion) }.joined(separator: "   "))
                 }
             }
-            Section("Mástil de guitarra") {
+            Section(notacion.texto(.mastilDeGuitarra)) {
                 DiagramaDeMastil(mastil: Mastil(.guitarra, trastes: 12), escala: escala, notacion: notacion)
             }
         }
-        .navigationTitle("Escalas")
-        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
+        .navigationTitle(notacion.texto(.escalas))
+        .selectorDeNotacionEnLaBarra()
     }
 
     private func nombre(_ indice: Int) -> String {
