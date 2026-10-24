@@ -44,11 +44,6 @@ extension CoordenadaAxial {
         return libre(1) || libre(-1)
     }
 
-    @available(*, deprecated, renamed: "esVisible(_:tapada:)")
-    public func ve(_ destino: CoordenadaAxial, tapada: (CoordenadaAxial) -> Bool) -> Bool {
-        esVisible(destino, tapada: tapada)
-    }
-
     /// Las casillas de `region` que se ven desde esta (las tapadas no se ven, pero tapan).
     public func visibles(en region: some Sequence<CoordenadaAxial>,
                          tapada: (CoordenadaAxial) -> Bool) -> [CoordenadaAxial] {

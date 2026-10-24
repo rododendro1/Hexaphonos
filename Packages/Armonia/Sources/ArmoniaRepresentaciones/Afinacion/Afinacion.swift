@@ -131,9 +131,6 @@ public struct EntonacionJusta: Afinacion, Hashable {
     }
 }
 
-@available(*, deprecated, renamed: "RazonDeFrecuencias")
-public typealias Razon = RazonDeFrecuencias
-
 /// Razón de frecuencias como fracción (5/4, 3/2, 45/32…).
 public struct RazonDeFrecuencias: Hashable, Sendable, CustomStringConvertible {
     public let numerador: Double

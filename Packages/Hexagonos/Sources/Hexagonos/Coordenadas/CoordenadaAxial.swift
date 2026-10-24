@@ -140,9 +140,6 @@ extension CoordenadaAxial {
     public func distancia(hasta otra: CoordenadaAxial) -> Int {
         (self - otra).longitud
     }
-
-    @available(*, deprecated, renamed: "distancia(hasta:)")
-    public func distancia(a otra: CoordenadaAxial) -> Int { distancia(hasta: otra) }
 }
 
 /// Módulo no negativo para divisor positivo: `modulo(-1, 6) == 5`.

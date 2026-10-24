@@ -112,11 +112,6 @@ extension MapaHexagonal {
         recolocado { $0.rotada(sextos: sextos, alrededorDe: centro) }
     }
 
-    @available(*, deprecated, renamed: "rotado(sextos:alrededorDe:)")
-    public func girado(sextos: Int, alrededorDe centro: CoordenadaAxial = .origen) -> MapaHexagonal {
-        rotado(sextos: sextos, alrededorDe: centro)
-    }
-
     /// El mapa reflejado sobre un eje (ver ``CoordenadaAxial/reflejada(sobre:alrededorDe:)``).
     public func reflejado(sobre eje: Eje, alrededorDe centro: CoordenadaAxial = .origen) -> MapaHexagonal {
         recolocado { $0.reflejada(sobre: eje, alrededorDe: centro) }

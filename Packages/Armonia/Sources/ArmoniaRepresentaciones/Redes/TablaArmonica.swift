@@ -306,11 +306,3 @@ extension TablaArmonica: CustomStringConvertible {
         }
     }
 }
-
-// Nombres anteriores, que se siguen aceptando.
-extension TablaArmonica {
-    @available(*, deprecated, renamed: "Colocacion")
-    public typealias Modo = Colocacion
-    @available(*, deprecated, renamed: "colocacion")
-    public var modo: Colocacion { colocacion }
-}

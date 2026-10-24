@@ -26,9 +26,6 @@ extension RepresentableComoTexto {
     /// Texto en la notación española (la que se usa al codificar).
     public var texto: String { texto(en: .espanol) }
 
-    @available(*, deprecated, renamed: "texto(en:)")
-    public func texto(_ notacion: Notacion) -> String { texto(en: notacion) }
-
     /// Como `init(leyendo:)`, devolviendo `nil` en lugar de un error: `Acorde(texto: entrada)`.
     ///
     /// Lleva etiqueta a propósito. Swift convierte `Acorde("Sol7")` en el literal de texto

@@ -74,9 +74,6 @@ public enum DireccionHexagonal: Int, CaseIterable, Hashable, Sendable, Codable {
         DireccionHexagonal(numero: rawValue + sextos)
     }
 
-    @available(*, deprecated, renamed: "rotada(sextos:)")
-    public func girada(sextos: Int) -> DireccionHexagonal { rotada(sextos: sextos) }
-
     /// Hacia dónde apunta en pantalla con esa orientación.
     public func puntoCardinal(_ orientacion: Orientacion) -> PuntoCardinal {
         switch orientacion {

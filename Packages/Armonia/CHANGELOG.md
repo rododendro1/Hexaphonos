@@ -2,10 +2,18 @@
 
 ## Sin publicar
 
+### Sin nombres obsoletos
+
+- Desaparecen los nombres que estaban marcados como obsoletos: `Nomenclatura`, `ConduccionDeVoces`,
+  `ProblemaDeConduccion`, `Instrumento`, `Razon`, `texto(_:)` (en `RepresentableComoTexto`, `Voz`, `Armonizacion`,
+  `MovimientoDeVoz`, `PasoParsimonioso` y `ConduccionMinima`), `Notacion.combinada(notas:textos:)`,
+  `EstiloDeCifrado(nomenclatura:…)` y `nomenclatura`, `Tonnetz.conOrtografia`, `Tonnetz.Arista.Intervalo` e
+  `intervalo`, `TablaArmonica.Modo` y `modo`, `Tonnetz.disposicion(paso:)` y `TablaArmonica.disposicion(paso:)`, y
+  `Digitacion.cifra`. Cada uno tenía ya su nombre nuevo, el que proponía Xcode.
+
 ### Nombres
 
-Los nombres antiguos siguen funcionando, marcados como obsoletos con `renamed:`, así que Xcode propone el
-cambio. Se quitarán antes de la primera versión.
+Los nombres antiguos estuvieron marcados como obsoletos con `renamed:` y ya se han quitado (ver arriba).
 
 - `Nomenclatura` pasa a llamarse `Notacion`, como la llaman ya los parámetros, el entorno de las apps y
   `SelectorDeNotacion`. `EstiloDeCifrado(nomenclatura:…)` y su propiedad `nomenclatura` pasan a ser
