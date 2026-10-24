@@ -4,7 +4,7 @@ import Foundation
 // MARK: - Digitaciones: cómo tocar un acorde en un instrumento de cuerda con trastes
 
 extension LineaDeComandos {
-    /// Quita una opción sin valor (`--tab`) de los argumentos y dice si estaba.
+    /// Quita una opción sin valor (`--diagrama`) de los argumentos y dice si estaba.
     static func quitarMarca(_ nombres: [String], de argumentos: inout [String]) -> Bool {
         guard let i = argumentos.firstIndex(where: { nombres.contains($0) }) else { return false }
         argumentos.remove(at: i)
@@ -34,7 +34,8 @@ extension LineaDeComandos {
     static func digitaciones(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
         var argumentos = argumentos
 
-        let conTab = quitarMarca(["--tab"], de: &argumentos)
+        // `--tab` era el nombre anterior de `--diagrama`.
+        let conDiagrama = quitarMarca(["--diagrama", "--diagram", "--tab"], de: &argumentos)
         // Por defecto la quinta puede faltar en los acordes de cuatro notas o más (el Do7 `x32310`): es lo normal en
         // una guitarra. Con --completo se exigen todas las notas.
         let completo = quitarMarca(["--completo", "--complete"], de: &argumentos)
@@ -108,7 +109,7 @@ extension LineaDeComandos {
                 let notas = forma.notas(para: acorde).map { $0.nombre(en: notacion) }.joined(separator: " ")
                 lineas.append("  " + forma.tablatura.padding(hasta: 17) + notas.padding(hasta: 18)
                               + descripcion(de: forma, notacion))
-                if conTab { lineas += tab(de: forma, notacion) }
+                if conDiagrama { lineas += diagrama(de: forma, notacion) }
             }
             return lineas.joined(separator: "\n")
         }
@@ -124,8 +125,8 @@ extension LineaDeComandos {
         return "(\(texto))"
     }
 
-    /// La digitación como una tablatura: la cuerda más aguda arriba, el traste (o «x») de cada una.
-    static func tab(de forma: Digitacion, _ notacion: Nomenclatura) -> [String] {
+    /// La digitación con una línea por cuerda: la más aguda arriba, con su traste (o «x»).
+    static func diagrama(de forma: Digitacion, _ notacion: Nomenclatura) -> [String] {
         let cuerdas = forma.mastil.encordado.cuerdas
         let nombres = cuerdas.map { $0.nota.nombre(en: notacion) }
         let ancho = nombres.map(\.count).max() ?? 0

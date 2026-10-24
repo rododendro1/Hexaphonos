@@ -6,7 +6,7 @@ import Armonia
 ///
 ///     @AppStorage(AjustesHexaphonos.claveDeNotacion) private var claveDeNotacion = Nomenclatura.espanol.clave
 ///     …
-///     .toolbarNotacion(clave: $claveDeNotacion)
+///     .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
 public struct SelectorDeNotacion: View {
     @Binding var clave: String
 
@@ -26,7 +26,7 @@ public struct SelectorDeNotacion: View {
 
 extension View {
     /// Pone el selector de notación en la barra de herramientas.
-    public func toolbarNotacion(clave: Binding<String>) -> some View {
+    public func selectorDeNotacionEnLaBarra(clave: Binding<String>) -> some View {
         toolbar {
             ToolbarItem {
                 SelectorDeNotacion(clave: clave)
@@ -34,14 +34,20 @@ extension View {
         }
     }
 
+    @available(*, deprecated, renamed: "selectorDeNotacionEnLaBarra(clave:)")
+    public func toolbarNotacion(clave: Binding<String>) -> some View { selectorDeNotacionEnLaBarra(clave: clave) }
+
     /// Un campo de texto para cifrados y escalas: sin autocorrección y, en iOS, sin mayúscula inicial
     /// (los cifrados distinguen `M` de `m`).
-    public func campoDeCifrado() -> some View {
+    public func comoCampoDeCifrado() -> some View {
         #if os(iOS)
         return self.autocorrectionDisabled().textInputAutocapitalization(.never)
         #else
         return self.autocorrectionDisabled()
         #endif
     }
+
+    @available(*, deprecated, renamed: "comoCampoDeCifrado()")
+    public func campoDeCifrado() -> some View { comoCampoDeCifrado() }
 }
 #endif

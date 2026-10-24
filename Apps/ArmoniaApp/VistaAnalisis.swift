@@ -13,7 +13,7 @@ struct VistaAnalisis: View {
         Form {
             Section("Progresión") {
                 TextField("Acordes separados por espacios", text: $texto)
-                    .campoDeCifrado()
+                    .comoCampoDeCifrado()
             }
             switch Result(catching: { try AnalisisArmonico.analizar(leyendo: texto) }) {
             case .success(let analisis):
@@ -40,6 +40,6 @@ struct VistaAnalisis: View {
             }
         }
         .navigationTitle("Análisis")
-        .toolbarNotacion(clave: $claveDeNotacion)
+        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
     }
 }

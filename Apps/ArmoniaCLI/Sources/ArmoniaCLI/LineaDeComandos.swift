@@ -95,7 +95,7 @@ public enum LineaDeComandos {
                                    (también «guitarra de siete cuerdas», «bajo de 5 cuerdas»,
                                    «drop D»), --limite 5, --traste 12 (el más alto que se usa),
                                    --dedos 4 (los que se pueden usar), --completo (con todas las notas:
-                                   por defecto la quinta puede faltar), --tab (con una tablatura)
+                                   por defecto la quinta puede faltar), --diagrama (una línea por cuerda)
                                                                          armonia digitaciones Sol7/Si --instrumento ukelele
       ayuda                        esta ayuda
 
@@ -182,7 +182,7 @@ public enum LineaDeComandos {
                                    (also "seven-string guitar", "five-string bass",
                                    "drop D"), --limit 5, --fret 12 (the highest one used),
                                    --fingers 4 (how many can be used), --complete (with every note:
-                                   by default the fifth may be left out), --tab (with a tablature)
+                                   by default the fifth may be left out), --diagram (one line per string)
                                                                          armonia fingerings G7/B --instrument ukulele
       help                         this help
 

@@ -20,7 +20,7 @@ struct VistaAcordes: View {
         Form {
             Section("Acorde") {
                 TextField("Cifrado, por ejemplo Sol7/Si", text: $texto)
-                    .campoDeCifrado()
+                    .comoCampoDeCifrado()
             }
             switch lectura {
             case .success(let acorde):
@@ -33,7 +33,7 @@ struct VistaAcordes: View {
             }
         }
         .navigationTitle("Acordes")
-        .toolbarNotacion(clave: $claveDeNotacion)
+        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
         .onChange(of: texto) { lectura = Self.leer($0) }
         // La búsqueda de digitaciones puede tardar: se espera a que se deje de escribir y se hace
         // fuera del hilo principal. `.task(id:)` cancela la anterior cuando cambia el texto.
@@ -52,7 +52,7 @@ struct VistaAcordes: View {
     @ViewBuilder
     private func digitaciones(de acorde: Acorde) -> some View {
         Section("Digitaciones") {
-            Picker("Instrumento", selection: $encordado) {
+            Picker("Instrumento y afinación", selection: $encordado) {
                 ForEach(Encordado.todos, id: \.self) { Text($0.nombre.capitalized).tag($0) }
             }
             if let resultado, resultado.clave == claveActual {

@@ -40,7 +40,7 @@ struct VistaTonnetz: View {
         }
         .padding(TemaHexaphonos.margen)
         .navigationTitle("Tonnetz")
-        .toolbarNotacion(clave: $claveDeNotacion)
+        .selectorDeNotacionEnLaBarra(clave: $claveDeNotacion)
         .onAppear { if recorrido.isEmpty { reiniciar() } }
     }
 
@@ -53,7 +53,7 @@ struct VistaTonnetz: View {
             HStack {
                 TextField("Tríada inicial (Do, Lam…)", text: $textoInicial)
                     .textFieldStyle(.roundedBorder)
-                    .campoDeCifrado()
+                    .comoCampoDeCifrado()
                     .onSubmit(reiniciar)
                 Button("Reiniciar", action: reiniciar)
             }
@@ -71,11 +71,11 @@ struct VistaTonnetz: View {
         case .acorde:
             TextField("Cifrado (Dom7, Fa#m7b5…)", text: $textoAcorde)
                 .textFieldStyle(.roundedBorder)
-                .campoDeCifrado()
+                .comoCampoDeCifrado()
         case .escala:
             TextField("Escala (Re dórico, La menor armónica…)", text: $textoEscala)
                 .textFieldStyle(.roundedBorder)
-                .campoDeCifrado()
+                .comoCampoDeCifrado()
         }
     }
 

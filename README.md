@@ -66,7 +66,7 @@ como obsoleto.
 cd Packages/Armonia && swift test
 cd Packages/Hexagonos && swift test      # las rejillas hexagonales
 swift run --package-path Apps/ArmoniaCLI armonia acorde Sol7/Si  # la herramienta de línea de comandos
-swift run --package-path Apps/ArmoniaCLI armonia digitaciones Sol7/Si --instrumento ukelele --tab
+swift run --package-path Apps/ArmoniaCLI armonia digitaciones Sol7/Si --instrumento ukelele --diagrama
 swift run --package-path Ejemplos/ArmoniaEjemplo ArmoniaEjemplo      # el ejemplo
 
 # Las apps (macOS, con XcodeGen)
