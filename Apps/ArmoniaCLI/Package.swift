@@ -16,11 +16,16 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../Packages/Armonia"),
+        // Solo `HexaphonosPresentacion`, sin SwiftUI: el análisis y el coral que también enseñan las apps.
+        .package(path: "../../Packages/HexaphonosUI"),
     ],
     targets: [
         .target(
             name: "ArmoniaCLI",
-            dependencies: [.product(name: "Armonia", package: "Armonia")]),
+            dependencies: [
+                .product(name: "Armonia", package: "Armonia"),
+                .product(name: "HexaphonosPresentacion", package: "HexaphonosUI"),
+            ]),
         // El directorio del ejecutable no se llama `armonia`: en sistemas de ficheros que no
         // distinguen mayúsculas (macOS, Windows) chocaría con otros nombres. El producto
         // sigue llamándose `armonia`.

@@ -1,4 +1,5 @@
 import Armonia
+import HexaphonosPresentacion
 
 // MARK: - Armonización y realización a cuatro voces
 
@@ -27,23 +28,20 @@ extension LineaDeComandos {
         }
         guard let dada = try leerTonalidad(&argumentos) else { return uso(.faltaTonalidadTrasEn, notacion) }
         guard !argumentos.isEmpty else { return uso(.faltanNotasDeLaArmonizacion, notacion) }
-        // Con octava, alturas (y coral); sin ella, notas.
-        let alturas = argumentos.map { Altura(texto: $0) }
-        let notas = try alturas.allSatisfy({ $0 != nil }) ? alturas.map { $0!.nota } : argumentos.map { try Nota(leyendo: $0) }
-        let tonalidad = dada ?? Tonalidad.candidatos(notas: notas).first!.valor
-
-        let candidatos = tonalidad.armonizar(melodia: notas, propuestas: propuestas)
-        guard !candidatos.isEmpty else { return bien(Mensaje.sinArmonizacion.texto(en: notacion)) }
-        var lineas = [tonalidad.nombre(en: notacion)]
-        for (n, candidato) in candidatos.enumerated() {
-            lineas.append("  \(n + 1). " + candidato.valor.texto(notacion))
+        let coral = try PresentacionDeCoral.armonizar(argumentos.joined(separator: " "), en: dada,
+                                                      propuestas: propuestas, notacion: notacion)
+        guard !coral.avisos.contains(.sinArmonizacion) else { return bien(CoralPresentado.Aviso.sinArmonizacion.texto(en: notacion)) }
+        var lineas = [coral.titulo]
+        for (n, propuesta) in coral.propuestas.enumerated() {
+            lineas.append("  \(n + 1). " + propuesta)
         }
-        if alturas.allSatisfy({ $0 != nil }) {
+        // Sin octavas no hay coral, y no se dice nada más.
+        if !coral.avisos.contains(.faltanOctavas) {
             lineas.append(Mensaje.aCuatroVoces.texto(en: notacion))
-            if let coral = tonalidad.armonizarACuatroVoces(alturas.map { $0! }) {
-                lineas += describir(coral.armonizacion.analisis, voces: coral.voces, notacion)
+            if coral.filas.isEmpty {
+                lineas.append("  " + CoralPresentado.Aviso.sinRealizacion.texto(en: notacion))
             } else {
-                lineas.append("  " + Mensaje.sinRealizacion.texto(en: notacion))
+                lineas += describir(coral.filas)
             }
         }
         return bien(lineas.joined(separator: "\n"))
@@ -54,21 +52,23 @@ extension LineaDeComandos {
         var argumentos = argumentos
         guard let tonalidad = try leerTonalidad(&argumentos) else { return uso(.faltaTonalidadTrasEn, notacion) }
         guard !argumentos.isEmpty else { return uso(.faltanAcordesDeLaRealizacion, notacion) }
-        let analisis = try AnalisisArmonico.analizar(leyendo: argumentos.joined(separator: " "), en: tonalidad)
-        guard let voces = ConduccionDeVoces.realizar(analisis.acordes.map(\.acorde), en: analisis.tonalidad) else {
-            return bien(Mensaje.sinRealizacion.texto(en: notacion))
-        }
-        return bien(([analisis.tonalidad.nombre(en: notacion)] + describir(analisis, voces: voces, notacion)).joined(separator: "\n"))
+        let coral = try PresentacionDeCoral.realizar(argumentos.joined(separator: " "), en: tonalidad, notacion: notacion)
+        guard !coral.avisos.contains(.sinRealizacion) else { return bien(CoralPresentado.Aviso.sinRealizacion.texto(en: notacion)) }
+        return bien(([coral.titulo] + describir(coral.filas)).joined(separator: "\n"))
+    }
+
+    /// `revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4`: las faltas de conducción, una por línea.
+    static func revisar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
+        guard !argumentos.isEmpty else { return uso(.faltanAcordesDeLasVoces, notacion) }
+        let coral = try PresentacionDeCoral.revisar(argumentos.joined(separator: " "), notacion: notacion)
+        return bien(coral.avisos.map { $0.texto(en: notacion) }.joined(separator: "\n"))
     }
 
     /// Una línea por acorde: el cifrado, el grado y las alturas de grave a agudo
     /// («Do        I         Do3 Mi4 Sol4 Do5»), que se pueden copiar en `revisar` o `musicxml coral`.
-    static func describir(_ analisis: AnalisisArmonico, voces: ConduccionDeVoces, _ notacion: Nomenclatura) -> [String] {
-        let ancho1 = max(10, (analisis.acordes.map { $0.acorde.cifrado(en: notacion).count }.max() ?? 0) + 2)
-        let ancho2 = max(10, (analisis.cifrados.map(\.count).max() ?? 0) + 2)
-        return zip(analisis.acordes, voces.acordes).map { analizado, alturas in
-            "  " + analizado.acorde.cifrado(en: notacion).padding(hasta: ancho1) + analizado.cifrado.padding(hasta: ancho2)
-                + alturas.map { $0.nombre(en: notacion) }.joined(separator: " ")
-        }
+    static func describir(_ filas: [CoralPresentado.Fila]) -> [String] {
+        let ancho1 = max(10, (filas.map(\.cifrado.count).max() ?? 0) + 2)
+        let ancho2 = max(10, (filas.map(\.grado.count).max() ?? 0) + 2)
+        return filas.map { "  " + $0.cifrado.padding(hasta: ancho1) + $0.grado.padding(hasta: ancho2) + $0.voces }
     }
 }

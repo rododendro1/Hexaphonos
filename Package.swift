@@ -25,6 +25,7 @@ let package = Package(
         .library(name: "ArmoniaTrastes", targets: ["ArmoniaTrastes"]),
         // Packages/HexaphonosUI
         .library(name: "HexaphonosUI", targets: ["HexaphonosUI"]),
+        .library(name: "HexaphonosPresentacion", targets: ["HexaphonosPresentacion"]),
     ],
     targets: [
         .target(name: "Hexagonos", path: "Packages/Hexagonos/Sources/Hexagonos"),
@@ -49,8 +50,12 @@ let package = Package(
             path: "Packages/Armonia/Sources/Armonia"),
 
         .target(
+            name: "HexaphonosPresentacion",
+            dependencies: ["Armonia"],
+            path: "Packages/HexaphonosUI/Sources/HexaphonosPresentacion"),
+        .target(
             name: "HexaphonosUI",
-            dependencies: ["Armonia", "Hexagonos"],
+            dependencies: ["HexaphonosPresentacion", "Armonia", "Hexagonos"],
             path: "Packages/HexaphonosUI/Sources/HexaphonosUI"),
     ]
 )

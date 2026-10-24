@@ -3,6 +3,7 @@ import Foundation
 import Armonia
 import Hexagonos
 @testable import HexaphonosUI
+@testable import HexaphonosPresentacion
 
 // Las presentaciones de las vistas de análisis, coral y redes, y los ficheros que exportan. No usan
 // SwiftUI: se ejecutan también en Linux.
@@ -69,6 +70,15 @@ final class PresentacionDeAnalisisTests: XCTestCase {
     func testUnTextoQueNoSeLeeEsUnError() {
         XCTAssertThrowsError(try PresentacionDeAnalisis.analizar("Do Xyz", notacion: .espanol))
     }
+
+    func testConUnaTonalidadDadaNoModula() throws {
+        let analisis = try PresentacionDeAnalisis.analizar("Do Fa Sol7 Do Lam Re7 Sol", en: Tonalidad(leyendo: "Do mayor"),
+                                                          notacion: .espanol)
+        XCTAssertEqual(analisis.tramos.count, 1)
+        XCTAssertTrue(analisis.titulo.hasSuffix("Do mayor"), analisis.titulo)
+        XCTAssertEqual(analisis.tramos[0].filas.count, 7)
+        XCTAssertEqual(analisis.ficheros.count, 2)
+    }
 }
 
 final class PresentacionDeCoralTests: XCTestCase {
@@ -87,7 +97,11 @@ final class PresentacionDeCoralTests: XCTestCase {
         XCTAssertEqual(coral.propuestas, ["Do Sol Do (I–V–I)"])
         XCTAssertTrue(coral.filas.isEmpty)
         XCTAssertTrue(coral.ficheros.isEmpty)
-        XCTAssertTrue(coral.avisos.contains { $0.contains("octava") }, "\(coral.avisos)")
+        XCTAssertEqual(coral.avisos, [.faltanOctavas])
+        XCTAssertEqual(coral.avisos[0].texto(en: .espanol),
+                       "Escribe las notas con su octava (Mi4 Re4 Do4) para verlas a cuatro voces.")
+        XCTAssertEqual(coral.avisos[0].texto(en: .ingles),
+                       "Write the notes with their octave (E4 D4 C4) to see them in four parts.")
     }
 
     func testLaTonalidadDadaManda() throws {
@@ -110,12 +124,15 @@ final class PresentacionDeCoralTests: XCTestCase {
         XCTAssertEqual(coral.filas.map(\.voces), ["Do3 Sol3 Mi4 Do5", "Re3 La3 Fa4 Re5"])
         XCTAssertEqual(coral.filas.map(\.cifrado), ["Do", "Rem"])
         XCTAssertFalse(coral.avisos.isEmpty)
-        XCTAssertFalse(coral.avisos.contains("Sin faltas de conducción."))
+        XCTAssertFalse(coral.avisos.contains(.sinFaltasDeConduccion))
+        XCTAssertTrue(coral.avisos.allSatisfy { !$0.texto(en: .espanol).isEmpty })
     }
 
     func testRevisarUnBuenEnlace() throws {
         let coral = try PresentacionDeCoral.presentar(.revisar, "Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4", notacion: .espanol)
-        XCTAssertEqual(coral.avisos, ["Sin faltas de conducción."])
+        XCTAssertEqual(coral.avisos, [.sinFaltasDeConduccion])
+        XCTAssertEqual(coral.avisos[0].texto(en: .espanol), "Sin faltas de conducción.")
+        XCTAssertEqual(coral.avisos[0].texto(en: .euskera), "Ez dago ahots-eramate akatsik.")
     }
 
     func testUnTextoVacioEsUnError() {

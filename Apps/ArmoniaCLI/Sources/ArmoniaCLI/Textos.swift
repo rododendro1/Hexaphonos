@@ -9,6 +9,8 @@ import Armonia
 // Cada caso da sus textos con una `Traduccion` del motor, que pide los ocho: un caso nuevo no
 // compila hasta que los tiene todos. El idioma es el de la notación (`--ingles`, `--idioma eu`…).
 // La ayuda (`LineaDeComandos.ayuda(en:)`) también está en los ocho idiomas.
+// Los avisos del coral (sin armonización, sin faltas…) los comparte con las apps: son
+// `CoralPresentado.Aviso`, en `HexaphonosPresentacion`.
 
 /// Las piezas de texto de la salida de las órdenes.
 enum Mensaje {
@@ -25,10 +27,7 @@ enum Mensaje {
     case semitonos(Int)
     case sinAlteraciones
     case alteraciones(Int, sostenidos: Bool)
-    case sinFaltasDeConduccion
     case aCuatroVoces
-    case sinArmonizacion
-    case sinRealizacion
     case sinDigitaciones
     case dedos(Int)
     case cejilla(Int)
@@ -109,29 +108,12 @@ enum Mensaje {
                               ca: n == 1 ? "1 bemoll" : "\(n) bemolls", gl: n == 1 ? "1 bemol" : "\(n) bemois",
                               eu: "\(n) bemol",
                               pt: n == 1 ? "1 bemol" : "\(n) bemóis", fr: n == 1 ? "1 bémol" : "\(n) bémols", it: n == 1 ? "1 bemolle" : "\(n) bemolli")
-        case .sinFaltasDeConduccion:
-            return Traduccion("Sin faltas de conducción.", "No voice-leading errors.", ca: "Sense errors de conducció.",
-                              gl: "Sen erros de condución.", eu: "Ez dago ahots-eramate akatsik.",
-                              pt: "Sem erros de condução.", fr: "Aucune faute de conduite des voix.", it: "Nessun errore di condotta delle parti.")
         case .aCuatroVoces:
             return Traduccion("A cuatro voces (bajo, tenor, contralto, soprano):", "In four parts (bass, tenor, alto, soprano):",
                               ca: "A quatre veus (baix, tenor, contralt, soprano):",
                               gl: "A catro voces (baixo, tenor, contralto, soprano):",
                               eu: "Lau ahotsetara (baxua, tenorra, altua, sopranoa):",
                               pt: "A quatro vozes (baixo, tenor, contralto, soprano):", fr: "À quatre voix (basse, ténor, alto, soprano) :", it: "A quattro voci (basso, tenore, contralto, soprano):")
-        case .sinArmonizacion:
-            return Traduccion("Alguna nota no está en ningún acorde de la tonalidad.", "Some note is not in any chord of the key.",
-                              ca: "Alguna nota no és a cap acord de la tonalitat.",
-                              gl: "Algunha nota non está en ningún acorde da tonalidade.",
-                              eu: "Notaren bat ez dago tonalitateko inongo akordetan.",
-                              pt: "Alguma nota não está em nenhum acorde da tonalidade.", fr: "Une note n'appartient à aucun accord de la tonalité.", it: "Qualche nota non è in nessun accordo della tonalità.")
-        case .sinRealizacion:
-            return Traduccion("No hay ninguna realización sin faltas de conducción.",
-                              "There is no realization without voice-leading errors.",
-                              ca: "No hi ha cap realització sense errors de conducció.",
-                              gl: "Non hai ningunha realización sen erros de condución.",
-                              eu: "Ez dago ahots-eramate akatsik gabeko errealizaziorik.",
-                              pt: "Não há nenhuma realização sem erros de condução.", fr: "Il n'y a aucune réalisation sans faute de conduite des voix.", it: "Non c'è nessuna realizzazione senza errori di condotta delle parti.")
         case .sinDigitaciones:
             return Traduccion("no hay digitaciones cómodas", "no comfortable fingerings found",
                               ca: "no hi ha digitacions còmodes", gl: "non hai dixitacións cómodas",

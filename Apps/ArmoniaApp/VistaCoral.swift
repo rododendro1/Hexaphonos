@@ -97,7 +97,7 @@ struct VistaCoral: View {
         if !coral.avisos.isEmpty {
             let titulo: String = tarea == .revisar ? "Conducción de las voces" : "Avisos"
             Section(titulo) {
-                ForEach(coral.avisos, id: \.self) { Text($0) }
+                ForEach(coral.avisos, id: \.self) { Text($0.texto(en: notacion)) }
             }
         }
     }
