@@ -109,7 +109,8 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
                                  eu: " (\(p + 1). karakterea)",
                                  pt: " (caractere \(p + 1))", fr: " (caractère \(p + 1))", it: " (carattere \(p + 1))").en(notacion)
         }
-        return inicio + ": " + explicacion(en: notacion)
+        // En francés, los dos puntos llevan espacio delante.
+        return inicio + (notacion.idiomaDeLosTextos == .frances ? " : " : ": ") + explicacion(en: notacion)
     }
 
     private var explicacionEnEspanol: String {
