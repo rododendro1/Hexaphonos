@@ -79,7 +79,7 @@ public struct TipoDeAcorde: Sendable {
         if let conocido = TipoDeAcorde.nombresConocidos[pasosDeQuinta] { return conocido.en(notacion) }
         switch notacion.idioma {
         case .espanol: return "acorde \(cifrado.isEmpty ? "mayor" : cifrado)"
-        case .ingles, .aleman: return "\(cifrado(en: notacion)) chord"
+        case .ingles, .aleman, .occitano, .ruso, .griego: return "\(cifrado(en: notacion)) chord"
         case .portugues: return "acorde \(cifrado.isEmpty ? "maior" : cifrado)"
         case .frances: return "accord \(cifrado.isEmpty ? "majeur" : cifrado)"
         case .italiano: return "accordo \(cifrado.isEmpty ? "maggiore" : cifrado)"

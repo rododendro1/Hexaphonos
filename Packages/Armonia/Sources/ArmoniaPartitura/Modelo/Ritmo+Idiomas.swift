@@ -55,7 +55,7 @@ extension Duracion {
         case .espanol:
             return figura + ["", " con puntillo", " con doble puntillo", " con triple puntillo",
                              " con cuádruple puntillo"][puntillos]
-        case .ingles, .aleman:
+        case .ingles, .aleman, .occitano, .ruso, .griego:
             return ["", "dotted ", "double-dotted ", "triple-dotted ", "quadruple-dotted "][puntillos] + figura
         case .portugues:
             return figura + ["", " pontuada", " duplamente pontuada", " triplamente pontuada",

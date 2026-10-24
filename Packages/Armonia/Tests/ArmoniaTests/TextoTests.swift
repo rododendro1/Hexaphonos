@@ -427,10 +427,11 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .aleman), "major third")
         // Los catálogos también.
         XCTAssertEqual(Acorde("Sol7").nombre(en: .euskera), "sol dominanteko zazpigarrena, oinarrizko egoera")
-        // Todas las traducciones tienen los ocho textos, y el alemán toma el inglés.
+        // Todas las traducciones tienen los ocho textos; el alemán, el occitano, el ruso y el griego
+        // toman el inglés.
         let t = Traduccion("es", "en", ca: "ca", gl: "gl", eu: "eu", pt: "pt", fr: "fr", it: "it")
         XCTAssertEqual(Nomenclatura.allCases.map(t.en),
-                       ["es", "es", "en", "en", "en", "fr", "it", "ca", "gl", "eu", "pt"])
+                       ["es", "es", "en", "en", "en", "fr", "it", "ca", "gl", "eu", "pt", "en", "en", "en"])
     }
 
     /// Los nombres de los catálogos (tipos de acorde y de escala, instrumentos, ciclos) en catalán,
@@ -570,6 +571,59 @@ final class OtrasNotacionesTests: XCTestCase {
         XCTAssertEqual(Nomenclatura.portugues.vocabulario, .espanol)
         XCTAssertEqual(Nomenclatura(idioma: .portugues, ascii: true), .portugues)
         XCTAssertEqual(EstiloDeCifrado(notacion: .portugues).nomenclatura, .portugues)
+    }
+
+    /// Los nombres de nota en occitano, ruso y griego: se escriben y se leen, también sin indicar
+    /// la notación; los demás textos salen en inglés.
+    func testOccitanoRusoGriego() throws {
+        let casos: [(String, String, String, String)] = [
+            ("Fa#", "fa dièsi", "фа-диез", "φα δίεση"),
+            ("Sib", "si bemòl", "си-бемоль", "σι ύφεση"),
+            ("Sol", "sòl", "соль", "σολ"),
+            ("La", "la", "ля", "λα"),
+            ("Do", "do", "до", "ντο"),
+            ("Dox", "do doble dièsi", "до-дубль-диез", "ντο διπλή δίεση"),
+            ("Mibb", "mi doble bemòl", "ми-дубль-бемоль", "μι διπλή ύφεση"),
+        ]
+        for (espanol, occitano, ruso, griego) in casos {
+            let nota = Nota(texto: espanol)!
+            for (notacion, nombre) in [(Nomenclatura.occitano, occitano), (.ruso, ruso), (.griego, griego)] {
+                XCTAssertEqual(nota.nombre(en: notacion), nombre)
+                XCTAssertEqual(try Nota(leyendo: nombre, en: notacion), nota, nombre)
+                XCTAssertEqual(Nota(texto: nombre), nota, nombre)
+                XCTAssertEqual(Nota(texto: nota.nombreCompacto(en: notacion)), nota, nombre)
+            }
+        }
+        // Sin tildes y con o sin guion.
+        XCTAssertEqual(Nota(texto: "σι υφεση"), Nota("Sib"))
+        XCTAssertEqual(Nota(texto: "фа диез"), Nota("Fa#"))
+        XCTAssertEqual(Nota(texto: "sol diesi"), Nota("Sol#"))
+        XCTAssertEqual(Nota("Reb").nombreCompacto(en: .ruso), "Ре♭")
+        XCTAssertEqual(Nota("Reb").nombreCompacto(en: .griego), "Ρε♭")
+        XCTAssertEqual(Nota("Sol#").nombreCompacto(en: .occitano), "Sòl♯")
+        XCTAssertEqual(Acorde("Fa#m7").cifrado(en: .ruso), "Фа♯m7")
+        XCTAssertEqual(Altura("Fa#3").nombre(en: .griego), "φα δίεση 3")
+        XCTAssertEqual(Altura("Fa#3").nombre(en: .ruso), "фа-диез3")
+        XCTAssertEqual(Altura("фа-диез3"), Altura("Fa#3"))
+        XCTAssertEqual(Altura("σι ύφεση 4"), Altura("Sib4"))
+        XCTAssertEqual(Altura("sòl dièsi 2"), Altura("Sol#2"))
+        XCTAssertEqual(Alteracion(-1).nombre(en: .griego), "ύφεση")
+        XCTAssertEqual(Alteracion(2).nombre(en: .ruso), "дубль-диез")
+        XCTAssertEqual(Alteracion(0).nombre(en: .occitano), "becarre")
+        // Tonalidades.
+        XCTAssertEqual(Tonalidad("Fa# mayor").nombre(en: .ruso), "фа-диез мажор")
+        XCTAssertEqual(Tonalidad("La menor").nombre(en: .ruso), "ля минор")
+        XCTAssertEqual(Tonalidad("Re mayor").nombre(en: .griego), "ρε μείζονα")
+        XCTAssertEqual(Tonalidad("Sib menor").nombre(en: .griego), "σι ύφεση ελάσσονα")
+        XCTAssertEqual(Tonalidad("Sol mayor").nombre(en: .occitano), "sòl major")
+        XCTAssertEqual(Tonalidad("ре мажор"), Tonalidad("Re mayor"))
+        XCTAssertEqual(Tonalidad("σι ύφεση ελάσσονα"), Tonalidad("Sib menor"))
+        XCTAssertEqual(Tonalidad("fa dièsi menor"), Tonalidad("Fa# menor"))
+        // Los demás textos, en inglés.
+        XCTAssertEqual(Nomenclatura.ruso.idiomaDeLosTextos, .ingles)
+        XCTAssertEqual(Intervalo.terceraMayor.nombre(en: .griego), "major third")
+        XCTAssertEqual(Acorde("Sol7/Si").nombre(en: .ruso), "соль dominant seventh, first inversion")
+        XCTAssertEqual(Escala(.re, .dorico).nombre(en: .occitano), "re dorian")
     }
 
     func testVocabularioEIdas() {

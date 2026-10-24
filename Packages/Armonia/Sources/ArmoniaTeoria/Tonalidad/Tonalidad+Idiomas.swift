@@ -17,6 +17,9 @@ extension Tonalidad.Modo {
         case .gallego: return self == .mayor ? "maior" : "menor"
         case .euskera: return self == .mayor ? "maiorra" : "minorra"
         case .portugues: return self == .mayor ? "maior" : "menor"
+        case .occitano: return self == .mayor ? "major" : "menor"
+        case .ruso: return self == .mayor ? "мажор" : "минор"
+        case .griego: return self == .mayor ? "μείζονα" : "ελάσσονα"
         }
     }
 }
@@ -25,7 +28,8 @@ extension Tonalidad.Modo {
 
 extension Tonalidad {
     /// "La menor" en español, "A minor" en inglés, "a-Moll" en alemán (con la tónica en minúscula
-    /// si es menor), "la mineur" en francés, "la minore" en italiano.
+    /// si es menor), "la mineur" en francés, "la minore" en italiano, "ля минор" en ruso, "λα ελάσσονα"
+    /// en griego.
     public func nombre(en notacion: Nomenclatura) -> String {
         guard notacion == .aleman else { return "\(tonica.nombre(en: notacion)) \(modo.nombre(en: notacion))" }
         let nombreTonica = tonica.nombre(en: .aleman)
@@ -42,7 +46,7 @@ extension Tonalidad {
         switch notacion.idioma {
         case .espanol, .catalan, .gallego, .frances: return "en " + completo
         case .portugues: return "em " + completo
-        case .ingles, .aleman, .italiano: return "in " + completo
+        case .ingles, .aleman, .italiano, .occitano, .ruso, .griego: return "in " + completo
         case .euskera: return Tonalidad.declinar(completo, "ean")
         }
     }

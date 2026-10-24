@@ -16,12 +16,16 @@
 /// | `.gallego` | fa sostido | 3ª maior | sétima de dominante | fa sostido dórico |
 /// | `.euskera` | fa diesa | 3. handia | dominanteko zazpigarrena | fa diesa doriarra |
 /// | `.portugues` | fá sustenido | 3ª maior | sétima de dominante | fá sustenido dórico |
+/// | `.occitano` | fa dièsi | major third | dominant seventh | fa dièsi dorian |
+/// | `.ruso` | фа-диез | major third | dominant seventh | фа-диез dorian |
+/// | `.griego` | φα δίεση | major third | dominant seventh | φα δίεση dorian |
 ///
 /// En alemán, francés, italiano, catalán, gallego, euskera y portugués están traducidos los nombres
 /// de nota, de alteración y los modos de las tonalidades (Fis-Dur, fa dièse majeur, re bemoll major,
-/// fá sustenido maior). Los textos del motor (mensajes de error, intervalos, cadencias…) y los
+/// fá sustenido maior), y también en occitano, ruso y griego (fa dièsi major, фа-диез мажор,
+/// φα δίεση μείζονα). Los textos del motor (mensajes de error, intervalos, cadencias…) y los
 /// nombres de los catálogos (acordes, escalas, instrumentos) están además en todos esos idiomas
-/// salvo el alemán, en el que salen en inglés (`idiomaDeLosTextos`).
+/// salvo el alemán, el occitano, el ruso y el griego, en los que salen en inglés (`idiomaDeLosTextos`).
 public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     /// Español con símbolos tipográficos: Do, Fa♯, Si♭.
     case espanol
@@ -45,6 +49,12 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
     case euskera
     /// Portugués: dó, ré, fá sustenido, si bemol; en los cifrados, Fá♯7, Si♭m.
     case portugues
+    /// Occitano: do, re, fa dièsi, si bemòl; en los cifrados, Fa♯7, Si♭m.
+    case occitano
+    /// Ruso: до, ре, фа-диез, си-бемоль; en los cifrados, Фа♯7, Си♭m.
+    case ruso
+    /// Griego: ντο, ρε, φα δίεση, σι ύφεση; en los cifrados, Φα♯7, Σι♭m.
+    case griego
 
     public init(idioma: Idioma, ascii: Bool) {
         switch (idioma, ascii) {
@@ -59,6 +69,9 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
         case (.gallego, _): self = .gallego
         case (.euskera, _): self = .euskera
         case (.portugues, _): self = .portugues
+        case (.occitano, _): self = .occitano
+        case (.ruso, _): self = .ruso
+        case (.griego, _): self = .griego
         }
     }
 
@@ -73,16 +86,19 @@ public enum Nomenclatura: Hashable, Sendable, CaseIterable {
         case .gallego: return .gallego
         case .euskera: return .euskera
         case .portugues: return .portugues
+        case .occitano: return .occitano
+        case .ruso: return .ruso
+        case .griego: return .griego
         }
     }
 
     /// Idioma de las abreviaturas de los intervalos (5J, P5), que solo están en español e inglés:
-    /// español en español, catalán, gallego, euskera y portugués; inglés en las demás. Los demás
+    /// español en español, catalán, gallego, euskera, portugués y occitano; inglés en las demás. Los demás
     /// textos siguen `idiomaDeLosTextos`.
     public var vocabulario: Idioma {
         switch idioma {
-        case .espanol, .catalan, .gallego, .euskera, .portugues: return .espanol
-        case .ingles, .aleman, .frances, .italiano: return .ingles
+        case .espanol, .catalan, .gallego, .euskera, .portugues, .occitano: return .espanol
+        case .ingles, .aleman, .frances, .italiano, .ruso, .griego: return .ingles
         }
     }
 
@@ -104,6 +120,9 @@ public enum Idioma: Hashable, Sendable, CaseIterable {
     case gallego
     case euskera
     case portugues
+    case occitano
+    case ruso
+    case griego
 }
 
 // MARK: - Estilo de cifrado
@@ -167,6 +186,9 @@ public struct EstiloDeCifrado: Hashable, Sendable {
         case .gallego: self.init(nomenclatura: .gallego)
         case .euskera: self.init(nomenclatura: .euskera)
         case .portugues: self.init(nomenclatura: .portugues)
+        case .occitano: self.init(nomenclatura: .occitano)
+        case .ruso: self.init(nomenclatura: .ruso)
+        case .griego: self.init(nomenclatura: .griego)
         }
     }
 

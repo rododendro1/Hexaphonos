@@ -116,7 +116,7 @@ extension TipoDeEscala {
         guard !TipoDeEscala.nombresTradicionales.contains(nombre) else { return nombre }
         switch notacion.idioma {
         case .espanol: return nombre
-        case .ingles, .aleman: return TipoDeEscala.nombreInglesPorTipo[self] ?? nombre
+        case .ingles, .aleman, .occitano, .ruso, .griego: return TipoDeEscala.nombreInglesPorTipo[self] ?? nombre
         case .catalan: return TipoDeEscala.nombrePeninsularPorTipo[self]?.catalan ?? nombre
         case .gallego: return TipoDeEscala.nombrePeninsularPorTipo[self]?.gallego ?? nombre
         case .euskera: return TipoDeEscala.nombrePeninsularPorTipo[self]?.euskera ?? nombre

@@ -23,7 +23,7 @@ Todo se lee en ambas notaciones (`Intervalo("P5")`, `Escala("Bb harmonic minor")
 ## Otras lenguas
 
 Además del español y el inglés, `Nomenclatura` tiene `.aleman`, `.frances`, `.italiano`, `.catalan`,
-`.gallego`, `.euskera` y `.portugues`:
+`.gallego`, `.euskera`, `.portugues`, `.occitano`, `.ruso` y `.griego`:
 
 | | Do♯ | Mi♭ | Si♭ | Si | Fa♯ mayor | La menor |
 |---|---|---|---|---|---|---|
@@ -34,6 +34,9 @@ Además del español y el inglés, `Nomenclatura` tiene `.aleman`, `.frances`, `
 | `.gallego` | do sostido | mi bemol | si bemol | si | fa sostido maior | la menor |
 | `.euskera` | do diesa | mi bemol | si bemol | si | fa diesa maiorra | la minorra |
 | `.portugues` | dó sustenido | mi bemol | si bemol | si | fá sustenido maior | lá menor |
+| `.occitano` | do dièsi | mi bemòl | si bemòl | si | fa dièsi major | la menor |
+| `.ruso` | до-диез | ми-бемоль | си-бемоль | си | фа-диез мажор | ля минор |
+| `.griego` | ντο δίεση | μι ύφεση | σι ύφεση | σι | φα δίεση μείζονα | λα ελάσσονα |
 
 ```swift
 Nota("Sib").nombre(en: .aleman)            // "B"
@@ -51,16 +54,22 @@ Acorde("Rebmaj7").cifrado(en: .portugues)           // "Ré♭maj7"
 Altura("fá sustenido 3")                            // Fa♯3
 Tonalidad("si bemol maior")                         // Si♭ mayor
 Escala("ré dórico")                                 // Re dórico
+Nota("Fa#").nombre(en: .ruso)                       // "фа-диез"
+Tonalidad("Re mayor").nombre(en: .griego)           // "ρε μείζονα"
+Acorde("Sibm7").cifrado(en: .griego)                // "Σι♭m7"
+Altura("sòl dièsi 2")                               // Sol♯2
+Tonalidad("ля минор")                               // La menor
 ```
 
-- En francés, italiano, catalán, gallego, euskera y portugués los nombres van en minúscula y con las
-  alteraciones en palabras (en euskera, con el adjetivo detrás: diesa bikoitza); en los cifrados
-  se usa la forma compacta (`nombreCompacto(en:)`: Fa♯, Ré♭).
+- En francés, italiano, catalán, gallego, euskera, portugués, occitano, ruso y griego los nombres van
+  en minúscula y con las alteraciones en palabras (en euskera, con el adjetivo detrás: diesa
+  bikoitza; en ruso, unidas con guion: фа-диез); en los cifrados se usa la forma compacta
+  (`nombreCompacto(en:)`: Fa♯, Ré♭, Фа♯, Σι♭).
 - Las octavas son siempre las científicas (Do4 = do central), también en francés, donde a menudo
   se numera de otra forma.
-- Las lecturas genéricas (`init(leyendo:)`) aceptan español, inglés, catalán, gallego, euskera y
-  portugués, que no se confunden entre sí: `Altura("fa sostido 3")`, `Escala("re bemoll dòric")`,
-  `Altura("fá sustenido 3")`. El
+- Las lecturas genéricas (`init(leyendo:)`) aceptan español, inglés, catalán, gallego, euskera,
+  portugués, occitano, ruso y griego, que no se confunden entre sí: `Altura("fa sostido 3")`,
+  `Escala("re bemoll dòric")`, `Altura("fá sustenido 3")`, `Nota("си-бемоль")`, `Nota("σι ύφεση")`. El
   alemán, el francés y el italiano se leen con `Nota(leyendo:en:)` y `Altura(leyendo:en:)`,
   porque «B» no significa lo mismo en inglés que en alemán. `Tonalidad` lee todas.
 - Un mismo texto no mezcla idiomas: con la tónica en español, el tipo de escala o de tonalidad
@@ -69,7 +78,7 @@ Escala("ré dórico")                                 // Re dórico
   «Sol7/B», que da el error `.idiomasMezclados`).
 - Los textos del motor (mensajes de error, intervalos, calidades, papeles en el acorde, grados,
   claves, figuras, cadencias y faltas de conducción) están en español, inglés, catalán, gallego,
-  euskera, portugués, francés e italiano; en alemán salen en inglés. Es lo que indica
+  euskera, portugués, francés e italiano; en alemán, occitano, ruso y griego salen en inglés. Es lo que indica
   `notacion.idiomaDeLosTextos`, y cada texto es una `Traduccion` con los ocho idiomas.
 - Los nombres de los catálogos (tipos de acorde y de escala, instrumentos) siguen el mismo
   `idiomaDeLosTextos`. Los nombres tradicionales de escala (raga, maqam, pentatónicas japonesas…)
@@ -137,7 +146,7 @@ texto, el carácter donde se detuvo y el motivo. Los inicializadores opcionales
 El mensaje está en español (`description`, `explicacion`) y también en inglés, catalán, gallego,
 euskera, portugués, francés e italiano: `descripcion(en:)` y `explicacion(en:)` usan el idioma de
 los textos de la notación (`notacion.idiomaDeLosTextos`), como los nombres de intervalos; con
-`.aleman` sale en inglés.
+`.aleman`, `.occitano`, `.ruso` y `.griego` sale en inglés.
 
 ```swift
 do {

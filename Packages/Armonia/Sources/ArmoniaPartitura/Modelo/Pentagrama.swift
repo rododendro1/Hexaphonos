@@ -161,7 +161,7 @@ public struct Instrumento: Hashable, Sendable, CustomStringConvertible {
     public func nombre(en notacion: Nomenclatura) -> String {
         switch notacion.idioma {
         case .espanol: return nombre
-        case .ingles, .aleman: return nombreEnIngles
+        case .ingles, .aleman, .occitano, .ruso, .griego: return nombreEnIngles
         case .catalan: return Instrumento.nombresPeninsulares[nombre]?.catalan ?? nombre
         case .gallego: return Instrumento.nombresPeninsulares[nombre]?.gallego ?? nombre
         case .euskera: return Instrumento.nombresPeninsulares[nombre]?.euskera ?? nombre

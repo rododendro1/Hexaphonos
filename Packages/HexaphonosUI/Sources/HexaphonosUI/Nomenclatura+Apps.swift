@@ -16,6 +16,9 @@ extension Nomenclatura {
         case .gallego: return "Galego (fa sostido)"
         case .euskera: return "Euskara (fa diesa)"
         case .portugues: return "Português (fá sustenido)"
+        case .occitano: return "Occitan (fa dièsi)"
+        case .ruso: return "Русский (фа-диез)"
+        case .griego: return "Ελληνικά (φα δίεση)"
         }
     }
 
@@ -33,6 +36,9 @@ extension Nomenclatura {
         case .gallego: return "gallego"
         case .euskera: return "euskera"
         case .portugues: return "portugues"
+        case .occitano: return "occitano"
+        case .ruso: return "ruso"
+        case .griego: return "griego"
         }
     }
 

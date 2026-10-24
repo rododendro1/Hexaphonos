@@ -2,6 +2,14 @@
 
 ## Sin publicar
 
+### Nombres de nota en occitano, ruso y griego
+
+- `Nomenclatura` e `Idioma` tienen `.occitano`, `.ruso` y `.griego`: notas, alteraciones y tonalidades
+  se escriben y se leen en esas lenguas (`Nota("Fa#").nombre(en: .ruso)` es «фа-диез»;
+  `Tonalidad("Re mayor").nombre(en: .griego)`, «ρε μείζονα»; `Altura("sòl dièsi 2")`, Sol♯2). Las lecturas
+  genéricas también las aceptan, sin distinguir tildes griegas ni la ё rusa. Los demás textos salen en
+  inglés, como en alemán.
+
 ### Textos en portugués, francés e italiano
 
 - Los textos del motor y los nombres de los catálogos salen también en portugués, francés e italiano con esas

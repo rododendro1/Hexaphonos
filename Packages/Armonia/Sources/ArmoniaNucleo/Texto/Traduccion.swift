@@ -2,8 +2,8 @@
 //
 // Los textos del motor que no son nombres de nota (mensajes de error, nombres de intervalos, de
 // papeles en el acorde, de grados, de claves, de figuras, de cadencias…) se escriben en ocho
-// idiomas: español, inglés, catalán, gallego, euskera, portugués, francés e italiano. El alemán
-// toma los ingleses.
+// idiomas: español, inglés, catalán, gallego, euskera, portugués, francés e italiano. El alemán,
+// el occitano, el ruso y el griego toman los ingleses.
 //
 // `Traduccion` pide los ocho textos sin valores por omisión, así que un texto nuevo no compila
 // hasta que los tiene todos. Los nombres de los catálogos (tipos de acorde y de escala,
@@ -43,11 +43,12 @@ public struct Traduccion: Hashable, Sendable {
     /// El texto en el idioma de los textos de la notación (`Nomenclatura.idiomaDeLosTextos`).
     public func en(_ notacion: Nomenclatura) -> String { texto(en: notacion.idioma) }
 
-    /// El texto en un idioma, o en inglés si es el alemán (`Idioma.deLosTextos`).
+    /// El texto en un idioma, o en inglés si es el alemán, el occitano, el ruso o el griego
+    /// (`Idioma.deLosTextos`).
     public func texto(en idioma: Idioma) -> String {
         switch idioma {
         case .espanol: return espanol
-        case .ingles, .aleman: return ingles
+        case .ingles, .aleman, .occitano, .ruso, .griego: return ingles
         case .catalan: return catalan
         case .gallego: return gallego
         case .euskera: return euskera
@@ -63,18 +64,18 @@ extension Idioma {
     public static let traducidos: [Idioma] = [.espanol, .ingles, .catalan, .gallego, .euskera,
                                               .portugues, .frances, .italiano]
 
-    /// El idioma en que salen los textos: el propio si está entre `traducidos`; si no (el alemán),
-    /// el inglés.
+    /// El idioma en que salen los textos: el propio si está entre `traducidos`; si no (el alemán,
+    /// el occitano, el ruso y el griego), el inglés.
     public var deLosTextos: Idioma {
         switch self {
         case .espanol, .ingles, .catalan, .gallego, .euskera, .portugues, .frances, .italiano: return self
-        case .aleman: return .ingles
+        case .aleman, .occitano, .ruso, .griego: return .ingles
         }
     }
 }
 
 extension Nomenclatura {
     /// Idioma de los textos que no son nombres de nota (mensajes, intervalos, cadencias…):
-    /// el de la notación, salvo en alemán, que es el inglés.
+    /// el de la notación, salvo en alemán, occitano, ruso y griego, que es el inglés.
     public var idiomaDeLosTextos: Idioma { idioma.deLosTextos }
 }

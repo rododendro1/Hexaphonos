@@ -1,8 +1,8 @@
 // MARK: - Idiomas
 //
 // Los nombres que dependen del idioma de los tipos del núcleo: las letras y las alteraciones en
-// las nueve lenguas de `Nomenclatura` (español, inglés, alemán, francés, italiano, catalán,
-// gallego, euskera y portugués), y los nombres de las calidades de intervalo, los intervalos y
+// las doce lenguas de `Nomenclatura` (español, inglés, alemán, francés, italiano, catalán,
+// gallego, euskera, portugués, occitano, ruso y griego), y los nombres de las calidades de intervalo, los intervalos y
 // las consonancias en los ocho idiomas de los textos (`Traduccion`).
 //
 // El de los tipos de las demás capas está junto a cada tipo, en un fichero `X+Idiomas.swift`
@@ -22,7 +22,8 @@ extension NotaNatural {
     public var nombre: String { ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"][rawValue] }
 
     /// Nombre en cada idioma: Do (español), C (inglés), H para el Si en alemán, ré (francés),
-    /// re (italiano). En francés e italiano, en minúscula, como se escriben en el texto.
+    /// re (italiano), sòl (occitano), соль (ruso), σολ (griego). En las lenguas que usan sílabas,
+    /// salvo el español, en minúscula, como se escriben en el texto.
     public func nombre(en notacion: Nomenclatura) -> String {
         switch notacion.idioma {
         case .espanol: return nombre
@@ -31,6 +32,9 @@ extension NotaNatural {
         case .frances: return ["do", "ré", "mi", "fa", "sol", "la", "si"][rawValue]
         case .italiano, .catalan, .gallego, .euskera: return ["do", "re", "mi", "fa", "sol", "la", "si"][rawValue]
         case .portugues: return ["dó", "ré", "mi", "fá", "sol", "lá", "si"][rawValue]
+        case .occitano: return ["do", "re", "mi", "fa", "sòl", "la", "si"][rawValue]
+        case .ruso: return ["до", "ре", "ми", "фа", "соль", "ля", "си"][rawValue]
+        case .griego: return ["ντο", "ρε", "μι", "φα", "σολ", "λα", "σι"][rawValue]
         }
     }
 }
@@ -73,6 +77,9 @@ extension Alteracion {
         case .catalan: palabras = ("becaire", "sostingut", "bemoll", ["doble ", "triple ", "quàdruple "], "sostinguts", "bemolls")
         case .gallego: palabras = ("becadro", "sostido", "bemol", ["dobre ", "triplo ", "cuádruplo "], "sostidos", "bemois")
         case .portugues: palabras = ("bequadro", "sustenido", "bemol", ["duplo ", "triplo ", "quádruplo "], "sustenidos", "bemóis")
+        case .occitano: palabras = ("becarre", "dièsi", "bemòl", ["doble ", "triple ", "quadruple "], "dièsis", "bemòls")
+        case .ruso: palabras = ("бекар", "диез", "бемоль", ["дубль-", "тройной ", "четверной "], "диезов", "бемолей")
+        case .griego: palabras = ("αναίρεση", "δίεση", "ύφεση", ["διπλή ", "τριπλή ", "τετραπλή "], "διέσεις", "υφέσεις")
         case .euskera:
             // En euskera el adjetivo va detrás: diesa bikoitza, bemol hirukoitza.
             if semitonos == 0 { return "bekadro" }
@@ -104,7 +111,7 @@ extension Nota {
 
     /// Nombre en la notación indicada: `.espanol` → "Fa♯", `.espanolASCII` → "Fa#",
     /// `.ingles` → "F#", `.inglesUnicode` → "F♯", `.aleman` → "Fis", `.frances` → "fa dièse",
-    /// `.italiano` → "fa diesis".
+    /// `.italiano` → "fa diesis", `.ruso` → "фа-диез", `.griego` → "φα δίεση".
     public func nombre(en notacion: Nomenclatura) -> String {
         switch notacion {
         case .espanol: return nombre
@@ -115,9 +122,14 @@ extension Nota {
             return natural.nombre(en: .ingles) + alteracion.simbolo
         case .aleman:
             return nombreAleman
-        case .frances, .italiano, .catalan, .gallego, .euskera, .portugues:
+        case .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .griego:
             let base = natural.nombre(en: notacion)
             return alteracion.esNatural ? base : base + " " + alteracion.nombre(en: notacion)
+        case .ruso:
+            // En ruso la alteración se une con guiones: фа-диез, си-дубль-бемоль.
+            let base = natural.nombre(en: notacion)
+            let alteracion = self.alteracion.nombre(en: notacion).replacingOccurrences(of: " ", with: "-")
+            return self.alteracion.esNatural ? base : base + "-" + alteracion
         }
     }
 
@@ -136,10 +148,10 @@ extension Nota {
     }
 
     /// Nombre compacto para cifrados: igual que `nombre(en:)` salvo en las notaciones que escriben
-    /// las alteraciones con palabras, que usan la sílaba con mayúscula y el símbolo (Fa♯, Ré♭).
+    /// las alteraciones con palabras, que usan la sílaba con mayúscula y el símbolo (Fa♯, Ré♭, Фа♯, Φα♯).
     public func nombreCompacto(en notacion: Nomenclatura) -> String {
         switch notacion {
-        case .frances, .italiano, .catalan, .gallego, .euskera, .portugues:
+        case .frances, .italiano, .catalan, .gallego, .euskera, .portugues, .occitano, .ruso, .griego:
             let silaba = natural.nombre(en: notacion)
             return silaba.prefix(1).uppercased() + String(silaba.dropFirst()) + alteracion.simbolo
         default:
@@ -204,7 +216,7 @@ extension Intervalo {
         switch notacion.idioma {
         case .espanol, .portugues:
             return "\(numero)ª \(calidad)" + (descendente ? " descendente" : "")
-        case .ingles, .aleman:
+        case .ingles, .aleman, .occitano, .ruso, .griego:
             return (descendente ? "descending " : "") + "\(calidad) \(Intervalo.ordinalEnIngles(numero))"
         case .frances:
             // El unísono es masculino: "unisson augmenté".

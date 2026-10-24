@@ -828,7 +828,7 @@ public enum LineaDeComandos {
     /// La ayuda en el idioma de los textos de la notación (`Nomenclatura.idiomaDeLosTextos`).
     public static func ayuda(en notacion: Nomenclatura) -> String {
         switch notacion.idiomaDeLosTextos {
-        case .ingles, .aleman: return help
+        case .ingles, .aleman, .occitano, .ruso, .griego: return help
         case .catalan: return ajuda
         case .gallego: return axuda
         case .euskera: return laguntza

@@ -80,7 +80,7 @@ public struct ErrorDeLectura: Error, Hashable, Sendable, CustomStringConvertible
     public func explicacion(en notacion: Nomenclatura) -> String {
         switch notacion.idioma {
         case .espanol: return explicacionEnEspanol
-        case .ingles, .aleman: return explicacionEnIngles(notacion)
+        case .ingles, .aleman, .occitano, .ruso, .griego: return explicacionEnIngles(notacion)
         case .catalan: return explicacionEnCatalan
         case .gallego: return explicacionEnGallego
         case .euskera: return explicacionEnEuskera

@@ -111,7 +111,7 @@ public struct Acorde: Hashable, Sendable {
         let inversionN: String, conBajo: String
         switch notacion.idioma {
         case .espanol: return nombre
-        case .ingles, .aleman:
+        case .ingles, .aleman, .occitano, .ruso, .griego:
             guard let i = inversion else { return "\(raiz) \(tipo) over \(bajo)" }
             let enIngles = ["root position", "first inversion", "second inversion", "third inversion",
                             "fourth inversion", "fifth inversion"]
