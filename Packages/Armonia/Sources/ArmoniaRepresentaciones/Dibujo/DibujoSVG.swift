@@ -17,28 +17,35 @@ package enum OrigenDelDibujo: Hashable, Sendable {
 
     /// "Domaj7", "Re dórico", "Do · Mi · Sol", "Conjunto [0, 4, 7]", "Do3 · Sol3 · Mi4".
     package func titulo(_ notacion: Nomenclatura) -> String {
-        let ingles = notacion == .ingles
         switch self {
         case .notas(let notas): return notas.map { $0.nombreCompacto(en: notacion) }.joined(separator: " · ")
         case .acorde(let acorde): return acorde.cifrado(en: notacion)
         case .escala(let escala): return escala.nombre(en: notacion)
-        case .conjunto(let conjunto): return (ingles ? "Set " : "Conjunto ") + conjunto.description
+        case .conjunto(let conjunto):
+            return Traduccion("Conjunto ", "Set ", ca: "Conjunt ", gl: "Conxunto ", eu: "Multzoa ").en(notacion)
+                + conjunto.description
         case .alturas(let alturas):
             return alturas.map { $0.nota.nombreCompacto(en: notacion) + "\($0.octava)" }.joined(separator: " · ")
         case .ciclo(let ciclo, let acorde):
-            let nombre = ingles ? ciclo.nombreEnIngles : ciclo.nombre
-            return nombre.prefix(1).uppercased() + nombre.dropFirst() + (ingles ? " from " : " desde ") + acorde.cifrado(en: notacion)
+            let nombre = ciclo.nombre(en: notacion), cifrado = acorde.cifrado(en: notacion)
+            let titulo = Traduccion("\(nombre) desde \(cifrado)", "\(nombre) from \(cifrado)",
+                                    ca: "\(nombre) des de \(cifrado)", gl: "\(nombre) desde \(cifrado)",
+                                    eu: "\(nombre) \(cifrado)-tik").en(notacion)
+            return titulo.prefix(1).uppercased() + titulo.dropFirst()
         }
     }
 
     /// "tónica", "fundamental" o "primera nota".
     package func primera(_ notacion: Nomenclatura) -> String {
-        let ingles = notacion == .ingles
         switch self {
-        case .escala: return ingles ? "tonic" : "tónica"
-        case .acorde: return ingles ? "root" : "fundamental"
-        case .conjunto: return ingles ? "first pitch class" : "primera clase"
-        default: return ingles ? "first note" : "primera nota"
+        case .escala: return NombreDeGrado.tonica.nombre(en: notacion)
+        case .acorde: return PapelEnAcorde.fundamental.nombre(en: notacion)
+        case .conjunto:
+            return Traduccion("primera clase", "first pitch class", ca: "primera classe", gl: "primeira clase",
+                              eu: "lehen klasea").en(notacion)
+        default:
+            return Traduccion("primera nota", "first note", ca: "primera nota", gl: "primeira nota",
+                              eu: "lehen nota").en(notacion)
         }
     }
 }
@@ -70,21 +77,42 @@ package enum DibujoSVG {
         package static let primera = "#f39c12"
     }
 
-    /// Los textos de la leyenda, en español o, con la notación inglesa, en inglés.
+    /// Los textos de la leyenda, en los cinco idiomas de los textos (`Traduccion`).
     package enum Texto {
         case nota, claseDeAltura, altura, intervalos, contorno, triadaMayor, triadaMenor, pasoDelRecorrido
+        case fundamentalDelPrimerAcorde
 
-        package func en(_ notacion: Nomenclatura) -> String {
-            let ingles = notacion == .ingles
+        package func en(_ notacion: Nomenclatura) -> String { traduccion.en(notacion) }
+
+        private var traduccion: Traduccion {
             switch self {
-            case .nota: return ingles ? "note" : "nota"
-            case .claseDeAltura: return ingles ? "pitch class (every copy)" : "clase de altura (todas sus copias)"
-            case .altura: return ingles ? "pitch (every key)" : "altura (todas sus teclas)"
-            case .intervalos: return ingles ? "fifth or third between notes" : "quinta o tercera entre notas"
-            case .contorno: return ingles ? "outline of the shape" : "contorno de la forma"
-            case .triadaMayor: return ingles ? "major triad" : "tríada mayor"
-            case .triadaMenor: return ingles ? "minor triad" : "tríada menor"
-            case .pasoDelRecorrido: return ingles ? "step of the progression (P, L, R)" : "paso del recorrido (P, L, R)"
+            case .nota: return Traduccion("nota", "note", ca: "nota", gl: "nota", eu: "nota")
+            case .claseDeAltura:
+                return Traduccion("clase de altura (todas sus copias)", "pitch class (every copy)",
+                                  ca: "classe d'altura (totes les còpies)", gl: "clase de altura (todas as súas copias)",
+                                  eu: "altuera-klasea (kopia guztiak)")
+            case .altura:
+                return Traduccion("altura (todas sus teclas)", "pitch (every key)", ca: "altura (totes les tecles)",
+                                  gl: "altura (todas as súas teclas)", eu: "altuera (tekla guztiak)")
+            case .intervalos:
+                return Traduccion("quinta o tercera entre notas", "fifth or third between notes",
+                                  ca: "quinta o tercera entre notes", gl: "quinta ou terceira entre notas",
+                                  eu: "noten arteko bosgarrena edo hirugarrena")
+            case .contorno:
+                return Traduccion("contorno de la forma", "outline of the shape", ca: "contorn de la forma",
+                                  gl: "contorno da forma", eu: "formaren ingerada")
+            case .triadaMayor:
+                return Traduccion("tríada mayor", "major triad", ca: "tríada major", gl: "tríade maior", eu: "triade maiorra")
+            case .triadaMenor:
+                return Traduccion("tríada menor", "minor triad", ca: "tríada menor", gl: "tríade menor", eu: "triade minorra")
+            case .pasoDelRecorrido:
+                return Traduccion("paso del recorrido (P, L, R)", "step of the progression (P, L, R)",
+                                  ca: "pas del recorregut (P, L, R)", gl: "paso do percorrido (P, L, R)",
+                                  eu: "ibilbidearen urratsa (P, L, R)")
+            case .fundamentalDelPrimerAcorde:
+                return Traduccion("fundamental del primer acorde", "root of the first chord",
+                                  ca: "fonamental del primer acord", gl: "fundamental do primeiro acorde",
+                                  eu: "lehen akordearen oinarria")
             }
         }
     }

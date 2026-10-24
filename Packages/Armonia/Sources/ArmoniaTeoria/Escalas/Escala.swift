@@ -14,8 +14,8 @@ public struct Escala: Hashable, Sendable {
     /// Lee textos como "Re dórico", "Fa# menor armónica", "Sib mayor", "La menor",
     /// o en inglés: "D dorian", "F# harmonic minor", "Bb major".
     /// Si no se puede leer, el error indica dónde y por qué.
-    /// También lee la tónica en catalán, gallego, euskera o portugués: "re bemoll dórico",
-    /// "fa sostido menor", "fá sustenido dórico".
+    /// También lee la tónica en catalán, gallego, euskera o portugués, con el tipo en español o en
+    /// esos idiomas: "re bemoll dòric", "fa sostido menor", "re doriarra", "fá sustenido dórico".
     public init(leyendo texto: String) throws {
         self = try Escala.leer(texto)
     }
@@ -40,7 +40,8 @@ public struct Escala: Hashable, Sendable {
                 let tonica = palabras[..<cuantas].joined(separator: " ")
                 let tipo = palabras[cuantas...].joined(separator: " ")
                 if let nombre = Nota.leerEnLenguasPeninsulares(tonica),
-                   let encontrado = TipoDeEscala.buscar(nombre: tipo, aceptarIngles: false) {
+                   let encontrado = TipoDeEscala.indicePeninsular[TipoDeEscala.normalizar(tipo)]
+                    ?? TipoDeEscala.buscar(nombre: tipo, aceptarIngles: false) {
                     return Escala(nombre, encontrado)
                 }
             }

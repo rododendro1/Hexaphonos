@@ -224,7 +224,7 @@ final class LineaDeComandosTests: XCTestCase {
 
     func testIdiomas() {
         XCTAssertEqual(salida("acorde Sol7/Si --idioma eu"), """
-            Sol7/Si: séptima de dominante
+            Sol7/Si: dominanteko zazpigarrena
               notak: sol si re fa  (baxua si, lehen inbertsioa)
               sol oinarria · si hirugarrena · re bosgarrena · fa zazpigarrena
 
@@ -234,9 +234,14 @@ final class LineaDeComandosTests: XCTestCase {
         XCTAssertTrue(salida("tonalidad Mib mayor --idioma gl").contains("(3 bemois)"))
         XCTAssertEqual(salida("--idioma en acorde C/G"), salida("acorde C/G --ingles"))
         XCTAssertEqual(salida("acorde Do --language es"), salida("acorde Do"))
-        // La ayuda solo está en español y en inglés.
-        XCTAssertTrue(salida("ayuda --idioma ca").hasPrefix("armonia: teoría musical"))
+        // La ayuda, en los cinco idiomas.
+        XCTAssertTrue(salida("ayuda --idioma ca").hasPrefix("armonia: "))
+        XCTAssertEqual(salida("ayuda --idioma ca"), LineaDeComandos.ajuda + "\n")
+        XCTAssertEqual(salida("ayuda --idioma gl"), LineaDeComandos.axuda + "\n")
+        XCTAssertEqual(salida("ayuda --idioma eu"), LineaDeComandos.laguntza + "\n")
         XCTAssertTrue(salida("help --idioma en").hasPrefix("armonia: music theory"))
+        XCTAssertTrue(salida("acorde Sol7/Si --idioma ca").hasPrefix("Sol7/Si: sèptima de dominant\n"))
+        XCTAssertTrue(salida("escala Re dórico --idioma eu").hasPrefix("re doriarra"))
         // Los errores de lectura los traduce el motor.
         XCTAssertTrue(resultado("acorde", "Do7(b3)", "--idioma", "eu").error.hasPrefix("Ezin da «Do7(b3)» irakurri"))
         XCTAssertEqual(resultado("digitaciones", "C", "--limite", "0", "--idioma", "eu").error,

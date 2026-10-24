@@ -39,3 +39,42 @@ extension Clave {
         }
     }
 }
+
+// MARK: - Instrumento
+
+extension Instrumento {
+    /// Catalán, gallego y euskera de los instrumentos predefinidos, por su nombre en español. Un
+    /// instrumento que no está aquí usa su nombre español.
+    package static let nombresPeninsulares: [String: (catalan: String, gallego: String, euskera: String)] = [
+        "piano": ("piano", "piano", "pianoa"),
+        "flauta": ("flauta", "frauta", "flauta"),
+        "flautín": ("flautí", "frautín", "pikoloa"),
+        "flauta en sol": ("flauta en sol", "frauta en sol", "sol flauta"),
+        "oboe": ("oboè", "óboe", "oboea"),
+        "corno inglés": ("corn anglès", "corno inglés", "korno ingelesa"),
+        "clarinete en si♭": ("clarinet en si♭", "clarinete en si♭", "si♭ klarinetea"),
+        "clarinete en la": ("clarinet en la", "clarinete en la", "la klarinetea"),
+        "clarinete en mi♭": ("clarinet en mi♭", "clarinete en mi♭", "mi♭ klarinetea"),
+        "clarinete bajo": ("clarinet baix", "clarinete baixo", "klarinete baxua"),
+        "fagot": ("fagot", "fagot", "fagota"),
+        "saxofón soprano": ("saxòfon soprano", "saxofón soprano", "saxofoi sopranoa"),
+        "saxofón alto": ("saxòfon alt", "saxofón alto", "saxofoi altua"),
+        "saxofón tenor": ("saxòfon tenor", "saxofón tenor", "saxofoi tenorra"),
+        "saxofón barítono": ("saxòfon baríton", "saxofón barítono", "saxofoi baritonoa"),
+        "trompeta en si♭": ("trompeta en si♭", "trompeta en si♭", "si♭ tronpeta"),
+        "trompeta en do": ("trompeta en do", "trompeta en do", "do tronpeta"),
+        "fliscorno": ("fiscorn", "fliscorno", "fliscornoa"),
+        "trompa en fa": ("trompa en fa", "trompa en fa", "fa tronpa"),
+        "trombón": ("trombó", "trombón", "tronboia"),
+        "tuba": ("tuba", "tuba", "tuba"),
+        "violín": ("violí", "violín", "biolina"),
+        "viola": ("viola", "viola", "biola"),
+        "violonchelo": ("violoncel", "violonchelo", "biolontxeloa"),
+        "contrabajo": ("contrabaix", "contrabaixo", "kontrabaxua"),
+        "guitarra": ("guitarra", "guitarra", "gitarra"),
+        "bajo eléctrico": ("baix elèctric", "baixo eléctrico", "baxu elektrikoa"),
+        "xilófono": ("xilòfon", "xilófono", "xilofonoa"),
+        "glockenspiel": ("glockenspiel", "glockenspiel", "glockenspiela"),
+        "celesta": ("celesta", "celesta", "zelesta"),
+    ]
+}

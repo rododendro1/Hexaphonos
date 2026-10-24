@@ -59,7 +59,7 @@ Escala("ré dórico")                                 // Re dórico
 - Las octavas son siempre las científicas (Do4 = do central), también en francés, donde a menudo
   se numera de otra forma.
 - Las lecturas genéricas (`init(leyendo:)`) aceptan español, inglés, catalán, gallego, euskera y
-  portugués, que no se confunden entre sí: `Altura("fa sostido 3")`, `Escala("re bemoll dórico")`,
+  portugués, que no se confunden entre sí: `Altura("fa sostido 3")`, `Escala("re bemoll dòric")`,
   `Altura("fá sustenido 3")`. El
   alemán, el francés y el italiano se leen con `Nota(leyendo:en:)` y `Altura(leyendo:en:)`,
   porque «B» no significa lo mismo en inglés que en alemán. `Tonalidad` lee todas.
@@ -71,16 +71,18 @@ Escala("ré dórico")                                 // Re dórico
   claves, figuras, cadencias y faltas de conducción) están en español, inglés, catalán, gallego y
   euskera; en alemán, francés e italiano salen en inglés, y en portugués, en español. Es lo que
   indica `notacion.idiomaDeLosTextos`, y cada texto es una `Traduccion` con los cinco idiomas.
-- Los nombres de los catálogos (tipos de acorde y de escala, instrumentos) solo están en español e
-  inglés: salen en inglés en alemán, francés e italiano, y en español en las demás (es lo que
-  indica `notacion.vocabulario`).
+- Los nombres de los catálogos (tipos de acorde y de escala, instrumentos) siguen el mismo
+  `idiomaDeLosTextos`. Los nombres tradicionales de escala (raga, maqam, pentatónicas japonesas…)
+  se escriben igual en todos los idiomas, y una escala se lee también con su nombre en catalán,
+  gallego o euskera (`Escala("re doriarra")`).
 
 ```swift
 Intervalo.terceraMayor.nombre(en: .catalan)        // "3a major"
 Intervalo.terceraMayor.nombre(en: .gallego)        // "3ª maior"
 Intervalo.sextaMenor.nombre(en: .euskera)          // "6. txikia"
 Cadencia.Tipo.rota.nombre(en: .catalan)            // "cadència trencada"
-Escala(.re, .dorico).nombre(en: .euskera)          // "re dórico"
+Escala(.re, .dorico).nombre(en: .euskera)          // "re doriarra"
+Acorde("Sol7/Si").nombre(en: .catalan)           // "sol sèptima de dominant, primera inversió"
 ```
 
 ## Alteraciones

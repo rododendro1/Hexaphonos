@@ -279,7 +279,7 @@ public struct TablaArmonica: Hashable, Sendable {
             }
             let nota: DibujoSVG.Texto = colocacion == .notas ? .nota : colocacion == .clasesDeAltura ? .claseDeAltura : .altura
             entrada(.hexagono(relleno: DibujoSVG.Color.nota, borde: DibujoSVG.Color.nota), nota.en(notacion))
-            let primera = !recorrido.isEmpty ? (notacion == .ingles ? "root of the first chord" : "fundamental del primer acorde")
+            let primera = !recorrido.isEmpty ? DibujoSVG.Texto.fundamentalDelPrimerAcorde.en(notacion)
                 : (origen ?? .notas([])).primera(notacion)
             entrada(.hexagono(relleno: DibujoSVG.Color.nota, borde: DibujoSVG.Color.primera), primera)
             entrada(.linea("#111111", grosor: 3), DibujoSVG.Texto.contorno.en(notacion))

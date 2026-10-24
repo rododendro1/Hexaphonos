@@ -12,11 +12,14 @@
 - `Traduccion`: un texto en los cinco idiomas, sin valores por omisión, para que el compilador señale el que falta.
   `Nomenclatura.idiomaDeLosTextos` dice en qué idioma salen: el propio en esos cinco, el inglés en alemán, francés
   e italiano, y el español en portugués.
-- Cambia la salida con `.catalan`, `.gallego` y `.euskera`, que antes era en español. `Nomenclatura.vocabulario`
-  sigue igual y ahora solo decide los nombres de los catálogos (tipos de acorde y de escala, instrumentos), que
-  siguen en español e inglés.
-- En la línea de comandos, `--idioma ca|gl|eu|es|en` (o `--language`) escribe las notas, las etiquetas y los
-  errores en ese idioma; la ayuda sigue en español o en inglés.
+- Cambia la salida con `.catalan`, `.gallego` y `.euskera`, que antes era en español.
+- Los nombres de los catálogos también: tipos de acorde («sèptima de dominant», «dominanteko zazpigarrena»), nombres
+  de acorde con su inversión, tipos de escala («dòric», «doriarra»; los nombres tradicionales, como los ragas, no
+  cambian), instrumentos de la partitura, ciclos neorriemannianos y los títulos y leyendas de los dibujos SVG. Las
+  escalas se leen también en esos idiomas: `Escala("re doriarra")`. `Nomenclatura.vocabulario` queda solo para las
+  abreviaturas de los intervalos.
+- En la línea de comandos, `--idioma ca|gl|eu|es|en` (o `--language`) escribe las notas, los nombres, las
+  etiquetas, los errores y la ayuda en ese idioma. Los nombres de las órdenes y de las opciones siguen en español.
 
 ### Cadencias, modulaciones y armonización
 

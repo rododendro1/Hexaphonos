@@ -7,7 +7,8 @@
 //
 // `Traduccion` pide los cinco textos sin valores por omisión, así que un texto nuevo no compila
 // hasta que los tiene todos. Los nombres de los catálogos (tipos de acorde y de escala,
-// instrumentos) son datos, y siguen en español e inglés (`Nomenclatura.vocabulario`).
+// instrumentos) también están en los cinco idiomas, salvo los nombres tradicionales de escala
+// (raga, maqam, pentatónicas japonesas…), que se escriben igual en todos.
 
 /// Un texto en los cinco idiomas en los que escribe el motor.
 ///

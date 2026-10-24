@@ -203,8 +203,11 @@ public struct ConduccionMinima: Hashable, Sendable, CustomStringConvertible {
         let voces = movimientos.map { m -> String in
             m.semitonos == 0 ? m.texto(notacion) : m.texto(notacion) + " (" + (m.semitonos > 0 ? "+" : "−") + "\(abs(m.semitonos)))"
         }
-        let unidad = notacion == .ingles ? (total == 1 ? "semitone" : "semitones") : (total == 1 ? "semitono" : "semitonos")
-        return voces.joined(separator: ", ") + ": \(total) \(unidad)"
+        let n = total
+        let semitonos = Traduccion(n == 1 ? "1 semitono" : "\(n) semitonos", n == 1 ? "1 semitone" : "\(n) semitones",
+                                   ca: n == 1 ? "1 semitò" : "\(n) semitons", gl: n == 1 ? "1 semiton" : "\(n) semitons",
+                                   eu: "\(n) tonuerdi").en(notacion)
+        return voces.joined(separator: ", ") + ": " + semitonos
     }
 }
 

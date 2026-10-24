@@ -100,8 +100,8 @@ public enum LineaDeComandos {
       ayuda                        esta ayuda
 
     Se aceptan nombres en español o en inglés (Do, C, Sib, Bb). Con --ingles, la respuesta
-    usa la notación inglesa. Con --idioma ca, gl o eu, las notas y los mensajes salen en catalán,
-    gallego o euskera (los nombres de acordes y escalas, en español, y esta ayuda también).
+    usa la notación inglesa. Con --idioma ca, gl o eu, las notas, los nombres, los mensajes y
+    esta ayuda salen en catalán, gallego o euskera.
     """
 
     /// La ayuda en inglés (`armonia help --ingles`).
@@ -188,8 +188,279 @@ public enum LineaDeComandos {
       help                         this help
 
     Note names are accepted in Spanish or English (Do, C, Sib, Bb). With --ingles, the answer
-    uses English notation, and so do messages and this help. With --language ca, gl or eu, notes
-    and messages are in Catalan, Galician or Basque (chord and scale names, and this help, in Spanish).
+    uses English notation, and so do messages and this help. With --language ca, gl or eu, notes,
+    names, messages and this help are in Catalan, Galician or Basque.
+    """
+
+    /// La ayuda en catalán (`armonia ayuda --idioma ca`).
+    public static let ajuda = """
+    armonia: teoria musical des de la línia d'ordres.
+
+    Ús: armonia <ordre> <arguments> [--ingles | --idioma es|en|ca|gl|eu]
+
+    Ordres (les ordres i les opcions s'escriuen en castellà o en anglès):
+      acorde <xifrat>…             notes, tipus i paper de cada nota     armonia acorde Sol7/Si
+      identificar <notes>          acords que formen unes notes          armonia identificar Do Mi Sol Sib
+      intervalo <nota> <nota>      interval entre dues notes o altures   armonia intervalo Do4 Mi5
+      escala <escala>              notes i acords d'una escala           armonia escala Re dórico
+      tonalidad <tonalitat>        armadura, relatives i graus           armonia tonalidad La menor
+      analizar <acords> [--en <tonalitat>]
+                                   xifrat romà, funcions, cadències i
+                                   modulacions (amb l'acord pivot;
+                                   sense --en)                           armonia analizar Do Fa Sol7 Do Lam Re7 Sol
+      armonizar <melodia> [--en <tonalitat>] [--propuestas 3]
+                                   acords per a una melodia, de millor
+                                   a pitjor; amb octaves (Mi4), també
+                                   el coral a quatre veus                armonia armonizar Mi4 Fa4 Re4 Do4
+      realizar <acords> [--en <tonalitat>]
+                                   els acords a quatre veus, sense
+                                   errors de conducció                   armonia realizar Do Fa Sol7 Do
+      revisar <acords>             errors de conducció (quintes
+                                   paral·leles…); acords de greu a
+                                   agut, separats per comes              armonia revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4
+      musicxml melodia <esdeveniments> [opcions]
+                                   partitura MusicXML d'una melodia      armonia musicxml melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4 > melodia.musicxml
+      musicxml coral <acords> [opcions]
+                                   coral a quatre veus en MusicXML       armonia musicxml coral Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4 > coral.musicxml
+      musicxml acordes <xifrats> [opcions]
+                                   progressió amb xifrats i anàlisi      armonia musicxml acordes Do Lam Re7 Sol7 Do > progresion.musicxml
+                                   opcions: --compas 6/8, --anacrusa 8, --tonalidad Sol mayor,
+                                   --clave fa, --tempo 90 (o --tempo 60 4.), --titulo El meu coral,
+                                   --duracion 2 (el que dura cada acord; negra al coral i blanca
+                                   als acords si no), --cifrados i --analisis (al coral: xifrat
+                                   americà a dalt, romà i funció a baix)
+      midi melodia|coral|acordes <…> [opcions]
+                                   el mateix com a fitxer MIDI, per
+                                   escoltar-lo (sense --clave ni
+                                   --cifrados; amb --programa 0…127,
+                                   General MIDI)                         armonia midi acordes Do Lam Re7 Sol7 Do > progresion.mid
+      tonnetz <notes>              Tonnetz en SVG d'unes notes           armonia tonnetz Do Mi Sol Si > tonnetz.svg
+      tonnetz --acorde <xifrat> | --escala <escala> | --clases <nombres>
+                                   d'un acord, una escala o un conjunt
+                                   de classes d'altura                   armonia tonnetz --escala Re dórico > dorico.svg
+      tonnetz --recorrido <tríades> | --camino <tríada> <tríada>
+                                   un recorregut de tríades, amb
+                                   fletxes, o el camí més curt per P, L
+                                   i R                                   armonia tonnetz --recorrido Do Lam Fa Rem > recorrido.svg
+      tonnetz --ciclo <cicle> <tríada>
+                                   un cicle hexatònic, octatònic o LR
+                                   (--margen 2: més xarxa al voltant)    armonia tonnetz --ciclo hexatonico Do > ciclo.svg
+      tabla <notes o altures>      taula harmònica en SVG (hexàgons)     armonia tabla Do3 Sol3 Mi4 > tabla.svg
+      tabla --acorde | --escala | --clases | --recorrido | --camino | --ciclo
+                                   com al Tonnetz (--margen 2: més
+                                   taula al voltant)                     armonia tabla --acorde Domaj7 > domaj7.svg
+      vecinos <acord> [--voces 2]  acords a un semitò (sèptimes:
+                                   dominant, menor, semidisminuïda i
+                                   disminuïda; tríades: major, menor i
+                                   augmentada; --ampliada: amb els maj7
+                                   també)                                armonia vecinos Sol7
+      conduccion-parsimoniosa <acord> <acord> [--voces 2] [--ampliada]
+                                   d'un acord a un altre movent una veu
+                                   (o dues) un semitò a cada pas         armonia conduccion-parsimoniosa Sol7 Rem7
+      conduccion <acord> <acord>   la conducció amb menys semitons       armonia conduccion Sol7 Do
+      plr <tríada> <P, L, R…>      transformacions neoriemannianes       armonia plr Do PLR
+      plr <tríada> <tríada>        el camí més curt per P, L i R         armonia plr Do Mibm
+      plr <tríada> <cicle>         un cicle: hexatonico (P, L),
+                                   octatonico (P, R) o "ciclo LR"        armonia plr Do hexatonico
+      digitaciones <xifrat>… [opcions]
+                                   maneres de tocar un acord, de la més
+                                   còmoda a la menys, en un instrument
+                                   de corda amb trasts
+                                   opcions: --instrumento guitarra|bajo|ukelele|mandolina|… (també
+                                   «guitarra de siete cuerdas», «bajo de 5 cuerdas», «drop D»),
+                                   --limite 5, --traste 12 (el més alt que es fa servir), --dedos 4
+                                   (els que es poden fer servir), --completo (amb totes les notes:
+                                   per defecte la quinta pot faltar), --diagrama (una línia per
+                                   corda)
+                                                                         armonia digitaciones Sol7/Si --instrumento ukelele
+      ayuda                        aquesta ajuda
+
+    S'accepten noms de nota en castellà, català, gallec, basc o anglès (Do, C, Sib, Bb, si
+    bemoll). Amb --idioma ca, la resposta fa servir la notació catalana i els missatges en
+    català; amb --ingles, en anglès.
+    """
+
+    /// La ayuda en gallego (`armonia ayuda --idioma gl`).
+    public static let axuda = """
+    armonia: teoría musical desde a liña de comandos.
+
+    Uso: armonia <orde> <argumentos> [--ingles | --idioma es|en|ca|gl|eu]
+
+    Ordes (as ordes e as opcións escríbense en castelán ou en inglés):
+      acorde <cifrado>…            notas, tipo e papel de cada nota      armonia acorde Sol7/Si
+      identificar <notas>          acordes que forman unhas notas        armonia identificar Do Mi Sol Sib
+      intervalo <nota> <nota>      intervalo entre dúas notas ou
+                                   alturas                               armonia intervalo Do4 Mi5
+      escala <escala>              notas e acordes dunha escala          armonia escala Re dórico
+      tonalidad <tonalidade>       armadura, relativas e graos           armonia tonalidad La menor
+      analizar <acordes> [--en <tonalidade>]
+                                   cifrado romano, funcións, cadencias
+                                   e modulacións (co seu acorde pivote;
+                                   sen --en)                             armonia analizar Do Fa Sol7 Do Lam Re7 Sol
+      armonizar <melodía> [--en <tonalidade>] [--propuestas 3]
+                                   acordes para unha melodía, de mellor
+                                   a peor; con oitavas (Mi4), tamén o
+                                   coral a catro voces                   armonia armonizar Mi4 Fa4 Re4 Do4
+      realizar <acordes> [--en <tonalidade>]
+                                   os acordes a catro voces, sen erros
+                                   de condución                          armonia realizar Do Fa Sol7 Do
+      revisar <acordes>            erros de condución (quintas
+                                   paralelas…); acordes de grave a
+                                   agudo, separados por comas            armonia revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4
+      musicxml melodia <eventos> [opcións]
+                                   partitura MusicXML dunha melodía      armonia musicxml melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4 > melodia.musicxml
+      musicxml coral <acordes> [opcións]
+                                   coral a catro voces en MusicXML       armonia musicxml coral Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4 > coral.musicxml
+      musicxml acordes <cifrados> [opcións]
+                                   progresión con cifrados e análise     armonia musicxml acordes Do Lam Re7 Sol7 Do > progresion.musicxml
+                                   opcións: --compas 6/8, --anacrusa 8, --tonalidad Sol mayor,
+                                   --clave fa, --tempo 90 (ou --tempo 60 4.), --titulo O meu coral,
+                                   --duracion 2 (o que dura cada acorde; negra no coral e branca
+                                   nos acordes se non), --cifrados e --analisis (no coral: cifrado
+                                   americano enriba, romano e función debaixo)
+      midi melodia|coral|acordes <…> [opcións]
+                                   o mesmo como ficheiro MIDI, para
+                                   escoitalo (sen --clave nin
+                                   --cifrados; con --programa 0…127,
+                                   General MIDI)                         armonia midi acordes Do Lam Re7 Sol7 Do > progresion.mid
+      tonnetz <notas>              Tonnetz en SVG dunhas notas           armonia tonnetz Do Mi Sol Si > tonnetz.svg
+      tonnetz --acorde <cifrado> | --escala <escala> | --clases <números>
+                                   dun acorde, unha escala ou un
+                                   conxunto de clases de altura          armonia tonnetz --escala Re dórico > dorico.svg
+      tonnetz --recorrido <tríades> | --camino <tríade> <tríade>
+                                   un percorrido de tríades, con
+                                   frechas, ou o camiño máis curto por
+                                   P, L e R                              armonia tonnetz --recorrido Do Lam Fa Rem > recorrido.svg
+      tonnetz --ciclo <ciclo> <tríade>
+                                   un ciclo hexatónico, octatónico ou
+                                   LR (--margen 2: máis rede arredor)    armonia tonnetz --ciclo hexatonico Do > ciclo.svg
+      tabla <notas ou alturas>     táboa harmónica en SVG (hexágonos)    armonia tabla Do3 Sol3 Mi4 > tabla.svg
+      tabla --acorde | --escala | --clases | --recorrido | --camino | --ciclo
+                                   como no Tonnetz (--margen 2: máis
+                                   táboa arredor)                        armonia tabla --acorde Domaj7 > domaj7.svg
+      vecinos <acorde> [--voces 2] acordes a un semiton (sétimas:
+                                   dominante, menor, semidiminuída e
+                                   diminuída; tríades: maior, menor e
+                                   aumentada; --ampliada: tamén cos
+                                   maj7)                                 armonia vecinos Sol7
+      conduccion-parsimoniosa <acorde> <acorde> [--voces 2] [--ampliada]
+                                   dun acorde a outro movendo unha voz
+                                   (ou dúas) un semiton en cada paso     armonia conduccion-parsimoniosa Sol7 Rem7
+      conduccion <acorde> <acorde> a condución con menos semitons        armonia conduccion Sol7 Do
+      plr <tríade> <P, L, R…>      transformacións neorriemannianas      armonia plr Do PLR
+      plr <tríade> <tríade>        o camiño máis curto por P, L e R      armonia plr Do Mibm
+      plr <tríade> <ciclo>         un ciclo: hexatonico (P, L),
+                                   octatonico (P, R) ou "ciclo LR"       armonia plr Do hexatonico
+      digitaciones <cifrado>… [opcións]
+                                   formas de tocar un acorde, da máis
+                                   cómoda á menos, nun instrumento de
+                                   corda con trastes
+                                   opcións: --instrumento guitarra|bajo|ukelele|mandolina|… (tamén
+                                   «guitarra de siete cuerdas», «bajo de 5 cuerdas», «drop D»),
+                                   --limite 5, --traste 12 (o máis alto que se usa), --dedos 4 (os
+                                   que se poden usar), --completo (con todas as notas: por defecto
+                                   a quinta pode faltar), --diagrama (unha liña por corda)
+                                                                         armonia digitaciones Sol7/Si --instrumento ukelele
+      ayuda                        esta axuda
+
+    Acéptanse nomes de nota en castelán, catalán, galego, éuscaro ou inglés (Do, C, Sib, Bb, si
+    bemol). Con --idioma gl, a resposta usa a notación galega e as mensaxes en galego; con
+    --ingles, en inglés.
+    """
+
+    /// La ayuda en euskera (`armonia ayuda --idioma eu`).
+    public static let laguntza = """
+    armonia: musika-teoria komando-lerrotik.
+
+    Erabilera: armonia <agindua> <argumentuak> [--ingles | --idioma es|en|ca|gl|eu]
+
+    Aginduak (aginduak eta aukerak gaztelaniaz edo ingelesez idazten dira):
+      acorde <zifratua>…           notak, mota eta nota bakoitzaren
+                                   papera                                armonia acorde Sol7/Si
+      identificar <notak>          nota batzuek osatzen dituzten
+                                   akordeak                              armonia identificar Do Mi Sol Sib
+      intervalo <nota> <nota>      bi nota edo altueren arteko tartea    armonia intervalo Do4 Mi5
+      escala <eskala>              eskala baten notak eta akordeak       armonia escala Re dórico
+      tonalidad <tonalitatea>      armadura, erlatiboak eta graduak      armonia tonalidad La menor
+      analizar <akordeak> [--en <tonalitatea>]
+                                   zifratu erromatarra, funtzioak,
+                                   kadentziak eta modulazioak (pibota
+                                   barne; --en gabe)                     armonia analizar Do Fa Sol7 Do Lam Re7 Sol
+      armonizar <melodia> [--en <tonalitatea>] [--propuestas 3]
+                                   melodia baterako akordeak, onenetik
+                                   txarrenera; zortzidunekin (Mi4), lau
+                                   ahotseko korala ere bai               armonia armonizar Mi4 Fa4 Re4 Do4
+      realizar <akordeak> [--en <tonalitatea>]
+                                   akordeak lau ahotsetara, ahots-
+                                   eramate akatsik gabe                  armonia realizar Do Fa Sol7 Do
+      revisar <akordeak>           ahots-eramate akatsak (bosgarren
+                                   paraleloak…); akordeak baxutik
+                                   altura, komaz bereizita               armonia revisar Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4
+      musicxml melodia <gertaerak> [aukerak]
+                                   melodia baten MusicXML partitura      armonia musicxml melodia Do4:4 Re4:8 Mi4:8 Fa4:2 --compas 3/4 > melodia.musicxml
+      musicxml coral <akordeak> [aukerak]
+                                   lau ahotseko korala MusicXMLn         armonia musicxml coral Do3 Mi4 Sol4 Do5, Sol2 Re4 Sol4 Si4 > coral.musicxml
+      musicxml acordes <zifratuak> [aukerak]
+                                   progresioa zifratu eta analisiarekin  armonia musicxml acordes Do Lam Re7 Sol7 Do > progresion.musicxml
+                                   aukerak: --compas 6/8, --anacrusa 8, --tonalidad Sol mayor,
+                                   --clave fa, --tempo 90 (edo --tempo 60 4.), --titulo Nire
+                                   korala, --duracion 2 (akorde bakoitzaren iraupena; bestela
+                                   beltza koralean eta zuria akordeetan), --cifrados eta --analisis
+                                   (koralean: zifratu amerikarra goian, erromatarra eta funtzioa
+                                   behean)
+      midi melodia|coral|acordes <…> [aukerak]
+                                   gauza bera MIDI fitxategi gisa,
+                                   entzuteko (--clave eta --cifrados
+                                   gabe; --programa 0…127, General
+                                   MIDI)                                 armonia midi acordes Do Lam Re7 Sol7 Do > progresion.mid
+      tonnetz <notak>              nota batzuen Tonnetza SVGn            armonia tonnetz Do Mi Sol Si > tonnetz.svg
+      tonnetz --acorde <zifratua> | --escala <eskala> | --clases <zenbakiak>
+                                   akorde, eskala edo altuera-klase
+                                   multzo batena                         armonia tonnetz --escala Re dórico > dorico.svg
+      tonnetz --recorrido <triadeak> | --camino <triadea> <triadea>
+                                   triade-ibilbide bat, geziekin, edo
+                                   P, L eta R bidezko biderik laburrena  armonia tonnetz --recorrido Do Lam Fa Rem > recorrido.svg
+      tonnetz --ciclo <zikloa> <triadea>
+                                   ziklo hexatoniko, oktatoniko edo LR
+                                   bat (--margen 2: sare gehiago
+                                   inguruan)                             armonia tonnetz --ciclo hexatonico Do > ciclo.svg
+      tabla <notak edo altuerak>   taula harmonikoa SVGn (hexagonoak)    armonia tabla Do3 Sol3 Mi4 > tabla.svg
+      tabla --acorde | --escala | --clases | --recorrido | --camino | --ciclo
+                                   Tonnetzean bezala (--margen 2: taula
+                                   gehiago inguruan)                     armonia tabla --acorde Domaj7 > domaj7.svg
+      vecinos <akordea> [--voces 2]
+                                   tonuerdi batera dauden akordeak
+                                   (zazpigarrenak: dominantea, txikia,
+                                   erdi-gutxitua eta gutxitua;
+                                   triadeak: handia, txikia eta
+                                   gehitua; --ampliada: maj7ekin ere)    armonia vecinos Sol7
+      conduccion-parsimoniosa <akordea> <akordea> [--voces 2] [--ampliada]
+                                   akorde batetik bestera, urrats
+                                   bakoitzean ahots bat (edo bi)
+                                   tonuerdi bat mugituz                  armonia conduccion-parsimoniosa Sol7 Rem7
+      conduccion <akordea> <akordea>
+                                   tonuerdi gutxieneko ahots-eramatea    armonia conduccion Sol7 Do
+      plr <triadea> <P, L, R…>     eraldaketa neoerriemanndarrak         armonia plr Do PLR
+      plr <triadea> <triadea>      P, L eta R bidezko biderik laburrena  armonia plr Do Mibm
+      plr <triadea> <zikloa>       ziklo bat: hexatonico (P, L),
+                                   octatonico (P, R) edo "ciclo LR"      armonia plr Do hexatonico
+      digitaciones <zifratua>… [aukerak]
+                                   akorde bat jotzeko moduak,
+                                   erosoenetik gutxien erosora,
+                                   trasteak dituen hari-instrumentu
+                                   batean
+                                   aukerak: --instrumento guitarra|bajo|ukelele|mandolina|… (baita
+                                   «guitarra de siete cuerdas», «bajo de 5 cuerdas», «drop D» ere),
+                                   --limite 5, --traste 12 (erabiltzen den altuena), --dedos 4
+                                   (erabil daitezkeenak), --completo (nota guztiekin: berez
+                                   bosgarrena falta daiteke), --diagrama (lerro bat hari
+                                   bakoitzeko)
+                                                                         armonia digitaciones Sol7/Si --instrumento ukelele
+      ayuda                        laguntza hau
+
+    Nota-izenak gaztelaniaz, katalanez, galegoz, euskaraz edo ingelesez onartzen dira (Do, C,
+    Sib, Bb, si bemol). --idioma eu erabiliz, erantzunak euskal notazioa eta euskarazko mezuak
+    ditu; --ingles erabiliz, ingelesez.
     """
 
     /// Ejecuta una orden con sus argumentos (sin el nombre del programa).
@@ -281,9 +552,15 @@ public enum LineaDeComandos {
         ResultadoDeOrden(salida: "", error: error.texto(en: notacion), codigo: 2)
     }
 
-    /// La ayuda en el idioma de la notación: en inglés si los textos salen en inglés; si no, en español.
+    /// La ayuda en el idioma de los textos de la notación (`Nomenclatura.idiomaDeLosTextos`).
     public static func ayuda(en notacion: Nomenclatura) -> String {
-        notacion.idiomaDeLosTextos == .ingles ? help : ayuda
+        switch notacion.idiomaDeLosTextos {
+        case .ingles, .aleman, .frances, .italiano: return help
+        case .catalan: return ajuda
+        case .gallego: return axuda
+        case .euskera: return laguntza
+        case .espanol, .portugues: return ayuda
+        }
     }
 
     /// La notación de `--idioma`: es, en, ca, gl o eu, o el nombre del idioma.
