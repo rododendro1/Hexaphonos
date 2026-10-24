@@ -12,7 +12,8 @@ Apps/
 │                     teclado isomorfo (Wicki-Hayden, Jankó); exporta el dibujo en SVG
 └── ArmoniaCLI/       La herramienta `armonia`, con sus pruebas (SwiftPM)
 Ejemplos/
-└── ArmoniaEjemplo/   Un recorrido por la API del motor, ejecutable (SwiftPM)
+├── EjemploArmonia/     Un recorrido por la API del motor, ejecutable (SwiftPM)
+└── EjemploHexagonos/   Un recorrido por las rejillas hexagonales, con mapas dibujados en el terminal (SwiftPM)
 Herramientas/
 └── ArmoniaRendimiento/  Cuánto tarda el motor en lo que hacen las apps (SwiftPM; el CI lo mide en cada cambio)
 Packages/
@@ -38,12 +39,13 @@ Package.swift       Los tres paquetes juntos, para usarlos desde otro proyecto p
 ```
 ArmoniaApp ──┬──► HexaphonosUI ──┬──► Armonia ──► Hexagonos
 TonnetzApp ──┘                  └──► Hexagonos
-ArmoniaApp, TonnetzApp, ArmoniaCLI, ArmoniaEjemplo, ArmoniaRendimiento ──► Armonia
+ArmoniaApp, TonnetzApp, ArmoniaCLI, EjemploArmonia, ArmoniaRendimiento ──► Armonia
 ArmoniaCLI ──► HexaphonosPresentacion (en el paquete HexaphonosUI, sin SwiftUI) ──► Armonia
+EjemploHexagonos ──► Hexagonos
 ```
 
 Un paquete solo depende de los que tiene debajo, y nunca de una app. La línea de comandos (`ArmoniaCLI`),
-el ejemplo (`ArmoniaEjemplo`) y la medida del rendimiento (`ArmoniaRendimiento`) se construyen con SwiftPM; las apps de SwiftUI, con Xcode (`project.yml`).
+los ejemplos (`EjemploArmonia` y `EjemploHexagonos`) y la medida del rendimiento (`ArmoniaRendimiento`) se construyen con SwiftPM; las apps de SwiftUI, con Xcode (`project.yml`).
 `Scripts/comprobar_dependencias.py` lo comprueba (también en el CI).
 
 El paquete, su producto principal y su módulo paraguas se llaman `Armonia`: en el código es
@@ -75,7 +77,8 @@ cd Packages/Armonia && swift test
 cd Packages/Hexagonos && swift test      # las rejillas hexagonales
 swift run --package-path Apps/ArmoniaCLI armonia acorde Sol7/Si  # la herramienta de línea de comandos
 swift run --package-path Apps/ArmoniaCLI armonia digitaciones Sol7/Si --instrumento ukelele --diagrama
-swift run --package-path Ejemplos/ArmoniaEjemplo ArmoniaEjemplo      # el ejemplo
+swift run --package-path Ejemplos/EjemploArmonia EjemploArmonia       # el ejemplo del motor
+swift run --package-path Ejemplos/EjemploHexagonos EjemploHexagonos   # el de las rejillas hexagonales
 swift run -c release --package-path Herramientas/ArmoniaRendimiento ArmoniaRendimiento   # los tiempos del motor
 
 # Las apps (macOS, con XcodeGen)

@@ -3,20 +3,20 @@ import PackageDescription
 
 // Un recorrido por la API del motor, para leerlo y ejecutarlo:
 //
-//     swift run ArmoniaEjemplo
+//     swift run EjemploArmonia
 let package = Package(
-    name: "ArmoniaEjemplo",
+    name: "EjemploArmonia",
     // Como `Armonia`: SwiftPM rechaza que un paquete con un mínimo más bajo dependa de otro con uno más alto.
     platforms: [.macOS(.v13)],
     products: [
-        .executable(name: "ArmoniaEjemplo", targets: ["ArmoniaEjemplo"]),
+        .executable(name: "EjemploArmonia", targets: ["EjemploArmonia"]),
     ],
     dependencies: [
         .package(path: "../../Packages/Armonia"),
     ],
     targets: [
         .executableTarget(
-            name: "ArmoniaEjemplo",
+            name: "EjemploArmonia",
             dependencies: [.product(name: "Armonia", package: "Armonia")]),
     ]
 )

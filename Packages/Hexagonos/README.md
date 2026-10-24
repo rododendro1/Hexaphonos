@@ -36,4 +36,8 @@ los algoritmos, los mapas y los caminos. Siguen la guía de Red Blob Games (http
 
 ```sh
 cd Packages/Hexagonos && swift test
+swift run --package-path Ejemplos/EjemploHexagonos EjemploHexagonos   # desde la raíz: un recorrido por la API
 ```
+
+`Ejemplos/EjemploHexagonos` recorre la API (coordenadas, vecinos, líneas, regiones, simetrías, un mapa con su
+camino más barato, JSON y píxeles) y dibuja los mapas con caracteres en el terminal.

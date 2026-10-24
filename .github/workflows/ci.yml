@@ -90,7 +90,8 @@ jobs:
         swift: ["5.9", "6.2"]
         paquete:
           - { nombre: ArmoniaCLI, ruta: Apps/ArmoniaCLI }
-          - { nombre: ArmoniaEjemplo, ruta: Ejemplos/ArmoniaEjemplo }
+          - { nombre: EjemploArmonia, ruta: Ejemplos/EjemploArmonia }
+          - { nombre: EjemploHexagonos, ruta: Ejemplos/EjemploHexagonos }
           - { nombre: ArmoniaRendimiento, ruta: Herramientas/ArmoniaRendimiento }
     defaults:
       run:
@@ -103,8 +104,8 @@ jobs:
         if: matrix.paquete.nombre == 'ArmoniaCLI'
         run: swift test --parallel
       - name: Ejemplo
-        if: matrix.paquete.nombre == 'ArmoniaEjemplo'
-        run: swift run ArmoniaEjemplo
+        if: startsWith(matrix.paquete.nombre, 'Ejemplo')
+        run: swift run ${{ matrix.paquete.nombre }}
       - name: Concurrencia estricta
         if: matrix.paquete.nombre == 'ArmoniaCLI' && startsWith(matrix.swift, '6')
         run: swift build --target ArmoniaCLI -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors
@@ -193,10 +194,11 @@ jobs:
       - name: Hexagonos
         run: swift test --parallel
         working-directory: Packages/Hexagonos
-      - name: Línea de comandos y ejemplo
+      - name: Línea de comandos y ejemplos
         run: |
           (cd Apps/ArmoniaCLI && swift test --parallel)
-          (cd Ejemplos/ArmoniaEjemplo && swift run ArmoniaEjemplo > /dev/null)
+          (cd Ejemplos/EjemploArmonia && swift run EjemploArmonia > /dev/null)
+          (cd Ejemplos/EjemploHexagonos && swift run EjemploHexagonos > /dev/null)
       - name: Instalar XcodeGen
         run: brew install xcodegen
       - name: Generar el proyecto

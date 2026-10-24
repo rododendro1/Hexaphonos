@@ -82,7 +82,7 @@ fi
 if [ "$MOTOR_COMPILA" = 1 ]; then
     paso "Línea de comandos: compilar" Apps/ArmoniaCLI swift build &&
         paso "Línea de comandos: pruebas" Apps/ArmoniaCLI swift test --parallel
-    paso "Ejemplo: ejecutar" Ejemplos/ArmoniaEjemplo swift run ArmoniaEjemplo
+    paso "Ejemplo: ejecutar" Ejemplos/EjemploArmonia swift run EjemploArmonia
     paso "Rendimiento: compilar" Herramientas/ArmoniaRendimiento swift build
     paso "HexaphonosUI: compilar" Packages/HexaphonosUI swift build &&
         paso "HexaphonosUI: pruebas" Packages/HexaphonosUI swift test --parallel
@@ -93,6 +93,7 @@ fi
 # 4. Las rejillas hexagonales: no dependen del motor.
 paso "Hexagonos: compilar" Packages/Hexagonos swift build &&
     paso "Hexagonos: pruebas" Packages/Hexagonos swift test --parallel
+paso "Ejemplo de Hexagonos: ejecutar" Ejemplos/EjemploHexagonos swift run EjemploHexagonos
 
 # 5. Las apps de SwiftUI, solo en macOS y con XcodeGen.
 if [ "$RAPIDO" = 1 ]; then
