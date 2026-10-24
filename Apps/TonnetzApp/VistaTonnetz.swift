@@ -41,6 +41,7 @@ struct VistaTonnetz: View {
             }
 
             controles
+            BotonDeEscuchar(sonido)
 
             if let dibujado, let svg = PresentacionDeRedes.svg(dibujado, en: red, notacion: notacion) {
                 VistaSVG(svg: svg)
@@ -109,6 +110,16 @@ struct VistaTonnetz: View {
             return (try? Acorde(leyendo: textoAcorde)).map { .acorde($0) }
         case .escala:
             return (try? Escala(leyendo: textoEscala)).map { .escala($0) }
+        }
+    }
+
+    /// Lo que suena al pulsar «Escuchar»: el acorde, la escala o el recorrido.
+    private var sonido: Sonido {
+        switch dibujado {
+        case .acorde(let acorde): return .acorde(acorde)
+        case .escala(let escala): return .escala(escala)
+        case .recorrido(let acordes): return .acordes(acordes)
+        default: return .silencio
         }
     }
 

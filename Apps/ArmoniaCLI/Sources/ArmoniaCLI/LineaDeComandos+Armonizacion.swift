@@ -4,31 +4,16 @@ import HexaphonosPresentacion
 // MARK: - Armonización y realización a cuatro voces
 
 extension LineaDeComandos {
-    /// Quita `--en <tonalidad>` del final de los argumentos. `nil` dentro si no está; lanza un
-    /// error de lectura si la tonalidad no se puede leer.
-    static func leerTonalidad(_ argumentos: inout [String]) throws -> Tonalidad?? {
-        guard let i = argumentos.firstIndex(where: { $0 == "--en" || $0 == "--in" }) else { return .some(nil) }
-        guard i + 1 < argumentos.count else { return nil }
-        let tonalidad = try Tonalidad(leyendo: argumentos[(i + 1)...].joined(separator: " "))
-        argumentos.removeSubrange(i...)
-        return .some(tonalidad)
-    }
-
     /// `armonizar Mi4 Re4 Do4`: las mejores armonizaciones y, si las notas llevan octava, el coral a
     /// cuatro voces con la melodía en el soprano.
     static func armonizar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        var argumentos = argumentos
-        var propuestas = 3
-        if let i = argumentos.firstIndex(where: { $0 == "--propuestas" || $0 == "--proposals" }) {
-            guard i + 1 < argumentos.count, let n = Int(argumentos[i + 1]), (1...20).contains(n) else {
-                return uso(.propuestasFueraDeRango, notacion)
-            }
-            propuestas = n
-            argumentos.removeSubrange(i...(i + 1))
+        var argumentos = Argumentos(argumentos)
+        guard let propuestas = argumentos.quitarNumero("--propuestas", "--proposals", en: 1...20, porDefecto: 3) else {
+            return uso(.propuestasFueraDeRango, notacion)
         }
-        guard let dada = try leerTonalidad(&argumentos) else { return uso(.faltaTonalidadTrasEn, notacion) }
-        guard !argumentos.isEmpty else { return uso(.faltanNotasDeLaArmonizacion, notacion) }
-        let coral = try PresentacionDeCoral.armonizar(argumentos.joined(separator: " "), en: dada,
+        guard let dada = try argumentos.quitarTonalidad() else { return uso(.faltaTonalidadTrasEn, notacion) }
+        guard !argumentos.restantes.isEmpty else { return uso(.faltanNotasDeLaArmonizacion, notacion) }
+        let coral = try PresentacionDeCoral.armonizar(argumentos.unidos, en: dada,
                                                       propuestas: propuestas, notacion: notacion)
         guard !coral.avisos.contains(.sinArmonizacion) else { return bien(CoralPresentado.Aviso.sinArmonizacion.texto(en: notacion)) }
         var lineas = [coral.titulo]
@@ -49,10 +34,10 @@ extension LineaDeComandos {
 
     /// `realizar Do Fa Sol7 Do`: los acordes escritos a cuatro voces, sin faltas.
     static func realizar(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        var argumentos = argumentos
-        guard let tonalidad = try leerTonalidad(&argumentos) else { return uso(.faltaTonalidadTrasEn, notacion) }
-        guard !argumentos.isEmpty else { return uso(.faltanAcordesDeLaRealizacion, notacion) }
-        let coral = try PresentacionDeCoral.realizar(argumentos.joined(separator: " "), en: tonalidad, notacion: notacion)
+        var argumentos = Argumentos(argumentos)
+        guard let tonalidad = try argumentos.quitarTonalidad() else { return uso(.faltaTonalidadTrasEn, notacion) }
+        guard !argumentos.restantes.isEmpty else { return uso(.faltanAcordesDeLaRealizacion, notacion) }
+        let coral = try PresentacionDeCoral.realizar(argumentos.unidos, en: tonalidad, notacion: notacion)
         guard !coral.avisos.contains(.sinRealizacion) else { return bien(CoralPresentado.Aviso.sinRealizacion.texto(en: notacion)) }
         return bien(([coral.titulo] + describir(coral.filas)).joined(separator: "\n"))
     }

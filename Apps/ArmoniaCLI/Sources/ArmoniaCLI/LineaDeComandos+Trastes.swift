@@ -4,44 +4,18 @@ import Foundation
 // MARK: - Digitaciones: cómo tocar un acorde en un instrumento de cuerda con trastes
 
 extension LineaDeComandos {
-    /// Quita una opción sin valor (`--diagrama`) de los argumentos y dice si estaba.
-    static func quitarMarca(_ nombres: [String], de argumentos: inout [String]) -> Bool {
-        guard let i = argumentos.firstIndex(where: { nombres.contains($0) }) else { return false }
-        argumentos.remove(at: i)
-        return true
-    }
-
-    /// Quita una opción con valor (`--limite 5`) de los argumentos. `.ausente` si no está, `.sinValor` si
-    /// está pero no la sigue nada que no sea otra opción.
-    enum Opcion: Equatable {
-        case ausente
-        case sinValor
-        case valor(String)
-    }
-
-    static func quitarOpcion(_ nombres: [String], de argumentos: inout [String]) -> Opcion {
-        guard let i = argumentos.firstIndex(where: { nombres.contains($0) }) else { return .ausente }
-        guard i + 1 < argumentos.count, !argumentos[i + 1].hasPrefix("--") else {
-            argumentos.remove(at: i)
-            return .sinValor
-        }
-        let valor = argumentos[i + 1]
-        argumentos.removeSubrange(i...(i + 1))
-        return .valor(valor)
-    }
-
     /// `digitaciones Sol7/Si --instrumento ukelele`: formas de tocar el acorde, de la más cómoda a la menos.
     static func digitaciones(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        var argumentos = argumentos
+        var argumentos = Argumentos(argumentos)
 
         // `--tab` era el nombre anterior de `--diagrama`.
-        let conDiagrama = quitarMarca(["--diagrama", "--diagram", "--tab"], de: &argumentos)
+        let conDiagrama = argumentos.quitarMarca("--diagrama", "--diagram", "--tab")
         // Por defecto la quinta puede faltar en los acordes de cuatro notas o más (el Do7 `x32310`): es lo normal en
         // una guitarra. Con --completo se exigen todas las notas.
-        let completo = quitarMarca(["--completo", "--complete"], de: &argumentos)
+        let completo = argumentos.quitarMarca("--completo", "--complete")
 
         var encordado = Encordado.guitarra
-        switch quitarOpcion(["--instrumento", "--instrument"], de: &argumentos) {
+        switch argumentos.quitarOpcion("--instrumento", "--instrument") {
         case .ausente:
             break
         case .sinValor:
@@ -52,7 +26,7 @@ extension LineaDeComandos {
         }
 
         var limite = 5
-        switch quitarOpcion(["--limite", "--limit"], de: &argumentos) {
+        switch argumentos.quitarOpcion("--limite", "--limit") {
         case .ausente:
             break
         case .sinValor:
@@ -65,7 +39,7 @@ extension LineaDeComandos {
         }
 
         var maximoDeDedos = 4
-        switch quitarOpcion(["--dedos", "--fingers"], de: &argumentos) {
+        switch argumentos.quitarOpcion("--dedos", "--fingers") {
         case .ausente:
             break
         case .sinValor:
@@ -78,7 +52,7 @@ extension LineaDeComandos {
         }
 
         var maximoTraste = 12
-        switch quitarOpcion(["--traste", "--fret"], de: &argumentos) {
+        switch argumentos.quitarOpcion("--traste", "--fret") {
         case .ausente:
             break
         case .sinValor:
@@ -90,13 +64,13 @@ extension LineaDeComandos {
             maximoTraste = n
         }
 
-        if let desconocida = argumentos.first(where: { $0.hasPrefix("--") }) {
+        if let desconocida = argumentos.opcionDesconocida {
             return uso(.opcionDesconocida(desconocida), notacion)
         }
-        guard !argumentos.isEmpty else { return uso(.faltaCifradoDeDigitaciones, notacion) }
+        guard !argumentos.restantes.isEmpty else { return uso(.faltaCifradoDeDigitaciones, notacion) }
 
         let mastil = Mastil(encordado)
-        let bloques = try argumentos.map { texto -> String in
+        let bloques = try argumentos.restantes.map { texto -> String in
             let acorde = try Acorde(leyendo: texto)
             var lineas = ["\(acorde.cifrado(en: notacion)) · \(Mensaje.instrumento(encordado).texto(en: notacion))"]
             let formas = mastil.digitaciones(de: acorde, maximoDeDedos: maximoDeDedos, maximoTraste: maximoTraste,

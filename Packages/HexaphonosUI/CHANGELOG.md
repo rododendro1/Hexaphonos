@@ -20,6 +20,15 @@ Componentes de SwiftUI para las apps de Hexaphonos, sobre `Armonia` y `Hexagonos
 En Linux solo compila la lógica que no usa SwiftUI. `MastilView`, `TonnetzView` y `SVGView` siguen aceptándose,
 marcados como obsoletos.
 
+### Sonido
+
+- `Sonido` (en `HexaphonosPresentacion`): qué notas MIDI suenan y cuándo, para un acorde (arpegiado y luego
+  junto, desde su bajo), una escala, una progresión o un coral. `AnalisisPresentado` y `CoralPresentado` traen
+  el suyo.
+- `Reproductor` y `BotonDeEscuchar`: lo tocan con el sintetizador del sistema (`AVAudioUnitSampler`; en macOS
+  con el piano General MIDI del sistema). Las apps tienen «Escuchar» en Acordes, Escalas, Análisis, Coral y
+  Tonnetz.
+
 ### Apps traducidas y ayudantes comunes
 
 - `TextoDeLasApps` (en `HexaphonosPresentacion`): los textos de la interfaz de las dos apps en los ocho idiomas

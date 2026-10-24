@@ -4,28 +4,17 @@ import Foundation
 // MARK: - Neorriemanniano y conducción parsimoniosa
 
 extension LineaDeComandos {
-    /// Quita `--voces N` (1 o 2) de los argumentos.
-    static func leerVoces(_ argumentos: inout [String]) -> Int? {
-        guard let i = argumentos.firstIndex(of: "--voces") ?? argumentos.firstIndex(of: "--voices") else { return 1 }
-        guard i + 1 < argumentos.count, let n = Int(argumentos[i + 1]), (1...2).contains(n) else { return nil }
-        argumentos.removeSubrange(i...(i + 1))
-        return n
-    }
-
-    /// `--ampliada`: la familia de las séptimas con los maj7, para un acorde de las séptimas.
-    static func leerAmpliada(_ argumentos: inout [String]) -> [TipoDeAcorde]? {
-        guard let i = argumentos.firstIndex(of: "--ampliada") ?? argumentos.firstIndex(of: "--extended") else { return nil }
-        argumentos.remove(at: i)
-        return TipoDeAcorde.familiaDeSeptimasAmpliada
-    }
-
     /// `vecinos Sol7`: los acordes de su familia a un semitono.
     static func vecinos(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        var argumentos = argumentos
-        guard let voces = leerVoces(&argumentos) else { return uso(.vocesFueraDeRango, notacion) }
-        let tipos = leerAmpliada(&argumentos)
-        guard argumentos.count == 1 else { return uso(.unAcordeDeVecinos, notacion) }
-        let acorde = try Acorde(leyendo: argumentos[0])
+        var argumentos = Argumentos(argumentos)
+        guard let voces = argumentos.quitarNumero("--voces", "--voices", en: 1...2, porDefecto: 1) else {
+            return uso(.vocesFueraDeRango, notacion)
+        }
+        // `--ampliada`: la familia de las séptimas con los maj7, para un acorde de las séptimas.
+        let tipos = argumentos.quitarMarca("--ampliada", "--extended") ? TipoDeAcorde.familiaDeSeptimasAmpliada : nil
+        let acordes = argumentos.restantes
+        guard acordes.count == 1 else { return uso(.unAcordeDeVecinos, notacion) }
+        let acorde = try Acorde(leyendo: acordes[0])
         let pasos = tipos.map { $0.contains(acorde.tipo) ? acorde.vecinosParsimoniosos(voces: voces, tipos: $0) : [] }
             ?? acorde.vecinosParsimoniosos(voces: voces)
         guard !pasos.isEmpty else {
@@ -36,11 +25,15 @@ extension LineaDeComandos {
 
     /// `camino Sol7 Rem7`: Sol7 –Si→Do→ … paso a paso.
     static func caminoParsimonioso(_ argumentos: [String], _ notacion: Nomenclatura) throws -> ResultadoDeOrden {
-        var argumentos = argumentos
-        guard let voces = leerVoces(&argumentos) else { return uso(.vocesFueraDeRango, notacion) }
-        let tipos = leerAmpliada(&argumentos)
-        guard argumentos.count == 2 else { return uso(.dosAcordesDeCamino, notacion) }
-        let origen = try Acorde(leyendo: argumentos[0]), destino = try Acorde(leyendo: argumentos[1])
+        var argumentos = Argumentos(argumentos)
+        guard let voces = argumentos.quitarNumero("--voces", "--voices", en: 1...2, porDefecto: 1) else {
+            return uso(.vocesFueraDeRango, notacion)
+        }
+        // `--ampliada`: la familia de las séptimas con los maj7, para un acorde de las séptimas.
+        let tipos = argumentos.quitarMarca("--ampliada", "--extended") ? TipoDeAcorde.familiaDeSeptimasAmpliada : nil
+        let acordes = argumentos.restantes
+        guard acordes.count == 2 else { return uso(.dosAcordesDeCamino, notacion) }
+        let origen = try Acorde(leyendo: acordes[0]), destino = try Acorde(leyendo: acordes[1])
         guard let camino = Tonnetz.caminoParsimonioso(desde: origen, hasta: destino, voces: voces, tipos: tipos) else {
             return uso(.caminoSinConexion, notacion)
         }

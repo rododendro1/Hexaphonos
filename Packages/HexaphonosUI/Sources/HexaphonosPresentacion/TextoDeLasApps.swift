@@ -70,6 +70,7 @@ public enum TextoDeLasApps: Hashable, Sendable {
     case textos
     case comoLasNotas
     case exportar
+    case escuchar
 
     public func texto(en notacion: Nomenclatura) -> String {
         traduccion(notacion).en(notacion)
@@ -250,6 +251,9 @@ public enum TextoDeLasApps: Hashable, Sendable {
         case .comoLasNotas:
             return Traduccion("Como las notas", "Same as the notes", ca: "Com les notes", gl: "Como as notas",
                               eu: "Notak bezala", pt: "Como as notas", fr: "Comme les notes", it: "Come le note")
+        case .escuchar:
+            return Traduccion("Escuchar", "Listen", ca: "Escolta", gl: "Escoitar", eu: "Entzun",
+                              pt: "Ouvir", fr: "Écouter", it: "Ascolta")
         case .exportar:
             return Traduccion("Exportar", "Export", ca: "Exporta", gl: "Exportar", eu: "Esportatu",
                               pt: "Exportar", fr: "Exporter", it: "Esporta")

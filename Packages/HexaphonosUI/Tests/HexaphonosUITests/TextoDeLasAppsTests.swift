@@ -14,7 +14,7 @@ final class TextoDeLasAppsTests: XCTestCase {
         .mastilDeGuitarra, .progresion, .campoDeProgresion, .resultado, .acordeAAcorde, .cadencias, .tarea,
         .campoDeTonalidad, .tonalidad, .armonizaciones, .aCuatroVoces, .conduccionDeLasVoces, .avisos,
         .recorridoPLR, .modo, .red, .noSeDibuja, .campoDeTriadaInicial, .reiniciar, .deshacer, .campoDeAcorde,
-        .campoDeEscala, .textos, .comoLasNotas, .exportar,
+        .campoDeEscala, .textos, .comoLasNotas, .exportar, .escuchar,
     ]
 
     func testCadaTextoEstaEnCadaIdioma() {

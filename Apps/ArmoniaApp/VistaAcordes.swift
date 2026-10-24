@@ -49,6 +49,7 @@ struct VistaAcordes: View {
             LabeledContent(notacion.texto(.cifrado), value: acorde.cifrado(en: notacion))
             LabeledContent(notacion.texto(.notas),
                            value: acorde.notasDesdeElBajo.map { $0.nombre(en: notacion) }.joined(separator: " "))
+            BotonDeEscuchar(.acorde(acorde))
         }
     }
 

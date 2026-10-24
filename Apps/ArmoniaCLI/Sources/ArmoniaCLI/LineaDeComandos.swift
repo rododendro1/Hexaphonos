@@ -40,26 +40,27 @@ public enum LineaDeComandos {
 
     /// Ejecuta una orden con sus argumentos (sin el nombre del programa).
     public static func ejecutar(_ argumentos: [String]) -> ResultadoDeOrden {
-        var argumentos = argumentos
-        let ingles = argumentos.contains("--ingles") || argumentos.contains("--english")
-        argumentos.removeAll { $0 == "--ingles" || $0 == "--english" }
-        var notacion: Nomenclatura = ingles ? .ingles : .espanol
-        if let i = argumentos.firstIndex(where: { $0 == "--idioma" || $0 == "--language" }) {
-            guard i + 1 < argumentos.count else { return uso(.faltaValor(String(argumentos[i].dropFirst(2))), notacion) }
-            guard let elegida = notacionDelIdioma(argumentos[i + 1]) else {
-                return uso(.idiomaDesconocido(argumentos[i + 1]), notacion)
-            }
+        var opciones = Argumentos(argumentos)
+        var notacion: Nomenclatura = opciones.quitarMarca("--ingles", "--english") ? .ingles : .espanol
+        switch opciones.quitarOpcion("--idioma", "--language") {
+        case .ausente:
+            break
+        case .sinValor(let nombre):
+            return uso(.faltaValor(nombre), notacion)
+        case .valor(let texto):
+            guard let elegida = notacionDelIdioma(texto) else { return uso(.idiomaDesconocido(texto), notacion) }
             notacion = elegida
-            argumentos.removeSubrange(i...(i + 1))
         }
-        if let i = argumentos.firstIndex(where: { $0 == "--textos" || $0 == "--texts" }) {
-            guard i + 1 < argumentos.count else { return uso(.faltaValor(String(argumentos[i].dropFirst(2))), notacion) }
-            guard let textos = notacionDelIdioma(argumentos[i + 1])?.idioma else {
-                return uso(.idiomaDesconocido(argumentos[i + 1]), notacion)
-            }
+        switch opciones.quitarOpcion("--textos", "--texts") {
+        case .ausente:
+            break
+        case .sinValor(let nombre):
+            return uso(.faltaValor(nombre), notacion)
+        case .valor(let texto):
+            guard let textos = notacionDelIdioma(texto)?.idioma else { return uso(.idiomaDesconocido(texto), notacion) }
             notacion = notacion.conTextos(en: textos)
-            argumentos.removeSubrange(i...(i + 1))
         }
+        let argumentos = opciones.restantes
 
         guard let orden = argumentos.first?.lowercased() else { return bien(ayuda(en: notacion)) }
         let resto = Array(argumentos.dropFirst())
