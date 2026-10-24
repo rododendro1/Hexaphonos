@@ -4,7 +4,7 @@ import ArmoniaNucleo
 
 extension Coral {
     /// Escribe los acordes a cuatro voces, con el bajo del cifrado (Sol7/Si lleva Si en el bajo) y
-    /// sin ninguna falta de las que comprueba ``problemas``: el resultado siempre ``esCorrecta``.
+    /// sin ninguna falta de las que comprueba ``faltas``: el resultado siempre ``esCorrecta``.
     ///
     ///     let coral = Coral.realizar(["Do", "Fa", "Sol7", "Do"])!
     ///     coral.esCorrecta                // true

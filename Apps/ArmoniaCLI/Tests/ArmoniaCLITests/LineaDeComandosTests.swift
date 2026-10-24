@@ -180,7 +180,7 @@ final class LineaDeComandosTests: XCTestCase {
     private static let ordenesMalEscritas = [
         "foo", "acorde", "identificar", "intervalo C", "escala", "tonalidad", "analizar", "analizar C --en",
         "armonizar", "armonizar C --en", "armonizar C --propuestas 0", "realizar", "realizar C --en",
-        "revisar", "conduccion G7", "digitaciones", "digitaciones C --instrumento arpa", "digitaciones C --limite 0",
+        "revisar", "conduccion-minima G7", "digitaciones", "digitaciones C --instrumento arpa", "digitaciones C --limite 0",
         "digitaciones C --dedos 9", "digitaciones C --traste 99", "digitaciones C --capo", "vecinos",
         "vecinos C7 --voces 3", "conduccion-parsimoniosa G7", "plr", "plr G7 P", "musicxml", "musicxml coral",
         "musicxml melodia C4:4 --foo 1", "midi acordes C --cifrados", "tonnetz", "tonnetz --clases 13",
@@ -411,11 +411,11 @@ final class LineaDeComandosTests: XCTestCase {
         XCTAssertEqual(salida("vecinos G7 --ingles"), "G#°7 (G→G#)\nGm7 (B→Bb)\nEm7 (F→E)\n")
         XCTAssertEqual(salida("conduccion-parsimoniosa Sol7 Rem7"), "Sol7 –Sol→Sol♯→ Sol♯°7 –Sol♯→La→ Sim7(♭5) –Si→Do→ Rem7\n3 pasos\n")
         XCTAssertEqual(salida("conduccion-parsimoniosa Sol7 Reb7 --voces 2"), "Sol7 –Sol→La♭, Re→Re♭→ Re♭7\n1 paso\n")
-        XCTAssertEqual(salida("conduccion Sol7 Do"), "Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos\n")
+        XCTAssertEqual(salida("conduccion-minima Sol7 Do"), "Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos\n")
         XCTAssertEqual(salida("vecinos Domaj7"), "Do♯m7(♭5) (Do→Do♯)\nDo7 (Si→Si♭)\n")
         XCTAssertTrue(salida("vecinos Sol7 --ampliada").contains("Solmaj7 (Fa→Fa♯)"))
         XCTAssertEqual(salida("conduccion-parsimoniosa Do7 Domaj7"), "Do7 –Si♭→Si→ Domaj7\n1 paso\n")
-        for orden in ["vecinos", "vecinos Do6", "vecinos Do --ampliada", "vecinos Sol7 --voces 3", "conduccion-parsimoniosa Sol7", "conduccion-parsimoniosa Do Sol7", "conduccion Sol7"] {
+        for orden in ["vecinos", "vecinos Do6", "vecinos Do --ampliada", "vecinos Sol7 --voces 3", "conduccion-parsimoniosa Sol7", "conduccion-parsimoniosa Do Sol7", "conduccion-minima Sol7"] {
             XCTAssertEqual(LineaDeComandos.ejecutar(orden.split(separator: " ").map(String.init)).codigo, 2, orden)
         }
     }

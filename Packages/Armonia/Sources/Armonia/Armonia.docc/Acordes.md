@@ -156,5 +156,5 @@ armonia vecinos Sol7 --voces 2
 armonia vecinos Domaj7            # Do♯m7(♭5) (Do→Do♯), Do7 (Si→Si♭)
 armonia vecinos Sol7 --ampliada   # también Solmaj7 (Fa→Fa♯)
 armonia conduccion-parsimoniosa Sol7 Rem7   # Sol7 –Sol→Sol♯→ Sol♯°7 –Sol♯→La→ Sim7(♭5) –Si→Do→ Rem7
-armonia conduccion Sol7 Do        # Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos
+armonia conduccion-minima Sol7 Do           # Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos
 ```

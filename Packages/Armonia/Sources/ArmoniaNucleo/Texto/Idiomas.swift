@@ -11,7 +11,7 @@
 //
 // Para añadir un idioma: un caso en `Idioma` y en `EscrituraDeNotas` (con su constante en `Notacion`), y sus palabras en esos
 // ficheros. Para que el motor escriba también sus textos en él: un campo en `Traduccion`, y su
-// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.idiomaDeLosTextos` de los textos.
+// caso en `Idioma.deLosTextos` y en los `switch` sobre `notacion.textos` de los textos.
 // Ningún `switch` sobre `Idioma` o `EscrituraDeNotas` tiene `default`, así que el compilador señala los
 // que faltan. Los nombres que son datos de un catálogo (tipos de acorde y de escala, instrumentos)
 // siguen junto a su catálogo.
@@ -25,7 +25,7 @@ extension NotaNatural {
     /// re (italiano), sòl (occitano), соль (ruso), σολ (griego). En las lenguas que usan sílabas,
     /// salvo el español, en minúscula, como se escriben en el texto.
     public func nombre(en notacion: Notacion) -> String {
-        switch notacion.idioma {
+        switch notacion.idiomaDeLasNotas {
         case .espanol: return nombre
         case .ingles: return ["C", "D", "E", "F", "G", "A", "B"][rawValue]
         case .aleman: return ["C", "D", "E", "F", "G", "A", "H"][rawValue]
@@ -59,7 +59,7 @@ extension Alteracion {
     public func nombre(en notacion: Notacion) -> String {
         // (natural, sostenido, bemol, prefijos de 2, 3 y 4, plural de sostenido y de bemol)
         let palabras: (String, String, String, [String], String, String)
-        switch notacion.idioma {
+        switch notacion.idiomaDeLasNotas {
         case .espanol: return nombre
         case .ingles: palabras = ("natural", "sharp", "flat", ["double ", "triple ", "quadruple "], "sharps", "flats")
         case .aleman:
@@ -214,7 +214,7 @@ extension Intervalo {
     public func nombre(en notacion: Notacion) -> String {
         let calidad = self.calidad.nombre(en: notacion)
         let descendente = direccion == .descendente
-        switch notacion.idiomaDeLosTextos {
+        switch notacion.textos {
         case .espanol, .portugues:
             return "\(numero)ª \(calidad)" + (descendente ? " descendente" : "")
         case .ingles, .aleman, .occitano, .ruso, .griego:

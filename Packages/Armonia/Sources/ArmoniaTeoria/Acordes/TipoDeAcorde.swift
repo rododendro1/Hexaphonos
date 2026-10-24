@@ -77,7 +77,7 @@ public struct TipoDeAcorde: Sendable {
     /// si es un tipo conocido; si no, "acorde 7(♭9,♯11)", "7(b9,#11) chord", "7(♭9,♯11) akordea"…
     public func nombre(en notacion: Notacion) -> String {
         if let conocido = TipoDeAcorde.nombresConocidos[pasosDeQuinta] { return conocido.en(notacion) }
-        switch notacion.idiomaDeLosTextos {
+        switch notacion.textos {
         case .espanol: return "acorde \(cifrado.isEmpty ? "mayor" : cifrado)"
         case .ingles, .aleman, .occitano, .ruso, .griego: return "\(cifrado(en: notacion)) chord"
         case .portugues: return "acorde \(cifrado.isEmpty ? "maior" : cifrado)"

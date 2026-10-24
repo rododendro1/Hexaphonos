@@ -3,7 +3,7 @@ import Armonia
 /// Lo que suena al pulsar «Escuchar» en las apps: notas MIDI con su inicio y su duración, en segundos. Aquí solo
 /// se decide qué suena y cuándo; el reproductor de ArmoniaUI lo toca con el sintetizador del sistema.
 ///
-///     Sonido.acorde(Acorde("Sol7/Si")).eventos.map(\.midi)   // [59, 62, 65, 67]: Si3 Re4 Fa4 Sol4
+///     Sonido.acorde(Acorde("Sol7/Si")).notas.map(\.midi)   // [59, 62, 65, 67]: Si3 Re4 Fa4 Sol4
 public struct Sonido: Hashable, Sendable {
     /// Una nota que suena: su número MIDI, cuándo empieza y cuánto dura.
     public struct NotaMIDI: Hashable, Sendable {
@@ -25,22 +25,22 @@ public struct Sonido: Hashable, Sendable {
         public let empieza: Bool
     }
 
-    public let eventos: [NotaMIDI]
+    public let notas: [NotaMIDI]
 
-    public init(eventos: [NotaMIDI]) {
-        self.eventos = eventos.filter { (0...127).contains($0.midi) && $0.duracion > 0 }
+    public init(notas: [NotaMIDI]) {
+        self.notas = notas.filter { (0...127).contains($0.midi) && $0.duracion > 0 }
     }
 
     /// Nada que tocar.
-    public static let silencio = Sonido(eventos: [])
+    public static let silencio = Sonido(notas: [])
 
     /// Cuánto dura todo, en segundos.
-    public var duracion: Double { eventos.map { $0.inicio + $0.duracion }.max() ?? 0 }
+    public var duracion: Double { notas.map { $0.inicio + $0.duracion }.max() ?? 0 }
 
     /// Los comienzos y finales de las notas, por orden de tiempo. A un mismo tiempo, los finales van antes,
     /// para que una nota repetida vuelva a sonar.
     public var cambios: [Cambio] {
-        eventos.flatMap { [Cambio(tiempo: $0.inicio, midi: $0.midi, empieza: true),
+        notas.flatMap { [Cambio(tiempo: $0.inicio, midi: $0.midi, empieza: true),
                            Cambio(tiempo: $0.inicio + $0.duracion, midi: $0.midi, empieza: false)] }
             .sorted { ($0.tiempo, $0.empieza ? 1 : 0) < ($1.tiempo, $1.empieza ? 1 : 0) }
     }
@@ -49,7 +49,7 @@ public struct Sonido: Hashable, Sendable {
 
     /// Una nota sola: la que se toca en un dibujo.
     public static func nota(_ midi: Int, duracion: Double = 0.8) -> Sonido {
-        Sonido(eventos: [NotaMIDI(midi: midi, inicio: 0, duracion: duracion)])
+        Sonido(notas: [NotaMIDI(midi: midi, inicio: 0, duracion: duracion)])
     }
 
     /// Un acorde desde su bajo, en posición cerrada a partir de Do3: primero arpegiado y luego junto.
@@ -57,7 +57,7 @@ public struct Sonido: Hashable, Sendable {
         let midis = cerrada(acorde.notasDesdeElBajo, desde: 48)
         let paso = 0.12
         let final = paso * Double(midis.count)
-        return Sonido(eventos: midis.enumerated().map { i, midi in
+        return Sonido(notas: midis.enumerated().map { i, midi in
             NotaMIDI(midi: midi, inicio: paso * Double(i), duracion: final - paso * Double(i) + 1.2)
         })
     }
@@ -68,7 +68,7 @@ public struct Sonido: Hashable, Sendable {
         guard let tonica = subida.first else { return .silencio }
         let midis = subida + [tonica + 12]
         let paso = 0.3
-        return Sonido(eventos: midis.enumerated().map { i, midi in
+        return Sonido(notas: midis.enumerated().map { i, midi in
             NotaMIDI(midi: midi, inicio: paso * Double(i), duracion: paso * 0.9)
         })
     }
@@ -88,9 +88,9 @@ public struct Sonido: Hashable, Sendable {
 
     /// Una voz con su ritmo: los silencios callan y las notas ligadas suenan como una sola.
     ///
-    ///     Sonido.voz(try Voz(leyendo: "Do4:4 Re4:8 -:8 Mi4:2")).eventos.map(\.inicio)   // [0, 0.83, 1.67]
+    ///     Sonido.voz(try Voz(leyendo: "Do4:4 Re4:8 -:8 Mi4:2")).notas.map(\.inicio)   // [0, 0.83, 1.67]
     public static func voz(_ voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
-        Sonido(eventos: notas(de: voz, tempo: tempo).flatMap { nota in
+        Sonido(notas: notas(de: voz, tempo: tempo).flatMap { nota in
             nota.alturas.map { NotaMIDI(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
         })
     }
@@ -98,7 +98,7 @@ public struct Sonido: Hashable, Sendable {
     /// Acordes con sus alturas escritas que empiezan y duran lo que las notas de una voz: el coral de una
     /// melodía con ritmo. Si hay más acordes que notas, los que sobran no suenan.
     public static func coral(_ acordes: [[Altura]], conElRitmoDe voz: Voz, tempo: Tempo = Sonido.tempo) -> Sonido {
-        Sonido(eventos: zip(acordes, notas(de: voz, tempo: tempo)).flatMap { acorde, nota in
+        Sonido(notas: zip(acordes, notas(de: voz, tempo: tempo)).flatMap { acorde, nota in
             acorde.map { NotaMIDI(midi: $0.midi, inicio: nota.inicio, duracion: nota.duracion * 0.95) }
         })
     }
@@ -123,7 +123,7 @@ public struct Sonido: Hashable, Sendable {
     }
 
     static func grupos(_ grupos: [[Int]], duracion: Double) -> Sonido {
-        Sonido(eventos: grupos.enumerated().flatMap { i, midis in
+        Sonido(notas: grupos.enumerated().flatMap { i, midis in
             midis.map { NotaMIDI(midi: $0, inicio: duracion * Double(i), duracion: duracion * 0.92) }
         })
     }

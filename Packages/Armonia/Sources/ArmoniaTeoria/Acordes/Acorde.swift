@@ -109,7 +109,7 @@ public struct Acorde: Hashable, Sendable {
         let tipo = self.tipo.nombre(en: notacion)
         let inversiones: [String]
         let inversionN: String, conBajo: String
-        switch notacion.idiomaDeLosTextos {
+        switch notacion.textos {
         case .espanol:
             inversiones = ["estado fundamental", "primera inversión", "segunda inversión", "tercera inversión",
                            "cuarta inversión", "quinta inversión"]
@@ -146,7 +146,7 @@ public struct Acorde: Hashable, Sendable {
         }
         guard let i = inversion else { return "\(raiz) \(tipo), \(conBajo)" }
         let detalle = i < inversiones.count ? inversiones[i]
-            : (notacion.idiomaDeLosTextos == .euskera ? "\(i). \(inversionN)" : "\(inversionN) \(i)")
+            : (notacion.textos == .euskera ? "\(i). \(inversionN)" : "\(inversionN) \(i)")
         return "\(raiz) \(tipo), \(detalle)"
     }
 

@@ -276,5 +276,5 @@ for coral in ["Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 
     let conduccion = try! Coral(leyendo: coral)
     print("  \(coral)")
     if conduccion.esCorrecta { print("    correcta") }
-    for problema in conduccion.problemas { print("    \(problema)") }
+    for problema in conduccion.faltas { print("    \(problema)") }
 }

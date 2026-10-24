@@ -2,9 +2,9 @@ import Armonia
 import Hexagonos
 import ArmoniaPresentacion
 
-/// La parte de `DiagramaHexagonal` que no es dibujo: cómo se encaja un mapa en el espacio que hay, qué
+/// La parte de `DiagramaDeRejilla` que no es dibujo: cómo se encaja un mapa en el espacio que hay, qué
 /// casilla se ha tocado y cómo se describe a VoiceOver. No usa SwiftUI, así que se prueba también en Linux.
-enum PresentacionHexagonal {
+enum PresentacionDeRejilla {
     /// La proporción (ancho / alto) que ocupan los hexágonos de `casillas`, o `nil` si no hay ninguna.
     static func proporcion(de casillas: [CoordenadaAxial], orientacion: Orientacion) -> Double? {
         guard let caja = Trazado(orientacion: orientacion, tamano: 1).limites(de: casillas) else { return nil }

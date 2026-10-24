@@ -177,10 +177,10 @@ por barras o comas:
 
 ```swift
 let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
-c.problemas.map(\.tipo) == [.quintasParalelas, .octavasParalelas]   // true
-c.problemas[0].voces                  // [0, 1]
-c.problemas[0].description            // "Quintas paralelas entre bajo y tenor (acordes 1 → 2)"
-c.problemas[0].descripcion(en: .ingles)   // "Parallel fifths between bass and tenor (chords 1 → 2)"
+c.faltas.map(\.tipo) == [.quintasParalelas, .octavasParalelas]   // true
+c.faltas[0].voces                  // [0, 1]
+c.faltas[0].description            // "Quintas paralelas entre bajo y tenor (acordes 1 → 2)"
+c.faltas[0].descripcion(en: .ingles)   // "Parallel fifths between bass and tenor (chords 1 → 2)"
 
 try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5").esCorrecta   // true
 Coral(voces: [["Do3", "Sol2"], ["Mi4", "Re4"], ["Sol4", "Sol4"], ["Do5", "Si4"]])?.esCorrecta          // true

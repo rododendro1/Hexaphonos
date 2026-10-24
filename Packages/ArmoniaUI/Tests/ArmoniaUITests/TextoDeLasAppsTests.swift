@@ -82,7 +82,7 @@ final class TextoDeLasAppsTests: XCTestCase {
     }
 
     func testLoQueLeeVoiceOverVaEnElIdiomaDeLosTextos() {
-        let marcas = [Posicion(cuerda: 1, traste: 3), Posicion(cuerda: 0, traste: 0)]
+        let marcas = [PosicionEnElMastil(cuerda: 1, traste: 3), PosicionEnElMastil(cuerda: 0, traste: 0)]
         XCTAssertEqual(PresentacionDeMastil.descripcion(marcas: marcas, apagadas: [5], en: .ingles),
                        "string 1, fret 0; string 2, fret 3; muted strings: 6")
         XCTAssertEqual(PresentacionDeMastil.descripcion(marcas: [], apagadas: [], en: .frances), "Aucune marque")
@@ -90,7 +90,7 @@ final class TextoDeLasAppsTests: XCTestCase {
                        "Ukulele neck, frets 0 to 5")
         XCTAssertEqual(PresentacionDeMastil.etiqueta(de: Mastil(.guitarra), rango: 3...7, en: .espanol),
                        "Mástil de guitarra, trastes 3 a 7")
-        XCTAssertEqual(PresentacionHexagonal.descripcion(casillas: 1, seleccionada: nil, en: .ingles), "1 cell")
+        XCTAssertEqual(PresentacionDeRejilla.descripcion(casillas: 1, seleccionada: nil, en: .ingles), "1 cell")
         XCTAssertEqual(Notacion.euskera.texto(.casillas(19)), "19 gelaxka")
     }
 

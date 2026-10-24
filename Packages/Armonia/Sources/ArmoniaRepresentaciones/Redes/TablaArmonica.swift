@@ -36,7 +36,7 @@ public struct TablaArmonica: Hashable, Sendable {
     }
 
     /// Los hexágonos de las notas, en el orden en que se dieron (sin repetir).
-    public let puntos: [PuntoDelTonnetz]
+    public let puntos: [PuntoDeLaRed]
     public let colocacion: Colocacion
     /// Las alturas dadas, con la colocación `.alturas`.
     public let alturas: [Altura]
@@ -45,7 +45,7 @@ public struct TablaArmonica: Hashable, Sendable {
     /// Las tríadas de un recorrido, en orden (`init(recorrido:)`); vacío si no lo es.
     public private(set) var recorrido: [Tonnetz.Triada] = []
     /// En un ciclo, el nombre de cada hexágono y las tríadas con su ortografía, como en el Tonnetz.
-    package var nombres: [PuntoDelTonnetz: Nota] = [:]
+    package var nombres: [PuntoDeLaRed: Nota] = [:]
     package var acordesDelRecorrido: [Acorde] = []
 
     /// Las notas como en el Tonnetz, con los nombres de un ciclo si lo es.
@@ -121,7 +121,7 @@ public struct TablaArmonica: Hashable, Sendable {
             // las que se buscan para que siempre haya alguno.
             ((filas.lowerBound - 3)...(filas.upperBound + 3)).compactMap { b in
                 let resto = midi - 60 - 4 * b
-                return modulo(resto, 7) == 0 ? PuntoDelTonnetz(quintas: resto / 7, terceras: b) : nil
+                return modulo(resto, 7) == 0 ? PuntoDeLaRed(quintas: resto / 7, terceras: b) : nil
             }
         }
         colocacion = .alturas
@@ -130,7 +130,7 @@ public struct TablaArmonica: Hashable, Sendable {
     }
 
     /// El número MIDI del hexágono, como en el instrumento: Do4 (60) en (0, 0).
-    public static func midi(de punto: PuntoDelTonnetz) -> Int { 60 + 7 * punto.quintas + 4 * punto.terceras }
+    public static func midi(de punto: PuntoDeLaRed) -> Int { 60 + 7 * punto.quintas + 4 * punto.terceras }
 
     /// Las tríadas mayores y menores completas: tres hexágonos que se tocan en un vértice.
     public var triadas: [Tonnetz.Triada] {
@@ -165,31 +165,31 @@ public struct TablaArmonica: Hashable, Sendable {
         let coseno = 0.8660254037844386   // cos 30°
         let trazado = TablaArmonica.trazado(paso: paso)
         let radio = trazado.tamano.x   // del centro a un vértice
-        func x(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: TablaArmonica.coordenada(de: p)).x }
-        func y(_ p: PuntoDelTonnetz) -> Double { trazado.centro(de: TablaArmonica.coordenada(de: p)).y }
+        func x(_ p: PuntoDeLaRed) -> Double { trazado.centro(de: TablaArmonica.coordenada(de: p)).x }
+        func y(_ p: PuntoDeLaRed) -> Double { trazado.centro(de: TablaArmonica.coordenada(de: p)).y }
         /// Los seis vértices, empezando por el de la derecha (0°) y en sentido horario en pantalla.
-        func vertices(_ p: PuntoDelTonnetz) -> [(Double, Double)] {
+        func vertices(_ p: PuntoDeLaRed) -> [(Double, Double)] {
             trazado.vertices(de: TablaArmonica.coordenada(de: p)).map { ($0.x, $0.y) }
         }
 
         // La ventana: un rectángulo alrededor de las notas.
-        let base = puntos.isEmpty ? [PuntoDelTonnetz(quintas: 0, terceras: 0)] : puntos
+        let base = puntos.isEmpty ? [PuntoDeLaRed(quintas: 0, terceras: 0)] : puntos
         let minX = base.map(x).min()! - Double(margen) * coseno * paso - paso * 0.1
         let maxX = base.map(x).max()! + Double(margen) * coseno * paso + paso * 0.1
         let minY = base.map(y).min()! - Double(margen) * paso - paso * 0.1
         let maxY = base.map(y).max()! + Double(margen) * paso + paso * 0.1
-        var red: [PuntoDelTonnetz] = []
+        var red: [PuntoDeLaRed] = []
         let columnas = Int((minX / (coseno * paso)).rounded(.up))...Int((maxX / (coseno * paso)).rounded(.down))
         for b in columnas {
             // y = −(a + b/2)·paso entre minY y maxY.
             let desde = Int((-maxY / paso - Double(b) / 2).rounded(.up))
             let hasta = Int((-minY / paso - Double(b) / 2).rounded(.down))
-            if desde <= hasta { for a in desde...hasta { red.append(PuntoDelTonnetz(quintas: a, terceras: b)) } }
+            if desde <= hasta { for a in desde...hasta { red.append(PuntoDeLaRed(quintas: a, terceras: b)) } }
         }
 
         // Los hexágonos marcados (con clases de altura o alturas, todos los que suenan igual) y los
         // de la primera nota.
-        let clave: ((PuntoDelTonnetz) -> Int)?
+        let clave: ((PuntoDeLaRed) -> Int)?
         switch colocacion {
         case .notas: clave = nil
         case .clasesDeAltura: clave = { $0.claseDeAltura }
@@ -202,7 +202,7 @@ public struct TablaArmonica: Hashable, Sendable {
         // Con bemoles en las alturas dadas, los demás hexágonos también los usan.
         let bemoles = alturas.contains { $0.nota.alteracion.simbolo.contains("♭") }
         let rotulos = comoTonnetz
-        func nombre(_ p: PuntoDelTonnetz) -> String {
+        func nombre(_ p: PuntoDeLaRed) -> String {
             switch colocacion {
             case .notas: return rotulos.nombre(de: p).nombreCompacto(en: notacion)
             case .clasesDeAltura: return String(p.claseDeAltura)
@@ -219,7 +219,7 @@ public struct TablaArmonica: Hashable, Sendable {
         let ancho = maxX - minX + 2 * (radio + borde), alto = maxY - minY + paso + 2 * borde
         let f = DibujoSVG.f
         /// El vértice a `angulo` grados (un múltiplo de 60°).
-        func vertice(_ p: PuntoDelTonnetz, _ angulo: Double) -> (Double, Double) {
+        func vertice(_ p: PuntoDeLaRed, _ angulo: Double) -> (Double, Double) {
             vertices(p)[modulo(Int(angulo) / 60, 6)]
         }
 
@@ -237,7 +237,7 @@ public struct TablaArmonica: Hashable, Sendable {
                                                     ((-1, 0), 90), ((0, -1), 150), ((1, -1), 210)]
         for punto in red where marcados.contains(punto) {
             for (desplazamiento, angulo) in direcciones {
-                let vecino = PuntoDelTonnetz(quintas: punto.quintas + desplazamiento.0, terceras: punto.terceras + desplazamiento.1)
+                let vecino = PuntoDeLaRed(quintas: punto.quintas + desplazamiento.0, terceras: punto.terceras + desplazamiento.1)
                 guard !marcados.contains(vecino) else { continue }
                 let (x1, y1) = vertice(punto, angulo - 30), (x2, y2) = vertice(punto, angulo + 30)
                 svg += "  <line x1=\"\(f(x1))\" y1=\"\(f(y1))\" x2=\"\(f(x2))\" y2=\"\(f(y2))\" stroke=\"#111111\" stroke-width=\"3\" stroke-linecap=\"round\"/>\n"

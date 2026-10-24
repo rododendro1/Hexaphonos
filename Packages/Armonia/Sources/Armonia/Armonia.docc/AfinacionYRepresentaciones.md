@@ -84,9 +84,9 @@ acorde de Fa♯ no comparte puntos con uno de Sol♭. Con clases de altura, en c
 toro de doce puntos y cada clase se repite.
 
 ```swift
-PuntoDelTonnetz(quintas: 0, terceras: 1).nota            // Mi
-PuntoDelTonnetz(quintas: 1, terceras: -1).nota           // Mi♭
-PuntoDelTonnetz(quintas: 4, terceras: -1).claseDeAltura  // 0
+PuntoDeLaRed(quintas: 0, terceras: 1).nota            // Mi
+PuntoDeLaRed(quintas: 1, terceras: -1).nota           // Mi♭
+PuntoDeLaRed(quintas: 4, terceras: -1).claseDeAltura  // 0
 "\(Tonnetz(Acorde("Do")))"                               // "Do (0, 0) · Mi (0, 1) · Sol (1, 0)"
 Tonnetz(Acorde("Domaj7")).triadas.map(\.acorde) == [Acorde("Do"), Acorde("Mim")]   // true
 Tonnetz(Escala(.do)).esConexo                            // true
@@ -219,7 +219,7 @@ el instrumento: el hexágono `(a, b)` está 7a + 4b semitonos por encima de Do4,
 Do4–Mi4–Sol4 es una tríada y Do3–Mi4–Sol4 no.
 
 ```swift
-TablaArmonica.midi(de: PuntoDelTonnetz(quintas: 1, terceras: 0)) == 67    // true
+TablaArmonica.midi(de: PuntoDeLaRed(quintas: 1, terceras: 0)) == 67    // true
 TablaArmonica(Acorde("Domaj7")).triadas.map(\.acorde) == [Acorde("Do"), Acorde("Mim")]   // true
 TablaArmonica([Altura("Do4"), Altura("Mi4"), Altura("Sol4")]).triadas.count == 1   // true
 TablaArmonica([Altura("Do3"), Altura("Mi4"), Altura("Sol4")]).triadas.count == 0   // true
@@ -265,10 +265,10 @@ nota.
 ```swift
 import Hexagonos
 
-let mi = PuntoDelTonnetz(quintas: 0, terceras: 1)
+let mi = PuntoDeLaRed(quintas: 0, terceras: 1)
 mi.coordenada == CoordenadaAxial(q: 0, r: 1)                           // true
-PuntoDelTonnetz(CoordenadaAxial(q: 1, r: 0)).nota == .sol               // true
-Tonnetz.punto(en: Punto(x: 60, y: 3), paso: 64) == PuntoDelTonnetz(quintas: 1, terceras: 0)   // true
+PuntoDeLaRed(CoordenadaAxial(q: 1, r: 0)).nota == .sol               // true
+Tonnetz.punto(en: Punto(x: 60, y: 3), paso: 64) == PuntoDeLaRed(quintas: 1, terceras: 0)   // true
 TablaArmonica.coordenada(de: mi) == CoordenadaAxial(q: 1, r: -1)        // true
 ```
 

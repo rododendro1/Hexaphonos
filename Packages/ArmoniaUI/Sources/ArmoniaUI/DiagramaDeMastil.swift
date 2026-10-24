@@ -12,7 +12,7 @@ import Armonia
 /// izquierda, y las apagadas con una ×.
 public struct DiagramaDeMastil: View {
     public let mastil: Mastil
-    public let marcas: [Posicion]
+    public let marcas: [PosicionEnElMastil]
     /// Los trastes que se dibujan (el 0 es la cuerda al aire).
     public let rango: ClosedRange<Int>
     /// Escribe el nombre de la nota dentro de cada marca.
@@ -23,7 +23,7 @@ public struct DiagramaDeMastil: View {
     public let ortografia: [Int: Nota]
     public let notacion: Notacion
 
-    public init(mastil: Mastil, marcas: [Posicion] = [], rango: ClosedRange<Int> = 0...12, etiquetas: Bool = true,
+    public init(mastil: Mastil, marcas: [PosicionEnElMastil] = [], rango: ClosedRange<Int> = 0...12, etiquetas: Bool = true,
                 apagadas: Set<Int> = [], ortografia: [Int: Nota] = [:], notacion: Notacion = .espanol) {
         self.mastil = mastil
         self.marcas = marcas
@@ -106,7 +106,7 @@ public struct DiagramaDeMastil: View {
         // Madera.
         let tabla = CGRect(x: inicioX, y: yMinimo - 4, width: tamano.width - margenX - inicioX,
                            height: yMaximo - yMinimo + 8)
-        contexto.fill(Path(roundedRect: tabla, cornerRadius: 4), with: .color(TemaHexaphonos.madera.opacity(0.45)))
+        contexto.fill(Path(roundedRect: tabla, cornerRadius: 4), with: .color(TemaDeLasApps.madera.opacity(0.45)))
 
         // Trastes y cejilla.
         for traste in rango {
@@ -115,7 +115,7 @@ public struct DiagramaDeMastil: View {
             linea.move(to: CGPoint(x: xBorde, y: yMinimo - 4))
             linea.addLine(to: CGPoint(x: xBorde, y: yMaximo + 4))
             let esCejilla = traste == 0
-            contexto.stroke(linea, with: .color(esCejilla ? TemaHexaphonos.maderaOscura : .gray),
+            contexto.stroke(linea, with: .color(esCejilla ? TemaDeLasApps.maderaOscura : .gray),
                             lineWidth: esCejilla ? 4 : 1)
             // Números de traste y puntos de referencia.
             if traste > 0 {
@@ -146,7 +146,7 @@ public struct DiagramaDeMastil: View {
             } else if canal && alAire.contains(cuerda) {
                 let r = radio * 0.7
                 let circulo = CGRect(x: xDelCanal - r, y: y(de: cuerda) - r, width: 2 * r, height: 2 * r)
-                contexto.stroke(Path(ellipseIn: circulo), with: .color(TemaHexaphonos.acento), lineWidth: 1.5)
+                contexto.stroke(Path(ellipseIn: circulo), with: .color(TemaDeLasApps.acento), lineWidth: 1.5)
             }
         }
 
@@ -154,7 +154,7 @@ public struct DiagramaDeMastil: View {
         for posicion in marcas where mastil.contiene(posicion) && rango.contains(posicion.traste) {
             let centro = CGPoint(x: x(centroDe: posicion.traste), y: y(de: posicion.cuerda))
             let circulo = CGRect(x: centro.x - radio, y: centro.y - radio, width: 2 * radio, height: 2 * radio)
-            contexto.fill(Path(ellipseIn: circulo), with: .color(TemaHexaphonos.acento))
+            contexto.fill(Path(ellipseIn: circulo), with: .color(TemaDeLasApps.acento))
             if etiquetas {
                 let altura = mastil.altura(en: posicion)
                 let nota = ortografia[altura.nota.claseDeAltura] ?? altura.nota

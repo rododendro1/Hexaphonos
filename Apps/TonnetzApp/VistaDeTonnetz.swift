@@ -52,7 +52,7 @@ struct VistaDeTonnetz: View {
                             Reproductor.compartido.tocar(.nota(midi))
                         }
                     }
-                    .clipShape(RoundedRectangle(cornerRadius: TemaHexaphonos.radioDeEsquina))
+                    .clipShape(RoundedRectangle(cornerRadius: TemaDeLasApps.radioDeEsquina))
                     .accessibilityLabel(Text(PresentacionDeRedes.nombre(dibujado, en: red, notacion: notacion)))
             } else {
                 Spacer()
@@ -60,7 +60,7 @@ struct VistaDeTonnetz: View {
                 Spacer()
             }
         }
-        .padding(TemaHexaphonos.margen)
+        .padding(TemaDeLasApps.margen)
         .navigationTitle(red.nombre(en: notacion))
         .selectorDeNotacionEnLaBarra()
         .toolbar {

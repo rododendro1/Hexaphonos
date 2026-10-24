@@ -7,7 +7,7 @@ extension Tonalidad.Modo {
     public var nombre: String { self == .mayor ? "mayor" : "menor" }
 
     public func nombre(en notacion: Notacion) -> String {
-        switch notacion.idioma {
+        switch notacion.idiomaDeLasNotas {
         case .espanol: return nombre
         case .ingles: return self == .mayor ? "major" : "minor"
         case .aleman: return self == .mayor ? "Dur" : "Moll"
@@ -31,7 +31,7 @@ extension Tonalidad {
     /// si es menor), "la mineur" en francés, "la minore" en italiano, "ля минор" en ruso, "λα ελάσσονα"
     /// en griego.
     public func nombre(en notacion: Notacion) -> String {
-        guard notacion.idioma == .aleman else { return "\(tonica.nombre(en: notacion)) \(modo.nombre(en: notacion))" }
+        guard notacion.idiomaDeLasNotas == .aleman else { return "\(tonica.nombre(en: notacion)) \(modo.nombre(en: notacion))" }
         let nombreTonica = tonica.nombre(en: .aleman)
         return (modo == .menor ? nombreTonica.lowercased() : nombreTonica) + "-" + modo.nombre(en: .aleman)
     }
@@ -43,7 +43,7 @@ extension Tonalidad {
     /// con el inesivo: "do maiorrean".
     package func lugar(en notacion: Notacion) -> String {
         let completo = self.nombre(en: notacion)
-        switch notacion.idiomaDeLosTextos {
+        switch notacion.textos {
         case .espanol, .catalan, .gallego, .frances: return "en " + completo
         case .portugues: return "em " + completo
         case .ingles, .aleman, .italiano, .occitano, .ruso, .griego: return "in " + completo

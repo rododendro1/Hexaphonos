@@ -201,9 +201,9 @@ public enum PresentacionDeCoral {
             CoralPresentado.Fila(cifrado: Acorde.identificar(alturas).first?.cifrado(en: notacion) ?? "–", grado: "",
                                  voces: voces(alturas, notacion))
         }
-        let problemas = coral.problemas.map(CoralPresentado.Aviso.falta)
+        let faltas = coral.faltas.map(CoralPresentado.Aviso.falta)
         return CoralPresentado(titulo: "", propuestas: [], filas: filas,
-                               avisos: problemas.isEmpty ? [.sinFaltasDeConduccion] : problemas,
+                               avisos: faltas.isEmpty ? [.sinFaltasDeConduccion] : faltas,
                                ficheros: ficheros(coral, nil, notacion, nombre: "Coral"), sonido: .coral(coral.acordes))
     }
 

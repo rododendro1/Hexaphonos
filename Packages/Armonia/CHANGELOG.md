@@ -2,6 +2,21 @@
 
 ## Sin publicar
 
+### Más nombres claros
+
+Sin alias: los nombres anteriores dejan de existir.
+
+- En `Notacion`, `idioma` pasa a ser `idiomaDeLasNotas` y `vocabulario`, `idiomaDeLasAbreviaturas`;
+  `idiomaDeLosTextos` desaparece porque es `textos`, y `Notacion(idioma:ascii:)` también: es
+  `Notacion(escritura: EscrituraDeNotas(idioma:ascii:))`.
+- `Coral.problemas` pasa a ser `Coral.faltas`, como `FaltaDeConduccion`.
+- `Posicion` pasa a llamarse `PosicionEnElMastil`, `Direccion` (ascendente o descendente) pasa a llamarse
+  `SentidoDelIntervalo` y `PuntoDelTonnetz`, `PuntoDeLaRed`, porque también lo usa la tabla armónica.
+- En la línea de comandos, `conduccion` pasa a ser `conduccion-minima` (`minimal-voice-leading`), para no
+  confundirla con `conduccion-parsimoniosa`. Dejan de aceptarse los sinónimos que no estaban en la ayuda:
+  `--progresion` y `--conjunto` (son `--recorrido` y `--clases`), `tabla-armonica` (es `tabla`) y `neorriemanniano`
+  (es `plr`).
+
 ### Sin nombres obsoletos
 
 - Desaparecen los nombres que estaban marcados como obsoletos: `Nomenclatura`, `ConduccionDeVoces`,

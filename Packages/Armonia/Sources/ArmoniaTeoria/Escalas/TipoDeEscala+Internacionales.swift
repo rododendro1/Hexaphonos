@@ -114,7 +114,7 @@ extension TipoDeEscala {
     public func nombre(en notacion: Notacion) -> String {
         // Los nombres propios de otras tradiciones (Kafi, Hitzaz…) son los mismos en todos los idiomas.
         guard !TipoDeEscala.nombresTradicionales.contains(nombre) else { return nombre }
-        switch notacion.idiomaDeLosTextos {
+        switch notacion.textos {
         case .espanol: return nombre
         case .ingles, .aleman, .occitano, .ruso, .griego: return TipoDeEscala.nombreInglesPorTipo[self] ?? nombre
         case .catalan: return TipoDeEscala.nombrePeninsularPorTipo[self]?.catalan ?? nombre

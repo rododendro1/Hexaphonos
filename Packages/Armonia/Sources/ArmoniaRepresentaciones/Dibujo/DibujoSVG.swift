@@ -139,8 +139,8 @@ package enum DibujoSVG {
     /// Los puntos de la ventana que se marcan y, entre ellos, los de la primera nota. Sin `clave`,
     /// los puntos mismos; con ella (la clase de altura o el número MIDI), todos los de la ventana
     /// que suenan como alguno de ellos.
-    package static func marcar(_ puntos: [PuntoDelTonnetz], en red: [PuntoDelTonnetz],
-                       clave: ((PuntoDelTonnetz) -> Int)?) -> (marcados: Set<PuntoDelTonnetz>, primeros: Set<PuntoDelTonnetz>) {
+    package static func marcar(_ puntos: [PuntoDeLaRed], en red: [PuntoDeLaRed],
+                       clave: ((PuntoDeLaRed) -> Int)?) -> (marcados: Set<PuntoDeLaRed>, primeros: Set<PuntoDeLaRed>) {
         guard let clave = clave else { return (Set(puntos), puntos.first.map { [$0] } ?? []) }
         let claves = Set(puntos.map(clave))
         let primera = puntos.first.map(clave)
@@ -149,7 +149,7 @@ package enum DibujoSVG {
 
     /// Las tríadas mayores y menores con los tres vértices marcados y dentro de la ventana, en el
     /// orden de la red (y, en cada punto, primero la mayor).
-    package static func triadas(en red: [PuntoDelTonnetz], marcados: Set<PuntoDelTonnetz>) -> [Tonnetz.Triada] {
+    package static func triadas(en red: [PuntoDeLaRed], marcados: Set<PuntoDeLaRed>) -> [Tonnetz.Triada] {
         let enRed = Set(red)
         return red.flatMap { punto in
             [true, false].compactMap { mayor -> Tonnetz.Triada? in

@@ -34,7 +34,7 @@ enum PresentacionDeMastil {
     }
 
     /// Una descripción corta para VoiceOver, en el idioma de los textos.
-    static func descripcion(marcas: [Posicion], apagadas: Set<Int>, en notacion: Notacion = .espanol) -> String {
+    static func descripcion(marcas: [PosicionEnElMastil], apagadas: Set<Int>, en notacion: Notacion = .espanol) -> String {
         var partes: [String] = []
         if marcas.count > 12 {
             partes.append(notacion.texto(.marcas(marcas.count)))

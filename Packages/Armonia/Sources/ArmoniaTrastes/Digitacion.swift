@@ -46,9 +46,9 @@ public struct Digitacion: Hashable, Sendable, CustomStringConvertible {
     }
 
     /// Las posiciones que suenan, de la cuerda más grave a la más aguda.
-    public var posiciones: [Posicion] {
+    public var posiciones: [PosicionEnElMastil] {
         trastes.enumerated().compactMap { cuerda, traste in
-            traste.map { Posicion(cuerda: cuerda, traste: $0) }
+            traste.map { PosicionEnElMastil(cuerda: cuerda, traste: $0) }
         }
     }
 

@@ -120,7 +120,7 @@ extension FaltaDeConduccion.Tipo: Nombrable, CustomStringConvertible {
 /// Una sucesión de acordes escritos voz por voz, para comprobar su conducción.
 ///
 ///     let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
-///     c.problemas.map(\.tipo)   // [.quintasParalelas, .octavasParalelas]
+///     c.faltas.map(\.tipo)   // [.quintasParalelas, .octavasParalelas]
 ///
 /// Cada acorde lleva sus alturas de grave a agudo, y todos tienen el mismo número de voces.
 /// A cuatro voces se comprueban también las tesituras: bajo Mi2–Do4, tenor Do3–Sol4,
@@ -186,19 +186,19 @@ public struct Coral: Hashable, Sendable {
     public func voz(_ indice: Int) -> [Altura] { acordes.map { $0[indice] } }
 
     /// Todas las faltas, en orden de aparición.
-    public var problemas: [FaltaDeConduccion] {
-        var problemas: [FaltaDeConduccion] = []
+    public var faltas: [FaltaDeConduccion] {
+        var faltas: [FaltaDeConduccion] = []
         let n = numeroDeVoces
         for (i, acorde) in acordes.enumerated() {
             Coral.faltas(en: acorde) { tipo, voces in
-                problemas.append(FaltaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
+                faltas.append(FaltaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
             }
             guard i + 1 < acordes.count else { continue }
             Coral.faltas(de: acorde, a: acordes[i + 1]) { tipo, voces in
-                problemas.append(FaltaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
+                faltas.append(FaltaDeConduccion(tipo: tipo, acorde: i, voces: voces, numeroDeVoces: n))
             }
         }
-        return problemas
+        return faltas
     }
 
     /// Las faltas dentro de un acorde: cruces, separación y tesituras (estas, solo a cuatro voces).
@@ -264,7 +264,7 @@ public struct Coral: Hashable, Sendable {
     }
 
     /// `true` si no hay ninguna falta.
-    public var esCorrecta: Bool { problemas.isEmpty }
+    public var esCorrecta: Bool { faltas.isEmpty }
 
     // MARK: Auxiliares
 

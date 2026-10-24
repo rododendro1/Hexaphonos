@@ -81,7 +81,7 @@ final class ArmonizacionTests: XCTestCase {
         guard let coral = Coral.realizar(acordes, en: tonalidad) else {
             return XCTFail("«\(texto)» no se realiza", file: file, line: line)
         }
-        XCTAssertEqual(coral.problemas, [], texto, file: file, line: line)
+        XCTAssertEqual(coral.faltas, [], texto, file: file, line: line)
         XCTAssertEqual(coral.acordes.count, acordes.count, file: file, line: line)
         for (acorde, voces) in zip(acordes, coral.acordes) {
             let notas = voces.map(\.nota)
@@ -180,7 +180,7 @@ final class ArmonizacionTests: XCTestCase {
             guard let armonizada = tonalidad.armonizarACuatroVoces(melodia) else { continue }
             realizadas += 1
             XCTAssertEqual(armonizada.coral.voz(3), melodia)
-            XCTAssertEqual(armonizada.coral.problemas, [], "\(melodia)")
+            XCTAssertEqual(armonizada.coral.faltas, [], "\(melodia)")
         }
         XCTAssertGreaterThanOrEqual(realizadas, 18)
     }

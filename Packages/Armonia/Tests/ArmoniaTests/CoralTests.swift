@@ -9,7 +9,7 @@ final class CoralTests: XCTestCase {
     private func problemas(_ texto: String, file: StaticString = #filePath, line: UInt = #line)
         -> [FaltaDeConduccion.Tipo] {
         do {
-            return try Coral(leyendo: texto).problemas.map(\.tipo)
+            return try Coral(leyendo: texto).faltas.map(\.tipo)
         } catch {
             XCTFail("«\(texto)»: \(error)", file: file, line: line)
             return []
@@ -18,7 +18,7 @@ final class CoralTests: XCTestCase {
 
     func testCadenciaCorrecta() throws {
         let c = try Coral(leyendo: "Do3 Mi4 Sol4 Do5 | Fa3 Fa4 La4 Do5 | Sol2 Re4 Sol4 Si4 | Do3 Mi4 Sol4 Do5")
-        XCTAssertEqual(c.problemas, [])
+        XCTAssertEqual(c.faltas, [])
         XCTAssertTrue(c.esCorrecta)
         XCTAssertEqual(c.numeroDeVoces, 4)
         XCTAssertEqual(c.voz(3).map(\.nombre), ["Do5", "Do5", "Si4", "Do5"])
@@ -26,15 +26,15 @@ final class CoralTests: XCTestCase {
 
     func testParalelas() throws {
         let c = try Coral(leyendo: "Do3 Sol3 Mi4 Do5 | Re3 La3 Fa4 Re5")
-        XCTAssertEqual(c.problemas.map(\.tipo), [.quintasParalelas, .octavasParalelas])
-        XCTAssertEqual(c.problemas.map(\.voces), [[0, 1], [0, 3]])
-        XCTAssertEqual(c.problemas.map(\.acorde), [0, 0])
-        XCTAssertEqual(c.problemas.map(\.description), ["Quintas paralelas entre bajo y tenor (acordes 1 → 2)",
+        XCTAssertEqual(c.faltas.map(\.tipo), [.quintasParalelas, .octavasParalelas])
+        XCTAssertEqual(c.faltas.map(\.voces), [[0, 1], [0, 3]])
+        XCTAssertEqual(c.faltas.map(\.acorde), [0, 0])
+        XCTAssertEqual(c.faltas.map(\.description), ["Quintas paralelas entre bajo y tenor (acordes 1 → 2)",
                                                          "Octavas paralelas entre bajo y soprano (acordes 1 → 2)"])
-        XCTAssertEqual(c.problemas[0].descripcion(en: .ingles), "Parallel fifths between bass and tenor (chords 1 → 2)")
-        XCTAssertEqual(c.problemas[0].descripcion(en: .gallego), "Quintas paralelas entre baixo e tenor (acordes 1 → 2)")
-        XCTAssertEqual(c.problemas[1].descripcion(en: .catalan), "Octaves paral·leles entre baix i soprano (acords 1 → 2)")
-        XCTAssertEqual(c.problemas[0].descripcion(en: .euskera), "Bosgarren paraleloak baxua eta tenorra (1 → 2 akordeak)")
+        XCTAssertEqual(c.faltas[0].descripcion(en: .ingles), "Parallel fifths between bass and tenor (chords 1 → 2)")
+        XCTAssertEqual(c.faltas[0].descripcion(en: .gallego), "Quintas paralelas entre baixo e tenor (acordes 1 → 2)")
+        XCTAssertEqual(c.faltas[1].descripcion(en: .catalan), "Octaves paral·leles entre baix i soprano (acords 1 → 2)")
+        XCTAssertEqual(c.faltas[0].descripcion(en: .euskera), "Bosgarren paraleloak baxua eta tenorra (1 → 2 akordeak)")
         // Por movimiento contrario también cuentan; el unísono es una octava.
         XCTAssertEqual(problemas("Do3 Sol3 Mi4 Do5 | Sol2 Re4 Sol4 Si4"), [.quintasParalelas])
         XCTAssertEqual(problemas("Do4 Do4 Sol4 | Re4 Re4 La4"), [.superposicion, .octavasParalelas, .quintasParalelas, .quintasParalelas])
@@ -62,8 +62,8 @@ final class CoralTests: XCTestCase {
         // Entre bajo y tenor sí puede haber más de una octava.
         XCTAssertEqual(problemas("Do2 Mi3 Sol3 Do4"), [.fueraDeTesitura])
         let c = try Coral(leyendo: "Do2 Mi3 Sol3 Do4")
-        XCTAssertEqual(c.problemas[0].voces, [0])
-        XCTAssertEqual(c.problemas[0].description, "Fuera de tesitura en bajo (acorde 1)")
+        XCTAssertEqual(c.faltas[0].voces, [0])
+        XCTAssertEqual(c.faltas[0].description, "Fuera de tesitura en bajo (acorde 1)")
         // Con otro número de voces no hay tesituras.
         XCTAssertEqual(problemas("Do2 Sol5 Do6"), [])
     }
@@ -76,7 +76,7 @@ final class CoralTests: XCTestCase {
         XCTAssertEqual(problemas("Do3 Do4 | Do3 Do5"), [])
         XCTAssertEqual(problemas("Do3 Do4 | Do3 Do#4"), [])
         let c = try Coral(leyendo: "Fa3 Do4 La4 Fa5 | Sol#3 Si3 Mi4 Si4")
-        XCTAssertEqual(c.problemas[0].descripcion(en: .ingles), "Unmelodic leap in the bass (chords 1 → 2)")
+        XCTAssertEqual(c.faltas[0].descripcion(en: .ingles), "Unmelodic leap in the bass (chords 1 → 2)")
     }
 
     func testConstruccion() throws {

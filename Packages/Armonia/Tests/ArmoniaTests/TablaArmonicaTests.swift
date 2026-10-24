@@ -6,7 +6,7 @@ import XCTest
 @testable import ArmoniaPartitura
 
 final class TablaArmonicaTests: XCTestCase {
-    private func punto(_ a: Int, _ b: Int) -> PuntoDelTonnetz { PuntoDelTonnetz(quintas: a, terceras: b) }
+    private func punto(_ a: Int, _ b: Int) -> PuntoDeLaRed { PuntoDeLaRed(quintas: a, terceras: b) }
 
     func testNotas() {
         let tabla = TablaArmonica(Acorde("Do"))
@@ -17,7 +17,7 @@ final class TablaArmonicaTests: XCTestCase {
         XCTAssertTrue(TablaArmonica(Escala(.re, .dorico)).esConexo)
         XCTAssertEqual(TablaArmonica(ConjuntoDeClases([0, 3, 7])).colocacion, .clasesDeAltura)
         // La forma es la misma en todas las tonalidades: transportar es desplazar los hexágonos.
-        let forma = { (tabla: TablaArmonica) -> [PuntoDelTonnetz] in
+        let forma = { (tabla: TablaArmonica) -> [PuntoDeLaRed] in
             tabla.puntos.map { self.punto($0.quintas - tabla.puntos[0].quintas, $0.terceras - tabla.puntos[0].terceras) }
         }
         for tonica in [Nota.re, Nota(.mi, .bemol), Nota(.fa, .sostenido), .si] {

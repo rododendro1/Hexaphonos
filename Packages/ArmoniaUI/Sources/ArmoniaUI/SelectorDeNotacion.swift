@@ -51,7 +51,7 @@ public struct SelectorDeNotacion: View {
 
 /// El selector, guardando la notación en los ajustes de las apps.
 struct SelectorDeNotacionGuardada: View {
-    @AppStorage(AjustesHexaphonos.claveDeNotacion) private var clave = Notacion.delSistema().clave
+    @AppStorage(AjustesDeLasApps.claveDeNotacion) private var clave = Notacion.delSistema().clave
 
     var body: some View {
         SelectorDeNotacion(clave: $clave)

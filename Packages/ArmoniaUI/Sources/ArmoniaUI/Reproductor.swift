@@ -20,7 +20,7 @@ public final class Reproductor {
 
     public func tocar(_ sonido: Sonido) {
         detener()
-        guard !sonido.eventos.isEmpty, preparar() else { return }
+        guard !sonido.notas.isEmpty, preparar() else { return }
         let cambios = sonido.cambios
         tarea = Task {
             var ahora = 0.0
@@ -90,7 +90,7 @@ public struct BotonDeEscuchar: View {
         } label: {
             Label(notacion.texto(.escuchar), systemImage: "play.circle")
         }
-        .disabled(sonido.eventos.isEmpty)
+        .disabled(sonido.notas.isEmpty)
     }
 }
 #endif

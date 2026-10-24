@@ -76,7 +76,7 @@ $ swift run armonia midi acordes Do Lam Re7 Sol7 Do --tempo 80 > progresion.mid
 $ swift run armonia tonnetz --escala "Re dórico" > dorico.svg
 $ swift run armonia tonnetz --recorrido Do Lam Fa Rem > recorrido.svg
 $ swift run armonia tabla Do3 Sol3 Mi4 Si4 > tabla.svg
-$ swift run armonia conduccion Sol7 Do
+$ swift run armonia conduccion-minima Sol7 Do
 Sol→Sol, Si→Do (+1), Re→Do (−2), Fa→Mi (−1): 4 semitonos
 
 $ swift run armonia plr Do PLR
@@ -152,14 +152,14 @@ Lo interno que se usa entre capas es `package`, no público. Un módulo solo usa
                                        └── ArmoniaTrastes
 
 Un fichero por concepto: el tipo principal junto con sus tipos auxiliares y sus extensiones
-(`Intervalo.swift` contiene también `Direccion`, `CalidadDeIntervalo` y `Consonancia`). Solo se separa en
+(`Intervalo.swift` contiene también `SentidoDelIntervalo`, `CalidadDeIntervalo` y `Consonancia`). Solo se separa en
 `Tipo+Tema.swift` lo que es largo y tiene entidad propia, como la identificación de acordes o la
 ortografía de las escalas. La conformidad a cada protocolo va en el fichero del tipo.
 
 ```
 Sources/
 ├── ArmoniaNucleo/
-│   ├── Fundamentos/       Nota (con NotaNatural y Alteracion), Altura, Intervalo (con Direccion,
+│   ├── Fundamentos/       Nota (con NotaNatural y Alteracion), Altura, Intervalo (con SentidoDelIntervalo,
 │   │                      CalidadDeIntervalo, Consonancia), Candidato, Protocolos, Aritmetica
 │   ├── Texto/             Idiomas (los nombres que dependen del idioma, de los tipos del núcleo), Notacion (con Idioma y
 │   │                      EstiloDeCifrado), Lector, ErrorDeLectura
@@ -188,7 +188,7 @@ Sources/
 │   │                  Pentagrama (Clave, PosicionEnPentagrama, InstrumentoDePartitura)
 │   └── Formatos/      MusicXML (exportación de voces y corales),
 │                      MIDI (ficheros MIDI estándar de voces, corales y progresiones)
-├── ArmoniaTrastes/    Encordado (afinaciones del instrumento), Mastil (con Posicion: dónde suena cada nota),
+├── ArmoniaTrastes/    Encordado (afinaciones del instrumento), Mastil (con PosicionEnElMastil: dónde suena cada nota),
 │                      Digitacion (formas de tocar un acorde en el mástil)
 └── Armonia/           el módulo paraguas, sin código propio: Exportaciones (reexporta los cinco)
     │                  y la documentación
