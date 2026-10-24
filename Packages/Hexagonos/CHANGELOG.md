@@ -13,6 +13,8 @@ Rejillas hexagonales sin dependencias, solo con la biblioteca estándar y Founda
   `alcanzables(presupuesto:)` (Dijkstra).
 - `MapaHexagonal<Valor>`: un valor por casilla, con vecinas, simetrías, caminos y visibilidad, y `Codable`.
 - Dibujo: `Trazado` (puntiaguda o plana), `centro(de:)`, `casilla(en:)`, `vertices(de:)` y `svg(_:)`.
+- Un ejemplo ejecutable, `Ejemplos/EjemploHexagonos` (`swift run EjemploHexagonos`), que recorre la API y dibuja
+  los mapas en el terminal.
 
 ### Terminología
 

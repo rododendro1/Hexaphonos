@@ -2,6 +2,9 @@
 
 ## Sin publicar
 
+- El ejemplo vuelve a llamarse `EjemploArmonia` (`Ejemplos/EjemploArmonia`, `swift run EjemploArmonia`), como el
+  nuevo `EjemploHexagonos`.
+
 ### Código
 
 - `ErrorDeLectura` explica sus motivos con un solo `switch` que devuelve una `Traduccion`, en lugar de uno

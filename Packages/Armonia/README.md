@@ -132,8 +132,8 @@ swift test --filter "^ArmoniaDocumentacionTests\."  # los ejemplos del README y 
 python3 ../../Scripts/generar_pruebas_de_documentacion.py # regenera esas pruebas tras cambiar un ejemplo
 ```
 
-La herramienta `armonia` y el ejemplo (`swift run ArmoniaEjemplo`) son paquetes aparte, en
-`Apps/ArmoniaCLI` y `Ejemplos/ArmoniaEjemplo`, y se construyen y prueban desde allí.
+La herramienta `armonia` y el ejemplo (`swift run EjemploArmonia`) son paquetes aparte, en
+`Apps/ArmoniaCLI` y `Ejemplos/EjemploArmonia`, y se construyen y prueban desde allí.
 
 Requiere Swift 5.9 o posterior (macOS 13 / iOS 16 en las plataformas de Apple); sin dependencias (sólo Foundation
 para `pow`).
